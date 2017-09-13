@@ -40,8 +40,8 @@
     },
     "nyc": {
         "reporter": [
-            "html",
-            "text"
+            "text",
+            "html"
         ]
     }
 }

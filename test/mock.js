@@ -9,7 +9,7 @@ const preload = {
 const mockServer = {
     launch: port => {
         const server = restify.createServer()
-        mockServer.server = server
+        mockServer["server"] = server
 
         server.use(restify.plugins.queryParser())
         server.use(restify.plugins.bodyParser())
@@ -56,7 +56,7 @@ const mockServer = {
         server.listen(port)
     },
     stop: () => {
-        mockServer.server.close()
+        mockServer["server"].close()
     }
 }
 
@@ -72,7 +72,7 @@ const imgReply = (req, res) => {
 }
 const binaryReply = (req, res) => {
     res.setHeader("content-type", "application/octet-stream")
-    const binaryData = new Buffer.from([ 0x00, 0x01, 0x02, 0x03 ])
+    const binaryData = Buffer.from([ 0x00, 0x01, 0x02, 0x03 ])
     res.send(binaryData)
 }
 
