@@ -1,0 +1,47 @@
+{
+    "name": "wretch",
+    "version": "0.0.1",
+    "description": "A tiny wrapper around fetch.",
+    "keywords": [
+        "fetch",
+        "ajax",
+        "request"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/elbywan/wretch"
+    },
+    "bugs": {
+        "url": "https://github.com/elbywan/wretch/issues"
+    },
+    "main": "dist/wretch.js",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "start": "npm run build && npm run test",
+        "build": "webpack --config webpack.config.js -p",
+        "test": "nyc mocha --reporter list",
+        "coverage": "nyc report --reporter=text-lcov | coveralls"
+    },
+    "author": "Julien Elbaz",
+    "license": "MIT",
+    "devDependencies": {
+        "awesome-typescript-loader": "^3.2.3",
+        "chai": "^4.1.2",
+        "coveralls": "^2.13.1",
+        "form-data": "^2.3.1",
+        "mocha": "^3.5.3",
+        "node-fetch": "^2.0.0-alpha.8",
+        "nyc": "^11.2.1",
+        "restify": "^5.2.0",
+        "typescript": "^2.5.2",
+        "webpack": "^3.5.6"
+    },
+    "nyc": {
+        "reporter": [
+            "html",
+            "text"
+        ]
+    }
+}
