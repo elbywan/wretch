@@ -11,7 +11,7 @@ const PORT = 9876
 const URL = `http://localhost:${PORT}/`
 
 const allRoutes = (obj, type, action) => Promise.all([
-    obj.get()[type](action),
+    obj.get()[type](_ => _).then(action),
     obj.put()[type](action),
     obj.patch()[type](action),
     obj.post()[type](action),
