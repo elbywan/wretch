@@ -5,7 +5,7 @@
 	<a href="https://coveralls.io/github/elbywan/wretch?branch=master"><img alt="coveralls-badge" src="https://coveralls.io/repos/github/elbywan/wretch/badge.svg?branch=master"></a>
 </h1>
 <h4 align="center">
-	A tiny wrapper (<2Kb gzipped) built around fetch.
+	A tiny wrapper (&lt; 2Kb gzipped) built around fetch.
 </h4>
 <h5 align="center">
     <i>WRapper fETCH = WRETCH</i>

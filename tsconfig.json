@@ -6,7 +6,8 @@
         "outDir": "dist",
         "declaration": true,
         "declarationDir": "dist",
-        "noImplicitAny": false
+        "noImplicitAny": false,
+        "sourceMap": true
     },
     "include": [
         "src/**/*"
