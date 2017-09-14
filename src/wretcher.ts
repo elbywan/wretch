@@ -190,35 +190,35 @@ const doFetch = url => (opts = {}) => {
         /**
          * Retrieves the raw result as a promise.
          */
-        res:  (cb: (response : Response) => any) => doCatch(wrapper.then(_ => _ && cb && cb(_) || _)),
+        res:  (cb?: (response : Response) => any) => doCatch(wrapper.then(_ => _ && cb && cb(_) || _)),
         /**
          * Retrieves the result as a parsed JSON object.
          */
-        json: (cb: (json : Object) => any) => doCatch(wrapper
+        json: (cb?: (json : Object) => any) => doCatch(wrapper
             .then(_ => _ && _.json())
             .then(_ => _ && cb && cb(_) || _)),
         /**
          * Retrieves the result as a Blob object.
          */
-        blob: (cb: (blob : Blob) => any) => doCatch(wrapper
+        blob: (cb?: (blob : Blob) => any) => doCatch(wrapper
             .then(_ => _ && _.blob())
             .then(_ => _ && cb && cb(_) || _)),
         /**
          * Retrieves the result as a FormData object.
          */
-        formData: (cb: (fd : FormData) => any) => doCatch(wrapper
+        formData: (cb?: (fd : FormData) => any) => doCatch(wrapper
             .then(_ => _ && _.formData())
             .then(_ => _ && cb && cb(_) || _)),
         /**
          * Retrieves the result as an ArrayBuffer object.
          */
-        arrayBuffer: (cb: (ab : ArrayBuffer) => any) => doCatch(wrapper
+        arrayBuffer: (cb?: (ab : ArrayBuffer) => any) => doCatch(wrapper
             .then(_ => _ && _.arrayBuffer())
             .then(_ => _ && cb && cb(_) || _)),
         /**
          * Retrieves the result as a string.
          */
-        text: (cb: (text : string) => any) => doCatch(wrapper
+        text: (cb?: (text : string) => any) => doCatch(wrapper
             .then(_ => _ && _.text())
             .then(_ => _ && cb && cb(_) || _)),
         /**
