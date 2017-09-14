@@ -14,6 +14,17 @@
     <i>f[ETCH] [WR]apper</i>
 </h6>
 
+<br>
+
+# Table of Contents
+
+* [Motivation](#motivation)
+* [Installation](#installation)
+* [Compatibility](#compatibility)
+* [Usage](#usage)
+* [Api](#api)
+* [License](#license)
+
 # Motivation
 
 #### Because having to write two callbacks for a simple request is awkward.
@@ -84,14 +95,14 @@ fetch("endpoint", {
 // Wretch
 
 wretch("endpoint")
-  .json({ "hello": "world"})
+  .json({ "hello": "world" })
   .post()
   .res(response => /* ... */)
 ```
 
 # Installation
 
-**Wretch bundled using the UMD format (@`dist/bundle/wretch.js`).**
+**Wretch is bundled using the UMD format (@`dist/bundle/wretch.js`).**
 
 ## Npm
 
@@ -178,6 +189,14 @@ wretch(url, options)
 
 # API
 
+* [Helper Methods](#helper-methods)
+* [Body Types](#body-types)
+* [Http Methods](#http-methods)
+* [Catchers](#catchers)
+* [Response Types](#response-types)
+
+------
+
 #### wretcher(url = "", opts = {})
 
 Create a new Wretcher object with an url and [vanilla fetch options](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch).
@@ -202,11 +221,36 @@ wretch("...", { headers: { "X-Custom": "Header" }}).get()
 
 Mix in (instead of simply overwriting) the current default options with the new ones.
 
+```js
+wretch().defaults({ headers: { "Accept": "application/json" }})
+
+wretch().mixdefaults({ encoding: "same-origin", headers: { "X-Custom": "Header" } })
+
+/* The new options are :
+{
+  headers: { "Accept": "application/json", "X-Custom": "Header" },
+  encoding: "same-origin"
+}
+*/
+```
+
 #### errorType(method: "text" | "json" = "text")
 
 Sets the method (text, json ...) used to parse the data contained in the response body in case of an HTTP error.
 
 Persists for every subsequent requests.
+
+```js
+wretch().errorType("json")
+
+wretch("http://server/which/returns/an/error/with/a/json/body")
+  .get()
+  .res()
+  .catch(error => {
+    // error.message contains the parsed body
+    console.log(error.message))
+  }
+```
 
 #### options(options: Object)
 
@@ -214,6 +258,15 @@ Set the fetch options.
 
 ```js
 wretch("...").options({ credentials: "same-origin" })
+```
+
+Wretch being immutable, you can store the object for later use.
+
+```js
+const corsWretch = wretch().options({ credentials: "include", mode: "cors" })
+
+corsWretch.url("http://endpoint1").get()
+corsWretch.url("http://endpoint2").get()
 ```
 
 #### url(url: string)
@@ -280,28 +333,40 @@ wretch("...").formData(form).post()
 
 Perform a get request.
 
+```js
+wretch("...").get({ credentials: "same-origin" })
+```
+
 #### delete(opts = {})
 
 Perform a delete request.
+
+```js
+wretch("...").delete({ credentials: "same-origin" })
+```
 
 #### put(opts = {})
 
 Perform a put request.
 
+```js
+wretch("...").json({...}).put({ credentials: "same-origin" })
+```
+
 #### patch(opts = {})
 
 Perform a patch request.
+
+```js
+wretch("...").json({...}).patch({ credentials: "same-origin" })
+```
 
 #### post(opts = {})
 
 Perform a post request.
 
 ```js
-wretch("...").get({ credentials: "same-origin" })
-wretch("...").delete({ credentials: "same-origin" })
-wretch("...").json({...}).put(({ credentials: "same-origin" })
-wretch("...").json({...}).patch(({ credentials: "same-origin" })
-wretch("...").json({...}).post(({ credentials: "same-origin" })
+wretch("...").json({...}).post({ credentials: "same-origin" })
 ```
 
 ## Catchers
@@ -312,6 +377,19 @@ wretch("...").json({...}).post(({ credentials: "same-origin" })
 
 ```ts
 type WretcherError = Error & { status: number, response: Response, text?: string, json?: Object }
+```
+
+```js
+wretch("...")
+  .get()
+  .badRequest(err => console.log(err.status))
+  .unauthorized(err => console.log(err.status))
+  .forbidden(err => console.log(err.status))
+  .notFound(err => console.log(err.status))
+  .timeout(err => console.log(err.status))
+  .internalError(err => console.log(err.status))
+  .error(418, err => console.log(err.status))
+  .res()
 ```
 
 #### badRequest(cb: (error: WretcherError) => any)
@@ -342,19 +420,6 @@ Syntactic sugar for `error(500, cb)`.
 
 Catch a specific error and perform the callback.
 
-```js
-wretch("...")
-  .get()
-  .badRequest(err => console.log(err.status))
-  .unauthorized(err => console.log(err.status))
-  .forbidden(err => console.log(err.status))
-  .notFound(err => console.log(err.status))
-  .timeout(err => console.log(err.status))
-  .internalError(err => console.log(err.status))
-  .error(418, err => console.log(err.status))
-  .res()
-```
-
 ## Response Types
 
 **Required**
@@ -381,13 +446,25 @@ wretch("...").get().json(json => console.log(Object.keys(json)))
 
 Blob handler.
 
+```js
+wretch("...").get().blob(blob => /* ... */)
+```
+
 #### formData(cb: (fd : FormData) => any)
 
 FormData handler.
 
+```js
+wretch("...").get().formData(formData => /* ... */)
+```
+
 #### arrayBuffer(cb: (ab : ArrayBuffer) => any)
 
 ArrayBuffer handler.
+
+```js
+wretch("...").get().arrayBuffer(arrayBuffer => /* ... */)
+```
 
 #### text(cb: (text : string) => any)
 
