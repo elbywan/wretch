@@ -10,12 +10,12 @@ const wretch = require("../dist/bundle/wretch")
 const PORT = 9876
 const URL = `http://localhost:${PORT}/`
 
-const allRoutes = (obj, type) => Promise.all([
-    obj.get()[type](),
-    obj.put()[type](),
-    obj.patch()[type](),
-    obj.post()[type](),
-    obj.delete()[type]()
+const allRoutes = (obj, type, action) => Promise.all([
+    obj.get()[type](action),
+    obj.put()[type](action),
+    obj.patch()[type](action),
+    obj.post()[type](action),
+    obj.delete()[type](action)
 ])
 
 const duckImage = fs.readFileSync(path.resolve(__dirname, "assets", "duck.jpg"))
@@ -33,13 +33,13 @@ describe("Wretch", function() {
     it("should perform crud requests and parse a text response", async function() {
         const init = wretch(`${URL}/text`)
         const test = _ => expect(_).to.equal("A text string")
-        await allRoutes(init, "text").then(res => Promise.all(res.map(test)))
+        await allRoutes(init, "text", test)
     })
 
     it("should perform crud requests and parse a json response", async function() {
         const test = _ => expect(_).to.deep.equal({ a: "json", "object": "which", "is": "stringified" })
         const init = wretch(`${URL}/json`)
-        await allRoutes(init, "json").then(res => Promise.all(res.map(test)))
+        await allRoutes(init, "json", test)
     })
 
     it("should perform crud requests and parse a blob response", async function() {
@@ -47,7 +47,7 @@ describe("Wretch", function() {
             return blob.size === duckImage.length
         })
         const init = wretch(`${URL}/blob`)
-        await allRoutes(init, "blob").then(res => Promise.all(res.map(test)))
+        await allRoutes(init, "blob", test)
     })
 
     it("should perform crud requests and parse an arrayBuffer response", async function() {
@@ -60,7 +60,7 @@ describe("Wretch", function() {
             return buffer.equals(new Buffer.from([ 0x00, 0x01, 0x02, 0x03 ]))
         })
         const init = wretch(`${URL}/arrayBuffer`)
-        await allRoutes(init, "arrayBuffer").then(res => Promise.all(res.map(test)))
+        await allRoutes(init, "arrayBuffer", test)
     })
 
     it("should perform a json round trip", async function() {
@@ -117,37 +117,35 @@ describe("Wretch", function() {
             .notFound(_ => check++)
             .error(444, _ => check++)
             .unauthorized(_ => check++)
-            .res()
-            .then(_ => expect(_).to.be.undefined)
+            .res(_ => expect(_).to.be.undefined)
         expect(check).to.be.equal(1)
     })
 
     it("should set default fetch options", async function() {
         let rejected = await new Promise(res => wretch(`${URL}/customHeaders`).get().badRequest(_ => {
             res(true)
-        }).res().then(result => res(!result)))
+        }).res(result => res(!result)))
         expect(rejected).to.be.true
         wretch().defaults({
             headers: { "X-Custom-Header": "Anything" }
         })
         rejected = await new Promise(res => wretch(`${URL}/customHeaders`).get().badRequest(_ => {
             res(true)
-        }).res().then(result => res(!result)))
+        }).res(result => res(!result)))
         expect(rejected).to.be.true
         wretch().mixdefaults({
             headers: { "X-Custom-Header-2": "Anything" }
         })
         rejected = await new Promise(res => wretch(`${URL}/customHeaders`).get().badRequest(_ => {
             res(true)
-        }).res().then(result => res(!result)))
+        }).res(result => res(!result)))
         wretch().mixdefaults("not an object")
         expect(rejected).to.be.true
         let accepted = await new Promise(res => wretch(`${URL}/customHeaders`)
             .options({ headers: { "X-Custom-Header-3" : "Anything" } })
             .get()
             .badRequest(_ => { res(false) })
-            .res()
-            .then(result => res(!!result)))
+            .res(result => res(!!result)))
         expect(accepted).to.be.true
     })
 
@@ -162,9 +160,9 @@ describe("Wretch", function() {
         const obj4 = obj2.query({a: "1!", b: "2"})
         expect(obj4._url).to.be.equal(`${URL}?a=1%21&b=2`)
         expect(obj2._url).to.be.equal(URL)
-        const obj5 = obj4.query({c: 6, d: 7})
+        const obj5 = obj4.query({c: 6, d: [7, 8]})
         expect(obj4._url).to.be.equal(`${URL}?a=1%21&b=2`)
-        expect(obj5._url).to.be.equal(`${URL}?c=6&d=7`)
+        expect(obj5._url).to.be.equal(`${URL}?c=6&d=7&d=8`)
     })
 
     it("should modify the Accept header", async function() {
@@ -177,7 +175,7 @@ describe("Wretch", function() {
         await wretch(`${URL}/json500`)
             .get()
             .internalError(error => { expect(error.json).to.deep.equal({ error: 500, message: "ok" }) })
-            .res()
+            .res(_ => expect.fail("", "", "I should never be called because an error was thrown"))
             .then(_ => expect(_).to.be.undefined)
     })
 })

@@ -1,7 +1,7 @@
 /**
  * The Wretcher class used to perform easy fetch requests.
  *
- * Almost every method of this class return a fresh Wretcher object.
+ * Immutability : almost every method of this class return a fresh Wretcher object.
  */
 export declare class Wretcher {
     private _url;
@@ -11,12 +11,12 @@ export declare class Wretcher {
      * Sets the default fetch options used for every subsequent fetch call.
      * @param opts New default options
      */
-    defaults(opts: any): this;
+    defaults(opts: Object): this;
     /**
      * Mixins the default fetch options used for every subsequent fetch calls.
      * @param opts Options to mixin with the current default options
      */
-    mixdefaults(opts: any): this;
+    mixdefaults(opts: Object): this;
     /**
      * Sets the method (text, json ...) used to parse the data contained in the response body in case of an HTTP error.
      *
@@ -24,7 +24,7 @@ export declare class Wretcher {
      *
      * Default is "text".
      */
-    errorType(method: any): this;
+    errorType(method: "text" | "json"): this;
     /**
      * Returns a new Wretcher object with the url specified and the same options.
      * @param url String url
@@ -56,100 +56,250 @@ export declare class Wretcher {
     * Performs a get request.
     */
     get(opts?: {}): {
-        res: () => any;
-        json: () => any;
-        blob: () => any;
-        formData: () => any;
-        arrayBuffer: () => any;
-        text: () => any;
+        res: (cb: (response: Response) => any) => Promise<any>;
+        json: (cb: (json: Object) => any) => Promise<any>;
+        blob: (cb: (blob: Blob) => any) => Promise<any>;
+        formData: (cb: (fd: FormData) => any) => Promise<any>;
+        arrayBuffer: (cb: (ab: ArrayBuffer) => any) => Promise<any>;
+        text: (cb: (text: string) => any) => Promise<any>;
         error: (code: number, cb: any) => any;
-        badRequest: (cb: any) => any;
-        unauthorized: (cb: any) => any;
-        forbidden: (cb: any) => any;
-        notFound: (cb: any) => any;
-        timeout: (cb: any) => any;
-        internalError: (cb: any) => any;
+        badRequest: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
+        unauthorized: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
+        forbidden: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
+        notFound: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
+        timeout: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
+        internalError: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
     };
     /**
     * Performs a delete request.
     */
     delete(opts?: {}): {
-        res: () => any;
-        json: () => any;
-        blob: () => any;
-        formData: () => any;
-        arrayBuffer: () => any;
-        text: () => any;
+        res: (cb: (response: Response) => any) => Promise<any>;
+        json: (cb: (json: Object) => any) => Promise<any>;
+        blob: (cb: (blob: Blob) => any) => Promise<any>;
+        formData: (cb: (fd: FormData) => any) => Promise<any>;
+        arrayBuffer: (cb: (ab: ArrayBuffer) => any) => Promise<any>;
+        text: (cb: (text: string) => any) => Promise<any>;
         error: (code: number, cb: any) => any;
-        badRequest: (cb: any) => any;
-        unauthorized: (cb: any) => any;
-        forbidden: (cb: any) => any;
-        notFound: (cb: any) => any;
-        timeout: (cb: any) => any;
-        internalError: (cb: any) => any;
+        badRequest: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
+        unauthorized: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
+        forbidden: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
+        notFound: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
+        timeout: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
+        internalError: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
     };
     /**
     * Performs a put request.
     */
     put(opts?: {}): {
-        res: () => any;
-        json: () => any;
-        blob: () => any;
-        formData: () => any;
-        arrayBuffer: () => any;
-        text: () => any;
+        res: (cb: (response: Response) => any) => Promise<any>;
+        json: (cb: (json: Object) => any) => Promise<any>;
+        blob: (cb: (blob: Blob) => any) => Promise<any>;
+        formData: (cb: (fd: FormData) => any) => Promise<any>;
+        arrayBuffer: (cb: (ab: ArrayBuffer) => any) => Promise<any>;
+        text: (cb: (text: string) => any) => Promise<any>;
         error: (code: number, cb: any) => any;
-        badRequest: (cb: any) => any;
-        unauthorized: (cb: any) => any;
-        forbidden: (cb: any) => any;
-        notFound: (cb: any) => any;
-        timeout: (cb: any) => any;
-        internalError: (cb: any) => any;
+        badRequest: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
+        unauthorized: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
+        forbidden: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
+        notFound: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
+        timeout: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
+        internalError: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
     };
     /**
     * Performs a post request.
     */
     post(opts?: {}): {
-        res: () => any;
-        json: () => any;
-        blob: () => any;
-        formData: () => any;
-        arrayBuffer: () => any;
-        text: () => any;
+        res: (cb: (response: Response) => any) => Promise<any>;
+        json: (cb: (json: Object) => any) => Promise<any>;
+        blob: (cb: (blob: Blob) => any) => Promise<any>;
+        formData: (cb: (fd: FormData) => any) => Promise<any>;
+        arrayBuffer: (cb: (ab: ArrayBuffer) => any) => Promise<any>;
+        text: (cb: (text: string) => any) => Promise<any>;
         error: (code: number, cb: any) => any;
-        badRequest: (cb: any) => any;
-        unauthorized: (cb: any) => any;
-        forbidden: (cb: any) => any;
-        notFound: (cb: any) => any;
-        timeout: (cb: any) => any;
-        internalError: (cb: any) => any;
+        badRequest: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
+        unauthorized: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
+        forbidden: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
+        notFound: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
+        timeout: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
+        internalError: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
     };
     /**
     * Performs a patch request.
     */
     patch(opts?: {}): {
-        res: () => any;
-        json: () => any;
-        blob: () => any;
-        formData: () => any;
-        arrayBuffer: () => any;
-        text: () => any;
+        res: (cb: (response: Response) => any) => Promise<any>;
+        json: (cb: (json: Object) => any) => Promise<any>;
+        blob: (cb: (blob: Blob) => any) => Promise<any>;
+        formData: (cb: (fd: FormData) => any) => Promise<any>;
+        arrayBuffer: (cb: (ab: ArrayBuffer) => any) => Promise<any>;
+        text: (cb: (text: string) => any) => Promise<any>;
         error: (code: number, cb: any) => any;
-        badRequest: (cb: any) => any;
-        unauthorized: (cb: any) => any;
-        forbidden: (cb: any) => any;
-        notFound: (cb: any) => any;
-        timeout: (cb: any) => any;
-        internalError: (cb: any) => any;
+        badRequest: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
+        unauthorized: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
+        forbidden: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
+        notFound: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
+        timeout: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
+        internalError: (cb: (error: Error & {
+            status: number;
+            response: Response;
+            text?: string;
+            json?: Object;
+        }) => any) => any;
     };
     /**
      * Sets the content type header, stringifies an object and sets the request body.
-     * @param obj An object
+     * @param jsObject An object
      */
-    json(jsObject: any): Wretcher;
+    json(jsObject: Object): Wretcher;
     /**
      * Converts the javascript object to a FormData and sets the request body.
-     * @param obj An object
+     * @param formObject An object
      */
-    formData(obj: any): Wretcher;
+    formData(formObject: Object): Wretcher;
 }

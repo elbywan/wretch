@@ -1,7 +1,7 @@
 {
     "name": "wretch",
     "version": "0.0.1",
-    "description": "A tiny wrapper around fetch.",
+    "description": "A tiny wrapper built around fetch with an intuitive syntax.",
     "keywords": [
         "fetch",
         "ajax",
@@ -14,16 +14,17 @@
     "bugs": {
         "url": "https://github.com/elbywan/wretch/issues"
     },
-    "main": "dist/bundle/wretch.js",
+    "jsnext:main": "./dist/index.js",
+    "main": "./dist/bundle/wretch.js",
+    "types": "./dist/index.d.ts",
     "files": [
         "dist"
     ],
     "scripts": {
         "start": "npm run build && npm run test",
-        "prebuild": "rimraf dist",
+        "prebuild": "rimraf dist && rimraf coverage",
         "build": "tsc -p . && rollup -c",
         "test": "nyc mocha --reporter list",
-        "precoverage": "rimraf coverage",
         "coverage": "nyc report --reporter=text-lcov | coveralls"
     },
     "author": "Julien Elbaz",

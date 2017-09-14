@@ -13,7 +13,7 @@ var errorType = null;
 /**
  * The Wretcher class used to perform easy fetch requests.
  *
- * Almost every method of this class return a fresh Wretcher object.
+ * Immutability : almost every method of this class return a fresh Wretcher object.
  */
 var Wretcher = /** @class */ (function () {
     function Wretcher(_url, _options) {
@@ -120,26 +120,26 @@ var Wretcher = /** @class */ (function () {
     };
     /**
      * Sets the content type header, stringifies an object and sets the request body.
-     * @param obj An object
+     * @param jsObject An object
      */
     Wretcher.prototype.json = function (jsObject) {
         return new Wretcher(this._url, __assign({}, this._options, { headers: { "Content-Type": "application/json" }, body: JSON.stringify(jsObject) }));
     };
     /**
      * Converts the javascript object to a FormData and sets the request body.
-     * @param obj An object
+     * @param formObject An object
      */
-    Wretcher.prototype.formData = function (obj) {
+    Wretcher.prototype.formData = function (formObject) {
         var formData = new FormData();
-        for (var key in obj) {
-            if (obj[key] instanceof Array) {
-                for (var _i = 0, _a = obj[key]; _i < _a.length; _i++) {
+        for (var key in formObject) {
+            if (formObject[key] instanceof Array) {
+                for (var _i = 0, _a = formObject[key]; _i < _a.length; _i++) {
                     var item = _a[_i];
                     formData.append(key + "[]", item);
                 }
             }
             else {
-                formData.append(key, obj[key]);
+                formData.append(key, formObject[key]);
             }
         }
         return new Wretcher(this._url, __assign({}, this._options, { body: formData }));
@@ -152,7 +152,15 @@ var appendQueryParams = function (url, qp) {
     var usp = new URLSearchParams();
     var index = url.indexOf("?");
     for (var key in qp) {
-        usp.append(key, qp[key]);
+        if (qp[key] instanceof Array) {
+            for (var _i = 0, _a = qp[key]; _i < _a.length; _i++) {
+                var val = _a[_i];
+                usp.append(key, val);
+            }
+        }
+        else {
+            usp.append(key, qp[key]);
+        }
     }
     return ~index ?
         url.substring(0, index) + "?" + usp.toString() :
@@ -174,32 +182,42 @@ var doFetch = function (url) { return function (opts) {
         return response;
     });
     var catchers = [];
-    var doCatch = function (req) { return catchers.reduce(function (accumulator, catcher) { return accumulator.catch(catcher); }, req); };
+    var doCatch = function (promise) { return catchers.reduce(function (accumulator, catcher) { return accumulator.catch(catcher); }, promise); };
     var responseTypes = {
         /**
          * Retrieves the raw result as a promise.
          */
-        res: function () { return doCatch(wrapper); },
+        res: function (cb) { return doCatch(wrapper.then(function (_) { return _ && cb && cb(_) || _; })); },
         /**
          * Retrieves the result as a parsed JSON object.
          */
-        json: function () { return doCatch(wrapper.then(function (_) { return _ && _.json(); })); },
+        json: function (cb) { return doCatch(wrapper
+            .then(function (_) { return _ && _.json(); })
+            .then(function (_) { return _ && cb && cb(_) || _; })); },
         /**
          * Retrieves the result as a Blob object.
          */
-        blob: function () { return doCatch(wrapper.then(function (_) { return _ && _.blob(); })); },
+        blob: function (cb) { return doCatch(wrapper
+            .then(function (_) { return _ && _.blob(); })
+            .then(function (_) { return _ && cb && cb(_) || _; })); },
         /**
          * Retrieves the result as a FormData object.
          */
-        formData: function () { return doCatch(wrapper.then(function (_) { return _ && _.formData(); })); },
+        formData: function (cb) { return doCatch(wrapper
+            .then(function (_) { return _ && _.formData(); })
+            .then(function (_) { return _ && cb && cb(_) || _; })); },
         /**
          * Retrieves the result as an ArrayBuffer object.
          */
-        arrayBuffer: function () { return doCatch(wrapper.then(function (_) { return _ && _.arrayBuffer(); })); },
+        arrayBuffer: function (cb) { return doCatch(wrapper
+            .then(function (_) { return _ && _.arrayBuffer(); })
+            .then(function (_) { return _ && cb && cb(_) || _; })); },
         /**
          * Retrieves the result as a string.
          */
-        text: function () { return doCatch(wrapper.then(function (_) { return _ && _.text(); })); },
+        text: function (cb) { return doCatch(wrapper
+            .then(function (_) { return _ && _.text(); })
+            .then(function (_) { return _ && cb && cb(_) || _; })); },
         /**
          * Catches an http response with a specific error code and performs a callback.
          */

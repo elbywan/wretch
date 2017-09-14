@@ -7,7 +7,7 @@ let errorType = null
 /**
  * The Wretcher class used to perform easy fetch requests.
  *
- * Almost every method of this class return a fresh Wretcher object.
+ * Immutability : almost every method of this class return a fresh Wretcher object.
  */
 export class Wretcher {
 
@@ -19,7 +19,7 @@ export class Wretcher {
      * Sets the default fetch options used for every subsequent fetch call.
      * @param opts New default options
      */
-    defaults(opts) {
+    defaults(opts: Object) {
         defaults = opts
         return this
     }
@@ -28,7 +28,7 @@ export class Wretcher {
      * Mixins the default fetch options used for every subsequent fetch calls.
      * @param opts Options to mixin with the current default options
      */
-    mixdefaults(opts) {
+    mixdefaults(opts: Object) {
         defaults = mix(defaults, opts)
         return this
     }
@@ -40,7 +40,7 @@ export class Wretcher {
      *
      * Default is "text".
      */
-    errorType(method) {
+    errorType(method: "text" | "json") {
         errorType = method
         return this
     }
@@ -117,9 +117,9 @@ export class Wretcher {
 
     /**
      * Sets the content type header, stringifies an object and sets the request body.
-     * @param obj An object
+     * @param jsObject An object
      */
-    json(jsObject) {
+    json(jsObject: Object) {
         return new Wretcher(this._url,
             { 
                 ...this._options,
@@ -129,16 +129,16 @@ export class Wretcher {
     }
     /**
      * Converts the javascript object to a FormData and sets the request body.
-     * @param obj An object
+     * @param formObject An object
      */
-    formData(obj) {
+    formData(formObject: Object) {
         const formData = new FormData()
-        for(const key in obj) {
-            if(obj[key] instanceof Array) {
-                for(const item of obj[key])
+        for(const key in formObject) {
+            if(formObject[key] instanceof Array) {
+                for(const item of formObject[key])
                     formData.append(key + "[]", item)
             } else {
-                formData.append(key, obj[key])
+                formData.append(key, formObject[key])
             }
         }
 
@@ -156,12 +156,19 @@ const appendQueryParams = (url: string, qp: Object) => {
     const usp = new URLSearchParams()
     const index = url.indexOf("?")
     for(const key in qp) {
-        usp.append(key, qp[key])
+        if(qp[key] instanceof Array) {
+            for(const val of qp[key])
+                usp.append(key, val)
+        } else {
+            usp.append(key, qp[key])
+        }
     }
     return ~index ?
         `${url.substring(0, index)}?${usp.toString()}` :
         `${url}?${usp.toString()}`
 }
+
+type WretcherError = Error & { status: number, response: Response, text?: string, json?: Object }
 
 const doFetch = url => (opts = {}) => {
     const req = fetch(url, mix(defaults, opts))
@@ -178,32 +185,42 @@ const doFetch = url => (opts = {}) => {
         return response
     })
     let catchers = []
-    const doCatch = req => catchers.reduce((accumulator, catcher) => accumulator.catch(catcher), req)
+    const doCatch = <T>(promise : Promise<T>) : Promise<T> => catchers.reduce((accumulator, catcher) => accumulator.catch(catcher), promise)
     const responseTypes = {
         /**
          * Retrieves the raw result as a promise.
          */
-        res:  () => doCatch(wrapper),
+        res:  (cb: (response : Response) => any) => doCatch(wrapper.then(_ => _ && cb && cb(_) || _)),
         /**
          * Retrieves the result as a parsed JSON object.
          */
-        json: () => doCatch(wrapper.then(_ => _ && _.json())),
+        json: (cb: (json : Object) => any) => doCatch(wrapper
+            .then(_ => _ && _.json())
+            .then(_ => _ && cb && cb(_) || _)),
         /**
          * Retrieves the result as a Blob object.
          */
-        blob: () => doCatch(wrapper.then(_ => _ && _.blob())),
+        blob: (cb: (blob : Blob) => any) => doCatch(wrapper
+            .then(_ => _ && _.blob())
+            .then(_ => _ && cb && cb(_) || _)),
         /**
          * Retrieves the result as a FormData object.
          */
-        formData: () => doCatch(wrapper.then(_ => _ && _.formData())),
+        formData: (cb: (fd : FormData) => any) => doCatch(wrapper
+            .then(_ => _ && _.formData())
+            .then(_ => _ && cb && cb(_) || _)),
         /**
          * Retrieves the result as an ArrayBuffer object.
          */
-        arrayBuffer: () => doCatch(wrapper.then(_ => _ && _.arrayBuffer())),
+        arrayBuffer: (cb: (ab : ArrayBuffer) => any) => doCatch(wrapper
+            .then(_ => _ && _.arrayBuffer())
+            .then(_ => _ && cb && cb(_) || _)),
         /**
          * Retrieves the result as a string.
          */
-        text: () => doCatch(wrapper.then(_ => _ && _.text())),
+        text: (cb: (text : string) => any) => doCatch(wrapper
+            .then(_ => _ && _.text())
+            .then(_ => _ && cb && cb(_) || _)),
         /**
          * Catches an http response with a specific error code and performs a callback.
          */
@@ -217,27 +234,27 @@ const doFetch = url => (opts = {}) => {
         /**
          * Catches a bad request (http code 400) and performs a callback.
          */
-        badRequest: cb => responseTypes.error(400, cb),
+        badRequest: (cb: (error: WretcherError) => any) => responseTypes.error(400, cb),
         /**
          * Catches an unauthorized request (http code 401) and performs a callback.
          */
-        unauthorized: cb => responseTypes.error(401, cb),
+        unauthorized: (cb: (error: WretcherError) => any) => responseTypes.error(401, cb),
         /**
          * Catches a forbidden request (http code 403) and performs a callback.
          */
-        forbidden: cb => responseTypes.error(403, cb),
+        forbidden: (cb: (error: WretcherError) => any) => responseTypes.error(403, cb),
         /**
          * Catches a "not found" request (http code 404) and performs a callback.
          */
-        notFound: cb => responseTypes.error(404, cb),
+        notFound: (cb: (error: WretcherError) => any) => responseTypes.error(404, cb),
         /**
          * Catches a timeout (http code 408) and performs a callback.
          */
-        timeout: cb => responseTypes.error(408, cb),
+        timeout: (cb: (error: WretcherError) => any) => responseTypes.error(408, cb),
         /**
          * Catches an internal server error (http code 500) and performs a callback.
          */
-        internalError: cb => responseTypes.error(500, cb)
+        internalError: (cb: (error: WretcherError) => any) => responseTypes.error(500, cb)
     }
 
     return responseTypes
