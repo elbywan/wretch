@@ -5,7 +5,7 @@ const path = require("path")
 const expect = require("chai").expect
 const mockServer = require("./mock")
 
-const wretch = require("../dist/wretch")
+const wretch = require("../dist/bundle/wretch")
 
 const PORT = 9876
 const URL = `http://localhost:${PORT}/`
