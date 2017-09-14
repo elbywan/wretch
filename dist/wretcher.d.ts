@@ -56,12 +56,12 @@ export declare class Wretcher {
     * Performs a get request.
     */
     get(opts?: {}): {
-        res: (cb: (response: Response) => any) => Promise<any>;
-        json: (cb: (json: Object) => any) => Promise<any>;
-        blob: (cb: (blob: Blob) => any) => Promise<any>;
-        formData: (cb: (fd: FormData) => any) => Promise<any>;
-        arrayBuffer: (cb: (ab: ArrayBuffer) => any) => Promise<any>;
-        text: (cb: (text: string) => any) => Promise<any>;
+        res: (cb?: (response: Response) => any) => Promise<any>;
+        json: (cb?: (json: Object) => any) => Promise<any>;
+        blob: (cb?: (blob: Blob) => any) => Promise<any>;
+        formData: (cb?: (fd: FormData) => any) => Promise<any>;
+        arrayBuffer: (cb?: (ab: ArrayBuffer) => any) => Promise<any>;
+        text: (cb?: (text: string) => any) => Promise<any>;
         error: (code: number, cb: any) => any;
         badRequest: (cb: (error: Error & {
             status: number;
@@ -104,12 +104,12 @@ export declare class Wretcher {
     * Performs a delete request.
     */
     delete(opts?: {}): {
-        res: (cb: (response: Response) => any) => Promise<any>;
-        json: (cb: (json: Object) => any) => Promise<any>;
-        blob: (cb: (blob: Blob) => any) => Promise<any>;
-        formData: (cb: (fd: FormData) => any) => Promise<any>;
-        arrayBuffer: (cb: (ab: ArrayBuffer) => any) => Promise<any>;
-        text: (cb: (text: string) => any) => Promise<any>;
+        res: (cb?: (response: Response) => any) => Promise<any>;
+        json: (cb?: (json: Object) => any) => Promise<any>;
+        blob: (cb?: (blob: Blob) => any) => Promise<any>;
+        formData: (cb?: (fd: FormData) => any) => Promise<any>;
+        arrayBuffer: (cb?: (ab: ArrayBuffer) => any) => Promise<any>;
+        text: (cb?: (text: string) => any) => Promise<any>;
         error: (code: number, cb: any) => any;
         badRequest: (cb: (error: Error & {
             status: number;
@@ -152,12 +152,12 @@ export declare class Wretcher {
     * Performs a put request.
     */
     put(opts?: {}): {
-        res: (cb: (response: Response) => any) => Promise<any>;
-        json: (cb: (json: Object) => any) => Promise<any>;
-        blob: (cb: (blob: Blob) => any) => Promise<any>;
-        formData: (cb: (fd: FormData) => any) => Promise<any>;
-        arrayBuffer: (cb: (ab: ArrayBuffer) => any) => Promise<any>;
-        text: (cb: (text: string) => any) => Promise<any>;
+        res: (cb?: (response: Response) => any) => Promise<any>;
+        json: (cb?: (json: Object) => any) => Promise<any>;
+        blob: (cb?: (blob: Blob) => any) => Promise<any>;
+        formData: (cb?: (fd: FormData) => any) => Promise<any>;
+        arrayBuffer: (cb?: (ab: ArrayBuffer) => any) => Promise<any>;
+        text: (cb?: (text: string) => any) => Promise<any>;
         error: (code: number, cb: any) => any;
         badRequest: (cb: (error: Error & {
             status: number;
@@ -200,12 +200,12 @@ export declare class Wretcher {
     * Performs a post request.
     */
     post(opts?: {}): {
-        res: (cb: (response: Response) => any) => Promise<any>;
-        json: (cb: (json: Object) => any) => Promise<any>;
-        blob: (cb: (blob: Blob) => any) => Promise<any>;
-        formData: (cb: (fd: FormData) => any) => Promise<any>;
-        arrayBuffer: (cb: (ab: ArrayBuffer) => any) => Promise<any>;
-        text: (cb: (text: string) => any) => Promise<any>;
+        res: (cb?: (response: Response) => any) => Promise<any>;
+        json: (cb?: (json: Object) => any) => Promise<any>;
+        blob: (cb?: (blob: Blob) => any) => Promise<any>;
+        formData: (cb?: (fd: FormData) => any) => Promise<any>;
+        arrayBuffer: (cb?: (ab: ArrayBuffer) => any) => Promise<any>;
+        text: (cb?: (text: string) => any) => Promise<any>;
         error: (code: number, cb: any) => any;
         badRequest: (cb: (error: Error & {
             status: number;
@@ -248,12 +248,12 @@ export declare class Wretcher {
     * Performs a patch request.
     */
     patch(opts?: {}): {
-        res: (cb: (response: Response) => any) => Promise<any>;
-        json: (cb: (json: Object) => any) => Promise<any>;
-        blob: (cb: (blob: Blob) => any) => Promise<any>;
-        formData: (cb: (fd: FormData) => any) => Promise<any>;
-        arrayBuffer: (cb: (ab: ArrayBuffer) => any) => Promise<any>;
-        text: (cb: (text: string) => any) => Promise<any>;
+        res: (cb?: (response: Response) => any) => Promise<any>;
+        json: (cb?: (json: Object) => any) => Promise<any>;
+        blob: (cb?: (blob: Blob) => any) => Promise<any>;
+        formData: (cb?: (fd: FormData) => any) => Promise<any>;
+        arrayBuffer: (cb?: (ab: ArrayBuffer) => any) => Promise<any>;
+        text: (cb?: (text: string) => any) => Promise<any>;
         error: (code: number, cb: any) => any;
         badRequest: (cb: (error: Error & {
             status: number;
