@@ -197,7 +197,7 @@ wretch(url, options)
 
 ------
 
-#### wretcher(url = "", opts = {})
+#### wretch(url = "", opts = {})
 
 Create a new Wretcher object with an url and [vanilla fetch options](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch).
 
