@@ -56,241 +56,241 @@ export declare class Wretcher {
     * Performs a get request.
     */
     get(opts?: {}): {
-        res: (cb?: (response: Response) => any) => Promise<any>;
-        json: (cb?: (json: Object) => any) => Promise<any>;
-        blob: (cb?: (blob: Blob) => any) => Promise<any>;
-        formData: (cb?: (fd: FormData) => any) => Promise<any>;
-        arrayBuffer: (cb?: (ab: ArrayBuffer) => any) => Promise<any>;
-        text: (cb?: (text: string) => any) => Promise<any>;
+        res: <Result = void>(cb?: (type: void) => Result) => Promise<Result>;
+        json: <Result = void>(cb?: (type: Object) => Result) => Promise<Result>;
+        blob: <Result = void>(cb?: (type: Blob) => Result) => Promise<Result>;
+        formData: <Result = void>(cb?: (type: FormData) => Result) => Promise<Result>;
+        arrayBuffer: <Result = void>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
+        text: <Result = void>(cb?: (type: string) => Result) => Promise<Result>;
         error: (code: number, cb: any) => any;
         badRequest: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
         unauthorized: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
         forbidden: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
         notFound: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
         timeout: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
         internalError: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
     };
     /**
     * Performs a delete request.
     */
     delete(opts?: {}): {
-        res: (cb?: (response: Response) => any) => Promise<any>;
-        json: (cb?: (json: Object) => any) => Promise<any>;
-        blob: (cb?: (blob: Blob) => any) => Promise<any>;
-        formData: (cb?: (fd: FormData) => any) => Promise<any>;
-        arrayBuffer: (cb?: (ab: ArrayBuffer) => any) => Promise<any>;
-        text: (cb?: (text: string) => any) => Promise<any>;
+        res: <Result = void>(cb?: (type: void) => Result) => Promise<Result>;
+        json: <Result = void>(cb?: (type: Object) => Result) => Promise<Result>;
+        blob: <Result = void>(cb?: (type: Blob) => Result) => Promise<Result>;
+        formData: <Result = void>(cb?: (type: FormData) => Result) => Promise<Result>;
+        arrayBuffer: <Result = void>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
+        text: <Result = void>(cb?: (type: string) => Result) => Promise<Result>;
         error: (code: number, cb: any) => any;
         badRequest: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
         unauthorized: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
         forbidden: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
         notFound: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
         timeout: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
         internalError: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
     };
     /**
     * Performs a put request.
     */
     put(opts?: {}): {
-        res: (cb?: (response: Response) => any) => Promise<any>;
-        json: (cb?: (json: Object) => any) => Promise<any>;
-        blob: (cb?: (blob: Blob) => any) => Promise<any>;
-        formData: (cb?: (fd: FormData) => any) => Promise<any>;
-        arrayBuffer: (cb?: (ab: ArrayBuffer) => any) => Promise<any>;
-        text: (cb?: (text: string) => any) => Promise<any>;
+        res: <Result = void>(cb?: (type: void) => Result) => Promise<Result>;
+        json: <Result = void>(cb?: (type: Object) => Result) => Promise<Result>;
+        blob: <Result = void>(cb?: (type: Blob) => Result) => Promise<Result>;
+        formData: <Result = void>(cb?: (type: FormData) => Result) => Promise<Result>;
+        arrayBuffer: <Result = void>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
+        text: <Result = void>(cb?: (type: string) => Result) => Promise<Result>;
         error: (code: number, cb: any) => any;
         badRequest: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
         unauthorized: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
         forbidden: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
         notFound: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
         timeout: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
         internalError: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
     };
     /**
     * Performs a post request.
     */
     post(opts?: {}): {
-        res: (cb?: (response: Response) => any) => Promise<any>;
-        json: (cb?: (json: Object) => any) => Promise<any>;
-        blob: (cb?: (blob: Blob) => any) => Promise<any>;
-        formData: (cb?: (fd: FormData) => any) => Promise<any>;
-        arrayBuffer: (cb?: (ab: ArrayBuffer) => any) => Promise<any>;
-        text: (cb?: (text: string) => any) => Promise<any>;
+        res: <Result = void>(cb?: (type: void) => Result) => Promise<Result>;
+        json: <Result = void>(cb?: (type: Object) => Result) => Promise<Result>;
+        blob: <Result = void>(cb?: (type: Blob) => Result) => Promise<Result>;
+        formData: <Result = void>(cb?: (type: FormData) => Result) => Promise<Result>;
+        arrayBuffer: <Result = void>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
+        text: <Result = void>(cb?: (type: string) => Result) => Promise<Result>;
         error: (code: number, cb: any) => any;
         badRequest: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
         unauthorized: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
         forbidden: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
         notFound: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
         timeout: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
         internalError: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
     };
     /**
     * Performs a patch request.
     */
     patch(opts?: {}): {
-        res: (cb?: (response: Response) => any) => Promise<any>;
-        json: (cb?: (json: Object) => any) => Promise<any>;
-        blob: (cb?: (blob: Blob) => any) => Promise<any>;
-        formData: (cb?: (fd: FormData) => any) => Promise<any>;
-        arrayBuffer: (cb?: (ab: ArrayBuffer) => any) => Promise<any>;
-        text: (cb?: (text: string) => any) => Promise<any>;
+        res: <Result = void>(cb?: (type: void) => Result) => Promise<Result>;
+        json: <Result = void>(cb?: (type: Object) => Result) => Promise<Result>;
+        blob: <Result = void>(cb?: (type: Blob) => Result) => Promise<Result>;
+        formData: <Result = void>(cb?: (type: FormData) => Result) => Promise<Result>;
+        arrayBuffer: <Result = void>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
+        text: <Result = void>(cb?: (type: string) => Result) => Promise<Result>;
         error: (code: number, cb: any) => any;
         badRequest: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
         unauthorized: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
         forbidden: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
         notFound: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
         timeout: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
         internalError: (cb: (error: Error & {
             status: number;
             response: Response;
             text?: string;
-            json?: Object;
-        }) => any) => any;
+            json?: any;
+        }) => void) => any;
     };
     /**
      * Sets the content type header, stringifies an object and sets the request body.

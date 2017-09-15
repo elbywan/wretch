@@ -183,41 +183,34 @@ var doFetch = function (url) { return function (opts) {
     });
     var catchers = [];
     var doCatch = function (promise) { return catchers.reduce(function (accumulator, catcher) { return accumulator.catch(catcher); }, promise); };
+    var wrapTypeParser = function (funName) { return function (cb) { return funName ?
+        doCatch(wrapper.then(function (_) { return _ && _[funName](); }).then(function (_) { return _ && cb && cb(_) || _; })) :
+        doCatch(wrapper.then(function (_) { return _ && cb && cb(_) || _; })); }; };
     var responseTypes = {
         /**
          * Retrieves the raw result as a promise.
          */
-        res: function (cb) { return doCatch(wrapper.then(function (_) { return _ && cb && cb(_) || _; })); },
+        res: wrapTypeParser(null),
         /**
          * Retrieves the result as a parsed JSON object.
          */
-        json: function (cb) { return doCatch(wrapper
-            .then(function (_) { return _ && _.json(); })
-            .then(function (_) { return _ && cb && cb(_) || _; })); },
+        json: wrapTypeParser("json"),
         /**
          * Retrieves the result as a Blob object.
          */
-        blob: function (cb) { return doCatch(wrapper
-            .then(function (_) { return _ && _.blob(); })
-            .then(function (_) { return _ && cb && cb(_) || _; })); },
+        blob: wrapTypeParser("blob"),
         /**
          * Retrieves the result as a FormData object.
          */
-        formData: function (cb) { return doCatch(wrapper
-            .then(function (_) { return _ && _.formData(); })
-            .then(function (_) { return _ && cb && cb(_) || _; })); },
+        formData: wrapTypeParser("formData"),
         /**
          * Retrieves the result as an ArrayBuffer object.
          */
-        arrayBuffer: function (cb) { return doCatch(wrapper
-            .then(function (_) { return _ && _.arrayBuffer(); })
-            .then(function (_) { return _ && cb && cb(_) || _; })); },
+        arrayBuffer: wrapTypeParser("arrayBuffer"),
         /**
          * Retrieves the result as a string.
          */
-        text: function (cb) { return doCatch(wrapper
-            .then(function (_) { return _ && _.text(); })
-            .then(function (_) { return _ && cb && cb(_) || _; })); },
+        text: wrapTypeParser("text"),
         /**
          * Catches an http response with a specific error code and performs a callback.
          */
