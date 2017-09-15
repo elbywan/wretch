@@ -102,8 +102,6 @@ wretch("endpoint")
 
 # Installation
 
-**Wretch is bundled using the UMD format (@`dist/bundle/wretch.js`).**
-
 ## Npm
 
 ```sh
@@ -121,21 +119,6 @@ git clone https://github.com/elbywan/wretch
 cd wretch
 npm install
 npm start
-```
-
-## Include
-
-```html
-<!--- "wretch" will be attached to the global window object. -->
-<script src="path/to/wretch.js"></script>
-```
-
-```typescript
-// new school
-import wretch from "wretch"
-
-// old school
-const wretch = require("wretch")
 ```
 
 # Compatibility
@@ -156,6 +139,25 @@ global.FormData = require("form-data")
 ```
 
 # Usage
+
+**Wretch is bundled using the UMD format (@`dist/bundle/wretch.js`) alongside es2015 modules (@`dist/index.js`) and typescript definitions.**
+
+## Import
+
+```html
+<!--- "wretch" will be attached to the global window object. -->
+<script src="path/to/wretch.js"></script>
+```
+
+```typescript
+// new school
+import wretch from "wretch"
+
+// old school
+const wretch = require("wretch")
+```
+
+## Code
 
 *Wretcher objects are immutable.*
 
