@@ -168,7 +168,7 @@ const appendQueryParams = (url: string, qp: Object) => {
         `${url}?${usp.toString()}`
 }
 
-type WretcherError = Error & { status: number, response: Response, text?: string, json?: Object }
+type WretcherError = Error & { status: number, response: Response, text?: string, json?: any }
 
 const doFetch = url => (opts = {}) => {
     const req = fetch(url, mix(defaults, opts))
@@ -184,47 +184,59 @@ const doFetch = url => (opts = {}) => {
         }
         return response
     })
+
+    type TypeParser = <Type>(funName: string | null) => <Result = void>(cb?: (type : Type) => Result) => Promise<Result>
+
     let catchers = []
     const doCatch = <T>(promise : Promise<T>) : Promise<T> => catchers.reduce((accumulator, catcher) => accumulator.catch(catcher), promise)
-    const responseTypes = {
+    const wrapTypeParser : TypeParser = <T>(funName) => <R>(cb) => funName ?
+        doCatch(wrapper.then(_ => _ && _[funName]()).then(_ => _ && cb && cb(_) || _)) :
+        doCatch(wrapper.then(_ => _ && cb && cb(_) || _))
+
+
+    const responseTypes : {
+        res: <Result = void>(cb?: (type: void) => Result) => Promise<Result>,
+        json: <Result = void>(cb?: (type: Object) => Result) => Promise<Result>,
+        blob: <Result = void>(cb?: (type: Blob) => Result) => Promise<Result>,
+        formData: <Result = void>(cb?: (type: FormData) => Result) => Promise<Result>,
+        arrayBuffer: <Result = void>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>,
+        text: <Result = void>(cb?: (type: string) => Result) => Promise<Result>,
+        error: (code: number, cb: any) => typeof responseTypes,
+        badRequest: (cb: (error: WretcherError) => void) => typeof responseTypes,
+        unauthorized: (cb: (error: WretcherError) => void) => typeof responseTypes,
+        forbidden: (cb: (error: WretcherError) => void) => typeof responseTypes,
+        notFound: (cb: (error: WretcherError) => void) => typeof responseTypes,
+        timeout: (cb: (error: WretcherError) => void) => typeof responseTypes,
+        internalError: (cb: (error: WretcherError) => void) => typeof responseTypes
+    } = {
         /**
          * Retrieves the raw result as a promise.
          */
-        res:  (cb?: (response : Response) => any) => doCatch(wrapper.then(_ => _ && cb && cb(_) || _)),
+        res: wrapTypeParser<void>(null),
         /**
          * Retrieves the result as a parsed JSON object.
          */
-        json: (cb?: (json : Object) => any) => doCatch(wrapper
-            .then(_ => _ && _.json())
-            .then(_ => _ && cb && cb(_) || _)),
+        json: wrapTypeParser<any>("json"),
         /**
          * Retrieves the result as a Blob object.
          */
-        blob: (cb?: (blob : Blob) => any) => doCatch(wrapper
-            .then(_ => _ && _.blob())
-            .then(_ => _ && cb && cb(_) || _)),
+        blob: wrapTypeParser<Blob>("blob"),
         /**
          * Retrieves the result as a FormData object.
          */
-        formData: (cb?: (fd : FormData) => any) => doCatch(wrapper
-            .then(_ => _ && _.formData())
-            .then(_ => _ && cb && cb(_) || _)),
+        formData: wrapTypeParser<FormData>("formData"),
         /**
          * Retrieves the result as an ArrayBuffer object.
          */
-        arrayBuffer: (cb?: (ab : ArrayBuffer) => any) => doCatch(wrapper
-            .then(_ => _ && _.arrayBuffer())
-            .then(_ => _ && cb && cb(_) || _)),
+        arrayBuffer: wrapTypeParser<ArrayBuffer>("arrayBuffer"),
         /**
          * Retrieves the result as a string.
          */
-        text: (cb?: (text : string) => any) => doCatch(wrapper
-            .then(_ => _ && _.text())
-            .then(_ => _ && cb && cb(_) || _)),
+        text: wrapTypeParser<string>("text"),
         /**
          * Catches an http response with a specific error code and performs a callback.
          */
-        error: (code: number, cb) => {
+        error: function(code: number, cb) {
             catchers.push(err => {
                 if(err.status === code) cb(err)
                 else throw err
@@ -234,27 +246,27 @@ const doFetch = url => (opts = {}) => {
         /**
          * Catches a bad request (http code 400) and performs a callback.
          */
-        badRequest: (cb: (error: WretcherError) => any) => responseTypes.error(400, cb),
+        badRequest: cb => responseTypes.error(400, cb),
         /**
          * Catches an unauthorized request (http code 401) and performs a callback.
          */
-        unauthorized: (cb: (error: WretcherError) => any) => responseTypes.error(401, cb),
+        unauthorized: cb => responseTypes.error(401, cb),
         /**
          * Catches a forbidden request (http code 403) and performs a callback.
          */
-        forbidden: (cb: (error: WretcherError) => any) => responseTypes.error(403, cb),
+        forbidden: cb => responseTypes.error(403, cb),
         /**
          * Catches a "not found" request (http code 404) and performs a callback.
          */
-        notFound: (cb: (error: WretcherError) => any) => responseTypes.error(404, cb),
+        notFound: cb => responseTypes.error(404, cb),
         /**
          * Catches a timeout (http code 408) and performs a callback.
          */
-        timeout: (cb: (error: WretcherError) => any) => responseTypes.error(408, cb),
+        timeout: cb => responseTypes.error(408, cb),
         /**
          * Catches an internal server error (http code 500) and performs a callback.
          */
-        internalError: (cb: (error: WretcherError) => any) => responseTypes.error(500, cb)
+        internalError: cb => responseTypes.error(500, cb)
     }
 
     return responseTypes
