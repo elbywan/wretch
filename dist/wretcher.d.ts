@@ -56,12 +56,12 @@ export declare class Wretcher {
     * Performs a get request.
     */
     get(opts?: {}): {
-        res: <Result = void>(cb?: (type: void) => Result) => Promise<Result>;
-        json: <Result = void>(cb?: (type: Object) => Result) => Promise<Result>;
-        blob: <Result = void>(cb?: (type: Blob) => Result) => Promise<Result>;
-        formData: <Result = void>(cb?: (type: FormData) => Result) => Promise<Result>;
-        arrayBuffer: <Result = void>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
-        text: <Result = void>(cb?: (type: string) => Result) => Promise<Result>;
+        res: <Result = Response>(cb?: (type: void) => Result) => Promise<Result>;
+        json: <Result = Object>(cb?: (type: Object) => Result) => Promise<Result>;
+        blob: <Result = Blob>(cb?: (type: Blob) => Result) => Promise<Result>;
+        formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>;
+        arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
+        text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>;
         error: (code: number, cb: any) => any;
         badRequest: (cb: (error: Error & {
             status: number;
@@ -104,12 +104,12 @@ export declare class Wretcher {
     * Performs a delete request.
     */
     delete(opts?: {}): {
-        res: <Result = void>(cb?: (type: void) => Result) => Promise<Result>;
-        json: <Result = void>(cb?: (type: Object) => Result) => Promise<Result>;
-        blob: <Result = void>(cb?: (type: Blob) => Result) => Promise<Result>;
-        formData: <Result = void>(cb?: (type: FormData) => Result) => Promise<Result>;
-        arrayBuffer: <Result = void>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
-        text: <Result = void>(cb?: (type: string) => Result) => Promise<Result>;
+        res: <Result = Response>(cb?: (type: void) => Result) => Promise<Result>;
+        json: <Result = Object>(cb?: (type: Object) => Result) => Promise<Result>;
+        blob: <Result = Blob>(cb?: (type: Blob) => Result) => Promise<Result>;
+        formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>;
+        arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
+        text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>;
         error: (code: number, cb: any) => any;
         badRequest: (cb: (error: Error & {
             status: number;
@@ -152,12 +152,12 @@ export declare class Wretcher {
     * Performs a put request.
     */
     put(opts?: {}): {
-        res: <Result = void>(cb?: (type: void) => Result) => Promise<Result>;
-        json: <Result = void>(cb?: (type: Object) => Result) => Promise<Result>;
-        blob: <Result = void>(cb?: (type: Blob) => Result) => Promise<Result>;
-        formData: <Result = void>(cb?: (type: FormData) => Result) => Promise<Result>;
-        arrayBuffer: <Result = void>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
-        text: <Result = void>(cb?: (type: string) => Result) => Promise<Result>;
+        res: <Result = Response>(cb?: (type: void) => Result) => Promise<Result>;
+        json: <Result = Object>(cb?: (type: Object) => Result) => Promise<Result>;
+        blob: <Result = Blob>(cb?: (type: Blob) => Result) => Promise<Result>;
+        formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>;
+        arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
+        text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>;
         error: (code: number, cb: any) => any;
         badRequest: (cb: (error: Error & {
             status: number;
@@ -200,12 +200,12 @@ export declare class Wretcher {
     * Performs a post request.
     */
     post(opts?: {}): {
-        res: <Result = void>(cb?: (type: void) => Result) => Promise<Result>;
-        json: <Result = void>(cb?: (type: Object) => Result) => Promise<Result>;
-        blob: <Result = void>(cb?: (type: Blob) => Result) => Promise<Result>;
-        formData: <Result = void>(cb?: (type: FormData) => Result) => Promise<Result>;
-        arrayBuffer: <Result = void>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
-        text: <Result = void>(cb?: (type: string) => Result) => Promise<Result>;
+        res: <Result = Response>(cb?: (type: void) => Result) => Promise<Result>;
+        json: <Result = Object>(cb?: (type: Object) => Result) => Promise<Result>;
+        blob: <Result = Blob>(cb?: (type: Blob) => Result) => Promise<Result>;
+        formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>;
+        arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
+        text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>;
         error: (code: number, cb: any) => any;
         badRequest: (cb: (error: Error & {
             status: number;
@@ -248,12 +248,12 @@ export declare class Wretcher {
     * Performs a patch request.
     */
     patch(opts?: {}): {
-        res: <Result = void>(cb?: (type: void) => Result) => Promise<Result>;
-        json: <Result = void>(cb?: (type: Object) => Result) => Promise<Result>;
-        blob: <Result = void>(cb?: (type: Blob) => Result) => Promise<Result>;
-        formData: <Result = void>(cb?: (type: FormData) => Result) => Promise<Result>;
-        arrayBuffer: <Result = void>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
-        text: <Result = void>(cb?: (type: string) => Result) => Promise<Result>;
+        res: <Result = Response>(cb?: (type: void) => Result) => Promise<Result>;
+        json: <Result = Object>(cb?: (type: Object) => Result) => Promise<Result>;
+        blob: <Result = Blob>(cb?: (type: Blob) => Result) => Promise<Result>;
+        formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>;
+        arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
+        text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>;
         error: (code: number, cb: any) => any;
         badRequest: (cb: (error: Error & {
             status: number;
