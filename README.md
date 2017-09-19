@@ -86,7 +86,7 @@ wretch("anything")
 fetch("endpoint", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ "hello": "world" })
+  body: JSON.stringify({ "hello": "world" })
 }).then(response => /* ... */)
 // Omitting the data retrieval and error management parts
 ```
