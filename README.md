@@ -30,7 +30,7 @@
 #### Because having to write two callbacks for a simple request is awkward.
 
 ```javascript
-// Fetch
+// Fetch needs a second callback to process the response body
 
 fetch("examples/example.json")
   .then(response => response.json())
@@ -40,7 +40,7 @@ fetch("examples/example.json")
 ```
 
 ```javascript
-// Wretch
+// Wretch does it for you
 
 wretch("examples/example.json").get().json(json => {
   // Do stuff with the parsed json
@@ -50,7 +50,7 @@ wretch("examples/example.json").get().json(json => {
 #### Because manually checking and throwing every request error code is fastidious.
 
 ```javascript
-// Fetch
+// Fetch won’t reject on HTTP error status
 
 fetch("anything")
   .then(response => {
@@ -67,7 +67,7 @@ fetch("anything")
 ```
 
 ```javascript
-// Wretch throws when the response contains an error code and contains helper methods for common error codes
+// Wretch throws when the response is not successful and contains helper methods to handle common codes
 
 wretch("anything")
   .get()
@@ -81,7 +81,7 @@ wretch("anything")
 #### Because sending a json object should be easy.
 
 ```javascript
-// Fetch
+// With fetch you have to set the header, the method and the body manually
 
 fetch("endpoint", {
   method: "POST",
@@ -92,7 +92,7 @@ fetch("endpoint", {
 ```
 
 ```javascript
-// Wretch
+// With wretch, you have shorthands at your disposal
 
 wretch("endpoint")
   .json({ "hello": "world" })
