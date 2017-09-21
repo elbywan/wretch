@@ -1,1 +1,1 @@
-export declare const mix: (one: Object, two: Object, mergeArrays?: boolean) => Object;
+export declare const mix: (one: object, two: object, mergeArrays?: boolean) => object;

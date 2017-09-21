@@ -92,39 +92,39 @@ var Wretcher = /** @class */ (function () {
      * @param what Header value
      */
     Wretcher.prototype.accept = function (what) {
-        return new Wretcher(this._url, mix(this._options, { headers: { "Accept": what } }));
+        return new Wretcher(this._url, mix(this._options, { headers: { Accept: what } }));
     };
     /**
-    * Performs a get request.
-    */
+     * Performs a get request.
+     */
     Wretcher.prototype.get = function (opts) {
         if (opts === void 0) { opts = {}; }
         return doFetch(this._url)(mix(opts, this._options));
     };
     /**
-    * Performs a delete request.
-    */
+     * Performs a delete request.
+     */
     Wretcher.prototype.delete = function (opts) {
         if (opts === void 0) { opts = {}; }
         return doFetch(this._url)(__assign({}, mix(opts, this._options), { method: "DELETE" }));
     };
     /**
-    * Performs a put request.
-    */
+     * Performs a put request.
+     */
     Wretcher.prototype.put = function (opts) {
         if (opts === void 0) { opts = {}; }
         return doFetch(this._url)(__assign({}, mix(opts, this._options), { method: "PUT" }));
     };
     /**
-    * Performs a post request.
-    */
+     * Performs a post request.
+     */
     Wretcher.prototype.post = function (opts) {
         if (opts === void 0) { opts = {}; }
         return doFetch(this._url)(__assign({}, mix(opts, this._options), { method: "POST" }));
     };
     /**
-    * Performs a patch request.
-    */
+     * Performs a patch request.
+     */
     Wretcher.prototype.patch = function (opts) {
         if (opts === void 0) { opts = {}; }
         return doFetch(this._url)(__assign({}, mix(opts, this._options), { method: "PATCH" }));
@@ -193,7 +193,9 @@ var doFetch = function (url) { return function (opts) {
         return response;
     });
     var catchers = [];
-    var doCatch = function (promise) { return catchers.reduce(function (accumulator, catcher) { return accumulator.catch(catcher); }, promise); };
+    var doCatch = function (promise) {
+        return catchers.reduce(function (accumulator, catcher) { return accumulator.catch(catcher); }, promise);
+    };
     var wrapTypeParser = function (funName) { return function (cb) { return funName ?
         doCatch(wrapper.then(function (_) { return _ && _[funName](); }).then(function (_) { return _ && cb && cb(_) || _; })) :
         doCatch(wrapper.then(function (_) { return _ && cb && cb(_) || _; })); }; };
