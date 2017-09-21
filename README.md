@@ -212,11 +212,12 @@ Create a new Wretcher object with an url and [vanilla fetch options](https://dev
 Set default fetch options which will be used for every subsequent requests.
 
 ```js
+// Interestingly enough, default options are mixed in :
+
 wretch().defaults({ headers: { "Accept": "application/json" }})
 
-// Interestingly, default options are mixed in :
+// The fetch request is sent with both headers.
 wretch("...", { headers: { "X-Custom": "Header" }}).get()
-// The request was sent with both headers.
 ```
 
 #### mixdefaults(opts: Object)
@@ -225,7 +226,6 @@ Mix in (instead of simply overwriting) the current default options with the new 
 
 ```js
 wretch().defaults({ headers: { "Accept": "application/json" }})
-
 wretch().mixdefaults({ encoding: "same-origin", headers: { "X-Custom": "Header" } })
 
 /* The new options are :
@@ -277,6 +277,22 @@ Set the url.
 
 ```js
 wretch({ credentials: "same-origin" }).url("...").get()
+```
+
+#### baseUrl(baseurl: string)
+
+Returns a wretch factory (same signature as the [wretch](#wretchurl---opts--) method) which when called creates a new Wretcher object with the base url as an url prefix.
+
+```js
+// Subsequent requests made using the 'blogs' object will be prefixed with "http://mywebsite.org/api/blogs"
+const blogs = wretch().baseUrl("http://mywebsite.org/api/blogs")
+
+// Perfect for CRUD apis
+const id = await blogs("").json({ name: "my blog" }).post().json(_ => _.id)
+const blog = await blogs(`/${id}`).get().json()
+console.log(blog.name)
+await blogs(`/${id}`).delete()
+// ... //
 ```
 
 #### query(qp: Object)
