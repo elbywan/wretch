@@ -7,9 +7,8 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 import { mix } from "./mix";
-// Default options
-var defaults = {};
-var errorType = null;
+import conf from "./config";
+import { resolver } from "./resolver";
 /**
  * The Wretcher class used to perform easy fetch requests.
  *
@@ -26,7 +25,7 @@ var Wretcher = /** @class */ (function () {
      * @param opts New default options
      */
     Wretcher.prototype.defaults = function (opts) {
-        defaults = opts;
+        conf.defaults = opts;
         return this;
     };
     /**
@@ -34,7 +33,7 @@ var Wretcher = /** @class */ (function () {
      * @param opts Options to mixin with the current default options
      */
     Wretcher.prototype.mixdefaults = function (opts) {
-        defaults = mix(defaults, opts);
+        conf.defaults = mix(conf.defaults, opts);
         return this;
     };
     /**
@@ -45,7 +44,7 @@ var Wretcher = /** @class */ (function () {
      * Default is "text".
      */
     Wretcher.prototype.errorType = function (method) {
-        errorType = method;
+        conf.errorType = method;
         return this;
     };
     /**
@@ -99,35 +98,35 @@ var Wretcher = /** @class */ (function () {
      */
     Wretcher.prototype.get = function (opts) {
         if (opts === void 0) { opts = {}; }
-        return doFetch(this._url)(mix(opts, this._options));
+        return resolver(this._url)(mix(opts, this._options));
     };
     /**
      * Performs a delete request.
      */
     Wretcher.prototype.delete = function (opts) {
         if (opts === void 0) { opts = {}; }
-        return doFetch(this._url)(__assign({}, mix(opts, this._options), { method: "DELETE" }));
+        return resolver(this._url)(__assign({}, mix(opts, this._options), { method: "DELETE" }));
     };
     /**
      * Performs a put request.
      */
     Wretcher.prototype.put = function (opts) {
         if (opts === void 0) { opts = {}; }
-        return doFetch(this._url)(__assign({}, mix(opts, this._options), { method: "PUT" }));
+        return resolver(this._url)(__assign({}, mix(opts, this._options), { method: "PUT" }));
     };
     /**
      * Performs a post request.
      */
     Wretcher.prototype.post = function (opts) {
         if (opts === void 0) { opts = {}; }
-        return doFetch(this._url)(__assign({}, mix(opts, this._options), { method: "POST" }));
+        return resolver(this._url)(__assign({}, mix(opts, this._options), { method: "POST" }));
     };
     /**
      * Performs a patch request.
      */
     Wretcher.prototype.patch = function (opts) {
         if (opts === void 0) { opts = {}; }
-        return doFetch(this._url)(__assign({}, mix(opts, this._options), { method: "PATCH" }));
+        return resolver(this._url)(__assign({}, mix(opts, this._options), { method: "PATCH" }));
     };
     /**
      * Sets the content type header, stringifies an object and sets the request body.
@@ -177,90 +176,4 @@ var appendQueryParams = function (url, qp) {
         url.substring(0, index) + "?" + usp.toString() :
         url + "?" + usp.toString();
 };
-var doFetch = function (url) { return function (opts) {
-    if (opts === void 0) { opts = {}; }
-    var req = fetch(url, mix(defaults, opts));
-    var wrapper = req.then(function (response) {
-        if (!response.ok) {
-            return response[errorType || "text"]().then(function (_) {
-                var err = new Error(_);
-                err[errorType] = _;
-                err["status"] = response.status;
-                err["response"] = response;
-                throw err;
-            });
-        }
-        return response;
-    });
-    var catchers = [];
-    var doCatch = function (promise) {
-        return catchers.reduce(function (accumulator, catcher) { return accumulator.catch(catcher); }, promise);
-    };
-    var wrapTypeParser = function (funName) { return function (cb) { return funName ?
-        doCatch(wrapper.then(function (_) { return _ && _[funName](); }).then(function (_) { return _ && cb && cb(_) || _; })) :
-        doCatch(wrapper.then(function (_) { return _ && cb && cb(_) || _; })); }; };
-    var responseTypes = {
-        /**
-         * Retrieves the raw result as a promise.
-         */
-        res: wrapTypeParser(null),
-        /**
-         * Retrieves the result as a parsed JSON object.
-         */
-        json: wrapTypeParser("json"),
-        /**
-         * Retrieves the result as a Blob object.
-         */
-        blob: wrapTypeParser("blob"),
-        /**
-         * Retrieves the result as a FormData object.
-         */
-        formData: wrapTypeParser("formData"),
-        /**
-         * Retrieves the result as an ArrayBuffer object.
-         */
-        arrayBuffer: wrapTypeParser("arrayBuffer"),
-        /**
-         * Retrieves the result as a string.
-         */
-        text: wrapTypeParser("text"),
-        /**
-         * Catches an http response with a specific error code and performs a callback.
-         */
-        error: function (code, cb) {
-            catchers.push(function (err) {
-                if (err.status === code)
-                    cb(err);
-                else
-                    throw err;
-            });
-            return responseTypes;
-        },
-        /**
-         * Catches a bad request (http code 400) and performs a callback.
-         */
-        badRequest: function (cb) { return responseTypes.error(400, cb); },
-        /**
-         * Catches an unauthorized request (http code 401) and performs a callback.
-         */
-        unauthorized: function (cb) { return responseTypes.error(401, cb); },
-        /**
-         * Catches a forbidden request (http code 403) and performs a callback.
-         */
-        forbidden: function (cb) { return responseTypes.error(403, cb); },
-        /**
-         * Catches a "not found" request (http code 404) and performs a callback.
-         */
-        notFound: function (cb) { return responseTypes.error(404, cb); },
-        /**
-         * Catches a timeout (http code 408) and performs a callback.
-         */
-        timeout: function (cb) { return responseTypes.error(408, cb); },
-        /**
-         * Catches an internal server error (http code 500) and performs a callback.
-         */
-        internalError: function (cb) { return responseTypes.error(500, cb); }
-    };
-    return responseTypes;
-}; };
 //# sourceMappingURL=wretcher.js.map
