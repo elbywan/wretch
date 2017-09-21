@@ -11,12 +11,12 @@ export declare class Wretcher {
      * Sets the default fetch options used for every subsequent fetch call.
      * @param opts New default options
      */
-    defaults(opts: Object): this;
+    defaults(opts: object): this;
     /**
      * Mixins the default fetch options used for every subsequent fetch calls.
      * @param opts Options to mixin with the current default options
      */
-    mixdefaults(opts: Object): this;
+    mixdefaults(opts: object): this;
     /**
      * Sets the method (text, json ...) used to parse the data contained in the response body in case of an HTTP error.
      *
@@ -39,7 +39,7 @@ export declare class Wretcher {
      * Returns a new Wretcher object with the same url and new options.
      * @param options New options
      */
-    options(options: Object): Wretcher;
+    options(options: object): Wretcher;
     /**
      * Converts a javascript object to query parameters,
      * then appends this query string to the current url.
@@ -51,18 +51,22 @@ export declare class Wretcher {
      *
      * @param qp An object which will be converted.
      */
-    query(qp: Object): Wretcher;
+    query(qp: object): Wretcher;
     /**
      * Shortcut to set the "Accept" header.
      * @param what Header value
      */
     accept(what: string): Wretcher;
     /**
-    * Performs a get request.
-    */
+     * Performs a get request.
+     */
     get(opts?: {}): {
         res: <Result = Response>(cb?: (type: void) => Result) => Promise<Result>;
-        json: <Result = Object>(cb?: (type: Object) => Result) => Promise<Result>;
+        json: <Result = {
+            [key: string]: any;
+        }>(cb?: (type: {
+            [key: string]: any;
+        }) => Result) => Promise<Result>;
         blob: <Result = Blob>(cb?: (type: Blob) => Result) => Promise<Result>;
         formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>;
         arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
@@ -106,11 +110,15 @@ export declare class Wretcher {
         }) => void) => any;
     };
     /**
-    * Performs a delete request.
-    */
+     * Performs a delete request.
+     */
     delete(opts?: {}): {
         res: <Result = Response>(cb?: (type: void) => Result) => Promise<Result>;
-        json: <Result = Object>(cb?: (type: Object) => Result) => Promise<Result>;
+        json: <Result = {
+            [key: string]: any;
+        }>(cb?: (type: {
+            [key: string]: any;
+        }) => Result) => Promise<Result>;
         blob: <Result = Blob>(cb?: (type: Blob) => Result) => Promise<Result>;
         formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>;
         arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
@@ -154,11 +162,15 @@ export declare class Wretcher {
         }) => void) => any;
     };
     /**
-    * Performs a put request.
-    */
+     * Performs a put request.
+     */
     put(opts?: {}): {
         res: <Result = Response>(cb?: (type: void) => Result) => Promise<Result>;
-        json: <Result = Object>(cb?: (type: Object) => Result) => Promise<Result>;
+        json: <Result = {
+            [key: string]: any;
+        }>(cb?: (type: {
+            [key: string]: any;
+        }) => Result) => Promise<Result>;
         blob: <Result = Blob>(cb?: (type: Blob) => Result) => Promise<Result>;
         formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>;
         arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
@@ -202,11 +214,15 @@ export declare class Wretcher {
         }) => void) => any;
     };
     /**
-    * Performs a post request.
-    */
+     * Performs a post request.
+     */
     post(opts?: {}): {
         res: <Result = Response>(cb?: (type: void) => Result) => Promise<Result>;
-        json: <Result = Object>(cb?: (type: Object) => Result) => Promise<Result>;
+        json: <Result = {
+            [key: string]: any;
+        }>(cb?: (type: {
+            [key: string]: any;
+        }) => Result) => Promise<Result>;
         blob: <Result = Blob>(cb?: (type: Blob) => Result) => Promise<Result>;
         formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>;
         arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
@@ -250,11 +266,15 @@ export declare class Wretcher {
         }) => void) => any;
     };
     /**
-    * Performs a patch request.
-    */
+     * Performs a patch request.
+     */
     patch(opts?: {}): {
         res: <Result = Response>(cb?: (type: void) => Result) => Promise<Result>;
-        json: <Result = Object>(cb?: (type: Object) => Result) => Promise<Result>;
+        json: <Result = {
+            [key: string]: any;
+        }>(cb?: (type: {
+            [key: string]: any;
+        }) => Result) => Promise<Result>;
         blob: <Result = Blob>(cb?: (type: Blob) => Result) => Promise<Result>;
         formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>;
         arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
@@ -301,10 +321,10 @@ export declare class Wretcher {
      * Sets the content type header, stringifies an object and sets the request body.
      * @param jsObject An object
      */
-    json(jsObject: Object): Wretcher;
+    json(jsObject: object): Wretcher;
     /**
      * Converts the javascript object to a FormData and sets the request body.
      * @param formObject An object
      */
-    formData(formObject: Object): Wretcher;
+    formData(formObject: object): Wretcher;
 }

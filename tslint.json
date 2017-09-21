@@ -1,0 +1,48 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended"
+    ],
+    "jsRules": {},
+    "rules": {
+        "no-console": {
+            "severity": "warn"
+        },
+        "indent": [ true, "spaces", 4 ],
+        "linebreak-style": [ true, "LF" ],
+        "new-parens": true,
+        "quotemark": [ true, "double", "avoidEscape" ],
+        "semicolon": [ true, "never" ],
+        "space-before-function-paren": [ true, "never" ],
+        "arrow-parens": [ true, "ban-single-arg-parens" ],
+        "prefer-const": true,
+        "variable-name": {
+            "severity": "warn",
+            "options": [
+                "ban-keywords",
+                "check-format",
+                "allow-leading-underscore"
+            ]
+        },
+        "curly": false,
+        "whitespace": [
+            true,
+            "check-decl",
+            "check-operator",
+            "check-module",
+            "check-separator",
+            "check-rest-spread",
+            "check-type",
+            "check-type-operator",
+            "check-preblock"
+        ],
+        "member-access": [true, "no-public"],
+        "only-arrow-functions": false,
+        "no-var-requires": false,
+        "object-literal-sort-keys": false,
+        "no-string-literal": false,
+        "no-bitwise": false,
+        "trailing-comma": false
+    },
+    "rulesDirectory": []
+}

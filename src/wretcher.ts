@@ -19,7 +19,7 @@ export class Wretcher {
      * Sets the default fetch options used for every subsequent fetch call.
      * @param opts New default options
      */
-    defaults(opts: Object) {
+    defaults(opts: object) {
         defaults = opts
         return this
     }
@@ -28,7 +28,7 @@ export class Wretcher {
      * Mixins the default fetch options used for every subsequent fetch calls.
      * @param opts Options to mixin with the current default options
      */
-    mixdefaults(opts: Object) {
+    mixdefaults(opts: object) {
         defaults = mix(defaults, opts)
         return this
     }
@@ -65,7 +65,7 @@ export class Wretcher {
      * Returns a new Wretcher object with the same url and new options.
      * @param options New options
      */
-    options(options: Object) {
+    options(options: object) {
         return new Wretcher(this._url, options)
     }
 
@@ -80,7 +80,7 @@ export class Wretcher {
      *
      * @param qp An object which will be converted.
      */
-    query(qp: Object) {
+    query(qp: object) {
         return new Wretcher(appendQueryParams(this._url, qp), this._options)
     }
 
@@ -89,36 +89,36 @@ export class Wretcher {
      * @param what Header value
      */
     accept(what: string) {
-        return new Wretcher(this._url, mix(this._options, { headers: { "Accept" : what }}))
+        return new Wretcher(this._url, mix(this._options, { headers: { Accept : what }}))
     }
 
     /**
-    * Performs a get request.
-    */
+     * Performs a get request.
+     */
     get(opts = {}) {
         return doFetch(this._url)(mix(opts, this._options))
     }
     /**
-    * Performs a delete request.
-    */
+     * Performs a delete request.
+     */
     delete(opts = {}) {
         return doFetch(this._url)({ ...mix(opts, this._options), method: "DELETE" })
     }
     /**
-    * Performs a put request.
-    */
+     * Performs a put request.
+     */
     put(opts = {}) {
         return doFetch(this._url)({ ...mix(opts, this._options), method: "PUT" })
     }
     /**
-    * Performs a post request.
-    */
+     * Performs a post request.
+     */
     post(opts = {}) {
         return doFetch(this._url)({ ...mix(opts, this._options), method: "POST" })
     }
     /**
-    * Performs a patch request.
-    */
+     * Performs a patch request.
+     */
     patch(opts = {}) {
         return doFetch(this._url)({ ...mix(opts, this._options), method: "PATCH" })
     }
@@ -127,19 +127,18 @@ export class Wretcher {
      * Sets the content type header, stringifies an object and sets the request body.
      * @param jsObject An object
      */
-    json(jsObject: Object) {
-        return new Wretcher(this._url,
-            { 
-                ...this._options,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(jsObject)
-            })
+    json(jsObject: object) {
+        return new Wretcher(this._url, {
+            ...this._options,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(jsObject)
+        })
     }
     /**
      * Converts the javascript object to a FormData and sets the request body.
      * @param formObject An object
      */
-    formData(formObject: Object) {
+    formData(formObject: object) {
         const formData = new FormData()
         for(const key in formObject) {
             if(formObject[key] instanceof Array) {
@@ -150,17 +149,16 @@ export class Wretcher {
             }
         }
 
-        return new Wretcher(this._url,
-            { 
-                ...this._options,
-                body: formData
-            })
+        return new Wretcher(this._url, {
+            ...this._options,
+            body: formData
+        })
     }
 }
 
 // Internal helpers
 
-const appendQueryParams = (url: string, qp: Object) => {
+const appendQueryParams = (url: string, qp: object) => {
     const usp = new URLSearchParams()
     const index = url.indexOf("?")
     for(const key in qp) {
@@ -180,7 +178,7 @@ type WretcherError = Error & { status: number, response: Response, text?: string
 
 const doFetch = url => (opts = {}) => {
     const req = fetch(url, mix(defaults, opts))
-    let wrapper : Promise<void | Response> = req.then(response => {
+    const wrapper: Promise<void | Response> = req.then(response => {
         if (!response.ok) {
             return response[errorType || "text"]().then(_ => {
                 const err = new Error(_)
@@ -193,18 +191,18 @@ const doFetch = url => (opts = {}) => {
         return response
     })
 
-    type TypeParser = <Type>(funName: string | null) => <Result = void>(cb?: (type : Type) => Result) => Promise<Result>
+    type TypeParser = <Type>(funName: string | null) => <Result = void>(cb?: (type: Type) => Result) => Promise<Result>
 
-    let catchers = []
-    const doCatch = <T>(promise : Promise<T>) : Promise<T> => catchers.reduce((accumulator, catcher) => accumulator.catch(catcher), promise)
-    const wrapTypeParser : TypeParser = <T>(funName) => <R>(cb) => funName ?
+    const catchers = []
+    const doCatch = <T>(promise: Promise<T>): Promise<T> =>
+        catchers.reduce((accumulator, catcher) => accumulator.catch(catcher), promise)
+    const wrapTypeParser: TypeParser = <T>(funName) => <R>(cb) => funName ?
         doCatch(wrapper.then(_ => _ && _[funName]()).then(_ => _ && cb && cb(_) || _)) :
         doCatch(wrapper.then(_ => _ && cb && cb(_) || _))
 
-
-    const responseTypes : {
+    const responseTypes: {
         res: <Result = Response>(cb?: (type: void) => Result) => Promise<Result>,
-        json: <Result = Object>(cb?: (type: Object) => Result) => Promise<Result>,
+        json: <Result = {[key: string]: any}>(cb?: (type: {[key: string]: any}) => Result) => Promise<Result>,
         blob: <Result = Blob>(cb?: (type: Blob) => Result) => Promise<Result>,
         formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>,
         arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>,
@@ -244,7 +242,7 @@ const doFetch = url => (opts = {}) => {
         /**
          * Catches an http response with a specific error code and performs a callback.
          */
-        error: function(code: number, cb) {
+        error(code: number, cb) {
             catchers.push(err => {
                 if(err.status === code) cb(err)
                 else throw err
