@@ -82,28 +82,30 @@ describe("Wretch", function() {
     })
 
     it("should catch common error codes", async function() {
+        const w = wretch().baseUrl(URL+"/")
+
         let check = 0
-        await wretch(`${URL}/400`).get().badRequest(_ => {
+        await w("400").get().badRequest(_ => {
             expect(_.message).to.be.equal("error code : 400")
             check++
         }).text(_ => expect(_).to.be.null)
-        await wretch(`${URL}/401`).get().unauthorized(_ => {
+        await w("401").get().unauthorized(_ => {
             expect(_.message).to.be.equal("error code : 401")
             check++
         }).text(_ => expect(_).to.be.null)
-        await wretch(`${URL}/403`).get().forbidden(_ => {
+        await w("403").get().forbidden(_ => {
             expect(_.message).to.be.equal("error code : 403")
             check++
         }).text(_ => expect(_).to.be.null)
-        await wretch(`${URL}/404`).get().notFound(_ => {
+        await w("404").get().notFound(_ => {
             expect(_.message).to.be.equal("error code : 404")
             check++
         }).text(_ => expect(_).to.be.null)
-        await wretch(`${URL}/408`).get().timeout(_ => {
+        await w("408").get().timeout(_ => {
             expect(_.message).to.be.equal("error code : 408")
             check++
         }).text(_ => expect(_).to.be.null)
-        await wretch(`${URL}/500`).get().internalError(_ => {
+        await w("500").get().internalError(_ => {
             expect(_.message).to.be.equal("error code : 500")
             check++
         }).text(_ => expect(_).to.be.null)

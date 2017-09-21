@@ -31,6 +31,11 @@ export declare class Wretcher {
      */
     url(url: string): Wretcher;
     /**
+     * Returns a wretch factory which, when called, creates a new Wretcher object with the base url as an url prefix.
+     * @param baseurl The base url
+     */
+    baseUrl(baseurl: string): (url?: string, opts?: {}) => Wretcher;
+    /**
      * Returns a new Wretcher object with the same url and new options.
      * @param options New options
      */

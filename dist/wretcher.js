@@ -56,6 +56,17 @@ var Wretcher = /** @class */ (function () {
         return new Wretcher(url, this._options);
     };
     /**
+     * Returns a wretch factory which, when called, creates a new Wretcher object with the base url as an url prefix.
+     * @param baseurl The base url
+     */
+    Wretcher.prototype.baseUrl = function (baseurl) {
+        return function (url, opts) {
+            if (url === void 0) { url = ""; }
+            if (opts === void 0) { opts = {}; }
+            return new Wretcher(baseurl + url, opts);
+        };
+    };
+    /**
      * Returns a new Wretcher object with the same url and new options.
      * @param options New options
      */
