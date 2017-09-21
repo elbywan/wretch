@@ -42,7 +42,8 @@
         "object-literal-sort-keys": false,
         "no-string-literal": false,
         "no-bitwise": false,
-        "trailing-comma": false
+        "trailing-comma": false,
+        "ordered-imports": false
     },
     "rulesDirectory": []
 }
