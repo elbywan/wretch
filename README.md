@@ -291,7 +291,7 @@ const blogs = wretch().baseUrl("http://mywebsite.org/api/blogs")
 const id = await blogs("").json({ name: "my blog" }).post().json(_ => _.id)
 const blog = await blogs(`/${id}`).get().json()
 console.log(blog.name)
-await blogs(`/${id}`).delete()
+await blogs(`/${id}`).delete().res()
 // ... //
 ```
 
