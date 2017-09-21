@@ -14,7 +14,7 @@ export var mix = function (one, two, mergeArrays) {
     for (var prop in two) {
         if (two.hasOwnProperty(prop)) {
             if (two[prop] instanceof Array && one[prop] instanceof Array) {
-                clone[prop] = mergeArrays ? one[prop].concat(two[prop]) : clone[prop] = two[prop];
+                clone[prop] = mergeArrays ? one[prop].concat(two[prop]) : two[prop];
             }
             else if (typeof two[prop] === "object" && typeof one[prop] === "object") {
                 clone[prop] = mix(one[prop], two[prop], mergeArrays);
