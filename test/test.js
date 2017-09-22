@@ -63,6 +63,12 @@ describe("Wretch", function() {
         await allRoutes(init, "arrayBuffer", test)
     })
 
+    it("should perform a plain text round trip", async function() {
+        const text = "hello, server !"
+        const roundTrip = await wretch(`${URL}/text/roundTrip`).content("text/plain").body(text).post().text()
+        expect(roundTrip).to.be.equal(text)
+    })
+
     it("should perform a json round trip", async function() {
         const jsonObject = { a: 1, b: 2, c: 3 }
         const roundTrip = await wretch(`${URL}/json/roundTrip`).json(jsonObject).post().json()
