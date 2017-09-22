@@ -308,7 +308,7 @@ w = w.query({ c: 3, d : [4, 5] })
 // url is now http://example.com?c=3&d=4&d=5
 ```
 
-#### headers(headerValues: { [headerName: string]: any })
+#### headers(headerValues: Object)
 
 Set request headers.
 
@@ -340,7 +340,7 @@ wretch("...").content("application/json")
 
 *A body type is only needed when performing put/patch/post requests with a body.*
 
-#### body(contents: any) {
+#### body(contents: any)
 
 Set the request body with any content.
 
