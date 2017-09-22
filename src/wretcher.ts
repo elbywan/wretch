@@ -11,13 +11,13 @@ export class Wretcher {
 
     constructor(
         private _url: string,
-        private _options = {}) {}
+        private _options: RequestInit = {}) {}
 
     /**
      * Sets the default fetch options used for every subsequent fetch call.
      * @param opts New default options
      */
-    defaults(opts: object) {
+    defaults(opts: RequestInit) {
         conf.defaults = opts
         return this
     }
@@ -26,7 +26,7 @@ export class Wretcher {
      * Mixins the default fetch options used for every subsequent fetch calls.
      * @param opts Options to mixin with the current default options
      */
-    mixdefaults(opts: object) {
+    mixdefaults(opts: RequestInit) {
         conf.defaults = mix(conf.defaults, opts)
         return this
     }
@@ -56,14 +56,14 @@ export class Wretcher {
      * @param baseurl The base url
      */
     baseUrl(baseurl: string) {
-        return (url = "", opts = {}) => new Wretcher(baseurl + url, opts)
+        return (url = "", opts: RequestInit = {}) => new Wretcher(baseurl + url, opts)
     }
 
     /**
      * Returns a new Wretcher object with the same url and new options.
      * @param options New options
      */
-    options(options: object) {
+    options(options: RequestInit) {
         return new Wretcher(this._url, options)
     }
 
@@ -83,11 +83,27 @@ export class Wretcher {
     }
 
     /**
+     * Set request headers.
+     * @param headerValues An object containing header key and values
+     */
+    headers(headerValues: { [headerName: string]: any }) {
+        return new Wretcher(this._url, mix(this._options, { headers: headerValues }))
+    }
+
+    /**
      * Shortcut to set the "Accept" header.
      * @param what Header value
      */
-    accept(what: string) {
-        return new Wretcher(this._url, mix(this._options, { headers: { Accept : what }}))
+    accept(headerValue: string) {
+        return this.headers({ Accept : headerValue })
+    }
+
+    /**
+     * Shortcut to set the "Content-Type" header.
+     * @param what Header value
+     */
+    content(headerValue: string) {
+        return this.headers({ "Content-Type" : headerValue })
     }
 
     /**
@@ -122,15 +138,18 @@ export class Wretcher {
     }
 
     /**
+     * Sets the request body with any content.
+     * @param contents The body contents
+     */
+    body(contents: any) {
+        return new Wretcher(this._url, { ...this._options, body: contents })
+    }
+    /**
      * Sets the content type header, stringifies an object and sets the request body.
      * @param jsObject An object
      */
     json(jsObject: object) {
-        return new Wretcher(this._url, {
-            ...this._options,
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(jsObject)
-        })
+        return this.content("application/json").body(JSON.stringify(jsObject))
     }
     /**
      * Converts the javascript object to a FormData and sets the request body.
@@ -147,10 +166,7 @@ export class Wretcher {
             }
         }
 
-        return new Wretcher(this._url, {
-            ...this._options,
-            body: formData
-        })
+        return this.body(formData)
     }
 }
 

@@ -6,17 +6,17 @@
 export declare class Wretcher {
     private _url;
     private _options;
-    constructor(_url: string, _options?: {});
+    constructor(_url: string, _options?: RequestInit);
     /**
      * Sets the default fetch options used for every subsequent fetch call.
      * @param opts New default options
      */
-    defaults(opts: object): this;
+    defaults(opts: RequestInit): this;
     /**
      * Mixins the default fetch options used for every subsequent fetch calls.
      * @param opts Options to mixin with the current default options
      */
-    mixdefaults(opts: object): this;
+    mixdefaults(opts: RequestInit): this;
     /**
      * Sets the method (text, json ...) used to parse the data contained in the response body in case of an HTTP error.
      *
@@ -34,12 +34,12 @@ export declare class Wretcher {
      * Returns a wretch factory which, when called, creates a new Wretcher object with the base url as an url prefix.
      * @param baseurl The base url
      */
-    baseUrl(baseurl: string): (url?: string, opts?: {}) => Wretcher;
+    baseUrl(baseurl: string): (url?: string, opts?: RequestInit) => Wretcher;
     /**
      * Returns a new Wretcher object with the same url and new options.
      * @param options New options
      */
-    options(options: object): Wretcher;
+    options(options: RequestInit): Wretcher;
     /**
      * Converts a javascript object to query parameters,
      * then appends this query string to the current url.
@@ -53,10 +53,22 @@ export declare class Wretcher {
      */
     query(qp: object): Wretcher;
     /**
+     * Set request headers.
+     * @param headerValues An object containing header key and values
+     */
+    headers(headerValues: {
+        [headerName: string]: any;
+    }): Wretcher;
+    /**
      * Shortcut to set the "Accept" header.
      * @param what Header value
      */
-    accept(what: string): Wretcher;
+    accept(headerValue: string): Wretcher;
+    /**
+     * Shortcut to set the "Content-Type" header.
+     * @param what Header value
+     */
+    content(headerValue: string): Wretcher;
     /**
      * Performs a get request.
      */
@@ -317,6 +329,11 @@ export declare class Wretcher {
             json?: any;
         }) => void) => any;
     };
+    /**
+     * Sets the request body with any content.
+     * @param contents The body contents
+     */
+    body(contents: any): Wretcher;
     /**
      * Sets the content type header, stringifies an object and sets the request body.
      * @param jsObject An object

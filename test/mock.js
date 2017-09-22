@@ -28,6 +28,13 @@ const mockServer = {
 
         setupErrors(server)
 
+        server.post("/text/roundTrip", (req,res) => {
+            if(req.header("content-type") === "text/plain")
+                res.sendRaw(req.body)
+            else
+                res.send(400)
+        })
+
         server.post("/json/roundTrip", (req, res) => {
             if(req.header("content-type") === "application/json")
                 res.json(req.body)
@@ -52,6 +59,7 @@ const mockServer = {
         server.get("/json500", (req, res) => {
             res.json(500, { error: 500, message: "ok" })
         })
+
 
         server.listen(port)
     },

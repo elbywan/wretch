@@ -8,7 +8,7 @@
 	<a href="https://coveralls.io/github/elbywan/wretch?branch=master"><img src="https://coveralls.io/repos/github/elbywan/wretch/badge.svg?branch=master" alt="Coverage Status" /></a>
 </h1>
 <h4 align="center">
-	A tiny (&lt; 1.3Kb g-zipped) wrapper built around fetch with an intuitive syntax.
+	A tiny (&lt; 1.4Kb g-zipped) wrapper built around fetch with an intuitive syntax.
 </h4>
 <h5 align="center">
     <i>f[ETCH] [WR]apper</i>
@@ -308,7 +308,19 @@ w = w.query({ c: 3, d : [4, 5] })
 // url is now http://example.com?c=3&d=4&d=5
 ```
 
-#### accept(what: string)
+#### headers(headerValues: { [headerName: string]: any })
+
+Set request headers.
+
+```js
+wretch("...")
+  .headers({ "Content-Type": "text/plain", Accept: "application/json" })
+  .body("my text")
+  .post()
+  .json()
+```
+
+#### accept(headerValue: string)
 
 Shortcut to set the "Accept" header.
 
@@ -316,9 +328,25 @@ Shortcut to set the "Accept" header.
 wretch("...").accept("application/json")
 ```
 
+#### content(headerValue: string)
+
+Shortcut to set the "Content-Type" header.
+
+```js
+wretch("...").content("application/json")
+```
+
 ## Body Types
 
 *A body type is only needed when performing put/patch/post requests with a body.*
+
+#### body(contents: any) {
+
+Set the request body with any content.
+
+```js
+wretch("...").body("hello").put()
+```
 
 #### json(jsObject: Object)
 

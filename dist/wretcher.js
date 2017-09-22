@@ -87,11 +87,25 @@ var Wretcher = /** @class */ (function () {
         return new Wretcher(appendQueryParams(this._url, qp), this._options);
     };
     /**
+     * Set request headers.
+     * @param headerValues An object containing header key and values
+     */
+    Wretcher.prototype.headers = function (headerValues) {
+        return new Wretcher(this._url, mix(this._options, { headers: headerValues }));
+    };
+    /**
      * Shortcut to set the "Accept" header.
      * @param what Header value
      */
-    Wretcher.prototype.accept = function (what) {
-        return new Wretcher(this._url, mix(this._options, { headers: { Accept: what } }));
+    Wretcher.prototype.accept = function (headerValue) {
+        return this.headers({ Accept: headerValue });
+    };
+    /**
+     * Shortcut to set the "Content-Type" header.
+     * @param what Header value
+     */
+    Wretcher.prototype.content = function (headerValue) {
+        return this.headers({ "Content-Type": headerValue });
     };
     /**
      * Performs a get request.
@@ -129,11 +143,18 @@ var Wretcher = /** @class */ (function () {
         return resolver(this._url)(__assign({}, mix(opts, this._options), { method: "PATCH" }));
     };
     /**
+     * Sets the request body with any content.
+     * @param contents The body contents
+     */
+    Wretcher.prototype.body = function (contents) {
+        return new Wretcher(this._url, __assign({}, this._options, { body: contents }));
+    };
+    /**
      * Sets the content type header, stringifies an object and sets the request body.
      * @param jsObject An object
      */
     Wretcher.prototype.json = function (jsObject) {
-        return new Wretcher(this._url, __assign({}, this._options, { headers: { "Content-Type": "application/json" }, body: JSON.stringify(jsObject) }));
+        return this.content("application/json").body(JSON.stringify(jsObject));
     };
     /**
      * Converts the javascript object to a FormData and sets the request body.
@@ -152,7 +173,7 @@ var Wretcher = /** @class */ (function () {
                 formData.append(key, formObject[key]);
             }
         }
-        return new Wretcher(this._url, __assign({}, this._options, { body: formData }));
+        return this.body(formData);
     };
     return Wretcher;
 }());
