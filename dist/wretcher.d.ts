@@ -54,19 +54,19 @@ export declare class Wretcher {
     query(qp: object): Wretcher;
     /**
      * Set request headers.
-     * @param headerValues An object containing header key and values
+     * @param headerValues An object containing header keys and values
      */
     headers(headerValues: {
         [headerName: string]: any;
     }): Wretcher;
     /**
      * Shortcut to set the "Accept" header.
-     * @param what Header value
+     * @param headerValue Header value
      */
     accept(headerValue: string): Wretcher;
     /**
      * Shortcut to set the "Content-Type" header.
-     * @param what Header value
+     * @param headerValue Header value
      */
     content(headerValue: string): Wretcher;
     /**
@@ -336,12 +336,12 @@ export declare class Wretcher {
     body(contents: any): Wretcher;
     /**
      * Sets the content type header, stringifies an object and sets the request body.
-     * @param jsObject An object
+     * @param jsObject An object which will be serialized into a JSON
      */
     json(jsObject: object): Wretcher;
     /**
      * Converts the javascript object to a FormData and sets the request body.
-     * @param formObject An object
+     * @param formObject An object which will be converted to a FormData
      */
     formData(formObject: object): Wretcher;
 }

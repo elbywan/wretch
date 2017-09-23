@@ -84,7 +84,7 @@ export class Wretcher {
 
     /**
      * Set request headers.
-     * @param headerValues An object containing header key and values
+     * @param headerValues An object containing header keys and values
      */
     headers(headerValues: { [headerName: string]: any }) {
         return new Wretcher(this._url, mix(this._options, { headers: headerValues }))
@@ -92,7 +92,7 @@ export class Wretcher {
 
     /**
      * Shortcut to set the "Accept" header.
-     * @param what Header value
+     * @param headerValue Header value
      */
     accept(headerValue: string) {
         return this.headers({ Accept : headerValue })
@@ -100,7 +100,7 @@ export class Wretcher {
 
     /**
      * Shortcut to set the "Content-Type" header.
-     * @param what Header value
+     * @param headerValue Header value
      */
     content(headerValue: string) {
         return this.headers({ "Content-Type" : headerValue })
@@ -146,14 +146,14 @@ export class Wretcher {
     }
     /**
      * Sets the content type header, stringifies an object and sets the request body.
-     * @param jsObject An object
+     * @param jsObject An object which will be serialized into a JSON
      */
     json(jsObject: object) {
         return this.content("application/json").body(JSON.stringify(jsObject))
     }
     /**
      * Converts the javascript object to a FormData and sets the request body.
-     * @param formObject An object
+     * @param formObject An object which will be converted to a FormData
      */
     formData(formObject: object) {
         const formData = new FormData()
