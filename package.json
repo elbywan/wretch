@@ -28,13 +28,13 @@
         "build": "tsc -p . && rollup -c",
         "test": "nyc mocha --reporter list",
         "coverage": "nyc report --reporter=text-lcov | coveralls",
-        "changelog": "changelog -m wretch all > CHANGELOG.md"
+        "changelog": "conventional-changelog -p wretch -i CHANGELOG.md -s -r 0"
     },
     "author": "Julien Elbaz",
     "license": "MIT",
     "devDependencies": {
         "chai": "^4.1.2",
-        "changelog": "^1.4.0",
+        "conventional-changelog-cli": "^1.3.3",
         "coveralls": "^2.13.1",
         "form-data": "^2.3.1",
         "mocha": "^3.5.3",
