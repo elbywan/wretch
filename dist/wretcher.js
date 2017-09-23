@@ -88,21 +88,21 @@ var Wretcher = /** @class */ (function () {
     };
     /**
      * Set request headers.
-     * @param headerValues An object containing header key and values
+     * @param headerValues An object containing header keys and values
      */
     Wretcher.prototype.headers = function (headerValues) {
         return new Wretcher(this._url, mix(this._options, { headers: headerValues }));
     };
     /**
      * Shortcut to set the "Accept" header.
-     * @param what Header value
+     * @param headerValue Header value
      */
     Wretcher.prototype.accept = function (headerValue) {
         return this.headers({ Accept: headerValue });
     };
     /**
      * Shortcut to set the "Content-Type" header.
-     * @param what Header value
+     * @param headerValue Header value
      */
     Wretcher.prototype.content = function (headerValue) {
         return this.headers({ "Content-Type": headerValue });
@@ -151,14 +151,14 @@ var Wretcher = /** @class */ (function () {
     };
     /**
      * Sets the content type header, stringifies an object and sets the request body.
-     * @param jsObject An object
+     * @param jsObject An object which will be serialized into a JSON
      */
     Wretcher.prototype.json = function (jsObject) {
         return this.content("application/json").body(JSON.stringify(jsObject));
     };
     /**
      * Converts the javascript object to a FormData and sets the request body.
-     * @param formObject An object
+     * @param formObject An object which will be converted to a FormData
      */
     Wretcher.prototype.formData = function (formObject) {
         var formData = new FormData();
