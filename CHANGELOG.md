@@ -1,3 +1,12 @@
+<a name="0.1.5"></a>
+## 0.1.5 (2017-09-25)
+
+* 0.1.5 tag ([c0e71d2](https://github.com/elbywan/wretch/commit/c0e71d2))
+* update changelog ([0df70a3](https://github.com/elbywan/wretch/commit/0df70a3))
+* use a Map instead of an Array for catchers ([ff2e657](https://github.com/elbywan/wretch/commit/ff2e657))
+
+
+
 <a name="0.1.4"></a>
 ## 0.1.4 (2017-09-25)
 
