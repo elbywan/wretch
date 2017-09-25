@@ -10,7 +10,7 @@ export var mix = function (one, two, mergeArrays) {
     if (mergeArrays === void 0) { mergeArrays = false; }
     if (!one || !two || typeof one !== "object" || typeof two !== "object")
         return one;
-    var clone = __assign({}, one, two);
+    var clone = __assign({}, one);
     for (var prop in two) {
         if (two.hasOwnProperty(prop)) {
             if (two[prop] instanceof Array && one[prop] instanceof Array) {
@@ -18,6 +18,9 @@ export var mix = function (one, two, mergeArrays) {
             }
             else if (typeof two[prop] === "object" && typeof one[prop] === "object") {
                 clone[prop] = mix(one[prop], two[prop], mergeArrays);
+            }
+            else {
+                clone[prop] = two[prop];
             }
         }
     }
