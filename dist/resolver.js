@@ -1,7 +1,7 @@
 import { mix } from "./mix";
 import conf from "./config";
 export var resolver = function (url) { return function (catchers) {
-    if (catchers === void 0) { catchers = []; }
+    if (catchers === void 0) { catchers = new Map(); }
     return function (opts) {
         if (opts === void 0) { opts = {}; }
         var req = fetch(url, mix(conf.defaults, opts));
@@ -18,7 +18,12 @@ export var resolver = function (url) { return function (catchers) {
             return response;
         });
         var doCatch = function (promise) {
-            return catchers.reduce(function (accumulator, catcher) { return accumulator.catch(catcher); }, promise);
+            return promise.catch(function (err) {
+                if (catchers.has(err.status))
+                    catchers.get(err.status)(err);
+                else
+                    throw err;
+            });
         };
         var wrapTypeParser = function (funName) { return function (cb) { return funName ?
             doCatch(wrapper.then(function (_) { return _ && _[funName](); }).then(function (_) { return _ && cb && cb(_) || _; })) :
@@ -52,12 +57,7 @@ export var resolver = function (url) { return function (catchers) {
              * Catches an http response with a specific error code and performs a callback.
              */
             error: function (code, cb) {
-                catchers.push(function (err) {
-                    if (err.status === code)
-                        cb(err);
-                    else
-                        throw err;
-                });
+                catchers.set(code, cb);
                 return responseTypes;
             },
             /**

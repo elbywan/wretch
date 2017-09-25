@@ -12,9 +12,9 @@ export class Wretcher {
     protected constructor(
         private _url: string,
         private _options: RequestInit = {},
-        private _catchers: Array<(error: WretcherError) => void> = []) {}
+        private _catchers: Map<number, (error: WretcherError) => void> = new Map()) {}
 
-    static factory(url = "", opts: RequestInit = {}) { return new Wretcher(url, opts, []) }
+    static factory(url = "", opts: RequestInit = {}) { return new Wretcher(url, opts) }
     private selfFactory({ url = this._url, options = this._options, catchers = this._catchers } = {}) {
         return new Wretcher(url, options, catchers)
     }
@@ -119,16 +119,9 @@ export class Wretcher {
      * @param catcher: The catcher method
      */
     catcher(code: number, catcher: (error: WretcherError) => void) {
-        this._catchers.push(err => {
-            if(err.status === code) catcher(err)
-            else throw err
-        })
-        return this.selfFactory({ catchers: [ ...this._catchers,
-            err => {
-                if(err.status === code) catcher(err)
-                else throw err
-            }
-        ]})
+        const newMap = new Map(this._catchers)
+        newMap.set(code, catcher)
+        return this.selfFactory({ catchers: newMap })
     }
 
     /**

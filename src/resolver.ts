@@ -3,7 +3,7 @@ import conf from "./config"
 
 export type WretcherError = Error & { status: number, response: Response, text?: string, json?: any }
 
-export const resolver = url => (catchers = []) => (opts = {}) => {
+export const resolver = url => (catchers: Map<number, (error: WretcherError) => void> = new Map()) => (opts = {}) => {
     const req = fetch(url, mix(conf.defaults, opts))
     const wrapper: Promise<void | Response> = req.then(response => {
         if (!response.ok) {
@@ -20,8 +20,14 @@ export const resolver = url => (catchers = []) => (opts = {}) => {
 
     type TypeParser = <Type>(funName: string | null) => <Result = void>(cb?: (type: Type) => Result) => Promise<Result>
 
-    const doCatch = <T>(promise: Promise<T>): Promise<T> =>
-        catchers.reduce((accumulator, catcher) => accumulator.catch(catcher), promise)
+    const doCatch = <T>(promise: Promise<T>): Promise<void | T> => {
+        return promise.catch(err => {
+            if(catchers.has(err.status))
+                catchers.get(err.status)(err)
+            else
+                throw err
+        })
+    }
     const wrapTypeParser: TypeParser = <T>(funName) => <R>(cb) => funName ?
         doCatch(wrapper.then(_ => _ && _[funName]()).then(_ => _ && cb && cb(_) || _)) :
         doCatch(wrapper.then(_ => _ && cb && cb(_) || _))
@@ -69,10 +75,7 @@ export const resolver = url => (catchers = []) => (opts = {}) => {
          * Catches an http response with a specific error code and performs a callback.
          */
         error(code: number, cb) {
-            catchers.push(err => {
-                if(err.status === code) cb(err)
-                else throw err
-            })
+            catchers.set(code, cb)
             return responseTypes
         },
         /**

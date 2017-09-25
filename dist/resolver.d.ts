@@ -4,7 +4,7 @@ export declare type WretcherError = Error & {
     text?: string;
     json?: any;
 };
-export declare const resolver: (url: any) => (catchers?: any[]) => (opts?: {}) => {
+export declare const resolver: (url: any) => (catchers?: Map<number, (error: WretcherError) => void>) => (opts?: {}) => {
     res: <Result = Response>(cb?: (type: void) => Result) => Promise<Result>;
     json: <Result = {
         [key: string]: any;

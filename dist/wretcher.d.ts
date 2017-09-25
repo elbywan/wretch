@@ -8,7 +8,7 @@ export declare class Wretcher {
     private _url;
     private _options;
     private _catchers;
-    protected constructor(_url: string, _options?: RequestInit, _catchers?: Array<(error: WretcherError) => void>);
+    protected constructor(_url: string, _options?: RequestInit, _catchers?: Map<number, (error: WretcherError) => void>);
     static factory(url?: string, opts?: RequestInit): Wretcher;
     private selfFactory({url, options, catchers}?);
     /**

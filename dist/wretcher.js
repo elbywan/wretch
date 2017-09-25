@@ -17,7 +17,7 @@ import { resolver } from "./resolver";
 var Wretcher = /** @class */ (function () {
     function Wretcher(_url, _options, _catchers) {
         if (_options === void 0) { _options = {}; }
-        if (_catchers === void 0) { _catchers = []; }
+        if (_catchers === void 0) { _catchers = new Map(); }
         this._url = _url;
         this._options = _options;
         this._catchers = _catchers;
@@ -25,7 +25,7 @@ var Wretcher = /** @class */ (function () {
     Wretcher.factory = function (url, opts) {
         if (url === void 0) { url = ""; }
         if (opts === void 0) { opts = {}; }
-        return new Wretcher(url, opts, []);
+        return new Wretcher(url, opts);
     };
     Wretcher.prototype.selfFactory = function (_a) {
         var _b = _a === void 0 ? {} : _a, _c = _b.url, url = _c === void 0 ? this._url : _c, _d = _b.options, options = _d === void 0 ? this._options : _d, _e = _b.catchers, catchers = _e === void 0 ? this._catchers : _e;
@@ -125,18 +125,9 @@ var Wretcher = /** @class */ (function () {
      * @param catcher: The catcher method
      */
     Wretcher.prototype.catcher = function (code, catcher) {
-        this._catchers.push(function (err) {
-            if (err.status === code)
-                catcher(err);
-            else
-                throw err;
-        });
-        return this.selfFactory({ catchers: this._catchers.concat([function (err) {
-                    if (err.status === code)
-                        catcher(err);
-                    else
-                        throw err;
-                }]) });
+        var newMap = new Map(this._catchers);
+        newMap.set(code, catcher);
+        return this.selfFactory({ catchers: newMap });
     };
     /**
      * Performs a get request.

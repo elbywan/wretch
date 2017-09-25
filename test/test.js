@@ -136,16 +136,18 @@ describe("Wretch", function() {
             .catcher(500, err => check++)
         w = w
             .catcher(400, err => check++)
+            .catcher(401, err => check--)
             .baseUrl(URL+"/")
 
         await w("text").get().res(_ => check++)
         await w("/400").get().res(_ => check--)
+        await w("/401").get().unauthorized(_ => check++).res(_ => check--)
         await w("/404").get().res(_ => check--)
         await w("/408").get().timeout(_ => check++).res(_ => check--)
         await w("/418").get().res(_ => check--).catch(_ => "muted")
         await w("/500").get().res(_ => check--)
 
-        expect(check).to.be.equal(5)
+        expect(check).to.be.equal(6)
     })
 
     it("should set default fetch options", async function() {
