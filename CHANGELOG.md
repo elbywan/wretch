@@ -1,3 +1,17 @@
+<a name="0.1.4"></a>
+## 0.1.4 (2017-09-25)
+
+* [mix] small perf improvements ([2486acb](https://github.com/elbywan/wretch/commit/2486acb))
+* 0.1.4 tag ([25d953c](https://github.com/elbywan/wretch/commit/25d953c))
+* add changelog ([96295e7](https://github.com/elbywan/wretch/commit/96295e7))
+* Add global catchers with the catcher method ([6c4ef2f](https://github.com/elbywan/wretch/commit/6c4ef2f))
+* better changelog ([3122965](https://github.com/elbywan/wretch/commit/3122965))
+* fix typos ([2a515f9](https://github.com/elbywan/wretch/commit/2a515f9))
+* typos ([85aa2b2](https://github.com/elbywan/wretch/commit/85aa2b2))
+* Update README.md ([bce1092](https://github.com/elbywan/wretch/commit/bce1092))
+
+
+
 <a name="0.1.3"></a>
 ## 0.1.3 (2017-09-22)
 
