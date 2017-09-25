@@ -1,6 +1,6 @@
 import { mix } from "./mix"
 import conf from "./config"
-import { resolver } from "./resolver"
+import { resolver, WretcherError } from "./resolver"
 
 /**
  * The Wretcher class used to perform easy fetch requests.
@@ -9,9 +9,15 @@ import { resolver } from "./resolver"
  */
 export class Wretcher {
 
-    constructor(
+    protected constructor(
         private _url: string,
-        private _options: RequestInit = {}) {}
+        private _options: RequestInit = {},
+        private _catchers: Array<(error: WretcherError) => void> = []) {}
+
+    static factory(url = "", opts: RequestInit = {}) { return new Wretcher(url, opts, []) }
+    private selfFactory({ url = this._url, options = this._options, catchers = this._catchers } = {}) {
+        return new Wretcher(url, options, catchers)
+    }
 
     /**
      * Sets the default fetch options used for every subsequent fetch call.
@@ -48,7 +54,7 @@ export class Wretcher {
      * @param url String url
      */
     url(url: string) {
-        return new Wretcher(url, this._options)
+        return this.selfFactory({ url })
     }
 
     /**
@@ -56,7 +62,8 @@ export class Wretcher {
      * @param baseurl The base url
      */
     baseUrl(baseurl: string) {
-        return (url = "", opts: RequestInit = {}) => new Wretcher(baseurl + url, opts)
+        return (url = "", opts: RequestInit = {}) =>
+            this.selfFactory({ url: baseurl + url, options: opts})
     }
 
     /**
@@ -64,7 +71,7 @@ export class Wretcher {
      * @param options New options
      */
     options(options: RequestInit) {
-        return new Wretcher(this._url, options)
+        return this.selfFactory({ options })
     }
 
     /**
@@ -79,7 +86,7 @@ export class Wretcher {
      * @param qp An object which will be converted.
      */
     query(qp: object) {
-        return new Wretcher(appendQueryParams(this._url, qp), this._options)
+        return this.selfFactory({ url: appendQueryParams(this._url, qp) })
     }
 
     /**
@@ -87,7 +94,7 @@ export class Wretcher {
      * @param headerValues An object containing header keys and values
      */
     headers(headerValues: { [headerName: string]: any }) {
-        return new Wretcher(this._url, mix(this._options, { headers: headerValues }))
+        return this.selfFactory({ options: mix(this._options, { headers: headerValues }) })
     }
 
     /**
@@ -107,34 +114,52 @@ export class Wretcher {
     }
 
     /**
+     * Adds a default catcher which will be called on every subsequent request error when the error code matches.
+     * @param code Error code
+     * @param catcher: The catcher method
+     */
+    catcher(code: number, catcher: (error: WretcherError) => void) {
+        this._catchers.push(err => {
+            if(err.status === code) catcher(err)
+            else throw err
+        })
+        return this.selfFactory({ catchers: [ ...this._catchers,
+            err => {
+                if(err.status === code) catcher(err)
+                else throw err
+            }
+        ]})
+    }
+
+    /**
      * Performs a get request.
      */
     get(opts = {}) {
-        return resolver(this._url)(mix(opts, this._options))
+        return resolver(this._url)(this._catchers)(mix(opts, this._options))
     }
     /**
      * Performs a delete request.
      */
     delete(opts = {}) {
-        return resolver(this._url)({ ...mix(opts, this._options), method: "DELETE" })
+        return resolver(this._url)(this._catchers)({ ...mix(opts, this._options), method: "DELETE" })
     }
     /**
      * Performs a put request.
      */
     put(opts = {}) {
-        return resolver(this._url)({ ...mix(opts, this._options), method: "PUT" })
+        return resolver(this._url)(this._catchers)({ ...mix(opts, this._options), method: "PUT" })
     }
     /**
      * Performs a post request.
      */
     post(opts = {}) {
-        return resolver(this._url)({ ...mix(opts, this._options), method: "POST" })
+        return resolver(this._url)(this._catchers)({ ...mix(opts, this._options), method: "POST" })
     }
     /**
      * Performs a patch request.
      */
     patch(opts = {}) {
-        return resolver(this._url)({ ...mix(opts, this._options), method: "PATCH" })
+        return resolver(this._url)(this._catchers)({ ...mix(opts, this._options), method: "PATCH" })
     }
 
     /**
@@ -142,7 +167,7 @@ export class Wretcher {
      * @param contents The body contents
      */
     body(contents: any) {
-        return new Wretcher(this._url, { ...this._options, body: contents })
+        return this.selfFactory({ options: { ...this._options, body: contents }})
     }
     /**
      * Sets the content type header, stringifies an object and sets the request body.

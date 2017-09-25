@@ -10,4 +10,4 @@ if(typeof self === "undefined") {
 /**
  * Return a fresh Wretcher instance.
  */
-export default (url = "", opts: RequestInit = {}) => new Wretcher(url, opts)
+export default Wretcher.factory
