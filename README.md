@@ -302,9 +302,9 @@ Converts a javascript object to query parameters, then appends this query string
 ```js
 let w = wretch("http://example.com")
 // url is http://example.com
-w = w.query({ a: 1, b : 2 })
+w = w.query({ a: 1, b: 2 })
 // url is now http://example.com?a=1&b=2
-w = w.query({ c: 3, d : [4, 5] })
+w = w.query({ c: 3, d: [4, 5] })
 // url is now http://example.com?c=3&d=4&d=5
 ```
 
