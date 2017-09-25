@@ -43,7 +43,10 @@
         "no-string-literal": false,
         "no-bitwise": false,
         "trailing-comma": false,
-        "ordered-imports": false
+        "ordered-imports": false,
+        "interface-over-type-literal": false,
+        "max-line-length": false,
+        "member-ordering": false
     },
     "rulesDirectory": []
 }

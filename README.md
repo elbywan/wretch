@@ -8,7 +8,7 @@
 	<a href="https://coveralls.io/github/elbywan/wretch?branch=master"><img src="https://coveralls.io/repos/github/elbywan/wretch/badge.svg?branch=master" alt="Coverage Status" /></a>
 </h1>
 <h4 align="center">
-	A tiny (&lt; 1.4Kb g-zipped) wrapper built around fetch with an intuitive syntax.
+	A tiny (&lt; 1.5Kb g-zipped) wrapper built around fetch with an intuitive syntax.
 </h4>
 <h5 align="center">
     <i>f[ETCH] [WR]apper</i>
@@ -252,6 +252,21 @@ wretch("http://server/which/returns/an/error/with/a/json/body")
     // error.message contains the parsed body
     console.log(error.message))
   }
+```
+
+#### catcher(code: number, catcher: (error: WretcherError) => void)
+
+Adds a [catcher](https://github.com/elbywan/wretch#catchers) which will be called on every subsequent request error.
+
+Very useful when you need to perform a repetitive action on a specific error code.
+
+```js
+const w = wretcher()
+  .catcher(404, err => redirect("/routes/notfound", err.message))
+  .catcher(500, err => flashMessage("internal.server.error"))
+
+// No need to catch 404 or 500 code, they are already taken care of.
+w.url("http://myapi.com/get/something").get().json(json => /* ... */)
 ```
 
 #### options(options: Object)

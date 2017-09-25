@@ -5,9 +5,5 @@ if (typeof self === "undefined") {
 /**
  * Return a fresh Wretcher instance.
  */
-export default function (url, opts) {
-    if (url === void 0) { url = ""; }
-    if (opts === void 0) { opts = {}; }
-    return new Wretcher(url, opts);
-};
+export default Wretcher.factory;
 //# sourceMappingURL=index.js.map

@@ -1,3 +1,4 @@
+import { WretcherError } from "./resolver";
 /**
  * The Wretcher class used to perform easy fetch requests.
  *
@@ -6,7 +7,10 @@
 export declare class Wretcher {
     private _url;
     private _options;
-    constructor(_url: string, _options?: RequestInit);
+    private _catchers;
+    protected constructor(_url: string, _options?: RequestInit, _catchers?: Array<(error: WretcherError) => void>);
+    static factory(url?: string, opts?: RequestInit): Wretcher;
+    private selfFactory({url, options, catchers}?);
     /**
      * Sets the default fetch options used for every subsequent fetch call.
      * @param opts New default options
@@ -70,6 +74,12 @@ export declare class Wretcher {
      */
     content(headerValue: string): Wretcher;
     /**
+     * Adds a default catcher which will be called on every subsequent request error when the error code matches.
+     * @param code Error code
+     * @param catcher: The catcher method
+     */
+    catcher(code: number, catcher: (error: WretcherError) => void): Wretcher;
+    /**
      * Performs a get request.
      */
     get(opts?: {}): {
@@ -84,42 +94,12 @@ export declare class Wretcher {
         arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
         text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>;
         error: (code: number, cb: any) => any;
-        badRequest: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
-        unauthorized: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
-        forbidden: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
-        notFound: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
-        timeout: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
-        internalError: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
+        badRequest: (cb: (error: WretcherError) => void) => any;
+        unauthorized: (cb: (error: WretcherError) => void) => any;
+        forbidden: (cb: (error: WretcherError) => void) => any;
+        notFound: (cb: (error: WretcherError) => void) => any;
+        timeout: (cb: (error: WretcherError) => void) => any;
+        internalError: (cb: (error: WretcherError) => void) => any;
     };
     /**
      * Performs a delete request.
@@ -136,42 +116,12 @@ export declare class Wretcher {
         arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
         text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>;
         error: (code: number, cb: any) => any;
-        badRequest: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
-        unauthorized: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
-        forbidden: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
-        notFound: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
-        timeout: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
-        internalError: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
+        badRequest: (cb: (error: WretcherError) => void) => any;
+        unauthorized: (cb: (error: WretcherError) => void) => any;
+        forbidden: (cb: (error: WretcherError) => void) => any;
+        notFound: (cb: (error: WretcherError) => void) => any;
+        timeout: (cb: (error: WretcherError) => void) => any;
+        internalError: (cb: (error: WretcherError) => void) => any;
     };
     /**
      * Performs a put request.
@@ -188,42 +138,12 @@ export declare class Wretcher {
         arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
         text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>;
         error: (code: number, cb: any) => any;
-        badRequest: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
-        unauthorized: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
-        forbidden: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
-        notFound: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
-        timeout: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
-        internalError: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
+        badRequest: (cb: (error: WretcherError) => void) => any;
+        unauthorized: (cb: (error: WretcherError) => void) => any;
+        forbidden: (cb: (error: WretcherError) => void) => any;
+        notFound: (cb: (error: WretcherError) => void) => any;
+        timeout: (cb: (error: WretcherError) => void) => any;
+        internalError: (cb: (error: WretcherError) => void) => any;
     };
     /**
      * Performs a post request.
@@ -240,42 +160,12 @@ export declare class Wretcher {
         arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
         text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>;
         error: (code: number, cb: any) => any;
-        badRequest: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
-        unauthorized: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
-        forbidden: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
-        notFound: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
-        timeout: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
-        internalError: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
+        badRequest: (cb: (error: WretcherError) => void) => any;
+        unauthorized: (cb: (error: WretcherError) => void) => any;
+        forbidden: (cb: (error: WretcherError) => void) => any;
+        notFound: (cb: (error: WretcherError) => void) => any;
+        timeout: (cb: (error: WretcherError) => void) => any;
+        internalError: (cb: (error: WretcherError) => void) => any;
     };
     /**
      * Performs a patch request.
@@ -292,42 +182,12 @@ export declare class Wretcher {
         arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
         text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>;
         error: (code: number, cb: any) => any;
-        badRequest: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
-        unauthorized: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
-        forbidden: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
-        notFound: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
-        timeout: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
-        internalError: (cb: (error: Error & {
-            status: number;
-            response: Response;
-            text?: string;
-            json?: any;
-        }) => void) => any;
+        badRequest: (cb: (error: WretcherError) => void) => any;
+        unauthorized: (cb: (error: WretcherError) => void) => any;
+        forbidden: (cb: (error: WretcherError) => void) => any;
+        notFound: (cb: (error: WretcherError) => void) => any;
+        timeout: (cb: (error: WretcherError) => void) => any;
+        internalError: (cb: (error: WretcherError) => void) => any;
     };
     /**
      * Sets the request body with any content.

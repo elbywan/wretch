@@ -3,7 +3,7 @@ import conf from "./config"
 
 export type WretcherError = Error & { status: number, response: Response, text?: string, json?: any }
 
-export const resolver = url => (opts = {}) => {
+export const resolver = url => (catchers = []) => (opts = {}) => {
     const req = fetch(url, mix(conf.defaults, opts))
     const wrapper: Promise<void | Response> = req.then(response => {
         if (!response.ok) {
@@ -20,7 +20,6 @@ export const resolver = url => (opts = {}) => {
 
     type TypeParser = <Type>(funName: string | null) => <Result = void>(cb?: (type: Type) => Result) => Promise<Result>
 
-    const catchers = []
     const doCatch = <T>(promise: Promise<T>): Promise<T> =>
         catchers.reduce((accumulator, catcher) => accumulator.catch(catcher), promise)
     const wrapTypeParser: TypeParser = <T>(funName) => <R>(cb) => funName ?
