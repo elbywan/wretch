@@ -267,6 +267,9 @@ const w = wretcher()
 
 // No need to catch 404 or 500 code, they are already taken care of.
 w.url("http://myapi.com/get/something").get().json(json => /* ... */)
+
+// Default catchers can be overridden if needed.
+w.url("...").notFound(err => /* overrides the default 'redirect' catcher */)
 ```
 
 #### options(options: Object)
