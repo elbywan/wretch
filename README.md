@@ -108,10 +108,6 @@ wretch("endpoint")
 npm i -D wretch
 ```
 
-## Download
-
-<a href="https://raw.githubusercontent.com/elbywan/wretch/master/dist/bundle/wretch.js" download>dist/bundle/wretch.js</a>
-
 ## Clone
 
 ```sh
@@ -146,15 +142,15 @@ global.FormData = require("form-data")
 
 ```html
 <!--- "wretch" will be attached to the global window object. -->
-<script src="path/to/wretch.js"></script>
+<script src="https://unpkg.com/wretch/dist/bundle/wretch.js"></script>
 ```
 
 ```typescript
-// new school
+// es2015 modules
 import wretch from "wretch"
 
-// old school
-const wretch = require("wretch")
+// commonjs
+var wretch = require("wretch")
 ```
 
 ## Code
