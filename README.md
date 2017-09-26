@@ -100,12 +100,35 @@ wretch("endpoint")
   .res(response => /* ... */)
 ```
 
+#### Because configuration should not rhyme with repetition.
+
+```javascript
+// Wretch is immutable which means that you can configure, store and reuse objects
+
+const corsWretch = wretch().options({ credentials: "include", mode: "cors" })
+
+// sends a cors request
+corsWretch.url("...").get()
+
+// Refine the cors wretch by adding a specific header and a fixed url
+const corsWretchWithUrl = corsWretch.url("http://myendpoint.com").headers({ "X-HEADER": "VALUE" })
+
+corsWretchWithUrl.get()
+corsWretchWithUrl.json({a:1}).post()
+
+// Reuse the original cors wretch object but this time by adding a baseUrl
+const corsWretchWithBaseUrl = corsWretch.baseUrl("http://myurl.com")
+
+corsWretchWithBaseUrl("/root").get()
+corsWretchWithBaseUrl("/data/1").get()
+```
+
 # Installation
 
 ## Npm
 
 ```sh
-npm i -D wretch
+npm i wretch
 ```
 
 ## Clone
@@ -155,7 +178,7 @@ var wretch = require("wretch")
 
 ## Code
 
-*Wretcher objects are immutable.*
+**Wretcher objects are immutable.**
 
 ```javascript
 wretch(url, options)
@@ -306,7 +329,6 @@ const id = await blogs("").json({ name: "my blog" }).post().json(_ => _.id)
 const blog = await blogs(`/${id}`).get().json()
 console.log(blog.name)
 await blogs(`/${id}`).delete().res()
-// ... //
 ```
 
 #### query(qp: Object)
