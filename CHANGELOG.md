@@ -1,7 +1,17 @@
+<a name="0.2.0"></a>
+# 0.2.0 (2017-09-27)
+
+* Create CONTRIBUTING.md ([9ef959c](https://github.com/elbywan/wretch/commit/9ef959c))
+* Replace mixdefaults with a mixin flag. ([552e986](https://github.com/elbywan/wretch/commit/552e986))
+* Update readme with unpkg ([379d581](https://github.com/elbywan/wretch/commit/379d581))
+* Update README.md ([b4ffa14](https://github.com/elbywan/wretch/commit/b4ffa14))
+
+
+
 <a name="0.1.5"></a>
 ## 0.1.5 (2017-09-25)
 
-* 0.1.5 tag ([c0e71d2](https://github.com/elbywan/wretch/commit/c0e71d2))
+* 0.1.5 tag ([73e2303](https://github.com/elbywan/wretch/commit/73e2303))
 * update changelog ([0df70a3](https://github.com/elbywan/wretch/commit/0df70a3))
 * use a Map instead of an Array for catchers ([ff2e657](https://github.com/elbywan/wretch/commit/ff2e657))
 
