@@ -34,17 +34,11 @@ var Wretcher = /** @class */ (function () {
     /**
      * Sets the default fetch options used for every subsequent fetch call.
      * @param opts New default options
+     * @param mixin If true, mixes in instead of replacing the existing options
      */
-    Wretcher.prototype.defaults = function (opts) {
-        conf.defaults = opts;
-        return this;
-    };
-    /**
-     * Mixins the default fetch options used for every subsequent fetch calls.
-     * @param opts Options to mixin with the current default options
-     */
-    Wretcher.prototype.mixdefaults = function (opts) {
-        conf.defaults = mix(conf.defaults, opts);
+    Wretcher.prototype.defaults = function (opts, mixin) {
+        if (mixin === void 0) { mixin = false; }
+        conf.defaults = mixin ? conf.defaults = mix(conf.defaults, opts) : opts;
         return this;
     };
     /**
@@ -80,9 +74,11 @@ var Wretcher = /** @class */ (function () {
     /**
      * Returns a new Wretcher object with the same url and new options.
      * @param options New options
+     * @param mixin If true, mixes in instead of replacing the existing options
      */
-    Wretcher.prototype.options = function (options) {
-        return this.selfFactory({ options: options });
+    Wretcher.prototype.options = function (options, mixin) {
+        if (mixin === void 0) { mixin = false; }
+        return this.selfFactory({ options: mixin ? mix(this._options, options) : options });
     };
     /**
      * Converts a javascript object to query parameters,

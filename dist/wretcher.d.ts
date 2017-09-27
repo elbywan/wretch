@@ -14,13 +14,9 @@ export declare class Wretcher {
     /**
      * Sets the default fetch options used for every subsequent fetch call.
      * @param opts New default options
+     * @param mixin If true, mixes in instead of replacing the existing options
      */
-    defaults(opts: RequestInit): this;
-    /**
-     * Mixins the default fetch options used for every subsequent fetch calls.
-     * @param opts Options to mixin with the current default options
-     */
-    mixdefaults(opts: RequestInit): this;
+    defaults(opts: RequestInit, mixin?: boolean): this;
     /**
      * Sets the method (text, json ...) used to parse the data contained in the response body in case of an HTTP error.
      *
@@ -42,8 +38,9 @@ export declare class Wretcher {
     /**
      * Returns a new Wretcher object with the same url and new options.
      * @param options New options
+     * @param mixin If true, mixes in instead of replacing the existing options
      */
-    options(options: RequestInit): Wretcher;
+    options(options: RequestInit, mixin?: boolean): Wretcher;
     /**
      * Converts a javascript object to query parameters,
      * then appends this query string to the current url.

@@ -23,6 +23,7 @@ const mockServer = {
             const hasCustomHeaders = req.header("X-Custom-Header", false)
                 && req.header("X-Custom-Header-2", false)
                 && req.header("X-Custom-Header-3", false)
+                && req.header("X-Custom-Header-4", false)
             res.send(hasCustomHeaders ? 200 : 400)
         })
 

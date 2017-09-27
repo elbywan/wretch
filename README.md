@@ -226,7 +226,7 @@ Create a new Wretcher object with an url and [vanilla fetch options](https://dev
 
 *Helper methods are optional and can be chained.*
 
-#### defaults(opts: Object)
+#### defaults(opts: Object, mixin: boolean = false)
 
 Set default fetch options which will be used for every subsequent requests.
 
@@ -239,13 +239,11 @@ wretch().defaults({ headers: { "Accept": "application/json" }})
 wretch("...", { headers: { "X-Custom": "Header" }}).get()
 ```
 
-#### mixdefaults(opts: Object)
-
-Mix in (instead of simply overwriting) the current default options with the new ones.
-
 ```js
+// You can mix in with the existing options instead of overriding them by passing a boolean flag :
+
 wretch().defaults({ headers: { "Accept": "application/json" }})
-wretch().mixdefaults({ encoding: "same-origin", headers: { "X-Custom": "Header" } })
+wretch().defaults({ encoding: "same-origin", headers: { "X-Custom": "Header" }}, true)
 
 /* The new options are :
 {
@@ -254,6 +252,7 @@ wretch().mixdefaults({ encoding: "same-origin", headers: { "X-Custom": "Header" 
 }
 */
 ```
+
 
 #### errorType(method: "text" | "json" = "text")
 
@@ -291,7 +290,7 @@ w.url("http://myapi.com/get/something").get().json(json => /* ... */)
 w.url("...").notFound(err => /* overrides the default 'redirect' catcher */)
 ```
 
-#### options(options: Object)
+#### options(options: Object, mixin: boolean = false)
 
 Set the fetch options.
 
@@ -306,6 +305,21 @@ const corsWretch = wretch().options({ credentials: "include", mode: "cors" })
 
 corsWretch.url("http://endpoint1").get()
 corsWretch.url("http://endpoint2").get()
+```
+
+```js
+// You can mix in with the existing options instead of overriding them by passing a boolean flag :
+
+wretch()
+  .options({ headers: { "Accept": "application/json" }})
+  .options({ encoding: "same-origin", headers: { "X-Custom": "Header" }}, true)
+
+/* Options mixed in :
+{
+  headers: { "Accept": "application/json", "X-Custom": "Header" },
+  encoding: "same-origin"
+}
+*/
 ```
 
 #### url(url: string)

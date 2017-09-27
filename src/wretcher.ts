@@ -22,18 +22,10 @@ export class Wretcher {
     /**
      * Sets the default fetch options used for every subsequent fetch call.
      * @param opts New default options
+     * @param mixin If true, mixes in instead of replacing the existing options
      */
-    defaults(opts: RequestInit) {
-        conf.defaults = opts
-        return this
-    }
-
-    /**
-     * Mixins the default fetch options used for every subsequent fetch calls.
-     * @param opts Options to mixin with the current default options
-     */
-    mixdefaults(opts: RequestInit) {
-        conf.defaults = mix(conf.defaults, opts)
+    defaults(opts: RequestInit, mixin = false) {
+        conf.defaults = mixin ? conf.defaults = mix(conf.defaults, opts) : opts
         return this
     }
 
@@ -69,9 +61,10 @@ export class Wretcher {
     /**
      * Returns a new Wretcher object with the same url and new options.
      * @param options New options
+     * @param mixin If true, mixes in instead of replacing the existing options
      */
-    options(options: RequestInit) {
-        return this.selfFactory({ options })
+    options(options: RequestInit, mixin = false) {
+        return this.selfFactory({ options: mixin ? mix(this._options, options) : options })
     }
 
     /**
