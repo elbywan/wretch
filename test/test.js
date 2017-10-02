@@ -208,4 +208,10 @@ describe("Wretch", function() {
             .res(_ => expect.fail("", "", "I should never be called because an error was thrown"))
             .then(_ => expect(_).to.be.undefined)
     })
+
+    it("should mix in options on baseUrl", async function() {
+        const w = wretch().options({ headers: { "X-test": "test" }}).baseUrl(URL+"/")
+        const obj1 = w("");
+        expect(obj1._options).to.deep.equal({ headers: { "X-test": "test" }})
+    })
 })

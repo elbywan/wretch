@@ -55,7 +55,7 @@ export class Wretcher {
      */
     baseUrl(baseurl: string) {
         return (url = "", opts: RequestInit = {}) =>
-            this.selfFactory({ url: baseurl + url, options: opts})
+            this.selfFactory({ url: baseurl + url, options: mix(this._options, opts) })
     }
 
     /**
