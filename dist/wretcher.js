@@ -68,7 +68,7 @@ var Wretcher = /** @class */ (function () {
         return function (url, opts) {
             if (url === void 0) { url = ""; }
             if (opts === void 0) { opts = {}; }
-            return _this.selfFactory({ url: baseurl + url, options: opts });
+            return _this.selfFactory({ url: baseurl + url, options: mix(_this._options, opts) });
         };
     };
     /**
