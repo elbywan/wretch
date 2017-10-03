@@ -1,10 +1,10 @@
 import { mix } from "./mix";
 import conf from "./config";
-export var resolver = function (url) { return function (catchers) {
+export var resolver = function (url, fetchF) { return function (catchers) {
     if (catchers === void 0) { catchers = new Map(); }
     return function (opts) {
         if (opts === void 0) { opts = {}; }
-        var req = fetch(url, mix(conf.defaults, opts));
+        var req = fetchF(url, mix(conf.defaults, opts));
         var wrapper = req.then(function (response) {
             if (!response.ok) {
                 return response[conf.errorType || "text"]().then(function (_) {

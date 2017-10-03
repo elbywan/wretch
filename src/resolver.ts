@@ -3,8 +3,8 @@ import conf from "./config"
 
 export type WretcherError = Error & { status: number, response: Response, text?: string, json?: any }
 
-export const resolver = url => (catchers: Map<number, (error: WretcherError) => void> = new Map()) => (opts = {}) => {
-    const req = fetch(url, mix(conf.defaults, opts))
+export const resolver = (url, fetchF: typeof fetch) => (catchers: Map<number, (error: WretcherError) => void> = new Map()) => (opts = {}) => {
+    const req = fetchF(url, mix(conf.defaults, opts))
     const wrapper: Promise<void | Response> = req.then(response => {
         if (!response.ok) {
             return response[conf.errorType || "text"]().then(_ => {

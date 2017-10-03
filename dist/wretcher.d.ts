@@ -7,10 +7,12 @@ import { WretcherError } from "./resolver";
 export declare class Wretcher {
     private _url;
     private _options;
+    private _fetchF;
+    private _FormDataC;
     private _catchers;
-    protected constructor(_url: string, _options?: RequestInit, _catchers?: Map<number, (error: WretcherError) => void>);
-    static factory(url?: string, opts?: RequestInit): Wretcher;
-    private selfFactory({url, options, catchers}?);
+    protected constructor(_url: string, _options: RequestInit, _fetchF: typeof fetch, _FormDataC: typeof FormData, _catchers?: Map<number, (error: WretcherError) => void>);
+    static factory(url?: string, opts?: RequestInit, fetchF?: typeof fetch, formDataC?: typeof FormData): Wretcher;
+    private selfFactory({url, options, fetchF, formDataC, catchers}?);
     /**
      * Sets the default fetch options used for every subsequent fetch call.
      * @param opts New default options

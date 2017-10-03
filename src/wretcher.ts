@@ -12,11 +12,13 @@ export class Wretcher {
     protected constructor(
         private _url: string,
         private _options: RequestInit = {},
+        private _fetchF: typeof fetch,
+        private _FormDataC: typeof FormData,
         private _catchers: Map<number, (error: WretcherError) => void> = new Map()) {}
 
-    static factory(url = "", opts: RequestInit = {}) { return new Wretcher(url, opts) }
-    private selfFactory({ url = this._url, options = this._options, catchers = this._catchers } = {}) {
-        return new Wretcher(url, options, catchers)
+    static factory(url = "", opts: RequestInit = {}, fetchF: typeof fetch = fetch, formDataC: typeof FormData = FormData) { return new Wretcher(url, opts, fetchF, formDataC) }
+    private selfFactory({ url = this._url, options = this._options, fetchF = this._fetchF, formDataC = this._FormDataC, catchers = this._catchers } = {}) {
+        return new Wretcher(url, options, fetchF, formDataC, catchers)
     }
 
     /**
@@ -121,31 +123,31 @@ export class Wretcher {
      * Performs a get request.
      */
     get(opts = {}) {
-        return resolver(this._url)(this._catchers)(mix(opts, this._options))
+        return resolver(this._url, this._fetchF)(this._catchers)(mix(opts, this._options))
     }
     /**
      * Performs a delete request.
      */
     delete(opts = {}) {
-        return resolver(this._url)(this._catchers)({ ...mix(opts, this._options), method: "DELETE" })
+        return resolver(this._url, this._fetchF)(this._catchers)({ ...mix(opts, this._options), method: "DELETE" })
     }
     /**
      * Performs a put request.
      */
     put(opts = {}) {
-        return resolver(this._url)(this._catchers)({ ...mix(opts, this._options), method: "PUT" })
+        return resolver(this._url, this._fetchF)(this._catchers)({ ...mix(opts, this._options), method: "PUT" })
     }
     /**
      * Performs a post request.
      */
     post(opts = {}) {
-        return resolver(this._url)(this._catchers)({ ...mix(opts, this._options), method: "POST" })
+        return resolver(this._url, this._fetchF)(this._catchers)({ ...mix(opts, this._options), method: "POST" })
     }
     /**
      * Performs a patch request.
      */
     patch(opts = {}) {
-        return resolver(this._url)(this._catchers)({ ...mix(opts, this._options), method: "PATCH" })
+        return resolver(this._url, this._fetchF)(this._catchers)({ ...mix(opts, this._options), method: "PATCH" })
     }
 
     /**
@@ -167,7 +169,7 @@ export class Wretcher {
      * @param formObject An object which will be converted to a FormData
      */
     formData(formObject: object) {
-        const formData = new FormData()
+        const formData = new this._FormDataC()
         for(const key in formObject) {
             if(formObject[key] instanceof Array) {
                 for(const item of formObject[key])
