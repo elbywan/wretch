@@ -4,8 +4,9 @@
     wretch<br>
 	<br>
 	<a href="https://travis-ci.org/elbywan/wretch"><img alt="travis-badge" src="https://travis-ci.org/elbywan/wretch.svg?branch=master"></a>
-	<a href="https://www.npmjs.com/package/wretch"><img alt="npm-badge" src="https://badge.fury.io/js/wretch.svg" height="20"></a>
-	<a href="https://coveralls.io/github/elbywan/wretch?branch=master"><img src="https://coveralls.io/repos/github/elbywan/wretch/badge.svg?branch=master" alt="Coverage Status" /></a>
+	<a href="https://www.npmjs.com/package/wretch"><img alt="npm-badge" src="https://img.shields.io/npm/v/wretch.svg" height="20"></a>
+	<a href="https://coveralls.io/github/elbywan/wretch?branch=master"><img src="https://coveralls.io/repos/github/elbywan/wretch/badge.svg?branch=master" alt="Coverage Status"></a>
+	<a href="https://github.com/elbywan/wretch/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license-badge" height="20"></a>
 </h1>
 <h4 align="center">
 	A tiny (&lt; 1.5Kb g-zipped) wrapper built around fetch with an intuitive syntax.
