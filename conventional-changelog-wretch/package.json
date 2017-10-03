@@ -1,0 +1,11 @@
+{
+    "name": "conventional-changelog-wretch",
+    "private": true,
+    "version": "0.0.1",
+    "description": "conventional-changelog wretch preset",
+    "main": "index.js",
+    "files": [
+        "index.js",
+        "templates"
+    ]
+}

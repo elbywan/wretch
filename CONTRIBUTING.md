@@ -40,13 +40,13 @@ If the modification is related to an existing issue, please mention the number i
 Also in order to generate a nice changelog file, please begin your commit message with an emoji corresponding to the change :
 
 - :fire: `:fire:` -> breaking change
-- :bug: `:bug:` -> bugfix
+- :bug: `:bug:` -> bug fix
 - :factory: `:factory:` -> new feature
-- :art: `:art:` -> code improvements
-- :checkered_flag: `:checkered_flag:` -> performance updates
-- :white_check_mark: `:white_check_mark` -> test improvements
+- :art: `:art:` -> code improvement
+- :checkered_flag: `:checkered_flag:` -> performance update
+- :white_check_mark: `:white_check_mark` -> test improvement
 - :memo: `:memo:` -> documentation update
-- :arrow_up: `:arrow_up:` -> package updates
+- :arrow_up: `:arrow_up:` -> package update
 
 Furthermore, starting the actual message content with an upper case and using the present tense and imperative mood would be great.
 
