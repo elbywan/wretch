@@ -1,94 +1,177 @@
 <a name="0.2.0"></a>
-# 0.2.0 (2017-09-27)
+# [0.2.0](https://github.com/elbywan/wretch/compare/0.1.5...0.2.0) (2017-10-03)
 
-* Create CONTRIBUTING.md ([9ef959c](https://github.com/elbywan/wretch/commit/9ef959c))
-* Replace mixdefaults with a mixin flag. ([552e986](https://github.com/elbywan/wretch/commit/552e986))
-* Update readme with unpkg ([379d581](https://github.com/elbywan/wretch/commit/379d581))
-* Update README.md ([b4ffa14](https://github.com/elbywan/wretch/commit/b4ffa14))
+
+### :arrow_up:
+
+* 0.2.0 tag ([d903c48](https://github.com/elbywan/wretch/commit/d903c48))
+
+### :fire:
+
+* :art: Replace mixdefaults with a mixin flag. ([c497f6e](https://github.com/elbywan/wretch/commit/c497f6e))
+
+### :memo:
+
+* Create CONTRIBUTING.md ([c79578a](https://github.com/elbywan/wretch/commit/c79578a))
+* Update readme with unpkg ([1131755](https://github.com/elbywan/wretch/commit/1131755))
+* Update README.md ([b8f3cc8](https://github.com/elbywan/wretch/commit/b8f3cc8))
 
 
 
 <a name="0.1.5"></a>
-## 0.1.5 (2017-09-25)
+## [0.1.5](https://github.com/elbywan/wretch/compare/0.1.4...0.1.5) (2017-10-03)
 
-* 0.1.5 tag ([73e2303](https://github.com/elbywan/wretch/commit/73e2303))
-* update changelog ([0df70a3](https://github.com/elbywan/wretch/commit/0df70a3))
-* use a Map instead of an Array for catchers ([ff2e657](https://github.com/elbywan/wretch/commit/ff2e657))
+
+### :arrow_up:
+
+* 0.1.5 tag ([6551424](https://github.com/elbywan/wretch/commit/6551424))
+
+### :art:
+
+* Update changelog ([7717052](https://github.com/elbywan/wretch/commit/7717052))
+
+### :checkered_flag:
+
+* Use a Map instead of an Array for catchers ([dba8e63](https://github.com/elbywan/wretch/commit/dba8e63))
 
 
 
 <a name="0.1.4"></a>
-## 0.1.4 (2017-09-25)
+## [0.1.4](https://github.com/elbywan/wretch/compare/0.1.3...0.1.4) (2017-10-03)
 
-* [mix] small perf improvements ([2486acb](https://github.com/elbywan/wretch/commit/2486acb))
-* 0.1.4 tag ([25d953c](https://github.com/elbywan/wretch/commit/25d953c))
-* add changelog ([96295e7](https://github.com/elbywan/wretch/commit/96295e7))
-* Add global catchers with the catcher method ([6c4ef2f](https://github.com/elbywan/wretch/commit/6c4ef2f))
-* better changelog ([3122965](https://github.com/elbywan/wretch/commit/3122965))
-* fix typos ([2a515f9](https://github.com/elbywan/wretch/commit/2a515f9))
-* typos ([85aa2b2](https://github.com/elbywan/wretch/commit/85aa2b2))
-* Update README.md ([bce1092](https://github.com/elbywan/wretch/commit/bce1092))
+
+### :art:
+
+* Better changelog ([d4ae365](https://github.com/elbywan/wretch/commit/d4ae365))
+
+### :checkered_flag:
+
+* [mix] small perf improvements ([fb319eb](https://github.com/elbywan/wretch/commit/fb319eb))
+
+### :factory:
+
+* Add changelog ([457852d](https://github.com/elbywan/wretch/commit/457852d))
+* Add global catchers with the catcher method ([04b5cb9](https://github.com/elbywan/wretch/commit/04b5cb9))
+
+### :memo:
+
+* Fix typos ([ad0d612](https://github.com/elbywan/wretch/commit/ad0d612))
+* Fix typos ([6b074dc](https://github.com/elbywan/wretch/commit/6b074dc))
+* Update README.md ([ff48732](https://github.com/elbywan/wretch/commit/ff48732))
 
 
 
 <a name="0.1.3"></a>
-## 0.1.3 (2017-09-22)
+## [0.1.3](https://github.com/elbywan/wretch/compare/0.1.2...0.1.3) (2017-10-03)
 
-* 0.1.3 tag ([9251ba0](https://github.com/elbywan/wretch/commit/9251ba0))
-* add gitattributes ([5fde426](https://github.com/elbywan/wretch/commit/5fde426))
-* Add headers/content/body methods and better options type. ([de5f740](https://github.com/elbywan/wretch/commit/de5f740))
-* add tslint ([0cc8a6f](https://github.com/elbywan/wretch/commit/0cc8a6f))
-* Clearer README ([906e5e5](https://github.com/elbywan/wretch/commit/906e5e5))
-* code split ([f61844e](https://github.com/elbywan/wretch/commit/f61844e))
-* fix typos ([6369edb](https://github.com/elbywan/wretch/commit/6369edb))
-* update .gitattributes ([f2f9ae9](https://github.com/elbywan/wretch/commit/f2f9ae9))
-* update deps ([9cc0ef7](https://github.com/elbywan/wretch/commit/9cc0ef7))
-* Update README.md ([602d3de](https://github.com/elbywan/wretch/commit/602d3de))
-* Update README.md ([28eb6ea](https://github.com/elbywan/wretch/commit/28eb6ea))
-* Update README.md ([b8dab6c](https://github.com/elbywan/wretch/commit/b8dab6c))
+
+### :arrow_up:
+
+* 0.1.3 tag ([c8ad85e](https://github.com/elbywan/wretch/commit/c8ad85e))
+* Update deps ([aec23f0](https://github.com/elbywan/wretch/commit/aec23f0))
+
+### :art:
+
+* Add gitattributes ([45329a4](https://github.com/elbywan/wretch/commit/45329a4))
+* Add tslint ([0078004](https://github.com/elbywan/wretch/commit/0078004))
+* Code split ([d3e725a](https://github.com/elbywan/wretch/commit/d3e725a))
+* Update .gitattributes ([52eebb1](https://github.com/elbywan/wretch/commit/52eebb1))
+
+### :bug:
+
+* Fix typos in mergeArrays ([966cbeb](https://github.com/elbywan/wretch/commit/966cbeb))
+
+### :factory:
+
+* Add headers/content/body methods and better options type. ([3c9c10e](https://github.com/elbywan/wretch/commit/3c9c10e))
+
+### :memo:
+
+* Clearer README ([4579bb6](https://github.com/elbywan/wretch/commit/4579bb6))
+* Update README.md ([743b7d5](https://github.com/elbywan/wretch/commit/743b7d5))
+* Update README.md ([11094dd](https://github.com/elbywan/wretch/commit/11094dd))
+* Update README.md ([9bc38dd](https://github.com/elbywan/wretch/commit/9bc38dd))
 
 
 
 <a name="0.1.2"></a>
-## 0.1.2 (2017-09-21)
+## [0.1.2](https://github.com/elbywan/wretch/compare/0.1.1...0.1.2) (2017-10-03)
 
-* 0.1.2 tag ([9d27f62](https://github.com/elbywan/wretch/commit/9d27f62))
-* Addding the baseUrl function. ([3294448](https://github.com/elbywan/wretch/commit/3294448)), closes [#2](https://github.com/elbywan/wretch/issues/2)
-* correct types ([d2b038c](https://github.com/elbywan/wretch/commit/d2b038c))
-* improved typescript definitions ([04183ab](https://github.com/elbywan/wretch/commit/04183ab))
-* readme update ([c625ac7](https://github.com/elbywan/wretch/commit/c625ac7))
-* Readme update ([bd26f88](https://github.com/elbywan/wretch/commit/bd26f88))
-* typo fix ([c542963](https://github.com/elbywan/wretch/commit/c542963))
-* Update README.md ([a94b7fc](https://github.com/elbywan/wretch/commit/a94b7fc))
+
+### :arrow_up:
+
+* 0.1.2 tag ([eb3a094](https://github.com/elbywan/wretch/commit/eb3a094))
+
+### :art:
+
+* Correct types ([f6aeb64](https://github.com/elbywan/wretch/commit/f6aeb64))
+* Improve typescript definitions ([b8d4e96](https://github.com/elbywan/wretch/commit/b8d4e96))
+
+### :factory:
+
+* Add baseUrl ([a0107c9](https://github.com/elbywan/wretch/commit/a0107c9)), closes [#2](https://github.com/elbywan/wretch/issues/2)
+
+### :memo:
+
+* Readme update ([e2e3522](https://github.com/elbywan/wretch/commit/e2e3522))
+* Readme update ([3cb3b23](https://github.com/elbywan/wretch/commit/3cb3b23))
+* Typo fix ([6a06919](https://github.com/elbywan/wretch/commit/6a06919))
+* Update README.md ([ae0c9c0](https://github.com/elbywan/wretch/commit/ae0c9c0))
 
 
 
 <a name="0.1.1"></a>
-## 0.1.1 (2017-09-14)
+## [0.1.1](https://github.com/elbywan/wretch/compare/0.1.0...0.1.1) (2017-10-03)
 
-* 0.1.1 tag ([29f2f39](https://github.com/elbywan/wretch/commit/29f2f39))
-* correct optional callbacks in declaration files ([6596414](https://github.com/elbywan/wretch/commit/6596414))
+
+### :arrow_up:
+
+* 0.1.1 tag ([f054836](https://github.com/elbywan/wretch/commit/f054836))
+
+### :art:
+
+* Correct optional callbacks in declaration files ([0b37983](https://github.com/elbywan/wretch/commit/0b37983))
 
 
 
 <a name="0.1.0"></a>
-# 0.1.0 (2017-09-14)
+# [0.1.0](https://github.com/elbywan/wretch/compare/0.0.1...0.1.0) (2017-10-03)
 
-* 0.1.0 tag ([522718b](https://github.com/elbywan/wretch/commit/522718b))
-* add coverage ([65aee6f](https://github.com/elbywan/wretch/commit/65aee6f))
-* add documentation ([a8bee4d](https://github.com/elbywan/wretch/commit/a8bee4d))
-* improve coverage ([b8879b6](https://github.com/elbywan/wretch/commit/b8879b6))
-* moved from webpack to rollup and restored source maps ([9429b9e](https://github.com/elbywan/wretch/commit/9429b9e))
-* remove source maps ([deb6684](https://github.com/elbywan/wretch/commit/deb6684))
+
+### :arrow_up:
+
+* 0.1.0 tag ([2d161d6](https://github.com/elbywan/wretch/commit/2d161d6))
+
+### :art:
+
+* Add coverage ([517ee5d](https://github.com/elbywan/wretch/commit/517ee5d))
+* Move from webpack to rollup and restore source maps ([6515d7a](https://github.com/elbywan/wretch/commit/6515d7a))
+
+### :fire:
+
+* Remove source maps ([338f080](https://github.com/elbywan/wretch/commit/338f080))
+
+### :memo:
+
+* Add documentation ([5cae7f3](https://github.com/elbywan/wretch/commit/5cae7f3))
+
+### :white_check_mark:
+
+* Improve coverage ([5b10a93](https://github.com/elbywan/wretch/commit/5b10a93))
 
 
 
 <a name="0.0.1"></a>
-## 0.0.1 (2017-09-13)
+## [0.0.1](https://github.com/elbywan/wretch/compare/ac4ae15...0.0.1) (2017-10-03)
 
-* 0.0.1 tag ([62525d4](https://github.com/elbywan/wretch/commit/62525d4))
-* init ([fa53452](https://github.com/elbywan/wretch/commit/fa53452))
-* Initial commit ([494dbf8](https://github.com/elbywan/wretch/commit/494dbf8))
+
+### :arrow_up:
+
+* 0.0.1 tag ([4d6eeed](https://github.com/elbywan/wretch/commit/4d6eeed))
+
+### :factory:
+
+* init ([ac4ae15](https://github.com/elbywan/wretch/commit/ac4ae15))
 
 
 
