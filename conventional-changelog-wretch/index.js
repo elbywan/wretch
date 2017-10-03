@@ -5,7 +5,7 @@ var resolve = require('path').resolve;
 
 var emojiMatch = {
   ":fire:": "Breaking change(s)",
-  ":bug": "Bug fix(es)",
+  ":bug:": "Bug fix(es)",
   ":factory:": "New feature(s)",
   ":art:": "Code improvement(s)",
   ":checkered_flag:": "Performance update(s)",

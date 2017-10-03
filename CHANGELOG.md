@@ -1,3 +1,28 @@
+<a name="0.2.1"></a>
+## [0.2.1](https://github.com/elbywan/wretch/compare/0.2.0...0.2.1) (2017-10-03)
+
+
+### :arrow_up: Version update(s)
+
+* 0.2.1 tag ([f1586d6](https://github.com/elbywan/wretch/commit/f1586d6))
+
+### :art: Code improvement(s)
+
+* Add custom changelog preset ([023a73c](https://github.com/elbywan/wretch/commit/023a73c))
+* change changelog format to atom ([970bf7b](https://github.com/elbywan/wretch/commit/970bf7b))
+
+### :bug: Bug fix(es)
+
+* Fix baseUrl not mixing in options ([5c90df4](https://github.com/elbywan/wretch/commit/5c90df4))
+
+### :memo: Documentation update(s)
+
+* Add badges ([d29c96d](https://github.com/elbywan/wretch/commit/d29c96d))
+* Regenerate changelog ([c14ede7](https://github.com/elbywan/wretch/commit/c14ede7))
+* Update contributing guidelines ([b96022d](https://github.com/elbywan/wretch/commit/b96022d))
+
+
+
 <a name="0.2.0"></a>
 # [0.2.0](https://github.com/elbywan/wretch/compare/0.1.5...0.2.0) (2017-10-03)
 
@@ -77,7 +102,7 @@
 * Code split ([d3e725a](https://github.com/elbywan/wretch/commit/d3e725a))
 * Update .gitattributes ([52eebb1](https://github.com/elbywan/wretch/commit/52eebb1))
 
-### :bug: undefined
+### :bug: Bug fix(es)
 
 * Fix typos in mergeArrays ([966cbeb](https://github.com/elbywan/wretch/commit/966cbeb))
 
