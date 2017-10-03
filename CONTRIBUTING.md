@@ -37,4 +37,17 @@ If a linter rule which is not already set in the tslint.json file is bothering y
 
 If the modification is related to an existing issue, please mention the number in the commit message. (for instance: `closes #10`)
 
-Always rebase your branch on top of the origin/master branch.
+Also in order to generate a nice changelog file, please begin your commit message with an emoji corresponding to the change :
+
+- :fire: `:fire:` -> breaking change
+- :bug: `:bug:` -> bugfix
+- :factory: `:factory:` -> new feature
+- :art: `:art:` -> code improvements
+- :checkered_flag: `:checkered_flag:` -> performance updates
+- :white_check_mark: `:white_check_mark` -> test improvements
+- :memo: `:memo:` -> documentation update
+- :arrow_up: `:arrow_up:` -> package updates
+
+Furthermore, starting the actual message content with an upper case and using the present tense and imperative mood would be great.
+
+And last but not least, always rebase your branch on top of the origin/master branch !
