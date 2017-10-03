@@ -28,7 +28,7 @@
         "build": "tsc -p . && rollup -c",
         "test": "nyc mocha --reporter list",
         "coverage": "nyc report --reporter=text-lcov | coveralls",
-        "changelog": "conventional-changelog -p wretch -i CHANGELOG.md -s -r 0"
+        "changelog": "conventional-changelog -p atom -i CHANGELOG.md -s -r 0"
     },
     "author": "Julien Elbaz",
     "license": "MIT",
