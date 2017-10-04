@@ -14,8 +14,9 @@
     "bugs": {
         "url": "https://github.com/elbywan/wretch/issues"
     },
-    "jsnext:main": "./dist/index.js",
     "main": "./dist/bundle/wretch.js",
+    "module": "./dist/index.js",
+    "jsnext:main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "files": [
         "dist"
