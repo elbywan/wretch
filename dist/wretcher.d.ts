@@ -1,3 +1,4 @@
+import conf from "./config";
 import { WretcherError } from "./resolver";
 /**
  * The Wretcher class used to perform easy fetch requests.
@@ -7,12 +8,10 @@ import { WretcherError } from "./resolver";
 export declare class Wretcher {
     private _url;
     private _options;
-    private _fetchF;
-    private _FormDataC;
     private _catchers;
-    protected constructor(_url: string, _options: RequestInit, _fetchF: typeof fetch, _FormDataC: typeof FormData, _catchers?: Map<number, (error: WretcherError) => void>);
-    static factory(url?: string, opts?: RequestInit, fetchF?: typeof fetch, formDataC?: typeof FormData): Wretcher;
-    private selfFactory({url, options, fetchF, formDataC, catchers}?);
+    protected constructor(_url: string, _options?: RequestInit, _catchers?: Map<number, (error: WretcherError) => void>);
+    static factory(url?: string, opts?: RequestInit): Wretcher;
+    private selfFactory({url, options, catchers}?);
     /**
      * Sets the default fetch options used for every subsequent fetch call.
      * @param opts New default options
@@ -27,6 +26,14 @@ export declare class Wretcher {
      * Default is "text".
      */
     errorType(method: "text" | "json"): this;
+    /**
+     * Sets the non-global polyfills which will be used for every subsequent calls.
+     *
+     * Needed for libraries like [fetch-ponyfill](https://github.com/qubyte/fetch-ponyfill).
+     *
+     * @param polyfills An object containing the polyfills.
+     */
+    polyfills(polyfills: Partial<typeof conf.polyfills>): this;
     /**
      * Returns a new Wretcher object with the url specified and the same options.
      * @param url String url

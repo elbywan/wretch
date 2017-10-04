@@ -1,5 +1,5 @@
-global.fetch = require("node-fetch")
-global.FormData = require("form-data")
+const fetch = require("node-fetch")
+const FormData = require("form-data")
 const fs = require("fs")
 const path = require("path")
 const expect = require("chai").expect
@@ -28,6 +28,18 @@ describe("Wretch", function() {
 
     after(async function(){
         mockServer.stop()
+    })
+
+    it("should set and use non global polyfills", function() {
+        expect(() => wretch("...").query({ a: 1, b: 2 })).to.throw("URLSearchParams is not defined")
+        expect(() => wretch("...").formData({ a: 1, b: 2})).to.throw("FormData is not defined")
+        expect(() => wretch("...").get("...")).to.throw("fetch is not defined")
+
+        return wretch().polyfills({
+            fetch: fetch,
+            FormData: FormData,
+            URLSearchParams: require("url").URLSearchParams
+        })
     })
 
     it("should perform crud requests and parse a text response", async function() {

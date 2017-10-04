@@ -15,25 +15,21 @@ import { resolver } from "./resolver";
  * Immutability : almost every method of this class return a fresh Wretcher object.
  */
 var Wretcher = /** @class */ (function () {
-    function Wretcher(_url, _options, _fetchF, _FormDataC, _catchers) {
+    function Wretcher(_url, _options, _catchers) {
         if (_options === void 0) { _options = {}; }
         if (_catchers === void 0) { _catchers = new Map(); }
         this._url = _url;
         this._options = _options;
-        this._fetchF = _fetchF;
-        this._FormDataC = _FormDataC;
         this._catchers = _catchers;
     }
-    Wretcher.factory = function (url, opts, fetchF, formDataC) {
+    Wretcher.factory = function (url, opts) {
         if (url === void 0) { url = ""; }
         if (opts === void 0) { opts = {}; }
-        if (fetchF === void 0) { fetchF = fetch; }
-        if (formDataC === void 0) { formDataC = FormData; }
-        return new Wretcher(url, opts, fetchF, formDataC);
+        return new Wretcher(url, opts);
     };
     Wretcher.prototype.selfFactory = function (_a) {
-        var _b = _a === void 0 ? {} : _a, _c = _b.url, url = _c === void 0 ? this._url : _c, _d = _b.options, options = _d === void 0 ? this._options : _d, _e = _b.fetchF, fetchF = _e === void 0 ? this._fetchF : _e, _f = _b.formDataC, formDataC = _f === void 0 ? this._FormDataC : _f, _g = _b.catchers, catchers = _g === void 0 ? this._catchers : _g;
-        return new Wretcher(url, options, fetchF, formDataC, catchers);
+        var _b = _a === void 0 ? {} : _a, _c = _b.url, url = _c === void 0 ? this._url : _c, _d = _b.options, options = _d === void 0 ? this._options : _d, _e = _b.catchers, catchers = _e === void 0 ? this._catchers : _e;
+        return new Wretcher(url, options, catchers);
     };
     /**
      * Sets the default fetch options used for every subsequent fetch call.
@@ -54,6 +50,17 @@ var Wretcher = /** @class */ (function () {
      */
     Wretcher.prototype.errorType = function (method) {
         conf.errorType = method;
+        return this;
+    };
+    /**
+     * Sets the non-global polyfills which will be used for every subsequent calls.
+     *
+     * Needed for libraries like [fetch-ponyfill](https://github.com/qubyte/fetch-ponyfill).
+     *
+     * @param polyfills An object containing the polyfills.
+     */
+    Wretcher.prototype.polyfills = function (polyfills) {
+        conf.polyfills = __assign({}, conf.polyfills, polyfills);
         return this;
     };
     /**
@@ -134,35 +141,35 @@ var Wretcher = /** @class */ (function () {
      */
     Wretcher.prototype.get = function (opts) {
         if (opts === void 0) { opts = {}; }
-        return resolver(this._url, this._fetchF)(this._catchers)(mix(opts, this._options));
+        return resolver(this._url)(this._catchers)(mix(opts, this._options));
     };
     /**
      * Performs a delete request.
      */
     Wretcher.prototype.delete = function (opts) {
         if (opts === void 0) { opts = {}; }
-        return resolver(this._url, this._fetchF)(this._catchers)(__assign({}, mix(opts, this._options), { method: "DELETE" }));
+        return resolver(this._url)(this._catchers)(__assign({}, mix(opts, this._options), { method: "DELETE" }));
     };
     /**
      * Performs a put request.
      */
     Wretcher.prototype.put = function (opts) {
         if (opts === void 0) { opts = {}; }
-        return resolver(this._url, this._fetchF)(this._catchers)(__assign({}, mix(opts, this._options), { method: "PUT" }));
+        return resolver(this._url)(this._catchers)(__assign({}, mix(opts, this._options), { method: "PUT" }));
     };
     /**
      * Performs a post request.
      */
     Wretcher.prototype.post = function (opts) {
         if (opts === void 0) { opts = {}; }
-        return resolver(this._url, this._fetchF)(this._catchers)(__assign({}, mix(opts, this._options), { method: "POST" }));
+        return resolver(this._url)(this._catchers)(__assign({}, mix(opts, this._options), { method: "POST" }));
     };
     /**
      * Performs a patch request.
      */
     Wretcher.prototype.patch = function (opts) {
         if (opts === void 0) { opts = {}; }
-        return resolver(this._url, this._fetchF)(this._catchers)(__assign({}, mix(opts, this._options), { method: "PATCH" }));
+        return resolver(this._url)(this._catchers)(__assign({}, mix(opts, this._options), { method: "PATCH" }));
     };
     /**
      * Sets the request body with any content.
@@ -183,7 +190,7 @@ var Wretcher = /** @class */ (function () {
      * @param formObject An object which will be converted to a FormData
      */
     Wretcher.prototype.formData = function (formObject) {
-        var formData = new this._FormDataC();
+        var formData = new (conf.polyfills.FormData || FormData)();
         for (var key in formObject) {
             if (formObject[key] instanceof Array) {
                 for (var _i = 0, _a = formObject[key]; _i < _a.length; _i++) {
@@ -202,7 +209,7 @@ var Wretcher = /** @class */ (function () {
 export { Wretcher };
 // Internal helpers
 var appendQueryParams = function (url, qp) {
-    var usp = new URLSearchParams();
+    var usp = new (conf.polyfills.URLSearchParams || URLSearchParams)();
     var index = url.indexOf("?");
     for (var key in qp) {
         if (qp[key] instanceof Array) {

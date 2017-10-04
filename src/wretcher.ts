@@ -12,13 +12,11 @@ export class Wretcher {
     protected constructor(
         private _url: string,
         private _options: RequestInit = {},
-        private _fetchF: typeof fetch,
-        private _FormDataC: typeof FormData,
         private _catchers: Map<number, (error: WretcherError) => void> = new Map()) {}
 
-    static factory(url = "", opts: RequestInit = {}, fetchF: typeof fetch = fetch, formDataC: typeof FormData = FormData) { return new Wretcher(url, opts, fetchF, formDataC) }
-    private selfFactory({ url = this._url, options = this._options, fetchF = this._fetchF, formDataC = this._FormDataC, catchers = this._catchers } = {}) {
-        return new Wretcher(url, options, fetchF, formDataC, catchers)
+    static factory(url = "", opts: RequestInit = {}) { return new Wretcher(url, opts) }
+    private selfFactory({ url = this._url, options = this._options, catchers = this._catchers } = {}) {
+        return new Wretcher(url, options, catchers)
     }
 
     /**
@@ -40,6 +38,18 @@ export class Wretcher {
      */
     errorType(method: "text" | "json") {
         conf.errorType = method
+        return this
+    }
+
+    /**
+     * Sets the non-global polyfills which will be used for every subsequent calls.
+     *
+     * Needed for libraries like [fetch-ponyfill](https://github.com/qubyte/fetch-ponyfill).
+     *
+     * @param polyfills An object containing the polyfills.
+     */
+    polyfills(polyfills: Partial<typeof conf.polyfills>) {
+        conf.polyfills = { ...conf.polyfills, ...polyfills}
         return this
     }
 
@@ -123,31 +133,31 @@ export class Wretcher {
      * Performs a get request.
      */
     get(opts = {}) {
-        return resolver(this._url, this._fetchF)(this._catchers)(mix(opts, this._options))
+        return resolver(this._url)(this._catchers)(mix(opts, this._options))
     }
     /**
      * Performs a delete request.
      */
     delete(opts = {}) {
-        return resolver(this._url, this._fetchF)(this._catchers)({ ...mix(opts, this._options), method: "DELETE" })
+        return resolver(this._url)(this._catchers)({ ...mix(opts, this._options), method: "DELETE" })
     }
     /**
      * Performs a put request.
      */
     put(opts = {}) {
-        return resolver(this._url, this._fetchF)(this._catchers)({ ...mix(opts, this._options), method: "PUT" })
+        return resolver(this._url)(this._catchers)({ ...mix(opts, this._options), method: "PUT" })
     }
     /**
      * Performs a post request.
      */
     post(opts = {}) {
-        return resolver(this._url, this._fetchF)(this._catchers)({ ...mix(opts, this._options), method: "POST" })
+        return resolver(this._url)(this._catchers)({ ...mix(opts, this._options), method: "POST" })
     }
     /**
      * Performs a patch request.
      */
     patch(opts = {}) {
-        return resolver(this._url, this._fetchF)(this._catchers)({ ...mix(opts, this._options), method: "PATCH" })
+        return resolver(this._url)(this._catchers)({ ...mix(opts, this._options), method: "PATCH" })
     }
 
     /**
@@ -169,7 +179,7 @@ export class Wretcher {
      * @param formObject An object which will be converted to a FormData
      */
     formData(formObject: object) {
-        const formData = new this._FormDataC()
+        const formData = new (conf.polyfills.FormData || FormData)()
         for(const key in formObject) {
             if(formObject[key] instanceof Array) {
                 for(const item of formObject[key])
@@ -186,7 +196,7 @@ export class Wretcher {
 // Internal helpers
 
 const appendQueryParams = (url: string, qp: object) => {
-    const usp = new URLSearchParams()
+    const usp = new (conf.polyfills.URLSearchParams || URLSearchParams)()
     const index = url.indexOf("?")
     for(const key in qp) {
         if(qp[key] instanceof Array) {

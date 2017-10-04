@@ -151,11 +151,25 @@ For older environment without fetch support, you should get a [polyfill](https:/
 
 ## Node.js
 
-Works with [FormData](https://github.com/form-data/form-data) and [fetch](https://www.npmjs.com/package/node-fetch) polyfills.
+Works with any [FormData](https://github.com/form-data/form-data) or [fetch](https://www.npmjs.com/package/node-fetch) polyfills.
 
 ```javascript
+// The global way :
+
 global.fetch = require("node-fetch")
 global.FormData = require("form-data")
+global.URLSearchParams = require("url").URLSearchParams
+
+// Or the non-global way :
+
+const fetch = require("node-fetch")
+const FormData = require("form-data")
+
+wretch().polyfills({
+    fetch: fetch,
+    FormData: FormData,
+    URLSearchParams: require("url").URLSearchParams
+})
 ```
 
 # Usage
@@ -254,7 +268,6 @@ wretch().defaults({ encoding: "same-origin", headers: { "X-Custom": "Header" }},
 */
 ```
 
-
 #### errorType(method: "text" | "json" = "text")
 
 Sets the method (text, json ...) used to parse the data contained in the response body in case of an HTTP error.
@@ -271,6 +284,21 @@ wretch("http://server/which/returns/an/error/with/a/json/body")
     // error.message contains the parsed body
     console.log(error.message))
   }
+```
+
+#### polyfills(polyfills: Object)
+
+Sets the non-global polyfills which will be used for every subsequent calls.
+
+```javascript
+const fetch = require("node-fetch")
+const FormData = require("form-data")
+
+wretch().polyfills({
+    fetch: fetch,
+    FormData: FormData,
+    URLSearchParams: require("url").URLSearchParams
+})
 ```
 
 #### catcher(code: number, catcher: (error: WretcherError) => void)
