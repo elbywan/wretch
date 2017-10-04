@@ -1,5 +1,5 @@
 <h1 align="center">
-	<img src="wretch.svg" alt="wretch-logo" width="220px"><br>
+	<img src="https://cdn.rawgit.com/elbywan/wretch/08831345/wretch.svg" alt="wretch-logo" width="220px"><br>
 	<br>
     wretch<br>
 	<br>
@@ -180,7 +180,7 @@ wretch().polyfills({
 
 ```html
 <!--- "wretch" will be attached to the global window object. -->
-<script src="https://unpkg.com/wretch/dist/bundle/wretch.js"></script>
+<script src="https://unpkg.com/wretch"></script>
 ```
 
 ```typescript
