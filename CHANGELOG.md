@@ -1,10 +1,24 @@
+<a name="0.2.2"></a>
+## [0.2.2](https://github.com/elbywan/wretch/compare/0.2.1...0.2.2) (2017-10-04)
+
+
+### :art: Code improvement(s)
+
+* Moves polyfills to the config object ([2820e34](https://github.com/elbywan/wretch/commit/2820e34))
+
+### :factory: New feature(s)
+
+* Allow non-global fetch & FormData ([112b9cc](https://github.com/elbywan/wretch/commit/112b9cc))
+
+
+
 <a name="0.2.1"></a>
 ## [0.2.1](https://github.com/elbywan/wretch/compare/0.2.0...0.2.1) (2017-10-03)
 
 
 ### :arrow_up: Version update(s)
 
-* 0.2.1 tag ([f1586d6](https://github.com/elbywan/wretch/commit/f1586d6))
+* 0.2.1 tag ([d13e8ad](https://github.com/elbywan/wretch/commit/d13e8ad))
 
 ### :art: Code improvement(s)
 
