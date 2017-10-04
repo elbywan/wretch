@@ -2,6 +2,10 @@
 ## [0.2.2](https://github.com/elbywan/wretch/compare/0.2.1...0.2.2) (2017-10-04)
 
 
+### :arrow_up: Version update(s)
+
+* 0.2.2 tag ([0883134](https://github.com/elbywan/wretch/commit/0883134))
+
 ### :art: Code improvement(s)
 
 * Moves polyfills to the config object ([2820e34](https://github.com/elbywan/wretch/commit/2820e34))
