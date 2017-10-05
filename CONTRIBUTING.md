@@ -44,7 +44,7 @@ Also in order to generate a nice changelog file, please begin your commit messag
 - :factory: `:factory:` -> new feature
 - :art: `:art:` -> code improvement
 - :checkered_flag: `:checkered_flag:` -> performance update
-- :white_check_mark: `:white_check_mark` -> test improvement
+- :white_check_mark: `:white_check_mark:` -> test improvement
 - :memo: `:memo:` -> documentation update
 - :arrow_up: `:arrow_up:` -> package update
 
