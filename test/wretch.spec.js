@@ -1,14 +1,15 @@
-const fetch = require("node-fetch")
+const nodeFetch = require("node-fetch")
 const FormData = require("form-data")
+const { performance, PerformanceObserver } = require("perf_hooks")
 const fs = require("fs")
 const path = require("path")
-const expect = require("chai").expect
+const { expect } = require("chai")
 const mockServer = require("./mock")
 
 const wretch = require("../dist/bundle/wretch")
 
-const PORT = 9876
-const URL = `http://localhost:${PORT}/`
+const _PORT = 9876
+const _URL = `http://localhost:${_PORT}/`
 
 const allRoutes = (obj, type, action) => Promise.all([
     obj.get()[type](_ => _).then(action),
@@ -18,12 +19,26 @@ const allRoutes = (obj, type, action) => Promise.all([
     obj.delete()[type](action)
 ])
 
+const fetchPolyfill = (timeout = null) =>
+    function(url, opts) {
+        performance.mark(url + " - begin")
+        return nodeFetch(url, opts).then(_ => {
+            performance.mark(url + " - end")
+            measure = () => performance.measure(_.url, url + " - begin", url + " - end")
+            if(timeout)
+                setTimeout(measure, timeout)
+            else
+                measure()
+            return _
+        })
+    }
+
 const duckImage = fs.readFileSync(path.resolve(__dirname, "assets", "duck.jpg"))
 
 describe("Wretch", function() {
 
     before(async function() {
-        mockServer.launch(PORT)
+        mockServer.launch(_PORT)
     })
 
     after(async function(){
@@ -35,22 +50,23 @@ describe("Wretch", function() {
         expect(() => wretch("...").formData({ a: 1, b: 2})).to.throw("FormData is not defined")
         expect(() => wretch("...").get("...")).to.throw("fetch is not defined")
 
-        return wretch().polyfills({
-            fetch: fetch,
+        wretch().polyfills({
+            fetch: fetchPolyfill(),
             FormData: FormData,
-            URLSearchParams: require("url").URLSearchParams
+            URLSearchParams: require("url").URLSearchParams,
+            PerformanceObserver: PerformanceObserver
         })
     })
 
     it("should perform crud requests and parse a text response", async function() {
-        const init = wretch(`${URL}/text`)
+        const init = wretch(`${_URL}/text`)
         const test = _ => expect(_).to.equal("A text string")
         await allRoutes(init, "text", test)
     })
 
     it("should perform crud requests and parse a json response", async function() {
         const test = _ => expect(_).to.deep.equal({ a: "json", "object": "which", "is": "stringified" })
-        const init = wretch(`${URL}/json`)
+        const init = wretch(`${_URL}/json`)
         await allRoutes(init, "json", test)
     })
 
@@ -58,32 +74,32 @@ describe("Wretch", function() {
         const test = _ => expect(_).to.satisfy(blob => {
             return blob.size === duckImage.length
         })
-        const init = wretch(`${URL}/blob`)
+        const init = wretch(`${_URL}/blob`)
         await allRoutes(init, "blob", test)
     })
 
     it("should perform crud requests and parse an arrayBuffer response", async function() {
         const test = _ => expect(_).to.satisfy(arrayBuffer => {
             var buffer = new Buffer(arrayBuffer.byteLength)
-            var view = new Uint8Array(arrayBuffer);
+            var view = new Uint8Array(arrayBuffer)
             for (let i = 0; i < buffer.length; ++i) {
                 buffer[i] = view[i]
             }
             return buffer.equals(new Buffer.from([ 0x00, 0x01, 0x02, 0x03 ]))
         })
-        const init = wretch(`${URL}/arrayBuffer`)
+        const init = wretch(`${_URL}/arrayBuffer`)
         await allRoutes(init, "arrayBuffer", test)
     })
 
     it("should perform a plain text round trip", async function() {
         const text = "hello, server !"
-        const roundTrip = await wretch(`${URL}/text/roundTrip`).content("text/plain").body(text).post().text()
+        const roundTrip = await wretch(`${_URL}/text/roundTrip`).content("text/plain").body(text).post().text()
         expect(roundTrip).to.be.equal(text)
     })
 
     it("should perform a json round trip", async function() {
         const jsonObject = { a: 1, b: 2, c: 3 }
-        const roundTrip = await wretch(`${URL}/json/roundTrip`).json(jsonObject).post().json()
+        const roundTrip = await wretch(`${_URL}/json/roundTrip`).json(jsonObject).post().json()
         expect(roundTrip).to.deep.equal(jsonObject)
     })
 
@@ -92,7 +108,7 @@ describe("Wretch", function() {
             hello: "world",
             duck: "Muscovy"
         }
-        const decoded = await wretch(`${URL}/formData/decode`).formData(form).post().json()
+        const decoded = await wretch(`${_URL}/formData/decode`).formData(form).post().json()
         expect(decoded).to.deep.equal({
             hello: "world",
             "duck": "Muscovy"
@@ -100,7 +116,7 @@ describe("Wretch", function() {
     })
 
     it("should catch common error codes", async function() {
-        const w = wretch().baseUrl(URL+"/")
+        const w = wretch().baseUrl(_URL+"/")
 
         let check = 0
         await w("400").get().badRequest(_ => {
@@ -132,7 +148,7 @@ describe("Wretch", function() {
 
     it("should catch other error codes", async function() {
         let check = 0
-        await wretch(`${URL}/444`)
+        await wretch(`${_URL}/444`)
             .get()
             .notFound(_ => check++)
             .error(444, _ => check++)
@@ -149,7 +165,7 @@ describe("Wretch", function() {
         w = w
             .catcher(400, err => check++)
             .catcher(401, err => check--)
-            .baseUrl(URL+"/")
+            .baseUrl(_URL+"/")
 
         await w("text").get().res(_ => check++)
         await w("/400").get().res(_ => check--)
@@ -163,26 +179,26 @@ describe("Wretch", function() {
     })
 
     it("should set default fetch options", async function() {
-        let rejected = await new Promise(res => wretch(`${URL}/customHeaders`).get().badRequest(_ => {
+        let rejected = await new Promise(res => wretch(`${_URL}/customHeaders`).get().badRequest(_ => {
             res(true)
         }).res(result => res(!result)))
         expect(rejected).to.be.true
         wretch().defaults({
             headers: { "X-Custom-Header": "Anything" }
         })
-        rejected = await new Promise(res => wretch(`${URL}/customHeaders`).get().badRequest(_ => {
+        rejected = await new Promise(res => wretch(`${_URL}/customHeaders`).get().badRequest(_ => {
             res(true)
         }).res(result => res(!result)))
         expect(rejected).to.be.true
         wretch().defaults({
             headers: { "X-Custom-Header-2": "Anything" }
         }, true)
-        rejected = await new Promise(res => wretch(`${URL}/customHeaders`).get().badRequest(_ => {
+        rejected = await new Promise(res => wretch(`${_URL}/customHeaders`).get().badRequest(_ => {
             res(true)
         }).res(result => res(!result)))
         wretch().defaults("not an object", true)
         expect(rejected).to.be.true
-        let accepted = await new Promise(res => wretch(`${URL}/customHeaders`)
+        let accepted = await new Promise(res => wretch(`${_URL}/customHeaders`)
             .options({ headers: { "X-Custom-Header-3" : "Anything" } })
             .options({ headers: { "X-Custom-Header-4" : "Anything" } }, true)
             .get()
@@ -193,28 +209,28 @@ describe("Wretch", function() {
 
     it("should allow url, query parameters & options modifications and return a fresh new Wretcher object containing the change", async function() {
         const obj1 = wretch()
-        const obj2 = obj1.url(URL)
+        const obj2 = obj1.url(_URL)
         expect(obj1._url).to.be.equal("")
-        expect(obj2._url).to.be.equal(URL)
+        expect(obj2._url).to.be.equal(_URL)
         const obj3 = obj1.options({ headers: { "X-test": "test" }})
         expect(obj3._options).to.deep.equal({ headers: { "X-test": "test" }})
         expect(obj1._options).to.deep.equal({})
         const obj4 = obj2.query({a: "1!", b: "2"})
-        expect(obj4._url).to.be.equal(`${URL}?a=1%21&b=2`)
-        expect(obj2._url).to.be.equal(URL)
+        expect(obj4._url).to.be.equal(`${_URL}?a=1%21&b=2`)
+        expect(obj2._url).to.be.equal(_URL)
         const obj5 = obj4.query({c: 6, d: [7, 8]})
-        expect(obj4._url).to.be.equal(`${URL}?a=1%21&b=2`)
-        expect(obj5._url).to.be.equal(`${URL}?c=6&d=7&d=8`)
+        expect(obj4._url).to.be.equal(`${_URL}?a=1%21&b=2`)
+        expect(obj5._url).to.be.equal(`${_URL}?c=6&d=7&d=8`)
     })
 
     it("should modify the Accept header", async function() {
-        expect(await wretch(`${URL}/accept`).get().text()).to.be.equal("text")
-        expect(await wretch(`${URL}/accept`).accept("application/json").get().json()).to.deep.equal({ json: "ok" })
+        expect(await wretch(`${_URL}/accept`).get().text()).to.be.equal("text")
+        expect(await wretch(`${_URL}/accept`).accept("application/json").get().json()).to.deep.equal({ json: "ok" })
     })
 
     it("should change the parsing used in the default error handler", async function() {
         wretch().errorType("json")
-        await wretch(`${URL}/json500`)
+        await wretch(`${_URL}/json500`)
             .get()
             .internalError(error => { expect(error.json).to.deep.equal({ error: 500, message: "ok" }) })
             .res(_ => expect.fail("", "", "I should never be called because an error was thrown"))
@@ -222,8 +238,28 @@ describe("Wretch", function() {
     })
 
     it("should mix in options on baseUrl", async function() {
-        const w = wretch().options({ headers: { "X-test": "test" }}).baseUrl(URL+"/")
-        const obj1 = w("");
+        const w = wretch().options({ headers: { "X-test": "test" }}).baseUrl(_URL+"/")
+        const obj1 = w("")
         expect(obj1._options).to.deep.equal({ headers: { "X-test": "test" }})
+    })
+
+    it("should retrieve performance timings associated with a fetch request", function(done) {
+        // Test empty perfs()
+        wretch(`${_URL}/text`).get().perfs().res(_ => expect(_.ok).to.be.true).then(
+            // Racing condition : observer triggered before response
+            wretch(`${_URL}/text`).get().perfs(_ => {
+                expect(typeof _.startTime).to.be.equal("number")
+
+                // Racing condition : response triggered before observer
+                wretch().polyfills({
+                    fetch: fetchPolyfill(10)
+                })
+
+                wretch(`${_URL}/text`).get().perfs(_ => {
+                    expect(typeof _.startTime).to.be.equal("number")
+                    done()
+                })
+            })
+        )
     })
 })

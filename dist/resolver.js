@@ -54,19 +54,29 @@ export var resolver = function (url) { return function (catchers) {
              */
             text: wrapTypeParser("text"),
             /**
-             * Only for browsers !
+             * Performs a callback on the API performance timings of the request.
              *
-             * Performs a callback on the API performance timings when they will be available.
+             * Warning: Still experimental on browsers and node.js
              */
             perfs: function (cb) {
-                if (cb && typeof self !== "undefined" && typeof self["PerformanceObserver"] !== "undefined") {
-                    wrapper.then(function (res) {
-                        var observer = new self["PerformanceObserver"](function (entries) {
-                            if (res)
-                                cb(entries.getEntriesByName(res.url).reverse()[0]);
-                            observer.disconnect();
-                        });
-                        observer.observe({ entryTypes: ["resource"] });
+                var perfObserver = conf.polyfills.PerformanceObserver || (typeof self !== "undefined" ? self["PerformanceObserver"] : null);
+                if (cb && perfObserver) {
+                    var entries_1 = null;
+                    var callback_1 = null;
+                    var observer_1 = new perfObserver(function (e) {
+                        entries_1 = e.getEntries();
+                        if (callback_1)
+                            callback_1();
+                        observer_1.disconnect();
+                    });
+                    observer_1.observe({ entryTypes: ["resource", "measure"] });
+                    req.then(function (res) {
+                        if (res) {
+                            if (entries_1)
+                                cb(entries_1.reverse().find(function (_) { return _.name === res.url; }));
+                            else
+                                callback_1 = function () { return cb(entries_1.reverse().find(function (_) { return _.name === res.url; })); };
+                        }
                     });
                 }
                 return responseTypes;

@@ -27,7 +27,7 @@
         "fix": "tslint --fix -p tsconfig.json -t codeFrame",
         "prebuild": "rimraf dist && rimraf coverage && npm run lint",
         "build": "tsc -p . && rollup -c",
-        "test": "nyc mocha --reporter list",
+        "test": "nyc mocha --reporter list test/**/*.spec.js",
         "coverage": "nyc report --reporter=text-lcov | coveralls",
         "changelog": "conventional-changelog -p wretch -i CHANGELOG.md -s -r 0"
     },
