@@ -89,7 +89,7 @@ export declare class Wretcher {
      * Performs a get request.
      */
     get(opts?: {}): {
-        res: <Result = Response>(cb?: (type: void) => Result) => Promise<Result>;
+        res: <Result = Response>(cb?: (type: Response) => Result) => Promise<Result>;
         json: <Result = {
             [key: string]: any;
         }>(cb?: (type: {
@@ -99,6 +99,7 @@ export declare class Wretcher {
         formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>;
         arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
         text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>;
+        perfs: (cb?: (type: any) => void) => any;
         error: (code: number, cb: any) => any;
         badRequest: (cb: (error: WretcherError) => void) => any;
         unauthorized: (cb: (error: WretcherError) => void) => any;
@@ -111,7 +112,7 @@ export declare class Wretcher {
      * Performs a delete request.
      */
     delete(opts?: {}): {
-        res: <Result = Response>(cb?: (type: void) => Result) => Promise<Result>;
+        res: <Result = Response>(cb?: (type: Response) => Result) => Promise<Result>;
         json: <Result = {
             [key: string]: any;
         }>(cb?: (type: {
@@ -121,6 +122,7 @@ export declare class Wretcher {
         formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>;
         arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
         text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>;
+        perfs: (cb?: (type: any) => void) => any;
         error: (code: number, cb: any) => any;
         badRequest: (cb: (error: WretcherError) => void) => any;
         unauthorized: (cb: (error: WretcherError) => void) => any;
@@ -133,7 +135,7 @@ export declare class Wretcher {
      * Performs a put request.
      */
     put(opts?: {}): {
-        res: <Result = Response>(cb?: (type: void) => Result) => Promise<Result>;
+        res: <Result = Response>(cb?: (type: Response) => Result) => Promise<Result>;
         json: <Result = {
             [key: string]: any;
         }>(cb?: (type: {
@@ -143,6 +145,7 @@ export declare class Wretcher {
         formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>;
         arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
         text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>;
+        perfs: (cb?: (type: any) => void) => any;
         error: (code: number, cb: any) => any;
         badRequest: (cb: (error: WretcherError) => void) => any;
         unauthorized: (cb: (error: WretcherError) => void) => any;
@@ -155,7 +158,7 @@ export declare class Wretcher {
      * Performs a post request.
      */
     post(opts?: {}): {
-        res: <Result = Response>(cb?: (type: void) => Result) => Promise<Result>;
+        res: <Result = Response>(cb?: (type: Response) => Result) => Promise<Result>;
         json: <Result = {
             [key: string]: any;
         }>(cb?: (type: {
@@ -165,6 +168,7 @@ export declare class Wretcher {
         formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>;
         arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
         text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>;
+        perfs: (cb?: (type: any) => void) => any;
         error: (code: number, cb: any) => any;
         badRequest: (cb: (error: WretcherError) => void) => any;
         unauthorized: (cb: (error: WretcherError) => void) => any;
@@ -177,7 +181,7 @@ export declare class Wretcher {
      * Performs a patch request.
      */
     patch(opts?: {}): {
-        res: <Result = Response>(cb?: (type: void) => Result) => Promise<Result>;
+        res: <Result = Response>(cb?: (type: Response) => Result) => Promise<Result>;
         json: <Result = {
             [key: string]: any;
         }>(cb?: (type: {
@@ -187,6 +191,7 @@ export declare class Wretcher {
         formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>;
         arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
         text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>;
+        perfs: (cb?: (type: any) => void) => any;
         error: (code: number, cb: any) => any;
         badRequest: (cb: (error: WretcherError) => void) => any;
         unauthorized: (cb: (error: WretcherError) => void) => any;

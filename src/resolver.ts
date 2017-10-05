@@ -33,12 +33,13 @@ export const resolver = url => (catchers: Map<number, (error: WretcherError) => 
         doCatch(wrapper.then(_ => _ && cb && cb(_) || _))
 
     const responseTypes: {
-        res: <Result = Response>(cb?: (type: void) => Result) => Promise<Result>,
+        res: <Result = Response>(cb?: (type: Response) => Result) => Promise<Result>,
         json: <Result = {[key: string]: any}>(cb?: (type: {[key: string]: any}) => Result) => Promise<Result>,
         blob: <Result = Blob>(cb?: (type: Blob) => Result) => Promise<Result>,
         formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>,
         arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>,
         text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>,
+        perfs: (cb?: (type: any) => void) => typeof responseTypes,
         error: (code: number, cb: any) => typeof responseTypes,
         badRequest: (cb: (error: WretcherError) => void) => typeof responseTypes,
         unauthorized: (cb: (error: WretcherError) => void) => typeof responseTypes,
@@ -50,7 +51,7 @@ export const resolver = url => (catchers: Map<number, (error: WretcherError) => 
         /**
          * Retrieves the raw result as a promise.
          */
-        res: wrapTypeParser<void>(null),
+        res: wrapTypeParser<Response>(null),
         /**
          * Retrieves the result as a parsed JSON object.
          */
@@ -71,6 +72,23 @@ export const resolver = url => (catchers: Map<number, (error: WretcherError) => 
          * Retrieves the result as a string.
          */
         text: wrapTypeParser<string>("text"),
+        /**
+         * Performs a callback on the API performance timings when they will be available.
+         *
+         * Warning: Still experimental on browsers and not supported by node.js
+         */
+        perfs: cb => {
+            if(cb && typeof self !== "undefined" && typeof self["PerformanceObserver"] !== "undefined") {
+                wrapper.then(res => {
+                    const observer = new self["PerformanceObserver"](entries => {
+                        if(res) cb(entries.getEntriesByName(res.url).reverse()[0])
+                        observer.disconnect()
+                    })
+                    observer.observe({entryTypes: ["resource"]})
+                })
+            }
+            return responseTypes
+        },
         /**
          * Catches an http response with a specific error code and performs a callback.
          */

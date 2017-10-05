@@ -54,6 +54,24 @@ export var resolver = function (url) { return function (catchers) {
              */
             text: wrapTypeParser("text"),
             /**
+             * Only for browsers !
+             *
+             * Performs a callback on the API performance timings when they will be available.
+             */
+            perfs: function (cb) {
+                if (cb && typeof self !== "undefined" && typeof self["PerformanceObserver"] !== "undefined") {
+                    wrapper.then(function (res) {
+                        var observer = new self["PerformanceObserver"](function (entries) {
+                            if (res)
+                                cb(entries.getEntriesByName(res.url).reverse()[0]);
+                            observer.disconnect();
+                        });
+                        observer.observe({ entryTypes: ["resource"] });
+                    });
+                }
+                return responseTypes;
+            },
+            /**
              * Catches an http response with a specific error code and performs a callback.
              */
             error: function (code, cb) {

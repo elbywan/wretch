@@ -5,7 +5,7 @@ export declare type WretcherError = Error & {
     json?: any;
 };
 export declare const resolver: (url: any) => (catchers?: Map<number, (error: WretcherError) => void>) => (opts?: {}) => {
-    res: <Result = Response>(cb?: (type: void) => Result) => Promise<Result>;
+    res: <Result = Response>(cb?: (type: Response) => Result) => Promise<Result>;
     json: <Result = {
         [key: string]: any;
     }>(cb?: (type: {
@@ -15,6 +15,7 @@ export declare const resolver: (url: any) => (catchers?: Map<number, (error: Wre
     formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>;
     arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
     text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>;
+    perfs: (cb?: (type: any) => void) => any;
     error: (code: number, cb: any) => any;
     badRequest: (cb: (error: WretcherError) => void) => any;
     unauthorized: (cb: (error: WretcherError) => void) => any;
