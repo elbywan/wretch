@@ -7,6 +7,7 @@ export default {
     polyfills: {
         fetch: null,
         FormData: null,
-        URLSearchParams: null
+        URLSearchParams: null,
+        PerformanceObserver: null
     }
 }

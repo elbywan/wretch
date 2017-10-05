@@ -73,18 +73,28 @@ export const resolver = url => (catchers: Map<number, (error: WretcherError) => 
          */
         text: wrapTypeParser<string>("text"),
         /**
-         * Performs a callback on the API performance timings when they will be available.
+         * Performs a callback on the API performance timings of the request.
          *
-         * Warning: Still experimental on browsers and not supported by node.js
+         * Warning: Still experimental on browsers and node.js
          */
         perfs: cb => {
-            if(cb && typeof self !== "undefined" && typeof self["PerformanceObserver"] !== "undefined") {
-                wrapper.then(res => {
-                    const observer = new self["PerformanceObserver"](entries => {
-                        if(res) cb(entries.getEntriesByName(res.url).reverse()[0])
-                        observer.disconnect()
-                    })
-                    observer.observe({entryTypes: ["resource"]})
+            const perfObserver = conf.polyfills.PerformanceObserver || (typeof self !== "undefined" ? self["PerformanceObserver"] : null)
+            if(cb && perfObserver) {
+                let entries = null
+                let callback = null
+                const observer = new perfObserver(e => {
+                    entries = e.getEntries()
+                    if(callback) callback()
+                    observer.disconnect()
+                })
+                observer.observe({ entryTypes: ["resource", "measure"] })
+                req.then(res => {
+                    if(res) {
+                        if(entries)
+                            cb(entries.reverse().find(_ => _.name === res.url))
+                        else
+                            callback = () => cb(entries.reverse().find(_ => _.name === res.url))
+                    }
                 })
             }
             return responseTypes
