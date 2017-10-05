@@ -281,8 +281,8 @@ wretch("http://server/which/returns/an/error/with/a/json/body")
   .get()
   .res()
   .catch(error => {
-    // error.message contains the parsed body
-    console.log(error.message))
+    // error[errorType] (here, json) contains the parsed body
+    console.log(error.json))
   }
 ```
 
