@@ -599,6 +599,48 @@ Text handler.
 wretch("...").get().text(txt => console.log(txt))
 ```
 
+## Performance API (experimental)
+
+#### perfs(cb: (timings: PerformanceTiming) => void)
+
+*Highly experimental*
+
+Takes advantage of the Performance API ([browsers](https://developer.mozilla.org/en-US/docs/Web/API/Performance_API) & [node.js](https://nodejs.org/api/perf_hooks.html)) to expose timings related to the request.
+
+Browser timings are very accurate, node.js only contains raw measures.
+
+```js
+// Use perfs() before the response types (text, json, ...)
+wretch("...")
+  .get()
+  .perfs(timings => {
+    /* Will be called when the timings are ready. */
+    console.log(timings.startTime)
+  })
+  .res()
+  /* ... */
+```
+
+For node.js, there is a little extra work to do :
+
+```js
+// Node.js 8.5+ only
+const { performance, PerformanceObserver } = require("perf_hooks")
+
+const fetchPolyfill =
+wretch().polyfills({
+  fetch: function(url, opts) {
+    performance.mark(url + " - begin")
+    return fetch(url, opts).then(_ => {
+      performance.mark(url + " - end")
+      performance.measure(_.url, url + " - begin", url + " - end")
+    })
+  },
+  /* ... */
+  PerformanceObserver: PerformanceObserver
+})
+```
+
 # License
 
 MIT
