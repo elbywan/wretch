@@ -211,7 +211,7 @@ wretch(url, options)
       // Required
       // Performs the get/put/post/delete/patch request
 
-  /* Fetch is called at this time */
+  /* Fetch is called at this time, and from this point on you can chain catchers and call a response type handler. */
 
   .[catcher(s)]()
       // Optional
@@ -220,7 +220,7 @@ wretch(url, options)
       // Required
       // Specify the data type you need, which will be parsed and handed to you
 
-  /* Wretch returns a Promise, so you can continue chaining actions afterwards. */
+  /* From this point wretch returns a standard Promise, so you can continue chaining actions afterwards. */
 
   .then(/* ... */)
   .catch(/* ... */)
@@ -233,6 +233,7 @@ wretch(url, options)
 * [Http Methods](#http-methods)
 * [Catchers](#catchers)
 * [Response Types](#response-types)
+* [Extras](#extras)
 
 ------
 
@@ -243,6 +244,123 @@ Create a new Wretcher object with an url and [vanilla fetch options](https://dev
 ## Helper Methods
 
 *Helper methods are optional and can be chained.*
+
+| [url](#urlurl-string-replace-boolean--false) | [query](#queryqp-object) | [options](#optionsoptions-object-mixin-boolean--false) | [headers](#headersheadervalues-object) | [accept](#acceptheadervalue-string) | [content](#contentheadervalue-string) | [catcher](#catchercode-number-catcher-error-wretchererror--void) | [defaults](#defaultsopts-object-mixin-boolean--false) | [errorType](#errortypemethod-text--json--text) | [polyfills](#polyfillspolyfills-object) |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+
+#### url(url: string, replace: boolean = false)
+
+Appends or replaces the url.
+
+```js
+wretch({ credentials: "same-origin" }).url("...").get().json(/* ... */)
+
+// Can be used to set a base url
+
+// Subsequent requests made using the 'blogs' object will be prefixed with "http://mywebsite.org/api/blogs"
+const blogs = wretch("http://mywebsite.org/api/blogs")
+
+// Perfect for CRUD apis
+const id = await blogs.json({ name: "my blog" }).post().json(_ => _.id)
+const blog = await blogs.url(`/${id}`).get().json()
+console.log(blog.name)
+
+await blogs.url(`/${id}`).delete().res()
+
+// And to replace the base url if needed :
+const noMoreBlogs = blogs.url("http://mywebsite.org/", true)
+```
+
+#### query(qp: Object)
+
+Converts a javascript object to query parameters, then appends this query string to the current url.
+
+```js
+let w = wretch("http://example.com")
+// url is http://example.com
+w = w.query({ a: 1, b: 2 })
+// url is now http://example.com?a=1&b=2
+w = w.query({ c: 3, d: [4, 5] })
+// url is now http://example.com?c=3&d=4&d=5
+```
+
+#### options(options: Object, mixin: boolean = false)
+
+Set the fetch options.
+
+```js
+wretch("...").options({ credentials: "same-origin" })
+```
+
+Wretch being immutable, you can store the object for later use.
+
+```js
+const corsWretch = wretch().options({ credentials: "include", mode: "cors" })
+
+corsWretch.url("http://endpoint1").get()
+corsWretch.url("http://endpoint2").get()
+```
+
+```js
+// You can mix in with the existing options instead of overriding them by passing a boolean flag :
+
+wretch()
+  .options({ headers: { "Accept": "application/json" }})
+  .options({ encoding: "same-origin", headers: { "X-Custom": "Header" }}, true)
+
+/* Options mixed in :
+{
+  headers: { "Accept": "application/json", "X-Custom": "Header" },
+  encoding: "same-origin"
+}
+*/
+```
+
+#### headers(headerValues: Object)
+
+Set request headers.
+
+```js
+wretch("...")
+  .headers({ "Content-Type": "text/plain", Accept: "application/json" })
+  .body("my text")
+  .post()
+  .json()
+```
+
+#### accept(headerValue: string)
+
+Shortcut to set the "Accept" header.
+
+```js
+wretch("...").accept("application/json")
+```
+
+#### content(headerValue: string)
+
+Shortcut to set the "Content-Type" header.
+
+```js
+wretch("...").content("application/json")
+```
+
+#### catcher(code: number, catcher: (error: WretcherError) => void)
+
+Adds a [catcher](https://github.com/elbywan/wretch#catchers) which will be called on every subsequent request error.
+
+Very useful when you need to perform a repetitive action on a specific error code.
+
+```js
+const w = wretcher()
+  .catcher(404, err => redirect("/routes/notfound", err.message))
+  .catcher(500, err => flashMessage("internal.server.error"))
+
+// No need to catch 404 or 500 code, they are already taken care of.
+w.url("http://myapi.com/get/something").get().json(json => /* ... */)
+
+// Default catchers can be overridden if needed.
+w.url("...").notFound(err => /* overrides the default 'redirect' catcher */)
+```
 
 #### defaults(opts: Object, mixin: boolean = false)
 
@@ -304,123 +422,12 @@ wretch().polyfills({
 })
 ```
 
-#### catcher(code: number, catcher: (error: WretcherError) => void)
-
-Adds a [catcher](https://github.com/elbywan/wretch#catchers) which will be called on every subsequent request error.
-
-Very useful when you need to perform a repetitive action on a specific error code.
-
-```js
-const w = wretcher()
-  .catcher(404, err => redirect("/routes/notfound", err.message))
-  .catcher(500, err => flashMessage("internal.server.error"))
-
-// No need to catch 404 or 500 code, they are already taken care of.
-w.url("http://myapi.com/get/something").get().json(json => /* ... */)
-
-// Default catchers can be overridden if needed.
-w.url("...").notFound(err => /* overrides the default 'redirect' catcher */)
-```
-
-#### options(options: Object, mixin: boolean = false)
-
-Set the fetch options.
-
-```js
-wretch("...").options({ credentials: "same-origin" })
-```
-
-Wretch being immutable, you can store the object for later use.
-
-```js
-const corsWretch = wretch().options({ credentials: "include", mode: "cors" })
-
-corsWretch.url("http://endpoint1").get()
-corsWretch.url("http://endpoint2").get()
-```
-
-```js
-// You can mix in with the existing options instead of overriding them by passing a boolean flag :
-
-wretch()
-  .options({ headers: { "Accept": "application/json" }})
-  .options({ encoding: "same-origin", headers: { "X-Custom": "Header" }}, true)
-
-/* Options mixed in :
-{
-  headers: { "Accept": "application/json", "X-Custom": "Header" },
-  encoding: "same-origin"
-}
-*/
-```
-
-#### url(url: string, replace: boolean = false)
-
-Appends or replaces the url.
-
-```js
-wretch({ credentials: "same-origin" }).url("...").get().json(/* ... */)
-
-// Can be used to set a base url
-
-// Subsequent requests made using the 'blogs' object will be prefixed with "http://mywebsite.org/api/blogs"
-const blogs = wretch("http://mywebsite.org/api/blogs")
-
-// Perfect for CRUD apis
-const id = await blogs.json({ name: "my blog" }).post().json(_ => _.id)
-const blog = await blogs.url(`/${id}`).get().json()
-console.log(blog.name)
-
-await blogs.url(`/${id}`).delete().res()
-
-// And to replace the base url if needed :
-const noMoreBlogs = blogs.url("http://mywebsite.org/", true)
-```
-
-#### query(qp: Object)
-
-Converts a javascript object to query parameters, then appends this query string to the current url.
-
-```js
-let w = wretch("http://example.com")
-// url is http://example.com
-w = w.query({ a: 1, b: 2 })
-// url is now http://example.com?a=1&b=2
-w = w.query({ c: 3, d: [4, 5] })
-// url is now http://example.com?c=3&d=4&d=5
-```
-
-#### headers(headerValues: Object)
-
-Set request headers.
-
-```js
-wretch("...")
-  .headers({ "Content-Type": "text/plain", Accept: "application/json" })
-  .body("my text")
-  .post()
-  .json()
-```
-
-#### accept(headerValue: string)
-
-Shortcut to set the "Accept" header.
-
-```js
-wretch("...").accept("application/json")
-```
-
-#### content(headerValue: string)
-
-Shortcut to set the "Content-Type" header.
-
-```js
-wretch("...").content("application/json")
-```
-
 ## Body Types
 
 *A body type is only needed when performing put/patch/post requests with a body.*
+
+| [body](#bodycontents-any) | [json](#jsonjsobject-object) | [formData](#formdataformobject-object) | [formUrl](formurlinput--object--string) |
+|-----|-----|-----|-----|
 
 #### body(contents: any)
 
@@ -471,6 +478,9 @@ wretch("...").formUrl(alreadyEncodedForm).post()
 
 *You can pass the fetch options here if you prefer.*
 
+| [get](#getopts--) | [delete](#deleteopts--) | [put](#putopts--) | [patch](#patchopts--) | [post](#postopts--) |
+|-----|-----|-----|-----|-----|
+
 #### get(opts = {})
 
 Perform a get request.
@@ -516,6 +526,9 @@ wretch("...").json({...}).post({ credentials: "same-origin" })
 *Catchers are optional, but if you do not provide them an error will still be thrown in case of an http error code received.*
 
 *Catchers can be chained.*
+
+| [badRequest](#badrequestcb-error-wretchererror--any) | [unauthorized](#unauthorizedcb-error-wretchererror--any) | [forbidden](#forbiddencb-error-wretchererror--any) | [notFound](#notfoundcb-error-wretchererror--any) | [timeout](#timeoutcb-error-wretchererror--any) | [internalError](#internalerrorcb-error-wretchererror--any) | [error](#errorcode-number-cb-error-wretchererror--any) |
+|-----|-----|-----|-----|-----|-----|-----|
 
 ```ts
 type WretcherError = Error & { status: number, response: Response, text?: string, json?: Object }
@@ -568,6 +581,9 @@ Catch a specific error and perform the callback.
 
 *If an error is caught by catchers, the response type handler will not be called.*
 
+| [res](#rescb-response--response--any) | [json](#jsoncb-json--object--any) | [blob](#blobcb-blob--blob--any) | [formData](#formdatacb-fd--formdata--any) | [arrayBuffer](#arraybuffercb-ab--arraybuffer--any) | [text](#textcb-text--string--any) |
+|-----|-----|-----|-----|-----|-----|
+
 #### res(cb: (response : Response) => any)
 
 Raw Response handler.
@@ -616,11 +632,13 @@ Text handler.
 wretch("...").get().text(txt => console.log(txt))
 ```
 
-## Performance API (experimental)
+## Extras
+
+### Performance API (experimental)
 
 #### perfs(cb: (timings: PerformanceTiming) => void)
 
-Takes advantage of the Performance API ([browsers](https://developer.mozilla.org/en-US/docs/Web/API/Performance_API) & [node.js](https://nodejs.org/api/perf_hooks.html)) to expose timings related to the request.
+Takes advantage of the Performance API ([browsers](https://developer.mozilla.org/en-US/docs/Web/API/Performance_API) & [node.js](https://nodejs.org/api/perf_hooks.html)) to expose timings related to the underlying request.
 
 Browser timings are very accurate, node.js only contains raw measures.
 
@@ -651,7 +669,7 @@ wretch().polyfills({
       performance.measure(_.url, url + " - begin", url + " - end")
     })
   },
-  /* ... */
+  /* other polyfills ... */
   performance: performance,
   PerformanceObserver: PerformanceObserver
 })
