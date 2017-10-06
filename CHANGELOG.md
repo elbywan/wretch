@@ -1,10 +1,20 @@
+<a name="0.2.4"></a>
+## [0.2.4](https://github.com/elbywan/wretch/compare/0.2.3...0.2.4) (2017-10-06)
+
+
+### :bug: Bug fix(es)
+
+* Fix perfs() concurrency issues ([79f86ce](https://github.com/elbywan/wretch/commit/79f86ce))
+
+
+
 <a name="0.2.3"></a>
 ## [0.2.3](https://github.com/elbywan/wretch/compare/0.2.2...0.2.3) (2017-10-06)
 
 
 ### :arrow_up: Version update(s)
 
-* 0.2.3 tag ([2eada7b](https://github.com/elbywan/wretch/commit/2eada7b))
+* 0.2.3 tag ([cce504c](https://github.com/elbywan/wretch/commit/cce504c))
 
 ### :art: Code improvement(s)
 
