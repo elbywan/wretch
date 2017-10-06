@@ -54,20 +54,12 @@ export class Wretcher {
     }
 
     /**
-     * Returns a new Wretcher object with the url specified and the same options.
+     * Returns a new Wretcher object with the argument url appended and the same options.
      * @param url String url
+     * @param replace Boolean it true, replaces the current url instead of appending
      */
-    url(url: string) {
-        return this.selfFactory({ url })
-    }
-
-    /**
-     * Returns a wretch factory which, when called, creates a new Wretcher object with the base url as an url prefix.
-     * @param baseurl The base url
-     */
-    baseUrl(baseurl: string) {
-        return (url = "", opts: RequestInit = {}) =>
-            this.selfFactory({ url: baseurl + url, options: mix(this._options, opts) })
+    url(url: string, replace = false) {
+        return replace ? this.selfFactory({ url }) : this.selfFactory({ url: this._url + url })
     }
 
     /**

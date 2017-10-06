@@ -126,30 +126,30 @@ describe("Wretch", function() {
     })
 
     it("should catch common error codes", async function() {
-        const w = wretch().baseUrl(_URL+"/")
+        const w = wretch(_URL + "/")
 
         let check = 0
-        await w("400").get().badRequest(_ => {
+        await w.url("400").get().badRequest(_ => {
             expect(_.message).to.be.equal("error code : 400")
             check++
         }).text(_ => expect(_).to.be.null)
-        await w("401").get().unauthorized(_ => {
+        await w.url("401").get().unauthorized(_ => {
             expect(_.message).to.be.equal("error code : 401")
             check++
         }).text(_ => expect(_).to.be.null)
-        await w("403").get().forbidden(_ => {
+        await w.url("403").get().forbidden(_ => {
             expect(_.message).to.be.equal("error code : 403")
             check++
         }).text(_ => expect(_).to.be.null)
-        await w("404").get().notFound(_ => {
+        await w.url("404").get().notFound(_ => {
             expect(_.message).to.be.equal("error code : 404")
             check++
         }).text(_ => expect(_).to.be.null)
-        await w("408").get().timeout(_ => {
+        await w.url("408").get().timeout(_ => {
             expect(_.message).to.be.equal("error code : 408")
             check++
         }).text(_ => expect(_).to.be.null)
-        await w("500").get().internalError(_ => {
+        await w.url("500").get().internalError(_ => {
             expect(_.message).to.be.equal("error code : 500")
             check++
         }).text(_ => expect(_).to.be.null)
@@ -172,18 +172,17 @@ describe("Wretch", function() {
         let w = wretch()
             .catcher(404, err => check++)
             .catcher(500, err => check++)
-        w = w
+        w = w.url(_URL + "/")
             .catcher(400, err => check++)
             .catcher(401, err => check--)
-            .baseUrl(_URL+"/")
 
-        await w("text").get().res(_ => check++)
-        await w("/400").get().res(_ => check--)
-        await w("/401").get().unauthorized(_ => check++).res(_ => check--)
-        await w("/404").get().res(_ => check--)
-        await w("/408").get().timeout(_ => check++).res(_ => check--)
-        await w("/418").get().res(_ => check--).catch(_ => "muted")
-        await w("/500").get().res(_ => check--)
+        await w.url("text").get().res(_ => check++)
+        await w.url("/400").get().res(_ => check--)
+        await w.url("/401").get().unauthorized(_ => check++).res(_ => check--)
+        await w.url("/404").get().res(_ => check--)
+        await w.url("/408").get().timeout(_ => check++).res(_ => check--)
+        await w.url("/418").get().res(_ => check--).catch(_ => "muted")
+        await w.url("/500").get().res(_ => check--)
 
         expect(check).to.be.equal(6)
     })
@@ -218,9 +217,9 @@ describe("Wretch", function() {
     })
 
     it("should allow url, query parameters & options modifications and return a fresh new Wretcher object containing the change", async function() {
-        const obj1 = wretch()
-        const obj2 = obj1.url(_URL)
-        expect(obj1._url).to.be.equal("")
+        const obj1 = wretch("...")
+        const obj2 = obj1.url(_URL, true)
+        expect(obj1._url).to.be.equal("...")
         expect(obj2._url).to.be.equal(_URL)
         const obj3 = obj1.options({ headers: { "X-test": "test" }})
         expect(obj3._options).to.deep.equal({ headers: { "X-test": "test" }})
@@ -247,15 +246,7 @@ describe("Wretch", function() {
             .then(_ => expect(_).to.be.undefined)
     })
 
-    it("should mix in options on baseUrl", async function() {
-        const w = wretch().options({ headers: { "X-test": "test" }}).baseUrl(_URL+"/")
-        const obj1 = w("")
-        expect(obj1._options).to.deep.equal({ headers: { "X-test": "test" }})
-    })
-
     it("should retrieve performance timings associated with a fetch request", function(done) {
-
-
         // Test empty perfs()
         wretch(`${_URL}/text`).get().perfs().res(_ => expect(_.ok).to.be.true).then(
             // Racing condition : observer triggered before response

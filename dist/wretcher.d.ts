@@ -35,15 +35,11 @@ export declare class Wretcher {
      */
     polyfills(polyfills: Partial<typeof conf.polyfills>): this;
     /**
-     * Returns a new Wretcher object with the url specified and the same options.
+     * Returns a new Wretcher object with the argument url appended and the same options.
      * @param url String url
+     * @param replace Boolean it true, replaces the current url instead of appending
      */
-    url(url: string): Wretcher;
-    /**
-     * Returns a wretch factory which, when called, creates a new Wretcher object with the base url as an url prefix.
-     * @param baseurl The base url
-     */
-    baseUrl(baseurl: string): (url?: string, opts?: RequestInit) => Wretcher;
+    url(url: string, replace?: boolean): Wretcher;
     /**
      * Returns a new Wretcher object with the same url and new options.
      * @param options New options

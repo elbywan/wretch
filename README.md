@@ -45,6 +45,7 @@ fetch("examples/example.json")
 ```javascript
 // Wretch does it for you
 
+// Use .res for the raw response, .text for raw text, .json for json, .blob for a blob ...
 wretch("examples/example.json").get().json(json => {
   // Do stuff with the parsed json
 })
@@ -110,20 +111,20 @@ wretch("endpoint")
 
 const corsWretch = wretch().options({ credentials: "include", mode: "cors" })
 
-// sends a cors request
-corsWretch.url("...").get()
+// Sends a cors request to http://mycrossdomainapi.com
+corsWretch.url("http://mycrossdomainapi.com").get().res(response => /* ... */)
 
-// Refine the cors wretch by adding a specific header and a fixed url
-const corsWretchWithUrl = corsWretch.url("http://myendpoint.com").headers({ "X-HEADER": "VALUE" })
+// Adding a specific header and a base url without modifying the original object
+const corsWretch2 = corsWretch.url("http://myendpoint.com").headers({ "X-HEADER": "VALUE" })
+// Post json to http://myendpoint.com/json/postdata
+corsWretch2.url("/json/postdata").json({ a: 1 }).post()
 
-corsWretchWithUrl.get()
-corsWretchWithUrl.json({a:1}).post()
-
-// Reuse the original cors wretch object but this time by adding a baseUrl
-const corsWretchWithBaseUrl = corsWretch.baseUrl("http://myurl.com")
-
-corsWretchWithBaseUrl("/root").get()
-corsWretchWithBaseUrl("/data/1").get()
+// Reuse the original cors wretch object
+const corsWretch3 = corsWretch.url("http://myotherendpoint.com").accept("application/json")
+// Get json from http://myotherendpoint.com/data/1
+corsWretch3.url("/data/1").get().json(myjson => /* ... */)
+// Get json from http://myotherendpoint.com/data/2
+corsWretch3.url("/data/2").get().json(myjson => /* ... */)
 ```
 
 # Installation
@@ -353,27 +354,27 @@ wretch()
 */
 ```
 
-#### url(url: string)
+#### url(url: string, replace: boolean = false)
 
-Set the url.
-
-```js
-wretch({ credentials: "same-origin" }).url("...").get()
-```
-
-#### baseUrl(baseurl: string)
-
-Returns a wretch factory (same signature as the [wretch](#wretchurl---opts--) method) which when called creates a new Wretcher object with the base url as an url prefix.
+Appends or replaces the url.
 
 ```js
+wretch({ credentials: "same-origin" }).url("...").get().json(/* ... */)
+
+// Can be used to set a base url
+
 // Subsequent requests made using the 'blogs' object will be prefixed with "http://mywebsite.org/api/blogs"
-const blogs = wretch().baseUrl("http://mywebsite.org/api/blogs")
+const blogs = wretch("http://mywebsite.org/api/blogs")
 
 // Perfect for CRUD apis
-const id = await blogs("").json({ name: "my blog" }).post().json(_ => _.id)
-const blog = await blogs(`/${id}`).get().json()
+const id = await blogs.json({ name: "my blog" }).post().json(_ => _.id)
+const blog = await blogs.url(`/${id}`).get().json()
 console.log(blog.name)
-await blogs(`/${id}`).delete().res()
+
+await blogs.url(`/${id}`).delete().res()
+
+// And to replace the base url if needed :
+const noMoreBlogs = blogs.url("http://mywebsite.org/", true)
 ```
 
 #### query(qp: Object)

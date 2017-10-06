@@ -64,23 +64,13 @@ var Wretcher = /** @class */ (function () {
         return this;
     };
     /**
-     * Returns a new Wretcher object with the url specified and the same options.
+     * Returns a new Wretcher object with the argument url appended and the same options.
      * @param url String url
+     * @param replace Boolean it true, replaces the current url instead of appending
      */
-    Wretcher.prototype.url = function (url) {
-        return this.selfFactory({ url: url });
-    };
-    /**
-     * Returns a wretch factory which, when called, creates a new Wretcher object with the base url as an url prefix.
-     * @param baseurl The base url
-     */
-    Wretcher.prototype.baseUrl = function (baseurl) {
-        var _this = this;
-        return function (url, opts) {
-            if (url === void 0) { url = ""; }
-            if (opts === void 0) { opts = {}; }
-            return _this.selfFactory({ url: baseurl + url, options: mix(_this._options, opts) });
-        };
+    Wretcher.prototype.url = function (url, replace) {
+        if (replace === void 0) { replace = false; }
+        return replace ? this.selfFactory({ url: url }) : this.selfFactory({ url: this._url + url });
     };
     /**
      * Returns a new Wretcher object with the same url and new options.
