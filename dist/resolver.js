@@ -59,23 +59,29 @@ export var resolver = function (url) { return function (catchers) {
              * Warning: Still experimental on browsers and node.js
              */
             perfs: function (cb) {
+                var perf = conf.polyfills.performance || (typeof self !== "undefined" ? self["performance"] : null);
                 var perfObserver = conf.polyfills.PerformanceObserver || (typeof self !== "undefined" ? self["PerformanceObserver"] : null);
-                if (cb && perfObserver) {
-                    var entries_1 = null;
-                    var callback_1 = null;
-                    var observer_1 = new perfObserver(function (e) {
-                        entries_1 = e.getEntries();
-                        if (callback_1)
-                            callback_1();
-                        observer_1.disconnect();
-                    });
-                    observer_1.observe({ entryTypes: ["resource", "measure"] });
+                var now = perf && perf.now();
+                if (cb && perf) {
                     req.then(function (res) {
-                        if (res) {
-                            if (entries_1)
-                                cb(entries_1.reverse().find(function (_) { return _.name === res.url; }));
-                            else
-                                callback_1 = function () { return cb(entries_1.reverse().find(function (_) { return _.name === res.url; })); };
+                        var match = function (entries, obs) {
+                            if (obs === void 0) { obs = null; }
+                            var matches = entries.getEntriesByName(res.url);
+                            if (matches && matches.length > 0) {
+                                var timeMatch = matches.reverse().find(function (_) { return (_.startTime + 5) >= now; });
+                                if (timeMatch) {
+                                    cb(timeMatch);
+                                    if (obs)
+                                        obs.disconnect();
+                                    perf.clearMeasures(res.url);
+                                    return true;
+                                }
+                            }
+                            return false;
+                        };
+                        if (!match(perf)) {
+                            var observer_1 = new perfObserver(function (e) { return match(e, observer_1); });
+                            observer_1.observe({ entryTypes: ["resource", "measure"] });
                         }
                     });
                 }

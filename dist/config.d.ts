@@ -5,6 +5,7 @@ declare const _default: {
         fetch: any;
         FormData: any;
         URLSearchParams: any;
+        performance: any;
         PerformanceObserver: any;
     };
 };

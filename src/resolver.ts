@@ -78,22 +78,27 @@ export const resolver = url => (catchers: Map<number, (error: WretcherError) => 
          * Warning: Still experimental on browsers and node.js
          */
         perfs: cb => {
+            const perf = conf.polyfills.performance || (typeof self !== "undefined" ? self["performance"] : null)
             const perfObserver = conf.polyfills.PerformanceObserver || (typeof self !== "undefined" ? self["PerformanceObserver"] : null)
-            if(cb && perfObserver) {
-                let entries = null
-                let callback = null
-                const observer = new perfObserver(e => {
-                    entries = e.getEntries()
-                    if(callback) callback()
-                    observer.disconnect()
-                })
-                observer.observe({ entryTypes: ["resource", "measure"] })
+            const now = perf && perf.now()
+            if(cb && perf) {
                 req.then(res => {
-                    if(res) {
-                        if(entries)
-                            cb(entries.reverse().find(_ => _.name === res.url))
-                        else
-                            callback = () => cb(entries.reverse().find(_ => _.name === res.url))
+                    const match = (entries, obs = null) => {
+                        const matches = entries.getEntriesByName(res.url)
+                        if(matches && matches.length > 0) {
+                            const timeMatch = matches.reverse().find(_ => (_.startTime + 5) >= now)
+                            if(timeMatch) {
+                                cb(timeMatch)
+                                if(obs) obs.disconnect()
+                                perf.clearMeasures(res.url)
+                                return true
+                            }
+                        }
+                        return false
+                    }
+                    if(!match(perf)) {
+                        const observer = new perfObserver(e => match(e, observer))
+                        observer.observe({ entryTypes: ["resource", "measure"] })
                     }
                 })
             }

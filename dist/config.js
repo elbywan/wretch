@@ -8,6 +8,7 @@ export default {
         fetch: null,
         FormData: null,
         URLSearchParams: null,
+        performance: null,
         PerformanceObserver: null
     }
 };

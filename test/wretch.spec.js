@@ -45,7 +45,7 @@ describe("Wretch", function() {
         mockServer.stop()
     })
 
-    it("should set and use non global polyfills", function() {
+    it("should set and use non global polyfills", async function() {
         expect(() => wretch("...").query({ a: 1, b: 2 })).to.throw("URLSearchParams is not defined")
         expect(() => wretch("...").formData({ a: 1, b: 2})).to.throw("FormData is not defined")
         expect(() => wretch("...").get("...")).to.throw("fetch is not defined")
@@ -54,6 +54,15 @@ describe("Wretch", function() {
             fetch: fetchPolyfill(),
             FormData: FormData,
             URLSearchParams: require("url").URLSearchParams,
+        })
+
+       await wretch(`${_URL}/text`).get().perfs(_ => expect.fail("should never be called")).res()
+
+        wretch().polyfills({
+            fetch: fetchPolyfill(),
+            FormData: FormData,
+            URLSearchParams: require("url").URLSearchParams,
+            performance: performance,
             PerformanceObserver: PerformanceObserver
         })
     })
@@ -244,22 +253,24 @@ describe("Wretch", function() {
     })
 
     it("should retrieve performance timings associated with a fetch request", function(done) {
+
+
         // Test empty perfs()
         wretch(`${_URL}/text`).get().perfs().res(_ => expect(_.ok).to.be.true).then(
             // Racing condition : observer triggered before response
-            wretch(`${_URL}/text`).get().perfs(_ => {
+            wretch(`${_URL}/bla`).get().perfs(_ => {
                 expect(typeof _.startTime).to.be.equal("number")
 
                 // Racing condition : response triggered before observer
                 wretch().polyfills({
-                    fetch: fetchPolyfill(10)
+                    fetch: fetchPolyfill(1000)
                 })
 
-                wretch(`${_URL}/text`).get().perfs(_ => {
+                wretch(`${_URL}/fakeurl`).get().perfs(_ => {
                     expect(typeof _.startTime).to.be.equal("number")
                     done()
-                })
-            })
+                }).res().catch(() => "ignore")
+            }).res().catch(_ => "ignore")
         )
     })
 })

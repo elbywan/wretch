@@ -635,6 +635,7 @@ wretch().polyfills({
     })
   },
   /* ... */
+  performance: performance,
   PerformanceObserver: PerformanceObserver
 })
 ```
