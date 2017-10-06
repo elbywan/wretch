@@ -180,19 +180,18 @@ var Wretcher = /** @class */ (function () {
      * @param formObject An object which will be converted to a FormData
      */
     Wretcher.prototype.formData = function (formObject) {
-        var formData = new (conf.polyfill("FormData"))();
-        for (var key in formObject) {
-            if (formObject[key] instanceof Array) {
-                for (var _i = 0, _a = formObject[key]; _i < _a.length; _i++) {
-                    var item = _a[_i];
-                    formData.append(key + "[]", item);
-                }
-            }
-            else {
-                formData.append(key, formObject[key]);
-            }
-        }
-        return this.body(formData);
+        return this.body(convertFormData(formObject));
+    };
+    /**
+     * Converts the input to an url encoded string and sets the content-type header and body.
+     * If the input argument is already a string, skips the conversion part.
+     *
+     * @param input An object to convert into an url encoded string or an already encoded string
+     */
+    Wretcher.prototype.formUrl = function (input) {
+        return this
+            .body(typeof input === "string" ? input : convertFormUrl(input))
+            .content("application/x-www-form-urlencoded");
     };
     return Wretcher;
 }());
@@ -215,5 +214,28 @@ var appendQueryParams = function (url, qp) {
     return ~index ?
         url.substring(0, index) + "?" + usp.toString() :
         url + "?" + usp.toString();
+};
+var convertFormData = function (formObject) {
+    var formData = new (conf.polyfill("FormData"))();
+    for (var key in formObject) {
+        if (formObject[key] instanceof Array) {
+            for (var _i = 0, _a = formObject[key]; _i < _a.length; _i++) {
+                var item = _a[_i];
+                formData.append(key + "[]", item);
+            }
+        }
+        else {
+            formData.append(key, formObject[key]);
+        }
+    }
+    return formData;
+};
+var convertFormUrl = function (formObject) {
+    return Object.keys(formObject)
+        .map(function (key) {
+        return encodeURIComponent(key) + "=" +
+            ("" + encodeURIComponent(typeof formObject[key] === "object" ? JSON.stringify(formObject[key]) : formObject[key]));
+    })
+        .join("&");
 };
 //# sourceMappingURL=wretcher.js.map

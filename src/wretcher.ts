@@ -171,17 +171,18 @@ export class Wretcher {
      * @param formObject An object which will be converted to a FormData
      */
     formData(formObject: object) {
-        const formData = new (conf.polyfill("FormData"))()
-        for(const key in formObject) {
-            if(formObject[key] instanceof Array) {
-                for(const item of formObject[key])
-                    formData.append(key + "[]", item)
-            } else {
-                formData.append(key, formObject[key])
-            }
-        }
-
-        return this.body(formData)
+        return this.body(convertFormData(formObject))
+    }
+    /**
+     * Converts the input to an url encoded string and sets the content-type header and body.
+     * If the input argument is already a string, skips the conversion part.
+     *
+     * @param input An object to convert into an url encoded string or an already encoded string
+     */
+    formUrl(input: (object | string)) {
+        return this
+            .body(typeof input === "string" ? input : convertFormUrl(input))
+            .content("application/x-www-form-urlencoded")
     }
 }
 
@@ -201,4 +202,26 @@ const appendQueryParams = (url: string, qp: object) => {
     return ~index ?
         `${url.substring(0, index)}?${usp.toString()}` :
         `${url}?${usp.toString()}`
+}
+
+const convertFormData = (formObject: object) => {
+    const formData = new (conf.polyfill("FormData"))()
+    for(const key in formObject) {
+        if(formObject[key] instanceof Array) {
+            for(const item of formObject[key])
+                formData.append(key + "[]", item)
+        } else {
+            formData.append(key, formObject[key])
+        }
+    }
+
+    return formData
+}
+
+const convertFormUrl = (formObject: object) => {
+    return Object.keys(formObject)
+        .map(key =>
+            encodeURIComponent(key) + "=" +
+            `${ encodeURIComponent(typeof formObject[key] === "object" ? JSON.stringify(formObject[key]) : formObject[key]) }`)
+        .join("&")
 }

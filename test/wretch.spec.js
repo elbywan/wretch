@@ -113,6 +113,15 @@ describe("Wretch", function() {
         expect(roundTrip).to.deep.equal(jsonObject)
     })
 
+    it("should perform an url encoded form data round trip", async function() {
+        const reference = "a=1&b=2&%20c=%203&d=%7B%22a%22%3A1%7D"
+        const jsonObject = { a: 1, b: 2, " c": " 3", d: { a: 1 } }
+        let roundTrip = await wretch(`${_URL}/urlencoded/roundTrip`).formUrl(reference).post().text()
+        expect(roundTrip).to.equal(reference)
+        roundTrip = await wretch(`${_URL}/urlencoded/roundTrip`).formUrl(jsonObject).post().text()
+        expect(roundTrip).to.deep.equal(reference)
+    })
+
     it("should send a FormData object", async function() {
         const form = {
             hello: "world",

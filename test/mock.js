@@ -12,7 +12,8 @@ const mockServer = {
         mockServer["server"] = server
 
         server.use(restify.plugins.queryParser())
-        server.use(restify.plugins.bodyParser())
+        server.use(restify.plugins.jsonBodyParser())
+        server.use(restify.plugins.multipartBodyParser())
 
         setupReplies(server, "text", textReply)
         setupReplies(server, "json", jsonReply)
@@ -42,6 +43,14 @@ const mockServer = {
             else
                 res.send(400)
         })
+
+        server.post("urlencoded/roundTrip", (req, res) => {
+            if(req.header("content-type") === "application/x-www-form-urlencoded")
+                res.sendRaw(req.body)
+            else
+                res.send(400)
+        })
+
         server.post("/formData/decode", (req, res) => {
             if(req.header("content-type").startsWith("multipart/form-data"))
                 res.json(req.params)

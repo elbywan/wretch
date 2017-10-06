@@ -211,4 +211,11 @@ export declare class Wretcher {
      * @param formObject An object which will be converted to a FormData
      */
     formData(formObject: object): Wretcher;
+    /**
+     * Converts the input to an url encoded string and sets the content-type header and body.
+     * If the input argument is already a string, skips the conversion part.
+     *
+     * @param input An object to convert into an url encoded string or an already encoded string
+     */
+    formUrl(input: (object | string)): Wretcher;
 }
