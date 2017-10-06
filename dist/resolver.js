@@ -1,5 +1,6 @@
 import { mix } from "./mix";
 import conf from "./config";
+import perfs from "./perfs";
 export var resolver = function (url) { return function (catchers) {
     if (catchers === void 0) { catchers = new Map(); }
     return function (opts) {
@@ -59,32 +60,7 @@ export var resolver = function (url) { return function (catchers) {
              * Warning: Still experimental on browsers and node.js
              */
             perfs: function (cb) {
-                var perf = conf.polyfills.performance || (typeof self !== "undefined" ? self["performance"] : null);
-                var perfObserver = conf.polyfills.PerformanceObserver || (typeof self !== "undefined" ? self["PerformanceObserver"] : null);
-                var now = perf && perf.now();
-                if (cb && perf) {
-                    req.then(function (res) {
-                        var match = function (entries, obs) {
-                            if (obs === void 0) { obs = null; }
-                            var matches = entries.getEntriesByName(res.url);
-                            if (matches && matches.length > 0) {
-                                var timeMatch = matches.reverse().find(function (_) { return (_.startTime + 5) >= now; });
-                                if (timeMatch) {
-                                    cb(timeMatch);
-                                    if (obs)
-                                        obs.disconnect();
-                                    perf.clearMeasures(res.url);
-                                    return true;
-                                }
-                            }
-                            return false;
-                        };
-                        if (!match(perf)) {
-                            var observer_1 = new perfObserver(function (e) { return match(e, observer_1); });
-                            observer_1.observe({ entryTypes: ["resource", "measure"] });
-                        }
-                    });
-                }
+                req.then(function (res) { return perfs.observe(res.url, cb); });
                 return responseTypes;
             },
             /**

@@ -1,6 +1,7 @@
 const nodeFetch = require("node-fetch")
 const FormData = require("form-data")
 const { performance, PerformanceObserver } = require("perf_hooks")
+performance.clearResourceTimings = () => {}
 const fs = require("fs")
 const path = require("path")
 const { expect } = require("chai")

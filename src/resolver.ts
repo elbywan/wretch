@@ -1,5 +1,6 @@
 import { mix } from "./mix"
 import conf from "./config"
+import perfs from "./perfs"
 
 export type WretcherError = Error & { status: number, response: Response, text?: string, json?: any }
 
@@ -78,30 +79,7 @@ export const resolver = url => (catchers: Map<number, (error: WretcherError) => 
          * Warning: Still experimental on browsers and node.js
          */
         perfs: cb => {
-            const perf = conf.polyfills.performance || (typeof self !== "undefined" ? self["performance"] : null)
-            const perfObserver = conf.polyfills.PerformanceObserver || (typeof self !== "undefined" ? self["PerformanceObserver"] : null)
-            const now = perf && perf.now()
-            if(cb && perf) {
-                req.then(res => {
-                    const match = (entries, obs = null) => {
-                        const matches = entries.getEntriesByName(res.url)
-                        if(matches && matches.length > 0) {
-                            const timeMatch = matches.reverse().find(_ => (_.startTime + 5) >= now)
-                            if(timeMatch) {
-                                cb(timeMatch)
-                                if(obs) obs.disconnect()
-                                perf.clearMeasures(res.url)
-                                return true
-                            }
-                        }
-                        return false
-                    }
-                    if(!match(perf)) {
-                        const observer = new perfObserver(e => match(e, observer))
-                        observer.observe({ entryTypes: ["resource", "measure"] })
-                    }
-                })
-            }
+            req.then(res => perfs.observe(res.url, cb))
             return responseTypes
         },
         /**
