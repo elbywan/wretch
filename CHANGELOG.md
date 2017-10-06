@@ -1,3 +1,34 @@
+<a name="0.2.3"></a>
+## [0.2.3](https://github.com/elbywan/wretch/compare/0.2.2...0.2.3) (2017-10-06)
+
+
+### :arrow_up: Version update(s)
+
+* 0.2.3 tag ([2eada7b](https://github.com/elbywan/wretch/commit/2eada7b))
+
+### :art: Code improvement(s)
+
+* Add module field in package.json ([90431ff](https://github.com/elbywan/wretch/commit/90431ff))
+* Add node.js partial support to the perf function ([0045672](https://github.com/elbywan/wretch/commit/0045672))
+* Hide the changelog preset beneath a scripts folder + rewrite ([696503c](https://github.com/elbywan/wretch/commit/696503c))
+
+### :factory: New feature(s)
+
+* Highly experimental perfs function. ([6fa1d29](https://github.com/elbywan/wretch/commit/6fa1d29))
+
+### :memo: Documentation update(s)
+
+* Correct errorType typo ([e058b7a](https://github.com/elbywan/wretch/commit/e058b7a))
+* Fix contributing typo ([d12e29c](https://github.com/elbywan/wretch/commit/d12e29c))
+* Perfs() documentation ([6c90e15](https://github.com/elbywan/wretch/commit/6c90e15))
+* Readme : image cdn and shorten unpkg link ([8eac8c9](https://github.com/elbywan/wretch/commit/8eac8c9))
+
+### :white_check_mark: Test improvement(s)
+
+* Write perfs() tests ([3a14499](https://github.com/elbywan/wretch/commit/3a14499))
+
+
+
 <a name="0.2.2"></a>
 ## [0.2.2](https://github.com/elbywan/wretch/compare/0.2.1...0.2.2) (2017-10-04)
 

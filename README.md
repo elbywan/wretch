@@ -9,7 +9,7 @@
 	<a href="https://github.com/elbywan/wretch/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license-badge" height="20"></a>
 </h1>
 <h4 align="center">
-	A tiny (&lt; 1.5Kb g-zipped) wrapper built around fetch with an intuitive syntax.
+	A tiny (&lt; 1.6Kb g-zipped) wrapper built around fetch with an intuitive syntax.
 </h4>
 <h5 align="center">
     <i>f[ETCH] [WR]apper</i>
@@ -602,8 +602,6 @@ wretch("...").get().text(txt => console.log(txt))
 ## Performance API (experimental)
 
 #### perfs(cb: (timings: PerformanceTiming) => void)
-
-*Highly experimental*
 
 Takes advantage of the Performance API ([browsers](https://developer.mozilla.org/en-US/docs/Web/API/Performance_API) & [node.js](https://nodejs.org/api/perf_hooks.html)) to expose timings related to the request.
 
