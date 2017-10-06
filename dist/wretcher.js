@@ -190,7 +190,7 @@ var Wretcher = /** @class */ (function () {
      * @param formObject An object which will be converted to a FormData
      */
     Wretcher.prototype.formData = function (formObject) {
-        var formData = new (conf.polyfills.FormData || FormData)();
+        var formData = new (conf.polyfill("FormData"))();
         for (var key in formObject) {
             if (formObject[key] instanceof Array) {
                 for (var _i = 0, _a = formObject[key]; _i < _a.length; _i++) {
@@ -209,7 +209,7 @@ var Wretcher = /** @class */ (function () {
 export { Wretcher };
 // Internal helpers
 var appendQueryParams = function (url, qp) {
-    var usp = new (conf.polyfills.URLSearchParams || URLSearchParams)();
+    var usp = new (conf.polyfill("URLSearchParams"))();
     var index = url.indexOf("?");
     for (var key in qp) {
         if (qp[key] instanceof Array) {

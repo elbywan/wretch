@@ -33,8 +33,8 @@ var perfs = {
     observe: function (name, callback) {
         if (!name || !callback)
             return;
-        var _performance = conf.polyfills.performance || (typeof self !== "undefined" ? self["performance"] : null);
-        var _observer = conf.polyfills.PerformanceObserver || (typeof self !== "undefined" ? self["PerformanceObserver"] : null);
+        var _performance = conf.polyfill("performance", false);
+        var _observer = conf.polyfill("PerformanceObserver", false);
         if (!lazyObserver(_performance, _observer))
             return;
         if (!onMatch(_performance, name, callback, _performance)) {

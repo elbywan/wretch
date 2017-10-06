@@ -5,7 +5,7 @@ import perfs from "./perfs"
 export type WretcherError = Error & { status: number, response: Response, text?: string, json?: any }
 
 export const resolver = url => (catchers: Map<number, (error: WretcherError) => void> = new Map()) => (opts = {}) => {
-    const req = (conf.polyfills.fetch || fetch)(url, mix(conf.defaults, opts))
+    const req = (conf.polyfill("fetch"))(url, mix(conf.defaults, opts))
     const wrapper: Promise<void | Response> = req.then(response => {
         if (!response.ok) {
             return response[conf.errorType || "text"]().then(_ => {

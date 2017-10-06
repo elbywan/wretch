@@ -1,4 +1,4 @@
-declare const _default: {
+declare const config: {
     defaults: {};
     errorType: any;
     polyfills: {
@@ -8,5 +8,6 @@ declare const _default: {
         performance: any;
         PerformanceObserver: any;
     };
+    polyfill(p: string, doThrow?: boolean): any;
 };
-export default _default;
+export default config;

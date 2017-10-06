@@ -179,7 +179,7 @@ export class Wretcher {
      * @param formObject An object which will be converted to a FormData
      */
     formData(formObject: object) {
-        const formData = new (conf.polyfills.FormData || FormData)()
+        const formData = new (conf.polyfill("FormData"))()
         for(const key in formObject) {
             if(formObject[key] instanceof Array) {
                 for(const item of formObject[key])
@@ -196,7 +196,7 @@ export class Wretcher {
 // Internal helpers
 
 const appendQueryParams = (url: string, qp: object) => {
-    const usp = new (conf.polyfills.URLSearchParams || URLSearchParams)()
+    const usp = new (conf.polyfill("URLSearchParams"))()
     const index = url.indexOf("?")
     for(const key in qp) {
         if(qp[key] instanceof Array) {

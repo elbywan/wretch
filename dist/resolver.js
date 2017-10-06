@@ -5,7 +5,7 @@ export var resolver = function (url) { return function (catchers) {
     if (catchers === void 0) { catchers = new Map(); }
     return function (opts) {
         if (opts === void 0) { opts = {}; }
-        var req = (conf.polyfills.fetch || fetch)(url, mix(conf.defaults, opts));
+        var req = (conf.polyfill("fetch"))(url, mix(conf.defaults, opts));
         var wrapper = req.then(function (response) {
             if (!response.ok) {
                 return response[conf.errorType || "text"]().then(function (_) {
