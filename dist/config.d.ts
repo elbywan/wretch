@@ -7,7 +7,8 @@ declare const config: {
         URLSearchParams: any;
         performance: any;
         PerformanceObserver: any;
+        AbortController: any;
     };
-    polyfill(p: string, doThrow?: boolean): any;
+    polyfill(p: string, doThrow?: boolean, instance?: boolean, ...args: any[]): any;
 };
 export default config;

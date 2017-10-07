@@ -122,6 +122,14 @@ export class Wretcher {
     }
 
     /**
+     * Associates a custom signal with the request.
+     * @param controller : An AbortController
+     */
+    signal(controller: any) {
+        return this.selfFactory({ options: { ...this._options, signal: controller.signal } as any })
+    }
+
+    /**
      * Performs a get request.
      */
     get(opts = {}) {
@@ -189,7 +197,7 @@ export class Wretcher {
 // Internal helpers
 
 const appendQueryParams = (url: string, qp: object) => {
-    const usp = new (conf.polyfill("URLSearchParams"))()
+    const usp = conf.polyfill("URLSearchParams", true, true)
     const index = url.indexOf("?")
     for(const key in qp) {
         if(qp[key] instanceof Array) {
@@ -205,7 +213,7 @@ const appendQueryParams = (url: string, qp: object) => {
 }
 
 const convertFormData = (formObject: object) => {
-    const formData = new (conf.polyfill("FormData"))()
+    const formData = conf.polyfill("FormData", true, true)
     for(const key in formObject) {
         if(formObject[key] instanceof Array) {
             for(const item of formObject[key])

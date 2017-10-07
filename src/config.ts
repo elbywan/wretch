@@ -11,14 +11,15 @@ const config = {
         FormData: null,
         URLSearchParams: null,
         performance: null,
-        PerformanceObserver: null
+        PerformanceObserver: null,
+        AbortController: null
     },
-    polyfill(p: string, doThrow = true) {
+    polyfill(p: string, doThrow = true, instance = false, ...args) {
         const res = this.polyfills[p] ||
             (typeof self !== "undefined" ? self[p] : null) ||
             (typeof global !== "undefined" ? global[p] : null)
         if(doThrow && !res) throw new Error(p + " is not defined")
-        return res
+        return instance && res ? new res(...args) : res
     }
 }
 

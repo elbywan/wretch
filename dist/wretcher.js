@@ -127,6 +127,13 @@ var Wretcher = /** @class */ (function () {
         return this.selfFactory({ catchers: newMap });
     };
     /**
+     * Associates a custom signal with the request.
+     * @param controller : An AbortController
+     */
+    Wretcher.prototype.signal = function (controller) {
+        return this.selfFactory({ options: __assign({}, this._options, { signal: controller.signal }) });
+    };
+    /**
      * Performs a get request.
      */
     Wretcher.prototype.get = function (opts) {
@@ -198,7 +205,7 @@ var Wretcher = /** @class */ (function () {
 export { Wretcher };
 // Internal helpers
 var appendQueryParams = function (url, qp) {
-    var usp = new (conf.polyfill("URLSearchParams"))();
+    var usp = conf.polyfill("URLSearchParams", true, true);
     var index = url.indexOf("?");
     for (var key in qp) {
         if (qp[key] instanceof Array) {
@@ -216,7 +223,7 @@ var appendQueryParams = function (url, qp) {
         url + "?" + usp.toString();
 };
 var convertFormData = function (formObject) {
-    var formData = new (conf.polyfill("FormData"))();
+    var formData = conf.polyfill("FormData", true, true);
     for (var key in formObject) {
         if (formObject[key] instanceof Array) {
             for (var _i = 0, _a = formObject[key]; _i < _a.length; _i++) {

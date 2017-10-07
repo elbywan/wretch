@@ -70,6 +70,9 @@ const mockServer = {
             res.json(500, { error: 500, message: "ok" })
         })
 
+        server.get("/longResult", (req, res) => {
+            setTimeout(() => res.sendRaw("ok"), 1000)
+        })
 
         server.listen(port)
     },

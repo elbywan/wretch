@@ -639,6 +639,96 @@ wretch("...").get().text(txt => console.log(txt))
 
 ## Extras
 
+### Abortable requests (experimental)
+
+*No polyfills for node.js yet ! Your browser absolutely needs to support [AbortControllers](https://developer.mozilla.org/en-US/docs/Web/API/AbortController).*
+
+Use case :
+
+```js
+const [c, w] = wretch("...")
+  .get()
+  .onAbort(_ => console.log("Aborted !"))
+  .controller()
+
+w.text(_ => console.log("should never be called"))
+c.abort()
+
+// Or :
+
+const controller = new AbortController()
+
+wretch("...")
+  .signal(controller)
+  .get()
+  .onAbort(_ => console.log("Aborted !"))
+  .text(_ => console.log("should never be called"))
+
+c.abort()
+```
+
+### signal(controller: AbortController)
+
+*Used at "request time", like an helper.*
+
+Associates a custom controller with the request.
+Useful when you need to use your own AbortController, otherwise wretch will create a new controller itself.
+
+```js
+const controller = new AbortController()
+
+// Associates the same controller with multiple requests
+
+wretch("url1")
+  .signal(controller)
+  .get()
+  .json(_ => /* ... */)
+wretch("url2")
+  .signal(controller)
+  .get()
+  .json(_ => /* ... */)
+
+// Aborts both requests
+
+controller.abort()
+```
+
+#### setTimeout(time: number, controller?: AbortController)
+
+*Used at "response time".*
+
+Aborts the request after a fixed time. If you use a custom AbortController associated with the request, pass it as the second argument.
+
+```js
+// 1 second timeout
+wretch("...").get().setTimeout(1000).json(_ => /* will not be called in case of a timeout */)
+```
+
+#### controller()
+
+*Used at "response time".*
+
+Returns the automatically generated AbortController alongside the current wretch response as a pair.
+
+```js
+// We need the controller outside the chain
+const [c, w] = wretch("url")
+  .get()
+  .controller()
+
+// Resume with the chain
+w.onAbort(_ => console.log("ouch")).json(_ => /* ... */)
+
+/* Later on ... */
+c.abort()
+```
+
+#### onAbort(cb: (error: AbortError) => any)
+
+*Used at "response time" like a catcher.*
+
+Catch an AbortError and perform the callback.
+
 ### Performance API (experimental)
 
 #### perfs(cb: (timings: PerformanceTiming) => void)

@@ -16,11 +16,14 @@ export declare const resolver: (url: any) => (catchers?: Map<number, (error: Wre
     arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
     text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>;
     perfs: (cb?: (type: any) => void) => any;
-    error: (code: number, cb: any) => any;
+    setTimeout: (time: number, controller: any) => any;
+    controller: () => [any, any];
+    error: (code: string | number, cb: any) => any;
     badRequest: (cb: (error: WretcherError) => void) => any;
     unauthorized: (cb: (error: WretcherError) => void) => any;
     forbidden: (cb: (error: WretcherError) => void) => any;
     notFound: (cb: (error: WretcherError) => void) => any;
     timeout: (cb: (error: WretcherError) => void) => any;
     internalError: (cb: (error: WretcherError) => void) => any;
+    onAbort: (cb: (error: Error) => void) => any;
 };

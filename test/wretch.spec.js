@@ -1,6 +1,7 @@
 const nodeFetch = require("node-fetch")
 const FormData = require("form-data")
 const { performance, PerformanceObserver } = require("perf_hooks")
+const AbortController = require("abortcontroller")
 performance.clearResourceTimings = () => {}
 const fs = require("fs")
 const path = require("path")
@@ -57,14 +58,15 @@ describe("Wretch", function() {
             URLSearchParams: require("url").URLSearchParams,
         })
 
-       await wretch(`${_URL}/text`).get().perfs(_ => expect.fail("should never be called")).res()
+        await wretch(`${_URL}/text`).get().perfs(_ => expect.fail("should never be called")).res()
 
         wretch().polyfills({
             fetch: fetchPolyfill(),
             FormData: FormData,
             URLSearchParams: require("url").URLSearchParams,
             performance: performance,
-            PerformanceObserver: PerformanceObserver
+            PerformanceObserver: PerformanceObserver,
+            AbortController: AbortController
         })
     })
 
@@ -273,5 +275,26 @@ describe("Wretch", function() {
                 }).res().catch(() => "ignore")
             }).res().catch(_ => "ignore")
         )
+    })
+
+    it("should abort a request", function(done) {
+        // Waiting for real nodejs polyfills ...
+        const controller = new AbortController()
+        wretch(`${_URL}/longResult`)
+            .signal(controller)
+            .get()
+            .text(_ => 1)
+        controller.abort()
+
+        const [c, w] = wretch(`${_URL}/longResult`).get().controller()
+        w.text(_ => 1)
+        c.abort()
+
+        wretch(`${_URL}/longResult`)
+            .get()
+            .setTimeout(500)
+            .onAbort(err => console.log(err))
+
+        setTimeout(done, 1000)
     })
 })
