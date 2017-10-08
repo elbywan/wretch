@@ -4,7 +4,7 @@ import perfs from "./perfs"
 
 export type WretcherError = Error & { status: number, response: Response, text?: string, json?: any }
 
-export const resolver = url => (catchers: Map<number, (error: WretcherError) => void> = new Map()) => (opts = {}) => {
+export const resolver = url => (catchers: Map<number | string, (error: WretcherError) => void> = new Map()) => (opts = {}) => {
     type TypeParser = <Type>(funName: string | null) => <Result = void>(cb?: (type: Type) => Result) => Promise<Result>
 
     const finalOpts = mix(conf.defaults, opts)
@@ -27,13 +27,12 @@ export const resolver = url => (catchers: Map<number, (error: WretcherError) => 
         return response
     })
 
-    const nameCatchers = new Map()
     const doCatch = <T>(promise: Promise<T>): Promise<void | T> => {
         return promise.catch(err => {
             if(catchers.has(err.status))
                 catchers.get(err.status)(err)
-            else if(nameCatchers.has(err.name))
-                nameCatchers.get(err.name)(err)
+            else if(catchers.has(err.name))
+                catchers.get(err.name)(err)
             else
                 throw err
         })
@@ -112,12 +111,10 @@ export const resolver = url => (catchers: Map<number, (error: WretcherError) => 
          */
         controller: () => [ fetchController, responseChain ],
         /**
-         * Catches an http response with a specific error code and performs a callback.
+         * Catches an http response with a specific error code or name and performs a callback.
          */
-        error(code, cb) {
-            typeof code === "string" ?
-                nameCatchers.set(code, cb) :
-                catchers.set(code, cb)
+        error(errorId, cb) {
+            catchers.set(errorId, cb)
             return responseChain
         },
         /**

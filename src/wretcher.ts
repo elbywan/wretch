@@ -12,7 +12,7 @@ export class Wretcher {
     protected constructor(
         private _url: string,
         private _options: RequestInit = {},
-        private _catchers: Map<number, (error: WretcherError) => void> = new Map()) {}
+        private _catchers: Map<number | string, (error: WretcherError) => void> = new Map()) {}
 
     static factory(url = "", opts: RequestInit = {}) { return new Wretcher(url, opts) }
     private selfFactory({ url = this._url, options = this._options, catchers = this._catchers } = {}) {
@@ -112,12 +112,12 @@ export class Wretcher {
 
     /**
      * Adds a default catcher which will be called on every subsequent request error when the error code matches.
-     * @param code Error code
+     * @param errorId Error code or name
      * @param catcher: The catcher method
      */
-    catcher(code: number, catcher: (error: WretcherError) => void) {
+    catcher(errorId: number | string, catcher: (error: WretcherError) => void) {
         const newMap = new Map(this._catchers)
-        newMap.set(code, catcher)
+        newMap.set(errorId, catcher)
         return this.selfFactory({ catchers: newMap })
     }
 

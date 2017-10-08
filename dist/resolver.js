@@ -23,13 +23,12 @@ export var resolver = function (url) { return function (catchers) {
             }
             return response;
         });
-        var nameCatchers = new Map();
         var doCatch = function (promise) {
             return promise.catch(function (err) {
                 if (catchers.has(err.status))
                     catchers.get(err.status)(err);
-                else if (nameCatchers.has(err.name))
-                    nameCatchers.get(err.name)(err);
+                else if (catchers.has(err.name))
+                    catchers.get(err.name)(err);
                 else
                     throw err;
             });
@@ -87,12 +86,10 @@ export var resolver = function (url) { return function (catchers) {
              */
             controller: function () { return [fetchController, responseChain]; },
             /**
-             * Catches an http response with a specific error code and performs a callback.
+             * Catches an http response with a specific error code or name and performs a callback.
              */
-            error: function (code, cb) {
-                typeof code === "string" ?
-                    nameCatchers.set(code, cb) :
-                    catchers.set(code, cb);
+            error: function (errorId, cb) {
+                catchers.set(errorId, cb);
                 return responseChain;
             },
             /**

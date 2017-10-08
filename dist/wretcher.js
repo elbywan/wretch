@@ -118,12 +118,12 @@ var Wretcher = /** @class */ (function () {
     };
     /**
      * Adds a default catcher which will be called on every subsequent request error when the error code matches.
-     * @param code Error code
+     * @param errorId Error code or name
      * @param catcher: The catcher method
      */
-    Wretcher.prototype.catcher = function (code, catcher) {
+    Wretcher.prototype.catcher = function (errorId, catcher) {
         var newMap = new Map(this._catchers);
-        newMap.set(code, catcher);
+        newMap.set(errorId, catcher);
         return this.selfFactory({ catchers: newMap });
     };
     /**

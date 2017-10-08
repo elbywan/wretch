@@ -9,7 +9,7 @@ export declare class Wretcher {
     private _url;
     private _options;
     private _catchers;
-    protected constructor(_url: string, _options?: RequestInit, _catchers?: Map<number, (error: WretcherError) => void>);
+    protected constructor(_url: string, _options?: RequestInit, _catchers?: Map<number | string, (error: WretcherError) => void>);
     static factory(url?: string, opts?: RequestInit): Wretcher;
     private selfFactory({url, options, catchers}?);
     /**
@@ -77,10 +77,10 @@ export declare class Wretcher {
     content(headerValue: string): Wretcher;
     /**
      * Adds a default catcher which will be called on every subsequent request error when the error code matches.
-     * @param code Error code
+     * @param errorId Error code or name
      * @param catcher: The catcher method
      */
-    catcher(code: number, catcher: (error: WretcherError) => void): Wretcher;
+    catcher(errorId: number | string, catcher: (error: WretcherError) => void): Wretcher;
     /**
      * Associates a custom signal with the request.
      * @param controller : An AbortController
