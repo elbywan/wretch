@@ -258,7 +258,7 @@ Create a new Wretcher object with an url and [vanilla fetch options](https://dev
 Appends or replaces the url.
 
 ```js
-wretch({ credentials: "same-origin" }).url("...").get().json(/* ... */)
+wretch().url("...").get().json(/* ... */)
 
 // Can be used to set a base url
 
