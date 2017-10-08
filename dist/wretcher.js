@@ -78,7 +78,7 @@ var Wretcher = /** @class */ (function () {
      * @param mixin If true, mixes in instead of replacing the existing options
      */
     Wretcher.prototype.options = function (options, mixin) {
-        if (mixin === void 0) { mixin = false; }
+        if (mixin === void 0) { mixin = true; }
         return this.selfFactory({ options: mixin ? mix(this._options, options) : options });
     };
     /**

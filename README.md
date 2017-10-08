@@ -289,7 +289,7 @@ w = w.query({ c: 3, d: [4, 5] })
 // url is now http://example.com?c=3&d=4&d=5
 ```
 
-#### options(options: Object, mixin: boolean = false)
+#### options(options: Object, mixin: boolean = true)
 
 Set the fetch options.
 
@@ -306,16 +306,31 @@ corsWretch.url("http://endpoint1").get()
 corsWretch.url("http://endpoint2").get()
 ```
 
+You can override instead of mixing in the existing options by passing a boolean flag.
+
 ```js
-// You can mix in with the existing options instead of overriding them by passing a boolean flag :
+// By default options mixed in :
 
 wretch()
   .options({ headers: { "Accept": "application/json" }})
-  .options({ encoding: "same-origin", headers: { "X-Custom": "Header" }}, true)
+  .options({ encoding: "same-origin", headers: { "X-Custom": "Header" }})
 
-/* Options mixed in :
+/*
 {
   headers: { "Accept": "application/json", "X-Custom": "Header" },
+  encoding: "same-origin"
+}
+*/
+
+// With the flag, options are overridden :
+
+wretch()
+  .options({ headers: { "Accept": "application/json" }})
+  .options({ encoding: "same-origin", headers: { "X-Custom": "Header" }}, false)
+
+/*
+{
+  headers: { "X-Custom": "Header" },
   encoding: "same-origin"
 }
 */

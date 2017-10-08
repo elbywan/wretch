@@ -67,7 +67,7 @@ export class Wretcher {
      * @param options New options
      * @param mixin If true, mixes in instead of replacing the existing options
      */
-    options(options: RequestInit, mixin = false) {
+    options(options: RequestInit, mixin = true) {
         return this.selfFactory({ options: mixin ? mix(this._options, options) : options })
     }
 

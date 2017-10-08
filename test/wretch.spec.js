@@ -220,8 +220,8 @@ describe("Wretch", function() {
         wretch().defaults("not an object", true)
         expect(rejected).to.be.true
         let accepted = await new Promise(res => wretch(`${_URL}/customHeaders`)
-            .options({ headers: { "X-Custom-Header-3" : "Anything" } })
-            .options({ headers: { "X-Custom-Header-4" : "Anything" } }, true)
+            .options({ headers: { "X-Custom-Header-3" : "Anything" } }, false)
+            .options({ headers: { "X-Custom-Header-4" : "Anything" } })
             .get()
             .badRequest(_ => { res(false) })
             .res(result => res(!!result)))
