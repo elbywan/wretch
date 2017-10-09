@@ -1,6 +1,20 @@
+<a name="0.3.1"></a>
+## [0.3.1](https://github.com/elbywan/wretch/compare/0.3.0...0.3.1) (2017-10-09)
+
+
+### :memo: Documentation update(s)
+
+* Add homepage in package.json ([c78a5dd](https://github.com/elbywan/wretch/commit/c78a5dd))
+
+
+
 <a name="0.3.0"></a>
 # [0.3.0](https://github.com/elbywan/wretch/compare/0.2.4...0.3.0) (2017-10-09)
 
+
+### :arrow_up: Version update(s)
+
+* 0.3.0 tag ([a9450c1](https://github.com/elbywan/wretch/commit/a9450c1))
 
 ### :art: Code improvement(s)
 
