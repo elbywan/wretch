@@ -1,6 +1,44 @@
+<a name="0.3.0"></a>
+# [0.3.0](https://github.com/elbywan/wretch/compare/0.2.4...0.3.0) (2017-10-09)
+
+
+### :art: Code improvement(s)
+
+* Add polyfill getter method ([ca49cfc](https://github.com/elbywan/wretch/commit/ca49cfc))
+* Can now catch on error name ([2a0f7e9](https://github.com/elbywan/wretch/commit/2a0f7e9))
+
+### :checkered_flag: Performance update(s)
+
+* Refactor perfs() to improve robustness and performance ([7b2b27c](https://github.com/elbywan/wretch/commit/7b2b27c))
+
+### :factory: New feature(s)
+
+* Abortable requests ([c5888fe](https://github.com/elbywan/wretch/commit/c5888fe)), closes [#7](https://github.com/elbywan/wretch/issues/7)
+* Add formUrl body type ([64f6c3e](https://github.com/elbywan/wretch/commit/64f6c3e)), closes [#9](https://github.com/elbywan/wretch/issues/9)
+
+### :fire: Breaking change(s)
+
+*  The .options function now mixin by default ([47b4630](https://github.com/elbywan/wretch/commit/47b4630))
+* Remove .baseUrl and change .url behaviour ([5142b02](https://github.com/elbywan/wretch/commit/5142b02)), closes [#8](https://github.com/elbywan/wretch/issues/8)
+
+### :memo: Documentation update(s)
+
+* Add methods indexes and clarify some point in the readme ([54dae1c](https://github.com/elbywan/wretch/commit/54dae1c))
+* Add minimalist companion website. ([10f2197](https://github.com/elbywan/wretch/commit/10f2197))
+* Add readme announcement. ([d87a57d](https://github.com/elbywan/wretch/commit/d87a57d))
+* Fix readme typo ([85852a6](https://github.com/elbywan/wretch/commit/85852a6))
+* Fixed readme usage layout ([7f8ea0f](https://github.com/elbywan/wretch/commit/7f8ea0f))
+* Update readme ([7881e2c](https://github.com/elbywan/wretch/commit/7881e2c))
+
+
+
 <a name="0.2.4"></a>
 ## [0.2.4](https://github.com/elbywan/wretch/compare/0.2.3...0.2.4) (2017-10-06)
 
+
+### :arrow_up: Version update(s)
+
+* 0.2.4 tag ([879e14a](https://github.com/elbywan/wretch/commit/879e14a))
 
 ### :bug: Bug fix(es)
 
