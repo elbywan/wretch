@@ -1,0 +1,59 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Raleway', sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+section.front-section {
+    width: 90%;
+    padding: 0% 5%;
+    height: 100vh;
+    color: #eaeaea;
+    background: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+section.front-section > * {
+    max-width: 100%;
+}
+
+div.logo {
+    height: 30vh;
+}
+div.logo img {
+    height: 100%;
+    filter: brightness(2);
+}
+div.logo-name {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 3em;
+    margin: 20px;
+    border-bottom: 2px solid #c397d8;
+}
+div.shortdesc {
+    text-align: center;
+}
+a.github {
+    margin: 20px;
+    display: block;
+    font-size: 1.2em;
+    line-height: 1.5em;
+    border-bottom: 2px solid #e78c45;
+    transition: all 0.25s;
+}
+a.github:hover {
+    color: #e78c45;
+}
+pre.npm {
+    border-bottom: 2px solid #d54e53;
+}
+pre.unpkg {
+    border-bottom: 2px solid #b9ca4a;
+}
