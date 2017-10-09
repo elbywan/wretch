@@ -201,30 +201,30 @@ var wretch = require("wretch")
 ```javascript
 wretch(url, options)
 
-  /* The "request" part. */
-  __
- |.[helper method(s)]()
- |    // [ Optional ]
- |    // A set of helper methods to set the default options, set accept header, change the current url ...
- |.[body type]()
- |    // [ Optional ]
- |    // Serialize an object to json or FormData formats and sets the body & header field if needed
- |.[http method]()
- |    // [ Required ]
- |    // Performs the get/put/post/delete/patch request
-  ‾‾
+  /* The "request" chain. */
+
+ .[helper method(s)]()
+     // [ Optional ]
+     // A set of helper methods to set the default options, set accept header, change the current url ...
+ .[body type]()
+     // [ Optional ]
+     // Serialize an object to json or FormData formats and sets the body & header field if needed
+ .[http method]()
+     // [ Required, ends the request chain]
+     // Performs the get/put/post/delete/patch request
+
   /* Fetch is called at this time. */
   /* The request is sent, and from this point on you can chain catchers and call a response type handler. */
 
-  /* The "response" part. */
-  __
- |.[catcher(s)]()
- |   // [ Optional ]
- |   // You can chain error handlers here
- |.[response type]()
- |   // [ Required ]
- |   // Specify the data type you need, which will be parsed and handed to you
-  ‾‾
+  /* The "response" chain. */
+
+ .[catcher(s)]()
+    // [ Optional ]
+    // You can chain error handlers here
+ .[response type]()
+    // [ Required, ends the response chain]
+    // Specify the data type you need, which will be parsed and handed to you
+
   /* From this point wretch returns a standard Promise, so you can continue chaining actions afterwards. */
 
   .then(/* ... */)
