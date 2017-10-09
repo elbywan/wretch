@@ -17,6 +17,8 @@
 
 <br>
 
+##### Important : Wretch is in active development ! Please check out the [changelog](https://github.com/elbywan/wretch/blob/master/CHANGELOG.md) after each update for new features and breaking changes. If you want to try out the hot stuff, look at the [dev](https://github.com/elbywan/wretch/tree/dev) branch.
+
 # Table of Contents
 
 * [Motivation](#motivation)
