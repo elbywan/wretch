@@ -1,6 +1,8 @@
 body {
     margin: 0;
     padding: 0;
+    background: black;
+    color: #eaeaea;
     font-family: 'Raleway', sans-serif;
 }
 
@@ -8,20 +10,109 @@ a {
     text-decoration: none;
     color: inherit;
 }
-
-section.front-section {
-    width: 90%;
-    padding: 0% 5%;
-    height: 100vh;
-    color: #eaeaea;
-    background: black;
+section {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
+    min-height: 100vh;
+    padding-bottom: 30px;
+    border-bottom: 2px solid #e78c45;
 }
-section.front-section > * {
+section > * {
+    max-width: 90%;
+}
+h1 {
+    display: inline-block;
+    margin-top: 10px;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 3em;
+    margin: 20px;
+    border-bottom: 2px solid #c397d8;
+}
+footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    background: inherit;
+    padding: 10px 0;
+    font-size: .8em;
+    letter-spacing: 1px;
+    color: black;
+    background-color: #e78c45;
+}
+footer > div {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0px;
+}
+
+footer > div.icons {
+    margin-right: 5px;
+}
+footer > div.icons > div {
+    margin: 4px 0px;
+}
+footer > div.icons .fa {
+    font-weight: bold;
+}
+footer > div.text {
+    text-align: left;
+}
+footer > div.text > div {
+    margin: 4px 0px;
+    transition: all 0.25s;
+}
+footer > div.text > div:hover {
+    color: white;
+}
+
+section.front-section pre {
+    margin: 0;
     max-width: 100%;
+}
+
+div.front-head {
+    text-align: center;
+}
+div.front-links {
+    margin-top: 10px;
+}
+div.front-install {
+    text-align: center;
+    margin-top: 30px;
+}
+
+div.page-link {
+    position: absolute;
+    background: #e78c45;
+    cursor: pointer;
+    color: black;
+    width: 50px;
+    text-align: center;
+    transition: all 0.25s;
+}
+div.page-link.back {
+    top: 0;
+}
+div.page-link.next {
+    bottom: 0;
+}
+div.page-link:hover {
+    color: #e78c45;
+    background: white;
+}
+div.page-link a {
+    display: block;
+}
+
+@media (max-width: 600px) {
+    div.page-link { display: none; }
+}
+@media (max-height: 600px) {
+    div.page-link { display: none; }
 }
 
 div.logo {
@@ -29,22 +120,84 @@ div.logo {
 }
 div.logo img {
     height: 100%;
+    width: 100%;
     filter: brightness(2);
-}
-div.logo-name {
-    font-family: 'Josefin Sans', sans-serif;
-    font-size: 3em;
-    margin: 20px;
-    border-bottom: 2px solid #c397d8;
 }
 div.shortdesc {
     text-align: center;
+    margin: 20px 0px;
 }
+div.tags {
+    text-align: center;
+}
+div.tags > * {
+    display: inline-block;
+    margin: 10px 10px;
+    color: black;
+    padding: 3px 10px;
+    font-size: 0.7em;
+    font-weight: bold;
+    border-radius: 15px;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.25s;
+}
+div.tags > .active {
+    color: white;
+    border: 3px solid #fff;
+}
+div.tags > *:hover {
+    color: white;
+}
+div.tags-boxes > * {
+    display: none;
+    font-family: 'Josefin Sans', sans-serif;
+    padding: 10px 0px;
+    line-height: 1.5em;
+    border-bottom: 2px solid;
+    margin-top: 0px;
+}
+div.tags > :nth-child(5n+1) {
+    background-color: #e7c547;
+}
+div.tags-boxes > :nth-child(5n+1) {
+    color: #e7c547;
+    border-color: #e7c547;
+}
+div.tags > :nth-child(5n+2) {
+    background-color: #d54e53;
+}
+div.tags-boxes > :nth-child(5n+2) {
+    color: #d54e53;
+    border-color: #d54e53;
+}
+div.tags > :nth-child(5n+3) {
+    background-color: #c397d8;
+}
+div.tags-boxes > :nth-child(5n+3) {
+    color: #c397d8;
+    border-color: #c397d8;
+}
+div.tags > :nth-child(5n+4) {
+    background-color: #b9ca4a;
+}
+div.tags-boxes > :nth-child(5n+4) {
+    color: #b9ca4a;
+    border-color: #b9ca4a;
+}
+div.tags > :nth-child(5n+5) {
+    background-color: #7aa6da;
+}
+div.tags-boxes > :nth-child(5n+5) {
+    color: #7aa6da;
+    border-color: #7aa6da;
+}
+
 a.github {
-    margin: 20px;
     display: block;
     font-size: 1.2em;
     line-height: 1.5em;
+    padding: 0px 10px 5px 10px;
     border-bottom: 2px solid #e78c45;
     transition: all 0.25s;
 }
@@ -52,8 +205,48 @@ a.github:hover {
     color: #e78c45;
 }
 pre.npm {
+    display: inline-block;
+    padding-bottom: 5px;
     border-bottom: 2px solid #d54e53;
 }
 pre.unpkg {
+    display: inline-block;
+    padding-bottom: 5px;
     border-bottom: 2px solid #b9ca4a;
+}
+
+@media (max-height: 800px) {
+    section.usage {
+        padding-top: 50px;
+    }
+    h1.usage-header {
+        margin-bottom: 40px;
+    }
+}
+h1.usage-header {
+    margin-bottom: 80px;
+}
+div.helper-tag {
+    font-size: 0.8em;
+    font-weight: bold;
+}
+div.helper-tag > a:hover {
+    background: #d54e53;
+    color: white;
+}
+div.helper-tag > a {
+    display: inline-block;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    background: #222;
+    color: #ccc;
+    text-align: center;
+    transition: all 0.25s;
+    padding: 5px 10px;
+}
+div.helper-tag > .icon {
+    display: inline-block;
+    padding: 5px 10px;
+    background: #e7c547;
+    color: black;
 }
