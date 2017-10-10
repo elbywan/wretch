@@ -499,8 +499,8 @@ wretch("...").formUrl(alreadyEncodedForm).post()
 
 *You can pass the fetch options here if you prefer.*
 
-| [get](#getopts--) | [delete](#deleteopts--) | [put](#putopts--) | [patch](#patchopts--) | [post](#postopts--) |
-|-----|-----|-----|-----|-----|
+| [get](#getopts--) | [delete](#deleteopts--) | [put](#putopts--) | [patch](#patchopts--) | [post](#postopts--) | [head](#headopts--) | [opts](#optsopts--) |
+|-----|-----|-----|-----|-----|-----|-----|
 
 #### get(opts = {})
 
@@ -540,6 +540,21 @@ Perform a post request.
 
 ```js
 wretch("...").json({...}).post({ credentials: "same-origin" })
+```
+
+#### head(opts = {})
+
+Perform a head request.
+
+```js
+wretch("...").head({ credentials: "same-origin" })
+```
+#### opts(opts = {})
+
+Perform an options request.
+
+```js
+wretch("...").opts({ credentials: "same-origin" })
 ```
 
 ## Catchers

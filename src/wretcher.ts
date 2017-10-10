@@ -56,7 +56,7 @@ export class Wretcher {
     /**
      * Returns a new Wretcher object with the argument url appended and the same options.
      * @param url String url
-     * @param replace Boolean it true, replaces the current url instead of appending
+     * @param replace Boolean If true, replaces the current url instead of appending
      */
     url(url: string, replace = false) {
         return replace ? this.selfFactory({ url }) : this.selfFactory({ url: this._url + url })
@@ -158,6 +158,18 @@ export class Wretcher {
      */
     patch(opts = {}) {
         return resolver(this._url)(this._catchers)({ ...mix(opts, this._options), method: "PATCH" })
+    }
+    /**
+     * Performs a head request.
+     */
+    head(opts = {}) {
+        return resolver(this._url)(this._catchers)({ ...mix(opts, this._options), method: "HEAD" })
+    }
+    /**
+     * Performs an options request
+     */
+    opts(opts = {}) {
+        return resolver(this._url)(this._catchers)({ ...mix(opts, this._options), method: "OPTIONS" })
     }
 
     /**

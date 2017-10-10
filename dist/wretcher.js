@@ -169,6 +169,20 @@ var Wretcher = /** @class */ (function () {
         return resolver(this._url)(this._catchers)(__assign({}, mix(opts, this._options), { method: "PATCH" }));
     };
     /**
+     * Performs a head request.
+     */
+    Wretcher.prototype.head = function (opts) {
+        if (opts === void 0) { opts = {}; }
+        return resolver(this._url)(this._catchers)(__assign({}, mix(opts, this._options), { method: "HEAD" }));
+    };
+    /**
+     * Performs an options request
+     */
+    Wretcher.prototype.opts = function (opts) {
+        if (opts === void 0) { opts = {}; }
+        return resolver(this._url)(this._catchers)(__assign({}, mix(opts, this._options), { method: "OPTIONS" }));
+    };
+    /**
      * Sets the request body with any content.
      * @param contents The body contents
      */

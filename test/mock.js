@@ -20,6 +20,16 @@ const mockServer = {
         setupReplies(server, "blob", imgReply)
         setupReplies(server, "arrayBuffer", binaryReply)
 
+        server.head("/json", (req, res) => {
+            res.setHeader("content-type", "application/json")
+            res.end()
+        })
+
+        server.opts("/options", (req, res) => {
+            res.header("Allow", "OPTIONS")
+            res.end()
+        })
+
         server.get("/customHeaders", (req, res) => {
             const hasCustomHeaders = req.header("X-Custom-Header", false)
                 && req.header("X-Custom-Header-2", false)

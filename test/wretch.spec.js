@@ -18,7 +18,7 @@ const allRoutes = (obj, type, action) => Promise.all([
     obj.put()[type](action),
     obj.patch()[type](action),
     obj.post()[type](action),
-    obj.delete()[type](action)
+    obj.delete()[type](action),
 ])
 
 const fetchPolyfill = (timeout = null) =>
@@ -134,6 +134,13 @@ describe("Wretch", function() {
             hello: "world",
             "duck": "Muscovy"
         })
+    })
+
+    it("should perform OPTIONS and HEAD requests", async function() {
+        const optsRes = await wretch(_URL + "/options").opts().res()
+        expect(optsRes.headers.get("Allow")).to.equal("OPTIONS")
+        const headRes = await wretch(_URL + "/json").head().res()
+        expect(headRes.headers.get("content-type")).to.equal("application/json")
     })
 
     it("should catch common error codes", async function() {
