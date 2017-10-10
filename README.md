@@ -1,12 +1,13 @@
 <h1 align="center">
-	<img src="https://cdn.rawgit.com/elbywan/wretch/08831345/wretch.svg" alt="wretch-logo" width="220px"><br>
+	<a href="https://elbywan.github.io/wretch"><img src="https://cdn.rawgit.com/elbywan/wretch/08831345/wretch.svg" alt="wretch-logo" width="220px"></a><br>
 	<br>
-    wretch<br>
+    <a href="https://elbywan.github.io/wretch">Wretch</a><br>
 	<br>
-	<a href="https://travis-ci.org/elbywan/wretch"><img alt="travis-badge" src="https://travis-ci.org/elbywan/wretch.svg?branch=master"></a>
-	<a href="https://www.npmjs.com/package/wretch"><img alt="npm-badge" src="https://img.shields.io/npm/v/wretch.svg" height="20"></a>
-	<a href="https://coveralls.io/github/elbywan/wretch?branch=master"><img src="https://coveralls.io/repos/github/elbywan/wretch/badge.svg?branch=master" alt="Coverage Status"></a>
-	<a href="https://github.com/elbywan/wretch/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license-badge" height="20"></a>
+  <a href="https://elbywan.github.io/wretch"><img alt="homepage-badge" src="https://img.shields.io/website-up-down-green-red/http/shields.io.svg?label=wretch-homepage"></a>
+  <a href="https://travis-ci.org/elbywan/wretch"><img alt="travis-badge" src="https://travis-ci.org/elbywan/wretch.svg?branch=master"></a>
+  <a href="https://www.npmjs.com/package/wretch"><img alt="npm-badge" src="https://img.shields.io/npm/v/wretch.svg" height="20"></a>
+  <a href="https://coveralls.io/github/elbywan/wretch?branch=master"><img src="https://coveralls.io/repos/github/elbywan/wretch/badge.svg?branch=master" alt="Coverage Status"></a>
+  <a href="https://github.com/elbywan/wretch/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license-badge" height="20"></a>
 </h1>
 <h4 align="center">
 	A tiny (&lt; 2.2Kb g-zipped) wrapper built around fetch with an intuitive syntax.
@@ -150,7 +151,7 @@ npm start
 
 Wretch is compatible with modern browsers out of the box.
 
-For older environment without fetch support, you should get a [polyfill](https://github.com/github/fetch).
+For older environments without fetch support, you should get a [polyfill](https://github.com/github/fetch).
 
 ## Node.js
 
@@ -165,12 +166,9 @@ global.URLSearchParams = require("url").URLSearchParams
 
 // Or the non-global way :
 
-const fetch = require("node-fetch")
-const FormData = require("form-data")
-
 wretch().polyfills({
-    fetch: fetch,
-    FormData: FormData,
+    fetch: require("node-fetch"),
+    FormData: require("form-data"),
     URLSearchParams: require("url").URLSearchParams
 })
 ```
@@ -210,7 +208,7 @@ wretch(url, options)
      // [ Optional ]
      // Serialize an object to json or FormData formats and sets the body & header field if needed
  .[http method]()
-     // [ Required, ends the request chain]
+     // [ Required, ends the request chain ]
      // Performs the get/put/post/delete/patch request
 
   /* Fetch is called at this time. */
@@ -222,7 +220,7 @@ wretch(url, options)
     // [ Optional ]
     // You can chain error handlers here
  .[response type]()
-    // [ Required, ends the response chain]
+    // [ Required, ends the response chain ]
     // Specify the data type you need, which will be parsed and handed to you
 
   /* From this point wretch returns a standard Promise, so you can continue chaining actions afterwards. */
@@ -244,13 +242,13 @@ wretch(url, options)
 
 #### wretch(url = "", opts = {})
 
-Create a new Wretcher object with an url and [vanilla fetch options](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch).
+Creates a new Wretcher object with an url and [vanilla fetch options](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch).
 
 ## Helper Methods
 
 *Helper methods are optional and can be chained.*
 
-| [url](#urlurl-string-replace-boolean--false) | [query](#queryqp-object) | [options](#optionsoptions-object-mixin-boolean--false) | [headers](#headersheadervalues-object) | [accept](#acceptheadervalue-string) | [content](#contentheadervalue-string) | [catcher](#catchercode-number-catcher-error-wretchererror--void) | [defaults](#defaultsopts-object-mixin-boolean--false) | [errorType](#errortypemethod-text--json--text) | [polyfills](#polyfillspolyfills-object) |
+| [url](#urlurl-string-replace-boolean--false) | [query](#queryqp-object) | [options](#optionsoptions-object-mixin-boolean--true) | [headers](#headersheadervalues-object) | [accept](#acceptheadervalue-string) | [content](#contentheadervalue-string) | [catcher](#catchererrorid-number--string-catcher-error-wretchererror--void) | [defaults](#defaultsopts-object-mixin-boolean--false) | [errorType](#errortypemethod-text--json--text) | [polyfills](#polyfillspolyfills-object) |
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
 
 #### url(url: string, replace: boolean = false)
@@ -291,7 +289,7 @@ w = w.query({ c: 3, d: [4, 5] })
 
 #### options(options: Object, mixin: boolean = true)
 
-Set the fetch options.
+Sets the fetch options.
 
 ```js
 wretch("...").options({ credentials: "same-origin" })
@@ -338,7 +336,7 @@ wretch()
 
 #### headers(headerValues: Object)
 
-Set request headers.
+Sets the request headers.
 
 ```js
 wretch("...")
@@ -385,7 +383,7 @@ w.url("...").notFound(err => /* overrides the default 'redirect' catcher */)
 
 #### defaults(opts: Object, mixin: boolean = false)
 
-Set default fetch options which will be used for every subsequent requests.
+Sets default fetch options which will be used for every subsequent requests.
 
 ```js
 // Interestingly enough, default options are mixed in :
@@ -447,12 +445,12 @@ wretch().polyfills({
 
 *A body type is only needed when performing put/patch/post requests with a body.*
 
-| [body](#bodycontents-any) | [json](#jsonjsobject-object) | [formData](#formdataformobject-object) | [formUrl](formurlinput--object--string) |
+| [body](#bodycontents-any) | [json](#jsonjsobject-object) | [formData](#formdataformobject-object) | [formUrl](#formurlinput--object--string) |
 |-----|-----|-----|-----|
 
 #### body(contents: any)
 
-Set the request body with any content.
+Sets the request body with any content.
 
 ```js
 wretch("...").body("hello").put()
@@ -504,7 +502,7 @@ wretch("...").formUrl(alreadyEncodedForm).post()
 
 #### get(opts = {})
 
-Perform a get request.
+Performs a get request.
 
 ```js
 wretch("...").get({ credentials: "same-origin" })
@@ -512,7 +510,7 @@ wretch("...").get({ credentials: "same-origin" })
 
 #### delete(opts = {})
 
-Perform a delete request.
+Performs a delete request.
 
 ```js
 wretch("...").delete({ credentials: "same-origin" })
@@ -520,7 +518,7 @@ wretch("...").delete({ credentials: "same-origin" })
 
 #### put(opts = {})
 
-Perform a put request.
+Performs a put request.
 
 ```js
 wretch("...").json({...}).put({ credentials: "same-origin" })
@@ -528,7 +526,7 @@ wretch("...").json({...}).put({ credentials: "same-origin" })
 
 #### patch(opts = {})
 
-Perform a patch request.
+Performs a patch request.
 
 ```js
 wretch("...").json({...}).patch({ credentials: "same-origin" })
@@ -536,7 +534,7 @@ wretch("...").json({...}).patch({ credentials: "same-origin" })
 
 #### post(opts = {})
 
-Perform a post request.
+Performs a post request.
 
 ```js
 wretch("...").json({...}).post({ credentials: "same-origin" })
@@ -544,14 +542,14 @@ wretch("...").json({...}).post({ credentials: "same-origin" })
 
 #### head(opts = {})
 
-Perform a head request.
+Performs a head request.
 
 ```js
 wretch("...").head({ credentials: "same-origin" })
 ```
 #### opts(opts = {})
 
-Perform an options request.
+Performs an options request.
 
 ```js
 wretch("...").opts({ credentials: "same-origin" })
@@ -563,7 +561,7 @@ wretch("...").opts({ credentials: "same-origin" })
 
 *Catchers can be chained.*
 
-| [badRequest](#badrequestcb-error-wretchererror--any) | [unauthorized](#unauthorizedcb-error-wretchererror--any) | [forbidden](#forbiddencb-error-wretchererror--any) | [notFound](#notfoundcb-error-wretchererror--any) | [timeout](#timeoutcb-error-wretchererror--any) | [internalError](#internalerrorcb-error-wretchererror--any) | [error](#errorcode-number-cb-error-wretchererror--any) |
+| [badRequest](#badrequestcb-error-wretchererror--any) | [unauthorized](#unauthorizedcb-error-wretchererror--any) | [forbidden](#forbiddencb-error-wretchererror--any) | [notFound](#notfoundcb-error-wretchererror--any) | [timeout](#timeoutcb-error-wretchererror--any) | [internalError](#internalerrorcb-error-wretchererror--any) | [error](#errorerrorid-number--string-cb-error-wretchererror--any) |
 |-----|-----|-----|-----|-----|-----|-----|
 
 ```ts
@@ -609,7 +607,7 @@ Syntactic sugar for `error(500, cb)`.
 
 #### error(errorId: number | string, cb: (error: WretcherError) => any)
 
-Catch a specific error given its code or name and perform the callback.
+Catches a specific error given its code or name and perform the callback.
 
 ## Response Types
 
@@ -763,7 +761,7 @@ c.abort()
 
 *Used at "response time" like a catcher.*
 
-Catch an AbortError and perform the callback.
+Catches an AbortError and performs the callback.
 
 ### Performance API (experimental)
 
