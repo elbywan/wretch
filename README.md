@@ -248,8 +248,8 @@ Creates a new Wretcher object with an url and [vanilla fetch options](https://de
 
 *Helper methods are optional and can be chained.*
 
-| [url](#urlurl-string-replace-boolean--false) | [query](#queryqp-object) | [options](#optionsoptions-object-mixin-boolean--true) | [headers](#headersheadervalues-object) | [accept](#acceptheadervalue-string) | [content](#contentheadervalue-string) | [catcher](#catchererrorid-number--string-catcher-error-wretchererror--void) | [defaults](#defaultsopts-object-mixin-boolean--false) | [errorType](#errortypemethod-text--json--text) | [polyfills](#polyfillspolyfills-object) |
-|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+| [url](#urlurl-string-replace-boolean--false) | [query](#queryqp-object) | [options](#optionsoptions-object-mixin-boolean--true) | [headers](#headersheadervalues-object) | [accept](#acceptheadervalue-string) | [content](#contentheadervalue-string) | [auth](#authheadervalue-string) | [catcher](#catchererrorid-number--string-catcher-error-wretchererror--void) | [defaults](#defaultsopts-object-mixin-boolean--false) | [errorType](#errortypemethod-text--json--text) | [polyfills](#polyfillspolyfills-object) |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
 
 #### url(url: string, replace: boolean = false)
 
@@ -360,6 +360,14 @@ Shortcut to set the "Content-Type" header.
 
 ```js
 wretch("...").content("application/json")
+```
+
+#### auth(headerValue: string)
+
+Shortcut to set the "Authorization" header.
+
+```js
+wretch("...").auth("Basic d3JldGNoOnJvY2tz")
 ```
 
 #### catcher(errorId: number | string, catcher: (error: WretcherError) => void)

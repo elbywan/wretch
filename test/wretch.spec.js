@@ -251,9 +251,25 @@ describe("Wretch", function() {
         expect(obj5._url).to.be.equal(`${_URL}?c=6&d=7&d=8`)
     })
 
-    it("should modify the Accept header", async function() {
+    it("should set the Accept header", async function() {
         expect(await wretch(`${_URL}/accept`).get().text()).to.be.equal("text")
         expect(await wretch(`${_URL}/accept`).accept("application/json").get().json()).to.deep.equal({ json: "ok" })
+    })
+
+    it("should set the Authorization header", async function() {
+        try { await wretch(_URL + "/basicauth")
+            .get()
+            .res(_ => expect.fail("", "", "Authenticated route should not respond without credentials."))
+         } catch(e) {
+             expect(e.status).to.equal(401)
+         }
+
+         const res = await wretch(_URL + "/basicauth")
+            .auth("Basic d3JldGNoOnJvY2tz")
+            .get()
+            .text()
+
+        expect(res).to.equal("ok")
     })
 
     it("should change the parsing used in the default error handler", async function() {

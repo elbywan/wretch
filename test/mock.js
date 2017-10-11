@@ -14,6 +14,7 @@ const mockServer = {
         server.use(restify.plugins.queryParser())
         server.use(restify.plugins.jsonBodyParser())
         server.use(restify.plugins.multipartBodyParser())
+        server.use(restify.plugins.authorizationParser())
 
         setupReplies(server, "text", textReply)
         setupReplies(server, "json", jsonReply)
@@ -74,6 +75,16 @@ const mockServer = {
                 res.json({ json: "ok" })
             else
                 res.sendRaw("text")
+        })
+
+        server.get("/basicauth", (req, res) => {
+            if(req.authorization &&
+                req.authorization.scheme === "Basic" &&
+                req.authorization.basic.username === "wretch" &&
+                req.authorization.basic.password === "rocks")
+                res.sendRaw("ok")
+            else
+                res.send(401)
         })
 
         server.get("/json500", (req, res) => {

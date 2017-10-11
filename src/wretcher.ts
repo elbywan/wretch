@@ -111,6 +111,14 @@ export class Wretcher {
     }
 
     /**
+     * Shortcut to set the "Authorization" header.
+     * @param headerValue Header value
+     */
+    auth(headerValue: string) {
+        return this.headers({ Authorization: headerValue })
+    }
+
+    /**
      * Adds a default catcher which will be called on every subsequent request error when the error code matches.
      * @param errorId Error code or name
      * @param catcher: The catcher method
