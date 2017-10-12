@@ -248,8 +248,8 @@ Creates a new Wretcher object with an url and [vanilla fetch options](https://de
 
 *Helper methods are optional and can be chained.*
 
-| [url](#urlurl-string-replace-boolean--false) | [query](#queryqp-object) | [options](#optionsoptions-object-mixin-boolean--true) | [headers](#headersheadervalues-object) | [accept](#acceptheadervalue-string) | [content](#contentheadervalue-string) | [auth](#authheadervalue-string) | [catcher](#catchererrorid-number--string-catcher-error-wretchererror--void) | [defaults](#defaultsopts-object-mixin-boolean--false) | [errorType](#errortypemethod-text--json--text) | [polyfills](#polyfillspolyfills-object) |
-|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+| [url](#urlurl-string-replace-boolean--false) | [query](#queryqp-object) | [options](#optionsoptions-object-mixin-boolean--true) | [headers](#headersheadervalues-object) | [accept](#acceptheadervalue-string) | [content](#contentheadervalue-string) | [auth](#authheadervalue-string) | [catcher](#catchererrorid-number--string-catcher-error-wretchererror--void) | [resolve](#resolvedoresolve-chain-responsechain--responsechain--promise-clear--false) | [defaults](#defaultsopts-object-mixin-boolean--false) | [errorType](#errortypemethod-text--json--text) | [polyfills](#polyfillspolyfills-object) |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
 
 #### url(url: string, replace: boolean = false)
 
@@ -387,6 +387,30 @@ w.url("http://myapi.com/get/something").get().json(json => /* ... */)
 
 // Default catchers can be overridden if needed.
 w.url("...").notFound(err => /* overrides the default 'redirect' catcher */)
+```
+
+#### resolve(doResolve: (chain: ResponseChain) => ResponseChain | Promise<any>, clear = false)
+
+Programs a resolver which will automatically be injected to perform response chain tasks.
+
+Very useful when you need to perform repetitive actions on the wretch response.
+
+*The clear argument, if set to true, removes previously defined resolvers.*
+
+```js
+// Program "response" chain actions early on
+const w = wretch()
+  .resolve(resolver => resolver
+    .perfs(_ =>  /* monitor every request */)
+    .json(_ => _ /* automatically parse and return json */))
+
+const myJson = await w.url("http://a.com").get()
+// Equivalent to wretch()
+//  .url("http://a.com")
+//  .get()
+//     <- the resolver chain is automatically injected here !
+//  .perfs(_ =>  /* ... */)
+//  .json(_ => _)
 ```
 
 #### defaults(opts: Object, mixin: boolean = false)

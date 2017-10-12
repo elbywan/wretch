@@ -11,7 +11,7 @@ const mockServer = require("./mock")
 const wretch = require("../dist/bundle/wretch")
 
 const _PORT = 9876
-const _URL = `http://localhost:${_PORT}/`
+const _URL = `http://localhost:${_PORT}`
 
 const allRoutes = (obj, type, action) => Promise.all([
     obj.get()[type](_ => _).then(action),
@@ -279,6 +279,8 @@ describe("Wretch", function() {
             .internalError(error => { expect(error.json).to.deep.equal({ error: 500, message: "ok" }) })
             .res(_ => expect.fail("", "", "I should never be called because an error was thrown"))
             .then(_ => expect(_).to.be.undefined)
+        // Change back
+        wretch().errorType("text")
     })
 
     it("should retrieve performance timings associated with a fetch request", function(done) {
@@ -320,5 +322,23 @@ describe("Wretch", function() {
             .onAbort(err => console.log(err))
 
         setTimeout(done, 1000)
+    })
+
+    it("should program resolvers", async function() {
+        let check = 0
+        const w = wretch()
+            .url(_URL)
+            .resolve(resolver => resolver
+                .unauthorized(_ => check--))
+            .resolve(resolver => resolver
+                .unauthorized(_ => check++), true)
+            .resolve(resolver => resolver
+                .perfs(_ => check++)
+                .json(_ => { check++; return _ }))
+        const result = await w.url("/json").get()
+        expect(result).to.be.deep.equal({ a: "json", "object": "which", "is": "stringified" })
+        expect(check).to.be.equal(2)
+        await w.url("/401").get()
+        expect(check).to.be.equal(4)
     })
 })

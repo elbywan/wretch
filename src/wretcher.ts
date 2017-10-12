@@ -1,6 +1,6 @@
 import { mix } from "./mix"
 import conf from "./config"
-import { resolver, WretcherError } from "./resolver"
+import { resolver, WretcherError, ResponseChain } from "./resolver"
 
 /**
  * The Wretcher class used to perform easy fetch requests.
@@ -12,11 +12,12 @@ export class Wretcher {
     protected constructor(
         private _url: string,
         private _options: RequestInit = {},
-        private _catchers: Map<number | string, (error: WretcherError) => void> = new Map()) {}
+        private _catchers: Map<number | string, (error: WretcherError) => void> = new Map(),
+        private _resolvers: Array<(resolver: ResponseChain) => any> = []) {}
 
     static factory(url = "", opts: RequestInit = {}) { return new Wretcher(url, opts) }
-    private selfFactory({ url = this._url, options = this._options, catchers = this._catchers } = {}) {
-        return new Wretcher(url, options, catchers)
+    private selfFactory({ url = this._url, options = this._options, catchers = this._catchers, resolvers = this._resolvers } = {}) {
+        return new Wretcher(url, options, catchers, resolvers)
     }
 
     /**
@@ -138,46 +139,54 @@ export class Wretcher {
     }
 
     /**
+     * Program a resolver to perform response chain tasks automatically.
+     * @param doResolve : Resolver callback
+     */
+    resolve(doResolve: (chain: ResponseChain) => ResponseChain | Promise<any>, clear: boolean = false) {
+        return this.selfFactory({ resolvers: clear ? [ doResolve ] : [ ...this._resolvers, doResolve ]})
+    }
+
+    /**
      * Performs a get request.
      */
     get(opts = {}) {
-        return resolver(this._url)(this._catchers)(mix(opts, this._options))
+        return resolver(this._url)(this._catchers)(this._resolvers)(mix(opts, this._options))
     }
     /**
      * Performs a delete request.
      */
     delete(opts = {}) {
-        return resolver(this._url)(this._catchers)({ ...mix(opts, this._options), method: "DELETE" })
+        return resolver(this._url)(this._catchers)(this._resolvers)({ ...mix(opts, this._options), method: "DELETE" })
     }
     /**
      * Performs a put request.
      */
     put(opts = {}) {
-        return resolver(this._url)(this._catchers)({ ...mix(opts, this._options), method: "PUT" })
+        return resolver(this._url)(this._catchers)(this._resolvers)({ ...mix(opts, this._options), method: "PUT" })
     }
     /**
      * Performs a post request.
      */
     post(opts = {}) {
-        return resolver(this._url)(this._catchers)({ ...mix(opts, this._options), method: "POST" })
+        return resolver(this._url)(this._catchers)(this._resolvers)({ ...mix(opts, this._options), method: "POST" })
     }
     /**
      * Performs a patch request.
      */
     patch(opts = {}) {
-        return resolver(this._url)(this._catchers)({ ...mix(opts, this._options), method: "PATCH" })
+        return resolver(this._url)(this._catchers)(this._resolvers)({ ...mix(opts, this._options), method: "PATCH" })
     }
     /**
      * Performs a head request.
      */
     head(opts = {}) {
-        return resolver(this._url)(this._catchers)({ ...mix(opts, this._options), method: "HEAD" })
+        return resolver(this._url)(this._catchers)(this._resolvers)({ ...mix(opts, this._options), method: "HEAD" })
     }
     /**
      * Performs an options request
      */
     opts(opts = {}) {
-        return resolver(this._url)(this._catchers)({ ...mix(opts, this._options), method: "OPTIONS" })
+        return resolver(this._url)(this._catchers)(this._resolvers)({ ...mix(opts, this._options), method: "OPTIONS" })
     }
 
     /**

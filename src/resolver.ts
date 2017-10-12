@@ -3,8 +3,33 @@ import conf from "./config"
 import perfs from "./perfs"
 
 export type WretcherError = Error & { status: number, response: Response, text?: string, json?: any }
+export type ResponseChain = {
+    // Response types
+    res: <Result = Response>(cb?: (type: Response) => Result) => Promise<Result>,
+    json: <Result = {[key: string]: any}>(cb?: (type: {[key: string]: any}) => Result) => Promise<Result>,
+    blob: <Result = Blob>(cb?: (type: Blob) => Result) => Promise<Result>,
+    formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>,
+    arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>,
+    text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>,
+    // Extras
+    perfs: (cb?: (type: any) => void) => ResponseChain,
+    setTimeout: (time: number, controller: any) => ResponseChain,
+    controller: () => [any, ResponseChain],
+    // Catchers
+    error: (code: (number | string), cb: any) => ResponseChain,
+    badRequest: (cb: (error: WretcherError) => void) => ResponseChain,
+    unauthorized: (cb: (error: WretcherError) => void) => ResponseChain,
+    forbidden: (cb: (error: WretcherError) => void) => ResponseChain,
+    notFound: (cb: (error: WretcherError) => void) => ResponseChain,
+    timeout: (cb: (error: WretcherError) => void) => ResponseChain,
+    internalError: (cb: (error: WretcherError) => void) => ResponseChain,
+    onAbort: (cb: (error: Error) => void) => ResponseChain
+}
 
-export const resolver = url => (catchers: Map<number | string, (error: WretcherError) => void> = new Map()) => (opts = {}) => {
+export const resolver = url =>
+        (catchers: Map<number | string, (error: WretcherError) => void> = new Map()) =>
+        (resolvers: Array<(chain: ResponseChain) => ResponseChain | Promise<any>>) =>
+        (opts = {}) => {
     type TypeParser = <Type>(funName: string | null) => <Result = void>(cb?: (type: Type) => Result) => Promise<Result>
 
     const finalOpts = mix(conf.defaults, opts)
@@ -41,28 +66,7 @@ export const resolver = url => (catchers: Map<number | string, (error: WretcherE
         doCatch(wrapper.then(_ => _ && _[funName]()).then(_ => _ && cb && cb(_) || _)) :
         doCatch(wrapper.then(_ => _ && cb && cb(_) || _))
 
-    const responseChain: {
-        // Response types
-        res: <Result = Response>(cb?: (type: Response) => Result) => Promise<Result>,
-        json: <Result = {[key: string]: any}>(cb?: (type: {[key: string]: any}) => Result) => Promise<Result>,
-        blob: <Result = Blob>(cb?: (type: Blob) => Result) => Promise<Result>,
-        formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>,
-        arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>,
-        text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>,
-        // Extras
-        perfs: (cb?: (type: any) => void) => typeof responseChain,
-        setTimeout: (time: number, controller: any) => typeof responseChain,
-        controller: () => [any, typeof responseChain],
-        // Catchers
-        error: (code: (number | string), cb: any) => typeof responseChain,
-        badRequest: (cb: (error: WretcherError) => void) => typeof responseChain,
-        unauthorized: (cb: (error: WretcherError) => void) => typeof responseChain,
-        forbidden: (cb: (error: WretcherError) => void) => typeof responseChain,
-        notFound: (cb: (error: WretcherError) => void) => typeof responseChain,
-        timeout: (cb: (error: WretcherError) => void) => typeof responseChain,
-        internalError: (cb: (error: WretcherError) => void) => typeof responseChain,
-        onAbort: (cb: (error: Error) => void) => typeof responseChain
-    } = {
+    const responseChain: ResponseChain = {
         /**
          * Retrieves the raw result as a promise.
          */
@@ -147,5 +151,5 @@ export const resolver = url => (catchers: Map<number | string, (error: WretcherE
         onAbort: cb => responseChain.error("AbortError", cb)
     }
 
-    return responseChain
+    return resolvers.reduce((chain, r) => r(chain), responseChain)
 }

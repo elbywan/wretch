@@ -15,12 +15,14 @@ import { resolver } from "./resolver";
  * Immutability : almost every method of this class return a fresh Wretcher object.
  */
 var Wretcher = /** @class */ (function () {
-    function Wretcher(_url, _options, _catchers) {
+    function Wretcher(_url, _options, _catchers, _resolvers) {
         if (_options === void 0) { _options = {}; }
         if (_catchers === void 0) { _catchers = new Map(); }
+        if (_resolvers === void 0) { _resolvers = []; }
         this._url = _url;
         this._options = _options;
         this._catchers = _catchers;
+        this._resolvers = _resolvers;
     }
     Wretcher.factory = function (url, opts) {
         if (url === void 0) { url = ""; }
@@ -28,8 +30,8 @@ var Wretcher = /** @class */ (function () {
         return new Wretcher(url, opts);
     };
     Wretcher.prototype.selfFactory = function (_a) {
-        var _b = _a === void 0 ? {} : _a, _c = _b.url, url = _c === void 0 ? this._url : _c, _d = _b.options, options = _d === void 0 ? this._options : _d, _e = _b.catchers, catchers = _e === void 0 ? this._catchers : _e;
-        return new Wretcher(url, options, catchers);
+        var _b = _a === void 0 ? {} : _a, _c = _b.url, url = _c === void 0 ? this._url : _c, _d = _b.options, options = _d === void 0 ? this._options : _d, _e = _b.catchers, catchers = _e === void 0 ? this._catchers : _e, _f = _b.resolvers, resolvers = _f === void 0 ? this._resolvers : _f;
+        return new Wretcher(url, options, catchers, resolvers);
     };
     /**
      * Sets the default fetch options used for every subsequent fetch call.
@@ -141,53 +143,61 @@ var Wretcher = /** @class */ (function () {
         return this.selfFactory({ options: __assign({}, this._options, { signal: controller.signal }) });
     };
     /**
+     * Program a resolver to perform response chain tasks automatically.
+     * @param doResolve : Resolver callback
+     */
+    Wretcher.prototype.resolve = function (doResolve, clear) {
+        if (clear === void 0) { clear = false; }
+        return this.selfFactory({ resolvers: clear ? [doResolve] : this._resolvers.concat([doResolve]) });
+    };
+    /**
      * Performs a get request.
      */
     Wretcher.prototype.get = function (opts) {
         if (opts === void 0) { opts = {}; }
-        return resolver(this._url)(this._catchers)(mix(opts, this._options));
+        return resolver(this._url)(this._catchers)(this._resolvers)(mix(opts, this._options));
     };
     /**
      * Performs a delete request.
      */
     Wretcher.prototype.delete = function (opts) {
         if (opts === void 0) { opts = {}; }
-        return resolver(this._url)(this._catchers)(__assign({}, mix(opts, this._options), { method: "DELETE" }));
+        return resolver(this._url)(this._catchers)(this._resolvers)(__assign({}, mix(opts, this._options), { method: "DELETE" }));
     };
     /**
      * Performs a put request.
      */
     Wretcher.prototype.put = function (opts) {
         if (opts === void 0) { opts = {}; }
-        return resolver(this._url)(this._catchers)(__assign({}, mix(opts, this._options), { method: "PUT" }));
+        return resolver(this._url)(this._catchers)(this._resolvers)(__assign({}, mix(opts, this._options), { method: "PUT" }));
     };
     /**
      * Performs a post request.
      */
     Wretcher.prototype.post = function (opts) {
         if (opts === void 0) { opts = {}; }
-        return resolver(this._url)(this._catchers)(__assign({}, mix(opts, this._options), { method: "POST" }));
+        return resolver(this._url)(this._catchers)(this._resolvers)(__assign({}, mix(opts, this._options), { method: "POST" }));
     };
     /**
      * Performs a patch request.
      */
     Wretcher.prototype.patch = function (opts) {
         if (opts === void 0) { opts = {}; }
-        return resolver(this._url)(this._catchers)(__assign({}, mix(opts, this._options), { method: "PATCH" }));
+        return resolver(this._url)(this._catchers)(this._resolvers)(__assign({}, mix(opts, this._options), { method: "PATCH" }));
     };
     /**
      * Performs a head request.
      */
     Wretcher.prototype.head = function (opts) {
         if (opts === void 0) { opts = {}; }
-        return resolver(this._url)(this._catchers)(__assign({}, mix(opts, this._options), { method: "HEAD" }));
+        return resolver(this._url)(this._catchers)(this._resolvers)(__assign({}, mix(opts, this._options), { method: "HEAD" }));
     };
     /**
      * Performs an options request
      */
     Wretcher.prototype.opts = function (opts) {
         if (opts === void 0) { opts = {}; }
-        return resolver(this._url)(this._catchers)(__assign({}, mix(opts, this._options), { method: "OPTIONS" }));
+        return resolver(this._url)(this._catchers)(this._resolvers)(__assign({}, mix(opts, this._options), { method: "OPTIONS" }));
     };
     /**
      * Sets the request body with any content.

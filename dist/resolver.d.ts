@@ -4,7 +4,7 @@ export declare type WretcherError = Error & {
     text?: string;
     json?: any;
 };
-export declare const resolver: (url: any) => (catchers?: Map<string | number, (error: WretcherError) => void>) => (opts?: {}) => {
+export declare type ResponseChain = {
     res: <Result = Response>(cb?: (type: Response) => Result) => Promise<Result>;
     json: <Result = {
         [key: string]: any;
@@ -15,15 +15,16 @@ export declare const resolver: (url: any) => (catchers?: Map<string | number, (e
     formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>;
     arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
     text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>;
-    perfs: (cb?: (type: any) => void) => any;
-    setTimeout: (time: number, controller: any) => any;
-    controller: () => [any, any];
-    error: (code: string | number, cb: any) => any;
-    badRequest: (cb: (error: WretcherError) => void) => any;
-    unauthorized: (cb: (error: WretcherError) => void) => any;
-    forbidden: (cb: (error: WretcherError) => void) => any;
-    notFound: (cb: (error: WretcherError) => void) => any;
-    timeout: (cb: (error: WretcherError) => void) => any;
-    internalError: (cb: (error: WretcherError) => void) => any;
-    onAbort: (cb: (error: Error) => void) => any;
+    perfs: (cb?: (type: any) => void) => ResponseChain;
+    setTimeout: (time: number, controller: any) => ResponseChain;
+    controller: () => [any, ResponseChain];
+    error: (code: (number | string), cb: any) => ResponseChain;
+    badRequest: (cb: (error: WretcherError) => void) => ResponseChain;
+    unauthorized: (cb: (error: WretcherError) => void) => ResponseChain;
+    forbidden: (cb: (error: WretcherError) => void) => ResponseChain;
+    notFound: (cb: (error: WretcherError) => void) => ResponseChain;
+    timeout: (cb: (error: WretcherError) => void) => ResponseChain;
+    internalError: (cb: (error: WretcherError) => void) => ResponseChain;
+    onAbort: (cb: (error: Error) => void) => ResponseChain;
 };
+export declare const resolver: (url: any) => (catchers?: Map<string | number, (error: WretcherError) => void>) => (resolvers: ((chain: ResponseChain) => Promise<any> | ResponseChain)[]) => (opts?: {}) => Promise<any> | ResponseChain;

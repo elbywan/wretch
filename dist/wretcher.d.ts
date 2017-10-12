@@ -1,5 +1,5 @@
 import conf from "./config";
-import { WretcherError } from "./resolver";
+import { WretcherError, ResponseChain } from "./resolver";
 /**
  * The Wretcher class used to perform easy fetch requests.
  *
@@ -9,9 +9,10 @@ export declare class Wretcher {
     private _url;
     private _options;
     private _catchers;
-    protected constructor(_url: string, _options?: RequestInit, _catchers?: Map<number | string, (error: WretcherError) => void>);
+    private _resolvers;
+    protected constructor(_url: string, _options?: RequestInit, _catchers?: Map<number | string, (error: WretcherError) => void>, _resolvers?: Array<(resolver: ResponseChain) => any>);
     static factory(url?: string, opts?: RequestInit): Wretcher;
-    private selfFactory({url, options, catchers}?);
+    private selfFactory({url, options, catchers, resolvers}?);
     /**
      * Sets the default fetch options used for every subsequent fetch call.
      * @param opts New default options
@@ -92,187 +93,38 @@ export declare class Wretcher {
      */
     signal(controller: any): Wretcher;
     /**
+     * Program a resolver to perform response chain tasks automatically.
+     * @param doResolve : Resolver callback
+     */
+    resolve(doResolve: (chain: ResponseChain) => ResponseChain | Promise<any>, clear?: boolean): Wretcher;
+    /**
      * Performs a get request.
      */
-    get(opts?: {}): {
-        res: <Result = Response>(cb?: (type: Response) => Result) => Promise<Result>;
-        json: <Result = {
-            [key: string]: any;
-        }>(cb?: (type: {
-            [key: string]: any;
-        }) => Result) => Promise<Result>;
-        blob: <Result = Blob>(cb?: (type: Blob) => Result) => Promise<Result>;
-        formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>;
-        arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
-        text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>;
-        perfs: (cb?: (type: any) => void) => any;
-        setTimeout: (time: number, controller: any) => any;
-        controller: () => [any, any];
-        error: (code: string | number, cb: any) => any;
-        badRequest: (cb: (error: WretcherError) => void) => any;
-        unauthorized: (cb: (error: WretcherError) => void) => any;
-        forbidden: (cb: (error: WretcherError) => void) => any;
-        notFound: (cb: (error: WretcherError) => void) => any;
-        timeout: (cb: (error: WretcherError) => void) => any;
-        internalError: (cb: (error: WretcherError) => void) => any;
-        onAbort: (cb: (error: Error) => void) => any;
-    };
+    get(opts?: {}): Promise<any> | ResponseChain;
     /**
      * Performs a delete request.
      */
-    delete(opts?: {}): {
-        res: <Result = Response>(cb?: (type: Response) => Result) => Promise<Result>;
-        json: <Result = {
-            [key: string]: any;
-        }>(cb?: (type: {
-            [key: string]: any;
-        }) => Result) => Promise<Result>;
-        blob: <Result = Blob>(cb?: (type: Blob) => Result) => Promise<Result>;
-        formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>;
-        arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
-        text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>;
-        perfs: (cb?: (type: any) => void) => any;
-        setTimeout: (time: number, controller: any) => any;
-        controller: () => [any, any];
-        error: (code: string | number, cb: any) => any;
-        badRequest: (cb: (error: WretcherError) => void) => any;
-        unauthorized: (cb: (error: WretcherError) => void) => any;
-        forbidden: (cb: (error: WretcherError) => void) => any;
-        notFound: (cb: (error: WretcherError) => void) => any;
-        timeout: (cb: (error: WretcherError) => void) => any;
-        internalError: (cb: (error: WretcherError) => void) => any;
-        onAbort: (cb: (error: Error) => void) => any;
-    };
+    delete(opts?: {}): Promise<any> | ResponseChain;
     /**
      * Performs a put request.
      */
-    put(opts?: {}): {
-        res: <Result = Response>(cb?: (type: Response) => Result) => Promise<Result>;
-        json: <Result = {
-            [key: string]: any;
-        }>(cb?: (type: {
-            [key: string]: any;
-        }) => Result) => Promise<Result>;
-        blob: <Result = Blob>(cb?: (type: Blob) => Result) => Promise<Result>;
-        formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>;
-        arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
-        text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>;
-        perfs: (cb?: (type: any) => void) => any;
-        setTimeout: (time: number, controller: any) => any;
-        controller: () => [any, any];
-        error: (code: string | number, cb: any) => any;
-        badRequest: (cb: (error: WretcherError) => void) => any;
-        unauthorized: (cb: (error: WretcherError) => void) => any;
-        forbidden: (cb: (error: WretcherError) => void) => any;
-        notFound: (cb: (error: WretcherError) => void) => any;
-        timeout: (cb: (error: WretcherError) => void) => any;
-        internalError: (cb: (error: WretcherError) => void) => any;
-        onAbort: (cb: (error: Error) => void) => any;
-    };
+    put(opts?: {}): Promise<any> | ResponseChain;
     /**
      * Performs a post request.
      */
-    post(opts?: {}): {
-        res: <Result = Response>(cb?: (type: Response) => Result) => Promise<Result>;
-        json: <Result = {
-            [key: string]: any;
-        }>(cb?: (type: {
-            [key: string]: any;
-        }) => Result) => Promise<Result>;
-        blob: <Result = Blob>(cb?: (type: Blob) => Result) => Promise<Result>;
-        formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>;
-        arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
-        text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>;
-        perfs: (cb?: (type: any) => void) => any;
-        setTimeout: (time: number, controller: any) => any;
-        controller: () => [any, any];
-        error: (code: string | number, cb: any) => any;
-        badRequest: (cb: (error: WretcherError) => void) => any;
-        unauthorized: (cb: (error: WretcherError) => void) => any;
-        forbidden: (cb: (error: WretcherError) => void) => any;
-        notFound: (cb: (error: WretcherError) => void) => any;
-        timeout: (cb: (error: WretcherError) => void) => any;
-        internalError: (cb: (error: WretcherError) => void) => any;
-        onAbort: (cb: (error: Error) => void) => any;
-    };
+    post(opts?: {}): Promise<any> | ResponseChain;
     /**
      * Performs a patch request.
      */
-    patch(opts?: {}): {
-        res: <Result = Response>(cb?: (type: Response) => Result) => Promise<Result>;
-        json: <Result = {
-            [key: string]: any;
-        }>(cb?: (type: {
-            [key: string]: any;
-        }) => Result) => Promise<Result>;
-        blob: <Result = Blob>(cb?: (type: Blob) => Result) => Promise<Result>;
-        formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>;
-        arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
-        text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>;
-        perfs: (cb?: (type: any) => void) => any;
-        setTimeout: (time: number, controller: any) => any;
-        controller: () => [any, any];
-        error: (code: string | number, cb: any) => any;
-        badRequest: (cb: (error: WretcherError) => void) => any;
-        unauthorized: (cb: (error: WretcherError) => void) => any;
-        forbidden: (cb: (error: WretcherError) => void) => any;
-        notFound: (cb: (error: WretcherError) => void) => any;
-        timeout: (cb: (error: WretcherError) => void) => any;
-        internalError: (cb: (error: WretcherError) => void) => any;
-        onAbort: (cb: (error: Error) => void) => any;
-    };
+    patch(opts?: {}): Promise<any> | ResponseChain;
     /**
      * Performs a head request.
      */
-    head(opts?: {}): {
-        res: <Result = Response>(cb?: (type: Response) => Result) => Promise<Result>;
-        json: <Result = {
-            [key: string]: any;
-        }>(cb?: (type: {
-            [key: string]: any;
-        }) => Result) => Promise<Result>;
-        blob: <Result = Blob>(cb?: (type: Blob) => Result) => Promise<Result>;
-        formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>;
-        arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
-        text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>;
-        perfs: (cb?: (type: any) => void) => any;
-        setTimeout: (time: number, controller: any) => any;
-        controller: () => [any, any];
-        error: (code: string | number, cb: any) => any;
-        badRequest: (cb: (error: WretcherError) => void) => any;
-        unauthorized: (cb: (error: WretcherError) => void) => any;
-        forbidden: (cb: (error: WretcherError) => void) => any;
-        notFound: (cb: (error: WretcherError) => void) => any;
-        timeout: (cb: (error: WretcherError) => void) => any;
-        internalError: (cb: (error: WretcherError) => void) => any;
-        onAbort: (cb: (error: Error) => void) => any;
-    };
+    head(opts?: {}): Promise<any> | ResponseChain;
     /**
      * Performs an options request
      */
-    opts(opts?: {}): {
-        res: <Result = Response>(cb?: (type: Response) => Result) => Promise<Result>;
-        json: <Result = {
-            [key: string]: any;
-        }>(cb?: (type: {
-            [key: string]: any;
-        }) => Result) => Promise<Result>;
-        blob: <Result = Blob>(cb?: (type: Blob) => Result) => Promise<Result>;
-        formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>;
-        arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
-        text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>;
-        perfs: (cb?: (type: any) => void) => any;
-        setTimeout: (time: number, controller: any) => any;
-        controller: () => [any, any];
-        error: (code: string | number, cb: any) => any;
-        badRequest: (cb: (error: WretcherError) => void) => any;
-        unauthorized: (cb: (error: WretcherError) => void) => any;
-        forbidden: (cb: (error: WretcherError) => void) => any;
-        notFound: (cb: (error: WretcherError) => void) => any;
-        timeout: (cb: (error: WretcherError) => void) => any;
-        internalError: (cb: (error: WretcherError) => void) => any;
-        onAbort: (cb: (error: Error) => void) => any;
-    };
+    opts(opts?: {}): Promise<any> | ResponseChain;
     /**
      * Sets the request body with any content.
      * @param contents The body contents
