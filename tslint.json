@@ -46,7 +46,8 @@
         "ordered-imports": false,
         "interface-over-type-literal": false,
         "max-line-length": false,
-        "member-ordering": false
+        "member-ordering": false,
+        "no-shadowed-variable": false
     },
     "rulesDirectory": []
 }

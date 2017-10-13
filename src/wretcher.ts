@@ -11,7 +11,7 @@ export class Wretcher {
 
     protected constructor(
         private _url: string,
-        private _options: RequestInit = {},
+        private _options: RequestInit,
         private _catchers: Map<number | string, (error: WretcherError) => void> = new Map(),
         private _resolvers: Array<(resolver: ResponseChain) => any> = []) {}
 

@@ -28,35 +28,55 @@
         "fix": "tslint --fix -p tsconfig.json -t codeFrame",
         "prebuild": "rimraf dist && rimraf coverage && npm run lint",
         "build": "tsc -p . && rollup -c",
-        "test": "nyc mocha --reporter list test/**/*.spec.js",
-        "coverage": "nyc report --reporter=text-lcov | coveralls",
+        "test": "jest",
+        "coverage": "cat ./coverage/lcov.info | coveralls",
         "changelog": "conventional-changelog -p wretch -i CHANGELOG.md -s -r 0"
     },
     "author": "Julien Elbaz",
     "license": "MIT",
     "devDependencies": {
+        "@types/jest": "^21.1.2",
+        "@types/node": "^8.0.34",
         "abortcontroller": "git+https://github.com/jimmywarting/abortcontroller.git",
         "chai": "^4.1.2",
         "conventional-changelog-cli": "^1.3.3",
         "conventional-changelog-wretch": "file:scripts/conventional-changelog-wretch",
         "coveralls": "^3.0.0",
         "form-data": "^2.3.1",
-        "mocha": "^4.0.1",
+        "jest": "^21.2.1",
         "node-fetch": "^2.0.0-alpha.8",
-        "nyc": "^11.2.1",
         "restify": "^6.0.1",
         "rimraf": "^2.6.2",
         "rollup": "^0.50.0",
         "rollup-plugin-typescript": "^0.8.1",
         "rollup-plugin-uglify": "^2.0.1",
+        "ts-jest": "^21.1.2",
         "tslint": "^5.7.0",
         "typescript": "^2.5.2",
         "uglify-es": "^3.1.1"
     },
-    "nyc": {
-        "reporter": [
-            "text",
-            "html"
+    "jest": {
+        "transform": {
+            "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+        },
+        "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+        "moduleFileExtensions": [
+            "ts",
+            "tsx",
+            "js",
+            "jsx",
+            "json"
+        ],
+        "globals": {
+            "ts-jest": {
+                "tsConfigFile": "test/tsconfig.tests.json"
+            }
+        },
+        "mapCoverage": true,
+        "collectCoverage": true,
+        "collectCoverageFrom": [
+            "src/*.{js,ts}"
         ]
-    }
+    },
+    "dependencies": {}
 }

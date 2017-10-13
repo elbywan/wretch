@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "lib": ["es2015"],
+        "module": "commonjs",
+        "noImplicitAny": false,
+        "sourceMap": true,
+        "allowJs": true,
+        "types": ["node", "jest"]
+    },
+    "include": [
+        "./**/*"
+    ]
+}
