@@ -821,7 +821,6 @@ For node.js, there is a little extra work to do :
 // Node.js 8.5+ only
 const { performance, PerformanceObserver } = require("perf_hooks")
 
-const fetchPolyfill =
 wretch().polyfills({
   fetch: function(url, opts) {
     performance.mark(url + " - begin")
