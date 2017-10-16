@@ -28,7 +28,7 @@ export type ResponseChain = {
 
 export const resolver = url =>
         (catchers: Map<number | string, (error: WretcherError) => void> = new Map()) =>
-        (resolvers: Array<(chain: ResponseChain) => ResponseChain | Promise<any>>) =>
+        (resolvers: Array<(chain: ResponseChain) => ResponseChain & Promise<any>>) =>
         (opts = {}) => {
     type TypeParser = <Type>(funName: string | null) => <Result = void>(cb?: (type: Type) => Result) => Promise<Result>
 
@@ -151,5 +151,5 @@ export const resolver = url =>
         onAbort: cb => responseChain.error("AbortError", cb)
     }
 
-    return resolvers.reduce((chain, r) => r(chain), responseChain)
+    return resolvers.reduce((chain, r) => r(chain), responseChain) as (ResponseChain & Promise<any>)
 }

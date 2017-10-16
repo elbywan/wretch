@@ -10,7 +10,7 @@ export declare class Wretcher {
     private _options;
     private _catchers;
     private _resolvers;
-    protected constructor(_url: string, _options?: RequestInit, _catchers?: Map<number | string, (error: WretcherError) => void>, _resolvers?: Array<(resolver: ResponseChain) => any>);
+    protected constructor(_url: string, _options: RequestInit, _catchers?: Map<number | string, (error: WretcherError) => void>, _resolvers?: Array<(resolver: ResponseChain) => any>);
     static factory(url?: string, opts?: RequestInit): Wretcher;
     private selfFactory({url, options, catchers, resolvers}?);
     /**
@@ -100,31 +100,31 @@ export declare class Wretcher {
     /**
      * Performs a get request.
      */
-    get(opts?: {}): Promise<any> | ResponseChain;
+    get(opts?: {}): ResponseChain & Promise<any>;
     /**
      * Performs a delete request.
      */
-    delete(opts?: {}): Promise<any> | ResponseChain;
+    delete(opts?: {}): ResponseChain & Promise<any>;
     /**
      * Performs a put request.
      */
-    put(opts?: {}): Promise<any> | ResponseChain;
+    put(opts?: {}): ResponseChain & Promise<any>;
     /**
      * Performs a post request.
      */
-    post(opts?: {}): Promise<any> | ResponseChain;
+    post(opts?: {}): ResponseChain & Promise<any>;
     /**
      * Performs a patch request.
      */
-    patch(opts?: {}): Promise<any> | ResponseChain;
+    patch(opts?: {}): ResponseChain & Promise<any>;
     /**
      * Performs a head request.
      */
-    head(opts?: {}): Promise<any> | ResponseChain;
+    head(opts?: {}): ResponseChain & Promise<any>;
     /**
      * Performs an options request
      */
-    opts(opts?: {}): Promise<any> | ResponseChain;
+    opts(opts?: {}): ResponseChain & Promise<any>;
     /**
      * Sets the request body with any content.
      * @param contents The body contents

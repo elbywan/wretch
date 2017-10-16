@@ -27,4 +27,4 @@ export declare type ResponseChain = {
     internalError: (cb: (error: WretcherError) => void) => ResponseChain;
     onAbort: (cb: (error: Error) => void) => ResponseChain;
 };
-export declare const resolver: (url: any) => (catchers?: Map<string | number, (error: WretcherError) => void>) => (resolvers: ((chain: ResponseChain) => Promise<any> | ResponseChain)[]) => (opts?: {}) => Promise<any> | ResponseChain;
+export declare const resolver: (url: any) => (catchers?: Map<string | number, (error: WretcherError) => void>) => (resolvers: ((chain: ResponseChain) => ResponseChain & Promise<any>)[]) => (opts?: {}) => ResponseChain & Promise<any>;

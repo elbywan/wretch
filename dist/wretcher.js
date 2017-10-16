@@ -16,7 +16,6 @@ import { resolver } from "./resolver";
  */
 var Wretcher = /** @class */ (function () {
     function Wretcher(_url, _options, _catchers, _resolvers) {
-        if (_options === void 0) { _options = {}; }
         if (_catchers === void 0) { _catchers = new Map(); }
         if (_resolvers === void 0) { _resolvers = []; }
         this._url = _url;
