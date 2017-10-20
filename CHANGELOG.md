@@ -1,6 +1,37 @@
+<a name="1.0.0"></a>
+# [1.0.0](https://github.com/elbywan/wretch/compare/0.3.1...1.0.0) (2017-10-20)
+
+
+### :art: Code improvement(s)
+
+* Widen resolver return type ([6e2b299](https://github.com/elbywan/wretch/commit/6e2b299))
+
+### :factory: New feature(s)
+
+* Add auth method to set the Authorization header. ([1694396](https://github.com/elbywan/wretch/commit/1694396))
+* Add early resolvers with the resolve function ([481803b](https://github.com/elbywan/wretch/commit/481803b))
+* Add HEAD and OPTIONS http methods. ([3c30844](https://github.com/elbywan/wretch/commit/3c30844))
+
+### :memo: Documentation update(s)
+
+* Add homepage usage section, tagboxes and footer ([fd3bcf7](https://github.com/elbywan/wretch/commit/fd3bcf7))
+* Bypass jekyll ([22c957c](https://github.com/elbywan/wretch/commit/22c957c))
+* Fix readme typo ([9d1b4c6](https://github.com/elbywan/wretch/commit/9d1b4c6))
+* Readme modifications : fix method links, simplify polyfills, add h ([e37ea0b](https://github.com/elbywan/wretch/commit/e37ea0b))
+
+### :white_check_mark: Test improvement(s)
+
+* Migrate from mocha to jest ([f67bd84](https://github.com/elbywan/wretch/commit/f67bd84))
+
+
+
 <a name="0.3.1"></a>
 ## [0.3.1](https://github.com/elbywan/wretch/compare/0.3.0...0.3.1) (2017-10-09)
 
+
+### :arrow_up: Version update(s)
+
+* 0.3.1 tag ([ccca2dc](https://github.com/elbywan/wretch/commit/ccca2dc))
 
 ### :memo: Documentation update(s)
 
