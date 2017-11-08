@@ -18,7 +18,7 @@
 
 <br>
 
-##### Important : Wretch is in active development ! Please check out the [changelog](https://github.com/elbywan/wretch/blob/master/CHANGELOG.md) after each update for new features and breaking changes. If you want to try out the hot stuff, look at the [dev](https://github.com/elbywan/wretch/tree/dev) branch.
+##### Wretch 1.0 is now live 🎉 ! Please check out the [changelog](https://github.com/elbywan/wretch/blob/master/CHANGELOG.md) after each update for new features and breaking changes. If you want to try out the hot stuff, look at the [dev](https://github.com/elbywan/wretch/tree/dev) branch.
 
 # Table of Contents
 
@@ -702,10 +702,10 @@ wretch("...").get().text(txt => console.log(txt))
 
 *A set of extra features.*
 
-| [Abortable requests](#abortable-requests-experimental) | [Performance API](#performance-api-experimental) |
+| [Abortable requests](#abortable-requests) | [Performance API](#performance-api-experimental) |
 |-----|-----|
 
-### Abortable requests (experimental)
+### Abortable requests
 
 *No polyfills for node.js yet ! Your browser absolutely needs to support [AbortControllers](https://developer.mozilla.org/en-US/docs/Web/API/AbortController).*
 
