@@ -52,7 +52,7 @@ export const resolver = url =>
         return response
     })
 
-    const doCatch = <T>(promise: Promise<T>): Promise<void | T> => {
+    const doCatch = <T>(promise: Promise<T>): Promise<void | T> => {
         return promise.catch(err => {
             if(catchers.has(err.status))
                 catchers.get(err.status)(err)

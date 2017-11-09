@@ -36,6 +36,7 @@
             "check-type-operator",
             "check-preblock"
         ],
+        "no-irregular-whitespace": true,
         "member-access": [true, "no-public"],
         "only-arrow-functions": false,
         "no-var-requires": false,

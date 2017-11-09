@@ -1,6 +1,6 @@
 import { mix } from "./mix"
 import conf from "./config"
-import { resolver, WretcherError, ResponseChain } from "./resolver"
+import { resolver, WretcherError, ResponseChain } from "./resolver"
 
 /**
  * The Wretcher class used to perform easy fetch requests.
@@ -124,10 +124,10 @@ export class Wretcher {
      * @param errorId Error code or name
      * @param catcher: The catcher method
      */
-    catcher(errorId: number | string, catcher: (error: WretcherError) => void) {
+    catcher(errorId: number | string, catcher: (error: WretcherError) => void) {
         const newMap = new Map(this._catchers)
         newMap.set(errorId, catcher)
-        return this.selfFactory({ catchers: newMap })
+        return this.selfFactory({ catchers: newMap })
     }
 
     /**
@@ -143,7 +143,7 @@ export class Wretcher {
      * @param doResolve : Resolver callback
      */
     resolve(doResolve: (chain: ResponseChain) => ResponseChain | Promise<any>, clear: boolean = false) {
-        return this.selfFactory({ resolvers: clear ? [ doResolve ] : [ ...this._resolvers, doResolve ]})
+        return this.selfFactory({ resolvers: clear ? [ doResolve ] : [ ...this._resolvers, doResolve ]})
     }
 
     /**
