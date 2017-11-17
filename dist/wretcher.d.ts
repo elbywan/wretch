@@ -97,6 +97,7 @@ export declare class Wretcher {
      * @param doResolve : Resolver callback
      */
     resolve(doResolve: (chain: ResponseChain) => ResponseChain | Promise<any>, clear?: boolean): Wretcher;
+    private method(method, opts);
     /**
      * Performs a get request.
      */

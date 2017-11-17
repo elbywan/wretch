@@ -146,47 +146,51 @@ export class Wretcher {
         return this.selfFactory({ resolvers: clear ? [ doResolve ] : [ ...this._resolvers, doResolve ]})
     }
 
+    private method(method, opts) {
+        return resolver(this._url)(this._catchers)(this._resolvers)({ ...mix(opts, this._options), method })
+    }
+
     /**
      * Performs a get request.
      */
     get(opts = {}) {
-        return resolver(this._url)(this._catchers)(this._resolvers)(mix(opts, this._options))
+        return this.method("GET", opts)
     }
     /**
      * Performs a delete request.
      */
     delete(opts = {}) {
-        return resolver(this._url)(this._catchers)(this._resolvers)({ ...mix(opts, this._options), method: "DELETE" })
+        return this.method("DELETE", opts)
     }
     /**
      * Performs a put request.
      */
     put(opts = {}) {
-        return resolver(this._url)(this._catchers)(this._resolvers)({ ...mix(opts, this._options), method: "PUT" })
+        return this.method("PUT", opts)
     }
     /**
      * Performs a post request.
      */
     post(opts = {}) {
-        return resolver(this._url)(this._catchers)(this._resolvers)({ ...mix(opts, this._options), method: "POST" })
+        return this.method("POST", opts)
     }
     /**
      * Performs a patch request.
      */
     patch(opts = {}) {
-        return resolver(this._url)(this._catchers)(this._resolvers)({ ...mix(opts, this._options), method: "PATCH" })
+        return this.method("PATCH", opts)
     }
     /**
      * Performs a head request.
      */
     head(opts = {}) {
-        return resolver(this._url)(this._catchers)(this._resolvers)({ ...mix(opts, this._options), method: "HEAD" })
+        return this.method("HEAD", opts)
     }
     /**
      * Performs an options request
      */
     opts(opts = {}) {
-        return resolver(this._url)(this._catchers)(this._resolvers)({ ...mix(opts, this._options), method: "OPTIONS" })
+        return this.method("OPTIONS", opts)
     }
 
     /**
