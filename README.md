@@ -473,6 +473,135 @@ wretch().polyfills({
 })
 ```
 
+Polyfills can be used to replicate the [middleware](http://expressjs.com/en/guide/using-middleware.html) style.
+
+```javascript
+/*
+
+How to use a polyfill as a chain of middlewares
+-----------------------------------------------
+
+# Polyfill signature
+(url: the url, options: standard fetch options) =>
+    a fetch response promise (see https://developer.mozilla.org/fr/docs/Web/API/Response)
+
+
+# Middleware signature
+(...options: a bunch of middleware options) =>
+    (next: the next middleware to call or fetch to end the chain) =>
+        Polyfill
+
+*/
+
+///////////////
+//  Samples  //
+///////////////
+
+/* A simple delay middleware. */
+const delayFetch = (delay) => (next = fetch) => (url, opts) => {
+    return new Promise(res => setTimeout(() => res(next(url, opts)), delay))
+}
+
+/* Returns the url and method without performing an actual request. */
+const shortCircuit = () => (next = fetch) => (url, opts) => {
+    // We create a new Response object to comply because wretch expects that from fetch.
+    const response = new Response()
+    response.text = () => Promise.resolve(opts.method + "@" + url)
+    response.json = () => Promise.resolve({ url, method: opts.method })
+    // Instead of calling next(), returning a Response Promise bypasses the rest of the chain.
+    return Promise.resolve(response)
+}
+
+/* Logs all requests passing through. */
+const logFetch = () => (next = fetch) => (url, opts) => {
+    console.log(opts.method + "@" + url)
+    return next(url, opts)
+}
+
+/* A throttling cache. */
+const cacheFetch = (throttle = 0) => (next = fetch) => {
+
+    const cache = new Map()
+    const inflight = new Map()
+    const throttling = new Set()
+
+    return (url, opts) => {
+        const key = opts.method + "@" + url
+
+        if(!opts.noCache && throttling.has(key)) {
+            // If the cache contains a previous response and we are throttling, serve it and bypass the chain.
+            if(cache.has(key))
+                return Promise.resolve(cache.get(key).clone())
+            // If the request in already in-flight, wait until it is resolved
+            else if(inflight.has(key)) {
+                return new Promise(resolve => {
+                    inflight.get(key).push(resolve)
+                })
+            }
+        }
+
+        // Init. the pending promises Map
+        if(!inflight.has(key))
+            inflight.set(key, [])
+
+        // If we are not throttling, activate the throttle for X milliseconds
+        if(throttle && !throttling.has(key)) {
+            throttling.add(key)
+            setTimeout(() => { throttling.delete(key) }, throttle)
+        }
+
+        // We call the next middleware in the chain.
+        return next(url, opts).then(_ => {
+            // Add a cloned response to the cache
+            cache.set(key, _.clone())
+            // Resolve pending promises
+            inflight.get(key).forEach(resolve => resolve(_.clone()))
+            // Remove the inflight pending promises
+            inflight.delete(key)
+            // Return the original response
+            return _
+        })
+    }
+}
+
+// A helper to ease middleware chaining with an elegant syntax :
+const middlewares = (...middlewares) => (fetchFunction) => {
+    return (
+        middlewares.length === 0 ?
+           fetchFunction :
+        middlewares.length === 1 ?
+            middlewares[0](fetchFunction) :
+        middlewares.reduceRight((acc, curr, idx) =>
+            (idx === middlewares.length - 2) ? curr(acc(fetchFunction)) : curr(acc)
+        )
+    )
+}
+
+// Just use the "middleware" as a polyfill.
+wretch().polyfills({
+    fetch: cacheFetch(1000)()
+})
+
+// You can also chain multiple "middlewares".
+wretch().polyfills({
+   fetch: logFetch()(delayFetch(1000)(shortCircuit()()))
+})
+
+// And finally using the middlewares helper :
+
+wretch().polyfills({
+    fetch: middlewares(cacheFetch(1000))(fetch)
+})
+
+wretch().polyfills({
+    fetch: middlewares(
+        logFetch(),
+        delayFetch(1000),
+        shortCircuit()
+    )(fetch)
+})
+```
+
 ## Body Types
 
 *A body type is only needed when performing put/patch/post requests with a body.*
