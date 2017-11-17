@@ -1,5 +1,6 @@
 import conf from "./config";
 import { WretcherError, ResponseChain } from "./resolver";
+import { ConfiguredMiddleware } from "./middleware";
 /**
  * The Wretcher class used to perform easy fetch requests.
  *
@@ -10,9 +11,10 @@ export declare class Wretcher {
     private _options;
     private _catchers;
     private _resolvers;
-    protected constructor(_url: string, _options: RequestInit, _catchers?: Map<number | string, (error: WretcherError) => void>, _resolvers?: Array<(resolver: ResponseChain) => any>);
+    private _middlewares;
+    protected constructor(_url: string, _options: RequestInit, _catchers?: Map<number | string, (error: WretcherError) => void>, _resolvers?: Array<(resolver: ResponseChain) => any>, _middlewares?: ConfiguredMiddleware[]);
     static factory(url?: string, opts?: RequestInit): Wretcher;
-    private selfFactory({url, options, catchers, resolvers}?);
+    private selfFactory({url, options, catchers, resolvers, middlewares}?);
     /**
      * Sets the default fetch options used for every subsequent fetch call.
      * @param opts New default options
@@ -97,6 +99,10 @@ export declare class Wretcher {
      * @param doResolve : Resolver callback
      */
     resolve(doResolve: (chain: ResponseChain) => ResponseChain | Promise<any>, clear?: boolean): Wretcher;
+    /**
+     * Add middlewares to intercept a request before being sent.
+     */
+    middlewares(middlewares: ConfiguredMiddleware[], clear?: boolean): Wretcher;
     private method(method, opts);
     /**
      * Performs a get request.

@@ -1,6 +1,7 @@
 import { mix } from "./mix"
 import conf from "./config"
 import { resolver, WretcherError, ResponseChain } from "./resolver"
+import { ConfiguredMiddleware } from "./middleware"
 
 /**
  * The Wretcher class used to perform easy fetch requests.
@@ -13,11 +14,13 @@ export class Wretcher {
         private _url: string,
         private _options: RequestInit,
         private _catchers: Map<number | string, (error: WretcherError) => void> = new Map(),
-        private _resolvers: Array<(resolver: ResponseChain) => any> = []) {}
+        private _resolvers: Array<(resolver: ResponseChain) => any> = [],
+        private _middlewares: ConfiguredMiddleware[] = []) {}
 
     static factory(url = "", opts: RequestInit = {}) { return new Wretcher(url, opts) }
-    private selfFactory({ url = this._url, options = this._options, catchers = this._catchers, resolvers = this._resolvers } = {}) {
-        return new Wretcher(url, options, catchers, resolvers)
+    private selfFactory({ url = this._url, options = this._options, catchers = this._catchers,
+                resolvers = this._resolvers, middlewares = this._middlewares } = {}) {
+        return new Wretcher(url, options, catchers, resolvers, middlewares)
     }
 
     /**
@@ -146,8 +149,17 @@ export class Wretcher {
         return this.selfFactory({ resolvers: clear ? [ doResolve ] : [ ...this._resolvers, doResolve ]})
     }
 
+    /**
+     * Add middlewares to intercept a request before being sent.
+     */
+    middlewares(middlewares: ConfiguredMiddleware[], clear = false) {
+        return this.selfFactory({
+            middlewares: clear ? middlewares : [ ...this._middlewares, ...middlewares ]
+        })
+    }
+
     private method(method, opts) {
-        return resolver(this._url)(this._catchers)(this._resolvers)({ ...mix(opts, this._options), method })
+        return resolver(this._url)(this._catchers)(this._resolvers)(this._middlewares)({ ...mix(opts, this._options), method })
     }
 
     /**

@@ -1,6 +1,7 @@
 import { mix } from "./mix"
 import conf from "./config"
 import perfs from "./perfs"
+import { middlewareHelper, ConfiguredMiddleware } from "./middleware"
 
 export type WretcherError = Error & { status: number, response: Response, text?: string, json?: any }
 export type ResponseChain = {
@@ -13,7 +14,7 @@ export type ResponseChain = {
     text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>,
     // Extras
     perfs: (cb?: (type: any) => void) => ResponseChain,
-    setTimeout: (time: number, controller: any) => ResponseChain,
+    setTimeout: (time: number, controller?: any) => ResponseChain,
     controller: () => [any, ResponseChain],
     // Catchers
     error: (code: (number | string), cb: any) => ResponseChain,
@@ -29,6 +30,7 @@ export type ResponseChain = {
 export const resolver = url =>
         (catchers: Map<number | string, (error: WretcherError) => void> = new Map()) =>
         (resolvers: Array<(chain: ResponseChain) => ResponseChain & Promise<any>>) =>
+        (middlewares: ConfiguredMiddleware[]) =>
         (opts = {}) => {
     type TypeParser = <Type>(funName: string | null) => <Result = void>(cb?: (type: Type) => Result) => Promise<Result>
 
@@ -38,7 +40,7 @@ export const resolver = url =>
         finalOpts["signal"] = fetchController.signal
     }
 
-    const req = conf.polyfill("fetch")(url, finalOpts)
+    const req = middlewareHelper(middlewares)(conf.polyfill("fetch"))(url, finalOpts)
     const wrapper: Promise<void | Response> = req.then(response => {
         if (!response.ok) {
             return response[conf.errorType || "text"]().then(_ => {

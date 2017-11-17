@@ -141,7 +141,7 @@ describe("Wretch", function() {
             duck: "Muscovy"
         })
         // form-data package has an implementation which differs from the browser standard.
-        const f = { arr: [ 1, 2, 3 ]}
+        const f = { arr: [ 1, 2, 3 ]}
         const d = wretch(`${_URL}/formData/decode`).formData(f).post().json()
         // expect(d).toEqual({
         //     "arr[]": [1, 2, 3]
@@ -228,23 +228,23 @@ describe("Wretch", function() {
         }).res(result => res(!result)))
         expect(rejected).toBeTruthy()
         wretch().defaults({
-            headers: { "X-Custom-Header": "Anything" }
+            headers: { "X-Custom-Header": "Anything" } as any
         })
         rejected = await new Promise(res => wretch(`${_URL}/customHeaders`).get().badRequest(_ => {
             res(true)
         }).res(result => res(!result)))
         expect(rejected).toBeTruthy()
         wretch().defaults({
-            headers: { "X-Custom-Header-2": "Anything" }
+            headers: { "X-Custom-Header-2": "Anything" } as any
         }, true)
         rejected = await new Promise(res => wretch(`${_URL}/customHeaders`).get().badRequest(_ => {
             res(true)
         }).res(result => res(!result)))
-        wretch().defaults("not an object", true)
+        wretch().defaults("not an object" as any, true)
         expect(rejected).toBeTruthy()
         const accepted = await new Promise(res => wretch(`${_URL}/customHeaders`)
-            .options({ headers: { "X-Custom-Header-3" : "Anything" } }, false)
-            .options({ headers: { "X-Custom-Header-4" : "Anything" } })
+            .options({ headers: { "X-Custom-Header-3" : "Anything" } as any }, false)
+            .options({ headers: { "X-Custom-Header-4" : "Anything" } as any })
             .get()
             .badRequest(_ => { res(false) })
             .res(result => res(!!result)))
@@ -254,17 +254,17 @@ describe("Wretch", function() {
     it("should allow url, query parameters & options modifications and return a fresh new Wretcher object containing the change", async function() {
         const obj1 = wretch("...")
         const obj2 = obj1.url(_URL, true)
-        expect(obj1._url).toBe("...")
-        expect(obj2._url).toBe(_URL)
-        const obj3 = obj1.options({ headers: { "X-test": "test" }})
-        expect(obj3._options).toEqual({ headers: { "X-test": "test" }})
-        expect(obj1._options).toEqual({})
+        expect(obj1["_url"]).toBe("...")
+        expect(obj2["_url"]).toBe(_URL)
+        const obj3 = obj1.options({ headers: { "X-test": "test" } as any })
+        expect(obj3["_options"]).toEqual({ headers: { "X-test": "test" }})
+        expect(obj1["_options"]).toEqual({})
         const obj4 = obj2.query({a: "1!", b: "2"})
-        expect(obj4._url).toBe(`${_URL}?a=1%21&b=2`)
-        expect(obj2._url).toBe(_URL)
+        expect(obj4["_url"]).toBe(`${_URL}?a=1%21&b=2`)
+        expect(obj2["_url"]).toBe(_URL)
         const obj5 = obj4.query({c: 6, d: [7, 8]})
-        expect(obj4._url).toBe(`${_URL}?a=1%21&b=2`)
-        expect(obj5._url).toBe(`${_URL}?c=6&d=7&d=8`)
+        expect(obj4["_url"]).toBe(`${_URL}?a=1%21&b=2`)
+        expect(obj5["_url"]).toBe(`${_URL}?c=6&d=7&d=8`)
     })
 
     it("should set the Accept header", async function() {
@@ -315,7 +315,7 @@ describe("Wretch", function() {
                     expect(typeof _.startTime).toBe("number")
                     done()
                 }).res().catch(() => "ignore")
-            }).res().catch(_ => "ignore")
+            }).res().catch(_ => "ignore") as any
         )
     })
 
@@ -358,14 +358,47 @@ describe("Wretch", function() {
         await w.url("/401").get()
         expect(check).toBe(4)
     })
+
+    it("should use middlewares", async function() {
+        const shortCircuit: any = () => next => (url, opts) => Promise.resolve({
+            ok: true,
+            text: () => Promise.resolve(opts.method + "@" + url)
+        })
+        const setGetMethod = () => next => (url, opts) => {
+            return next(url, {...opts, method: "GET"})
+        }
+        const setPostMethod = () => next => (url, opts) => {
+            return next(url, {...opts, method: "POST"})
+        }
+        const w = wretch().middlewares([
+            shortCircuit()
+        ])
+
+        expect(await w.url(_URL).head().text()).toBe(`HEAD@${_URL}`)
+
+        const w2 = w.middlewares([
+            setGetMethod(),
+            shortCircuit()
+        ], true)
+
+        expect(await w2.url(_URL).head().text()).toBe(`GET@${_URL}`)
+
+        const w3 = w.middlewares([
+            setGetMethod(),
+            setPostMethod(),
+            shortCircuit()
+        ], true)
+
+        expect(await w3.url(_URL).head().text()).toBe(`POST@${_URL}`)
+    })
 })
 
 describe("Mix", function() {
     it("should mix two objects", function() {
-        const obj1 = { a: 1, b: 2, c: [ 3, 4 ] }
+        const obj1 = { a: 1, b: 2, c: [ 3, 4 ] }
         const obj2proto = { z: 1 }
         const obj2 = Object.create(obj2proto)
-        Object.assign(obj2, { a: 0, d: 5, e: [6], c: [ 5, 6 ] })
+        Object.assign(obj2, { a: 0, d: 5, e: [6], c: [ 5, 6 ] })
         expect(mix(obj1, obj2, false)).toEqual({ a: 0, b: 2, c: [ 5, 6 ], d: 5, e: [6] })
         expect(mix(obj1, obj2, true)).toEqual({ a: 0, b: 2, c: [ 3, 4, 5, 6 ], d: 5, e: [6] })
     })
