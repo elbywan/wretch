@@ -31,7 +31,7 @@
 
 # Motivation
 
-#### Because having to write two callbacks for a simple request is awkward.
+#### Because having to write a second callback to process a response body feels awkward.
 
 ```javascript
 // Fetch needs a second callback to process the response body
@@ -47,9 +47,11 @@ fetch("examples/example.json")
 // Wretch does it for you
 
 // Use .res for the raw response, .text for raw text, .json for json, .blob for a blob ...
-wretch("examples/example.json").get().json(json => {
-  // Do stuff with the parsed json
-})
+wretch("examples/example.json")
+  .get()
+  .json(json => {
+    // Do stuff with the parsed json
+  })
 ```
 
 #### Because manually checking and throwing every request error code is fastidious.
@@ -108,24 +110,32 @@ wretch("endpoint")
 #### Because configuration should not rhyme with repetition.
 
 ```javascript
-// Wretch is immutable which means that you can configure, store and reuse objects
+// Wretch is immutable which means that you can configure, store and reuse wretch instances
 
-const corsWretch = wretch().options({ credentials: "include", mode: "cors" })
+// Cross origin authenticated requests on an external API
+const externalApi = wretch()
+  // Set the base url
+  .url("http://external.api")
+  // Authorization header
+  .auth(`Bearer ${ token }`)
+  // Cors fetch options
+  .options({ credentials: "include", mode: "cors" })
+  // Handle 403 errors
+  .resolve(_ => _.forbidden(handle403))
 
-// Sends a cors request to http://mycrossdomainapi.com
-corsWretch.url("http://mycrossdomainapi.com").get().res(response => /* ... */)
-
-// Adding a specific header and a base url without modifying the original object
-const corsWretch2 = corsWretch.url("http://myendpoint.com").headers({ "X-HEADER": "VALUE" })
-// Post json to http://myendpoint.com/json/postdata
-corsWretch2.url("/json/postdata").json({ a: 1 }).post()
-
-// Reuse the original cors wretch object
-const corsWretch3 = corsWretch.url("http://myotherendpoint.com").accept("application/json")
-// Get json from http://myotherendpoint.com/data/1
-corsWretch3.url("/data/1").get().json(myjson => /* ... */)
-// Get json from http://myotherendpoint.com/data/2
-corsWretch3.url("/data/2").get().json(myjson => /* ... */)
+// Fetch a resource
+externalApi
+  .url("/resource/1")
+  // Add a custom header for this request
+  .headers({ "If-Unmodified-Since": "Wed, 21 Oct 2015 07:28:00 GMT" })
+  .get()
+  .json(handleResource)
+// Post a resource
+externalApi
+  .url("/resource")
+  .json({ "Shiny new": "resource object" })
+  .post()
+  .json(handleNewResourceResult)
 ```
 
 # Installation
@@ -702,7 +712,7 @@ wretch("...").get().text(txt => console.log(txt))
 
 *A set of extra features.*
 
-| [Abortable requests](#abortable-requests) | [Performance API](#performance-api-experimental) | [Middlewares](#middlewares) |
+| [Abortable requests](#abortable-requests) | [Performance API](#performance-api) | [Middlewares](#middlewares) |
 |-----|-----|-----|
 
 ### Abortable requests
@@ -795,7 +805,7 @@ c.abort()
 
 Catches an AbortError and performs the callback.
 
-### Performance API (experimental)
+### Performance API
 
 #### perfs(cb: (timings: PerformanceTiming) => void)
 
@@ -926,16 +936,23 @@ const cacheMiddleware = (throttle = 0) => {
     }
 
     // We call the next middleware in the chain.
-    return next(url, opts).then(_ => {
-      // Add a cloned response to the cache
-      cache.set(key, _.clone())
-      // Resolve pending promises
-      inflight.get(key).forEach(resolve => resolve(_.clone()))
-      // Remove the inflight pending promises
-      inflight.delete(key)
-      // Return the original response
-      return _
-    })
+    return next(url, opts)
+      .then(_ => {
+        // Add a cloned response to the cache
+        cache.set(key, _.clone())
+        // Resolve pending promises
+        inflight.get(key).forEach(resolve => resolve(_.clone()))
+        // Remove the inflight pending promises
+        inflight.delete(key)
+        // Return the original response
+        return _
+      })
+      .catch(_ => {
+        // Reject pending promises on error
+        inflight.get(key).forEach(([resolve, reject]) => reject(_))
+        inflight.delete(key)
+        throw _
+      })
   }
 }
 
@@ -949,6 +966,20 @@ wretch("...").middlewares([
   delayMiddleware(1000),
   shortCircuitMiddleware()
 }).get().text(_ => console.log(text))
+
+// To test the cache middleware more thoroughly
+const wretchCache = wretch().middlewares([cacheMiddleware(1000)])
+const printResource = (url, timeout = 0) =>
+  setTimeout(_ => wretchCache.url(url).get().notFound(console.error).text(console.log), timeout)
+// The resource url, change it to an invalid route to check the error handling
+const resourceUrl = "/"
+// Only two actual requests are made here even though there are 30 calls
+for(let i = 0; i < 10; i++) {
+  printResource(resourceUrl)
+  printResource(resourceUrl, 500)
+  printResource(resourceUrl, 1500)
+}
+
 ```
 
 # License
