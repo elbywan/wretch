@@ -29,7 +29,7 @@ export class Wretcher {
      * @param mixin If true, mixes in instead of replacing the existing options
      */
     defaults(opts: RequestInit, mixin = false) {
-        conf.defaults = mixin ? conf.defaults = mix(conf.defaults, opts) : opts
+        conf.defaults = mixin ? mix(conf.defaults, opts) : opts
         return this
     }
 
