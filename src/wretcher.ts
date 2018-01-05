@@ -11,11 +11,11 @@ import { ConfiguredMiddleware } from "./middleware"
 export class Wretcher {
 
     protected constructor(
-        private _url: string,
-        private _options: RequestInit,
-        private _catchers: Map<number | string, (error: WretcherError) => void> = new Map(),
-        private _resolvers: Array<(resolver: ResponseChain) => any> = [],
-        private _middlewares: ConfiguredMiddleware[] = []) {}
+        public _url: string,
+        public _options: RequestInit,
+        public _catchers: Map<number | string, (error: WretcherError, originalRequest: Wretcher) => void> = new Map(),
+        public _resolvers: Array<(resolver: ResponseChain, originalRequest: Wretcher) => any> = [],
+        public _middlewares: ConfiguredMiddleware[] = []) {}
 
     static factory(url = "", opts: RequestInit = {}) { return new Wretcher(url, opts) }
     private selfFactory({ url = this._url, options = this._options, catchers = this._catchers,
@@ -127,7 +127,7 @@ export class Wretcher {
      * @param errorId Error code or name
      * @param catcher: The catcher method
      */
-    catcher(errorId: number | string, catcher: (error: WretcherError) => void) {
+    catcher(errorId: number | string, catcher: (error: WretcherError, originalRequest: Wretcher) => any) {
         const newMap = new Map(this._catchers)
         newMap.set(errorId, catcher)
         return this.selfFactory({ catchers: newMap })
@@ -145,7 +145,7 @@ export class Wretcher {
      * Program a resolver to perform response chain tasks automatically.
      * @param doResolve : Resolver callback
      */
-    resolve(doResolve: (chain: ResponseChain) => ResponseChain | Promise<any>, clear: boolean = false) {
+    resolve(doResolve: (chain: ResponseChain, originalRequest: Wretcher) => ResponseChain | Promise<any>, clear: boolean = false) {
         return this.selfFactory({ resolvers: clear ? [ doResolve ] : [ ...this._resolvers, doResolve ]})
     }
 
@@ -159,7 +159,7 @@ export class Wretcher {
     }
 
     private method(method, opts) {
-        return resolver(this._url)(this._catchers)(this._resolvers)(this._middlewares)({ ...mix(opts, this._options), method })
+        return resolver(this.options({ ...opts, method }))
     }
 
     /**

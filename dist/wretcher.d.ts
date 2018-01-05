@@ -7,12 +7,12 @@ import { ConfiguredMiddleware } from "./middleware";
  * Immutability : almost every method of this class return a fresh Wretcher object.
  */
 export declare class Wretcher {
-    private _url;
-    private _options;
-    private _catchers;
-    private _resolvers;
-    private _middlewares;
-    protected constructor(_url: string, _options: RequestInit, _catchers?: Map<number | string, (error: WretcherError) => void>, _resolvers?: Array<(resolver: ResponseChain) => any>, _middlewares?: ConfiguredMiddleware[]);
+    _url: string;
+    _options: RequestInit;
+    _catchers: Map<number | string, (error: WretcherError, originalRequest: Wretcher) => void>;
+    _resolvers: Array<(resolver: ResponseChain, originalRequest: Wretcher) => any>;
+    _middlewares: ConfiguredMiddleware[];
+    protected constructor(_url: string, _options: RequestInit, _catchers?: Map<number | string, (error: WretcherError, originalRequest: Wretcher) => void>, _resolvers?: Array<(resolver: ResponseChain, originalRequest: Wretcher) => any>, _middlewares?: ConfiguredMiddleware[]);
     static factory(url?: string, opts?: RequestInit): Wretcher;
     private selfFactory({url, options, catchers, resolvers, middlewares}?);
     /**
@@ -88,7 +88,7 @@ export declare class Wretcher {
      * @param errorId Error code or name
      * @param catcher: The catcher method
      */
-    catcher(errorId: number | string, catcher: (error: WretcherError) => void): Wretcher;
+    catcher(errorId: number | string, catcher: (error: WretcherError, originalRequest: Wretcher) => any): Wretcher;
     /**
      * Associates a custom signal with the request.
      * @param controller : An AbortController
@@ -98,7 +98,7 @@ export declare class Wretcher {
      * Program a resolver to perform response chain tasks automatically.
      * @param doResolve : Resolver callback
      */
-    resolve(doResolve: (chain: ResponseChain) => ResponseChain | Promise<any>, clear?: boolean): Wretcher;
+    resolve(doResolve: (chain: ResponseChain, originalRequest: Wretcher) => ResponseChain | Promise<any>, clear?: boolean): Wretcher;
     /**
      * Add middlewares to intercept a request before being sent.
      */

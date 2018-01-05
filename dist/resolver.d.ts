@@ -1,4 +1,4 @@
-import { ConfiguredMiddleware } from "./middleware";
+import { Wretcher } from "./wretcher";
 export declare type WretcherError = Error & {
     status: number;
     response: Response;
@@ -20,12 +20,12 @@ export declare type ResponseChain = {
     setTimeout: (time: number, controller?: any) => ResponseChain;
     controller: () => [any, ResponseChain];
     error: (code: (number | string), cb: any) => ResponseChain;
-    badRequest: (cb: (error: WretcherError) => void) => ResponseChain;
-    unauthorized: (cb: (error: WretcherError) => void) => ResponseChain;
-    forbidden: (cb: (error: WretcherError) => void) => ResponseChain;
-    notFound: (cb: (error: WretcherError) => void) => ResponseChain;
-    timeout: (cb: (error: WretcherError) => void) => ResponseChain;
-    internalError: (cb: (error: WretcherError) => void) => ResponseChain;
-    onAbort: (cb: (error: Error) => void) => ResponseChain;
+    badRequest: (cb: (error: WretcherError, originalRequest: Wretcher) => void) => ResponseChain;
+    unauthorized: (cb: (error: WretcherError, originalRequest: Wretcher) => any) => ResponseChain;
+    forbidden: (cb: (error: WretcherError, originalRequest: Wretcher) => any) => ResponseChain;
+    notFound: (cb: (error: WretcherError, originalRequest: Wretcher) => any) => ResponseChain;
+    timeout: (cb: (error: WretcherError, originalRequest: Wretcher) => any) => ResponseChain;
+    internalError: (cb: (error: WretcherError, originalRequest: Wretcher) => any) => ResponseChain;
+    onAbort: (cb: (error: Error, originalRequest: Wretcher) => any) => ResponseChain;
 };
-export declare const resolver: (url: any) => (catchers?: Map<string | number, (error: WretcherError) => void>) => (resolvers: ((chain: ResponseChain) => ResponseChain & Promise<any>)[]) => (middlewares: ConfiguredMiddleware[]) => (opts?: {}) => ResponseChain & Promise<any>;
+export declare const resolver: (wretcher: Wretcher) => ResponseChain & Promise<any>;

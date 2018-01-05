@@ -222,6 +222,33 @@ describe("Wretch", function() {
         expect(check).toBe(7)
     })
 
+    it("should capture the original request with resolvers/catchers", async function() {
+        let check = 0
+        const redirectedNotFound = await wretch(`${_URL}/404`)
+            .get()
+            .notFound((error, req) => {
+                check++
+                return req.url(`${_URL}/text`, true).get().text()
+            }).text()
+        expect(redirectedNotFound).toBe("A text string")
+
+        const withNotFoundCatcher = wretch(`${_URL}/401`)
+            .catcher(401, (err, req) => {
+                check++
+                return req.url(`${_URL}/text`, true).get().text()
+            })
+
+        const withNotFoundRedirect = wretch(`${_URL}/404`)
+            .resolve(resolver => resolver.notFound((err, req) => {
+                check++
+                return req.url(`${_URL}/text`, true).get().text()
+            }))
+
+        expect(await withNotFoundCatcher.get().text()).toBe("A text string")
+        expect(await withNotFoundRedirect.get().text()).toBe("A text string")
+        expect(check).toBe(3)
+    })
+
     it("should set default fetch options", async function() {
         let rejected = await new Promise(res => wretch(`${_URL}/customHeaders`).get().badRequest(_ => {
             res(true)

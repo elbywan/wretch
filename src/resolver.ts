@@ -1,3 +1,4 @@
+import { Wretcher } from "./wretcher"
 import { mix } from "./mix"
 import conf from "./config"
 import perfs from "./perfs"
@@ -18,20 +19,24 @@ export type ResponseChain = {
     controller: () => [any, ResponseChain],
     // Catchers
     error: (code: (number | string), cb: any) => ResponseChain,
-    badRequest: (cb: (error: WretcherError) => void) => ResponseChain,
-    unauthorized: (cb: (error: WretcherError) => void) => ResponseChain,
-    forbidden: (cb: (error: WretcherError) => void) => ResponseChain,
-    notFound: (cb: (error: WretcherError) => void) => ResponseChain,
-    timeout: (cb: (error: WretcherError) => void) => ResponseChain,
-    internalError: (cb: (error: WretcherError) => void) => ResponseChain,
-    onAbort: (cb: (error: Error) => void) => ResponseChain
+    badRequest: (cb: (error: WretcherError, originalRequest: Wretcher) => void) => ResponseChain,
+    unauthorized: (cb: (error: WretcherError, originalRequest: Wretcher) => any) => ResponseChain,
+    forbidden: (cb: (error: WretcherError, originalRequest: Wretcher) => any) => ResponseChain,
+    notFound: (cb: (error: WretcherError, originalRequest: Wretcher) => any) => ResponseChain,
+    timeout: (cb: (error: WretcherError, originalRequest: Wretcher) => any) => ResponseChain,
+    internalError: (cb: (error: WretcherError, originalRequest: Wretcher) => any) => ResponseChain,
+    onAbort: (cb: (error: Error, originalRequest: Wretcher) => any) => ResponseChain
 }
 
-export const resolver = url =>
-        (catchers: Map<number | string, (error: WretcherError) => void> = new Map()) =>
-        (resolvers: Array<(chain: ResponseChain) => ResponseChain & Promise<any>>) =>
-        (middlewares: ConfiguredMiddleware[]) =>
-        (opts = {}) => {
+export const resolver = (wretcher: Wretcher) => {
+    const {
+        _url: url,
+        _catchers: catchers,
+        _resolvers: resolvers,
+        _middlewares: middlewares,
+        _options: opts
+    } = wretcher
+
     type TypeParser = <Type>(funName: string | null) => <Result = void>(cb?: (type: Type) => Result) => Promise<Result>
 
     const finalOpts = mix(conf.defaults, opts)
@@ -57,9 +62,9 @@ export const resolver = url =>
     const doCatch = <T>(promise: Promise<T>): Promise<void | T> => {
         return promise.catch(err => {
             if(catchers.has(err.status))
-                catchers.get(err.status)(err)
+                return catchers.get(err.status)(err, wretcher)
             else if(catchers.has(err.name))
-                catchers.get(err.name)(err)
+                return catchers.get(err.name)(err, wretcher)
             else
                 throw err
         })
@@ -153,5 +158,5 @@ export const resolver = url =>
         onAbort: cb => responseChain.error("AbortError", cb)
     }
 
-    return resolvers.reduce((chain, r) => r(chain), responseChain) as (ResponseChain & Promise<any>)
+    return resolvers.reduce((chain, r) => r(chain, wretcher), responseChain) as (ResponseChain & Promise<any>)
 }

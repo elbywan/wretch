@@ -258,7 +258,7 @@ Creates a new Wretcher object with an url and [vanilla fetch options](https://de
 
 *Helper methods are optional and can be chained.*
 
-| [url](#urlurl-string-replace-boolean--false) | [query](#queryqp-object) | [options](#optionsoptions-object-mixin-boolean--true) | [headers](#headersheadervalues-object) | [accept](#acceptheadervalue-string) | [content](#contentheadervalue-string) | [auth](#authheadervalue-string) | [catcher](#catchererrorid-number--string-catcher-error-wretchererror--void) | [resolve](#resolvedoresolve-chain-responsechain--responsechain--promise-clear--false) | [defaults](#defaultsopts-object-mixin-boolean--false) | [errorType](#errortypemethod-text--json--text) | [polyfills](#polyfillspolyfills-object) |
+| [url](#urlurl-string-replace-boolean--false) | [query](#queryqp-object) | [options](#optionsoptions-object-mixin-boolean--true) | [headers](#headersheadervalues-object) | [accept](#acceptheadervalue-string) | [content](#contentheadervalue-string) | [auth](#authheadervalue-string) | [catcher](#catchererrorid-number--string-catcher-error-wretchererror-originalrequest-wretcher--void) | [resolve](#resolvedoresolve-chain-responsechain-originalrequest-wretcher--responsechain--promise-clear--false) | [defaults](#defaultsopts-object-mixin-boolean--false) | [errorType](#errortypemethod-text--json--text) | [polyfills](#polyfillspolyfills-object) |
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
 
 #### url(url: string, replace: boolean = false)
@@ -380,14 +380,14 @@ Shortcut to set the "Authorization" header.
 wretch("...").auth("Basic d3JldGNoOnJvY2tz")
 ```
 
-#### catcher(errorId: number | string, catcher: (error: WretcherError) => void)
+#### catcher(errorId: number | string, catcher: (error: WretcherError, originalRequest: Wretcher) => void)
 
 Adds a [catcher](https://github.com/elbywan/wretch#catchers) which will be called on every subsequent request error.
 
 Very useful when you need to perform a repetitive action on a specific error code.
 
 ```js
-const w = wretcher()
+const w = wretch()
   .catcher(404, err => redirect("/routes/notfound", err.message))
   .catcher(500, err => flashMessage("internal.server.error"))
   .error("SyntaxError", err => log("bad.json"))
@@ -399,7 +399,25 @@ w.url("http://myapi.com/get/something").get().json(json => /* ... */)
 w.url("...").notFound(err => /* overrides the default 'redirect' catcher */)
 ```
 
-#### resolve(doResolve: (chain: ResponseChain) => ResponseChain | Promise<any>, clear = false)
+The original request is passed along the error and can be used in order to perform an additional request.
+
+```js
+const reAuthOn401 = wretch()
+  .catcher(401, async (error, request) => {
+    // Renew credentials
+    const token = await wretch("/renewtoken").get().text()
+    storeToken(token)
+    // Replay the original request with new credentials
+    return request.auth(token).get().unauthorized(err => { throw err }).json()
+  })
+
+reAuthOn401.url("/resource")
+  .get()
+  .json() // <- Will only be called for the original promise
+  .then(callback) // <- Will be called for the original OR the replayed promise result
+```
+
+#### resolve(doResolve: (chain: ResponseChain, originalRequest: Wretcher) => ResponseChain | Promise<any>, clear = false)
 
 Programs a resolver which will automatically be injected to perform response chain tasks.
 
@@ -603,7 +621,7 @@ wretch("...").opts({ credentials: "same-origin" })
 
 *Catchers can be chained.*
 
-| [badRequest](#badrequestcb-error-wretchererror--any) | [unauthorized](#unauthorizedcb-error-wretchererror--any) | [forbidden](#forbiddencb-error-wretchererror--any) | [notFound](#notfoundcb-error-wretchererror--any) | [timeout](#timeoutcb-error-wretchererror--any) | [internalError](#internalerrorcb-error-wretchererror--any) | [error](#errorerrorid-number--string-cb-error-wretchererror--any) |
+| [badRequest](#badrequestcb-error-wretchererror-originalrequest-wretcher--any) | [unauthorized](#unauthorizedcb-error-wretchererror-originalrequest-wretcher--any) | [forbidden](#forbiddencb-error-wretchererror-originalrequest-wretcher--any) | [notFound](#notfoundcb-error-wretchererror-originalrequest-wretcher--any) | [timeout](#timeoutcb-error-wretchererror-originalrequest-wretcher--any) | [internalError](#internalerrorcb-error-wretchererror-originalrequest-wretcher--any) | [error](#errorerrorid-number--string-cb-error-wretchererror-originalrequest-wretcher--any) |
 |-----|-----|-----|-----|-----|-----|-----|
 
 ```ts
@@ -623,33 +641,52 @@ wretch("...")
   .res()
 ```
 
-#### badRequest(cb: (error: WretcherError) => any)
+#### badRequest(cb: (error: WretcherError, originalRequest: Wretcher) => any)
 
 Syntactic sugar for `error(400, cb)`.
 
-#### unauthorized(cb: (error: WretcherError) => any)
+#### unauthorized(cb: (error: WretcherError, originalRequest: Wretcher) => any)
 
 Syntactic sugar for `error(401, cb)`.
 
-#### forbidden(cb: (error: WretcherError) => any)
+#### forbidden(cb: (error: WretcherError, originalRequest: Wretcher) => any)
 
 Syntactic sugar for `error(403, cb)`.
 
-#### notFound(cb: (error: WretcherError) => any)
+#### notFound(cb: (error: WretcherError, originalRequest: Wretcher) => any)
 
 Syntactic sugar for `error(404, cb)`.
 
-#### timeout(cb: (error: WretcherError) => any)
+#### timeout(cb: (error: WretcherError, originalRequest: Wretcher) => any)
 
 Syntactic sugar for `error(418, cb)`.
 
-#### internalError(cb: (error: WretcherError) => any)
+#### internalError(cb: (error: WretcherError, originalRequest: Wretcher) => any)
 
 Syntactic sugar for `error(500, cb)`.
 
-#### error(errorId: number | string, cb: (error: WretcherError) => any)
+#### error(errorId: number | string, cb: (error: WretcherError, originalRequest: Wretcher) => any)
 
 Catches a specific error given its code or name and perform the callback.
+
+The original request is passed along the error and can be used in order to perform an additional request.
+
+```js
+wretch("/resource")
+  .get()
+  .unauthorized(async (error, req) => {
+    // Renew credentials
+    const token = await wretch("/renewtoken").get().text()
+    storeToken(token)
+    // Replay the original request with new credentials
+    return req.auth(token).get().unauthorized(err => { throw err }).json()
+  })
+  .json()
+  // The promise chain is preserved as expected
+  // ".then" will be performed on the result of the original request
+  // or the replayed one (if a 401 error was thrown)
+  .then(callback)
+```
 
 ## Response Types
 

@@ -41,7 +41,7 @@ var Wretcher = /** @class */ (function () {
      */
     Wretcher.prototype.defaults = function (opts, mixin) {
         if (mixin === void 0) { mixin = false; }
-        conf.defaults = mixin ? conf.defaults = mix(conf.defaults, opts) : opts;
+        conf.defaults = mixin ? mix(conf.defaults, opts) : opts;
         return this;
     };
     /**
@@ -161,7 +161,7 @@ var Wretcher = /** @class */ (function () {
         });
     };
     Wretcher.prototype.method = function (method, opts) {
-        return resolver(this._url)(this._catchers)(this._resolvers)(this._middlewares)(__assign({}, mix(opts, this._options), { method: method }));
+        return resolver(this.options(__assign({}, opts, { method: method })));
     };
     /**
      * Performs a get request.
