@@ -9,7 +9,8 @@ export default {
         file: "dist/bundle/wretch.js",
         format: "umd",
         name: "wretch",
-        exports: "default"
+        exports: "default",
+        sourcemap: true
     },
     plugins: [
         typescript({
@@ -19,6 +20,5 @@ export default {
         nodeResolve({ jsnext: true, main: true }),
         uglify({}, minify)
     ],
-    external: [ "url" ],
-    sourcemap: true
+    external: [ "url" ]
 }
