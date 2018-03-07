@@ -35,26 +35,27 @@
     "author": "Julien Elbaz",
     "license": "MIT",
     "devDependencies": {
-        "@types/jest": "^21.1.6",
-        "@types/node": "^8.5.7",
-        "abortcontroller": "git+https://github.com/jimmywarting/abortcontroller.git",
-        "conventional-changelog-cli": "^1.3.5",
+        "@types/jest": "^22.2.0",
+        "@types/node": "^9.4.6",
+        "abortcontroller-polyfill": "^1.1.8",
+        "conventional-changelog-cli": "^1.3.16",
         "conventional-changelog-wretch": "file:scripts/conventional-changelog-wretch",
         "coveralls": "^3.0.0",
-        "form-data": "^2.3.1",
-        "jest": "^21.2.1",
-        "node-fetch": "^2.0.0-alpha.8",
+        "dtrace-provider": "^0.8.6",
+        "form-data": "^2.3.2",
+        "jest": "^22.4.2",
+        "node-fetch": "^2.1.1",
         "restify": "^6.3.4",
         "rimraf": "^2.6.2",
-        "rollup": "^0.53.3",
-        "rollup-plugin-node-resolve": "^3.0.0",
+        "rollup": "^0.56.5",
+        "rollup-plugin-node-resolve": "^3.2.0",
         "rollup-plugin-typescript": "^0.8.1",
-        "rollup-plugin-uglify": "^2.0.1",
-        "ts-jest": "^21.2.3",
-        "tslib": "^1.8.1",
-        "tslint": "^5.8.0",
-        "typescript": "^2.6.2",
-        "uglify-es": "^3.3.4"
+        "rollup-plugin-uglify": "^3.0.0",
+        "ts-jest": "^22.4.1",
+        "tslib": "^1.9.0",
+        "tslint": "^5.9.1",
+        "typescript": "^2.7.2",
+        "uglify-es": "^3.3.9"
     },
     "jest": {
         "transform": {
@@ -73,7 +74,6 @@
                 "tsConfigFile": "test/tsconfig.tests.json"
             }
         },
-        "mapCoverage": true,
         "collectCoverage": true,
         "collectCoverageFrom": [
             "src/*.{js,ts}"
