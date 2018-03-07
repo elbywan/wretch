@@ -669,6 +669,8 @@ Syntactic sugar for `error(500, cb)`.
 
 Catches a specific error given its code or name and perform the callback.
 
+---------
+
 The original request is passed along the error and can be used in order to perform an additional request.
 
 ```js
@@ -754,7 +756,7 @@ wretch("...").get().text(txt => console.log(txt))
 
 ### Abortable requests
 
-*No polyfills for node.js yet ! Your browser absolutely needs to support [AbortControllers](https://developer.mozilla.org/en-US/docs/Web/API/AbortController).*
+*Only compatible with browsers that support [AbortControllers](https://developer.mozilla.org/en-US/docs/Web/API/AbortController). Otherwise, you could use a (partial) [polyfill](https://www.npmjs.com/package/abortcontroller-polyfill).*
 
 Use case :
 
