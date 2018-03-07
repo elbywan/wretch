@@ -1,6 +1,24 @@
+<a name="1.1.2"></a>
+## [1.1.2](https://github.com/elbywan/wretch/compare/1.1.1...1.1.2) (2018-03-07)
+
+
+### :art: Code improvement(s)
+
+* Relaxed Response & Options types ([16c0b97](https://github.com/elbywan/wretch/commit/16c0b97))
+
+### :white_check_mark: Test improvement(s)
+
+* Update tests with a working abortController polyfill ([171ac48](https://github.com/elbywan/wretch/commit/171ac48))
+
+
+
 <a name="1.1.1"></a>
 ## [1.1.1](https://github.com/elbywan/wretch/compare/1.1.0...1.1.1) (2018-01-08)
 
+
+### :arrow_up: Version update(s)
+
+* 1.1.1 tag ([efc67a4](https://github.com/elbywan/wretch/commit/efc67a4))
 
 ### :art: Code improvement(s)
 
