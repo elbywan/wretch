@@ -1,6 +1,6 @@
-import * as nodeFetch from "node-fetch"
+import nodeFetch from "node-fetch"
 import * as FormData from "form-data"
-import * as AbortController from "abortcontroller"
+import { AbortController, abortableFetch } from "abortcontroller-polyfill/dist/cjs-ponyfill"
 import * as fs from "fs"
 import { URLSearchParams } from "url"
 import * as path from "path"
@@ -23,10 +23,11 @@ const allRoutes = (obj, type, action, opts?) => Promise.all([
     obj.delete(opts)[type](action),
 ])
 
-const fetchPolyfill = (timeout = null) =>
+const fetchPolyfill = (timeout = null) => (
     function(url, opts) {
         performance.mark(url + " - begin")
-        return nodeFetch(url, opts).then(_ => {
+        const { fetch } = abortableFetch(nodeFetch)
+        return fetch(url, opts).then(_ => {
             performance.mark(url + " - end")
             const measure = () => performance.measure(_.url, url + " - begin", url + " - end")
             if(timeout)
@@ -36,6 +37,7 @@ const fetchPolyfill = (timeout = null) =>
             return _
         })
     }
+)
 
 const duckImage = fs.readFileSync(path.resolve(__dirname, "assets", "duck.jpg"))
 
@@ -51,6 +53,7 @@ describe("Wretch", function() {
 
     it("should set and use non global polyfills", async function() {
         global["FormData"] = null
+        global["URLSearchParams"] = null
 
         expect(() => wretch("...").query({ a: 1, b: 2 })).toThrow("URLSearchParams is not defined")
         expect(() => wretch("...").formData({ a: 1, b: 2 })).toThrow("FormData is not defined")
@@ -347,25 +350,38 @@ describe("Wretch", function() {
     })
 
     it("should abort a request", function(done) {
-        // Waiting for real nodejs polyfills ...
+        let count = 0
+
+        const handleError = error => {
+            expect(error.name).toBe("AbortError")
+            count++
+        }
+
         const controller = new AbortController()
         wretch(`${_URL}/longResult`)
             .signal(controller)
             .get()
-            .text(_ => 1)
+            .res()
+            .catch(handleError)
         controller.abort()
 
         const [c, w] = wretch(`${_URL}/longResult`).get().controller()
-        w.text(_ => 1)
+        w.res().catch(handleError)
         c.abort()
 
         wretch(`${_URL}/longResult`)
             .get()
-            .setTimeout(500)
-            // tslint:disable-next-line:no-console
-            .onAbort(err => console.log(err))
+            .setTimeout(100)
+            .onAbort(handleError)
+            .res()
 
-        setTimeout(done, 1000)
+        const [c2, w2] = wretch(`${_URL}/longResult`).get().controller()
+        w2.setTimeout(100, c2).onAbort(handleError).res()
+
+        setTimeout(() => {
+            expect(count).toBe(4)
+            done()
+        }, 1000)
     })
 
     it("should program resolvers", async function() {
