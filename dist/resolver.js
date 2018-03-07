@@ -5,7 +5,7 @@ import { middlewareHelper } from "./middleware";
 export var resolver = function (wretcher) {
     var url = wretcher._url, catchers = wretcher._catchers, resolvers = wretcher._resolvers, middlewares = wretcher._middlewares, opts = wretcher._options;
     var finalOpts = mix(conf.defaults, opts);
-    var fetchController = conf.polyfill("AbortController", false, true);
+    var fetchController = conf.polyfill("AbortController", { doThrow: false, instance: true });
     if (!finalOpts["signal"] && fetchController) {
         finalOpts["signal"] = fetchController.signal;
     }

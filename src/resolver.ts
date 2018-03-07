@@ -4,10 +4,11 @@ import conf from "./config"
 import perfs from "./perfs"
 import { middlewareHelper, ConfiguredMiddleware } from "./middleware"
 
-export type WretcherError = Error & { status: number, response: Response, text?: string, json?: any }
+export type WretcherError = Error & { status: number, response: WretcherResponse, text?: string, json?: any }
+export type WretcherResponse = Response & { [key: string]: any }
 export type ResponseChain = {
     // Response types
-    res: <Result = Response>(cb?: (type: Response) => Result) => Promise<Result>,
+    res: <Result = WretcherResponse>(cb?: (type: WretcherResponse) => Result) => Promise<Result>,
     json: <Result = {[key: string]: any}>(cb?: (type: {[key: string]: any}) => Result) => Promise<Result>,
     blob: <Result = Blob>(cb?: (type: Blob) => Result) => Promise<Result>,
     formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>,
@@ -40,13 +41,13 @@ export const resolver = (wretcher: Wretcher) => {
     type TypeParser = <Type>(funName: string | null) => <Result = void>(cb?: (type: Type) => Result) => Promise<Result>
 
     const finalOpts = mix(conf.defaults, opts)
-    const fetchController = conf.polyfill("AbortController", false, true)
+    const fetchController = conf.polyfill("AbortController", { doThrow: false, instance: true })
     if(!finalOpts["signal"] && fetchController) {
         finalOpts["signal"] = fetchController.signal
     }
 
     const req = middlewareHelper(middlewares)(conf.polyfill("fetch"))(url, finalOpts)
-    const wrapper: Promise<void | Response> = req.then(response => {
+    const wrapper: Promise<void | WretcherResponse> = req.then(response => {
         if (!response.ok) {
             return response[conf.errorType || "text"]().then(_ => {
                 const err = new Error(_)

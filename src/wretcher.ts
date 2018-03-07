@@ -3,6 +3,10 @@ import conf from "./config"
 import { resolver, WretcherError, ResponseChain } from "./resolver"
 import { ConfiguredMiddleware } from "./middleware"
 
+export type WretcherOptions = RequestInit & {
+    [key: string]: any
+}
+
 /**
  * The Wretcher class used to perform easy fetch requests.
  *
@@ -12,12 +16,12 @@ export class Wretcher {
 
     protected constructor(
         public _url: string,
-        public _options: RequestInit,
+        public _options: WretcherOptions,
         public _catchers: Map<number | string, (error: WretcherError, originalRequest: Wretcher) => void> = new Map(),
         public _resolvers: Array<(resolver: ResponseChain, originalRequest: Wretcher) => any> = [],
         public _middlewares: ConfiguredMiddleware[] = []) {}
 
-    static factory(url = "", opts: RequestInit = {}) { return new Wretcher(url, opts) }
+    static factory(url = "", opts: WretcherOptions = {}) { return new Wretcher(url, opts) }
     private selfFactory({ url = this._url, options = this._options, catchers = this._catchers,
                 resolvers = this._resolvers, middlewares = this._middlewares } = {}) {
         return new Wretcher(url, options, catchers, resolvers, middlewares)
@@ -28,7 +32,7 @@ export class Wretcher {
      * @param opts New default options
      * @param mixin If true, mixes in instead of replacing the existing options
      */
-    defaults(opts: RequestInit, mixin = false) {
+    defaults(opts: WretcherOptions, mixin = false) {
         conf.defaults = mixin ? mix(conf.defaults, opts) : opts
         return this
     }
@@ -53,7 +57,7 @@ export class Wretcher {
      * @param polyfills An object containing the polyfills.
      */
     polyfills(polyfills: Partial<typeof conf.polyfills>) {
-        conf.polyfills = { ...conf.polyfills, ...polyfills}
+        conf.polyfills = { ...conf.polyfills, ...polyfills }
         return this
     }
 
@@ -71,7 +75,7 @@ export class Wretcher {
      * @param options New options
      * @param mixin If true, mixes in instead of replacing the existing options
      */
-    options(options: RequestInit, mixin = true) {
+    options(options: WretcherOptions, mixin = true) {
         return this.selfFactory({ options: mixin ? mix(this._options, options) : options })
     }
 
@@ -242,7 +246,7 @@ export class Wretcher {
 // Internal helpers
 
 const appendQueryParams = (url: string, qp: object) => {
-    const usp = conf.polyfill("URLSearchParams", true, true)
+    const usp = conf.polyfill("URLSearchParams", { instance: true })
     const index = url.indexOf("?")
     for(const key in qp) {
         if(qp[key] instanceof Array) {
@@ -258,7 +262,7 @@ const appendQueryParams = (url: string, qp: object) => {
 }
 
 const convertFormData = (formObject: object) => {
-    const formData = conf.polyfill("FormData", true, true)
+    const formData = conf.polyfill("FormData", { instance: true })
     for(const key in formObject) {
         if(formObject[key] instanceof Array) {
             for(const item of formObject[key])

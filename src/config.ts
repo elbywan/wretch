@@ -14,7 +14,7 @@ const config = {
         PerformanceObserver: null,
         AbortController: null
     },
-    polyfill(p: string, doThrow = true, instance = false, ...args) {
+    polyfill(p: string, { doThrow = true, instance = false } = {}, ...args) {
         const res = this.polyfills[p] ||
             (typeof self !== "undefined" ? self[p] : null) ||
             (typeof global !== "undefined" ? global[p] : null)

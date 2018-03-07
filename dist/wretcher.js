@@ -249,7 +249,7 @@ var Wretcher = /** @class */ (function () {
 export { Wretcher };
 // Internal helpers
 var appendQueryParams = function (url, qp) {
-    var usp = conf.polyfill("URLSearchParams", true, true);
+    var usp = conf.polyfill("URLSearchParams", { instance: true });
     var index = url.indexOf("?");
     for (var key in qp) {
         if (qp[key] instanceof Array) {
@@ -267,7 +267,7 @@ var appendQueryParams = function (url, qp) {
         url + "?" + usp.toString();
 };
 var convertFormData = function (formObject) {
-    var formData = conf.polyfill("FormData", true, true);
+    var formData = conf.polyfill("FormData", { instance: true });
     for (var key in formObject) {
         if (formObject[key] instanceof Array) {
             for (var _i = 0, _a = formObject[key]; _i < _a.length; _i++) {

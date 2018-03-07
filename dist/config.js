@@ -12,12 +12,11 @@ var config = {
         PerformanceObserver: null,
         AbortController: null
     },
-    polyfill: function (p, doThrow, instance) {
-        if (doThrow === void 0) { doThrow = true; }
-        if (instance === void 0) { instance = false; }
+    polyfill: function (p, _a) {
+        var _b = _a === void 0 ? {} : _a, _c = _b.doThrow, doThrow = _c === void 0 ? true : _c, _d = _b.instance, instance = _d === void 0 ? false : _d;
         var args = [];
-        for (var _i = 3; _i < arguments.length; _i++) {
-            args[_i - 3] = arguments[_i];
+        for (var _i = 2; _i < arguments.length; _i++) {
+            args[_i - 2] = arguments[_i];
         }
         var res = this.polyfills[p] ||
             (typeof self !== "undefined" ? self[p] : null) ||

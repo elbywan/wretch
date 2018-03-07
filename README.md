@@ -625,7 +625,7 @@ wretch("...").opts({ credentials: "same-origin" })
 |-----|-----|-----|-----|-----|-----|-----|
 
 ```ts
-type WretcherError = Error & { status: number, response: Response, text?: string, json?: Object }
+type WretcherError = Error & { status: number, response: WretcherResponse, text?: string, json?: Object }
 ```
 
 ```js
@@ -899,7 +899,7 @@ type Middleware = (options?: {[key: string]: any}) => ConfiguredMiddleware
 // A configured middleware (with options curried)
 type ConfiguredMiddleware = (next: FetchLike) => FetchLike
 // A "fetch like" function, accepting an url and fetch options and returning a response promise
-type FetchLike = (url: string, opts: RequestInit) => Promise<Response>
+type FetchLike = (url: string, opts: WretcherOptions) => Promise<WretcherResponse>
 ```
 
 #### middlewares(middlewares: ConfiguredMiddleware[], clear = false)

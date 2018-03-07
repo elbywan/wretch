@@ -37,8 +37,8 @@ const perfs = {
         if(!name || !callback)
             return
 
-        const _performance = conf.polyfill("performance", false)
-        const _observer  = conf.polyfill("PerformanceObserver", false)
+        const _performance = conf.polyfill("performance", { doThrow: false })
+        const _observer  = conf.polyfill("PerformanceObserver", { doThrow: false })
 
         if(!lazyObserver(_performance, _observer))
             return

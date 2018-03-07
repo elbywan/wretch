@@ -9,6 +9,9 @@ declare const config: {
         PerformanceObserver: any;
         AbortController: any;
     };
-    polyfill(p: string, doThrow?: boolean, instance?: boolean, ...args: any[]): any;
+    polyfill(p: string, { doThrow, instance }?: {
+        doThrow?: boolean;
+        instance?: boolean;
+    }, ...args: any[]): any;
 };
 export default config;

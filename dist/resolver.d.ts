@@ -1,12 +1,15 @@
 import { Wretcher } from "./wretcher";
 export declare type WretcherError = Error & {
     status: number;
-    response: Response;
+    response: WretcherResponse;
     text?: string;
     json?: any;
 };
+export declare type WretcherResponse = Response & {
+    [key: string]: any;
+};
 export declare type ResponseChain = {
-    res: <Result = Response>(cb?: (type: Response) => Result) => Promise<Result>;
+    res: <Result = WretcherResponse>(cb?: (type: WretcherResponse) => Result) => Promise<Result>;
     json: <Result = {
         [key: string]: any;
     }>(cb?: (type: {

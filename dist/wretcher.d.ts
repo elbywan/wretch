@@ -1,6 +1,9 @@
 import conf from "./config";
 import { WretcherError, ResponseChain } from "./resolver";
 import { ConfiguredMiddleware } from "./middleware";
+export declare type WretcherOptions = RequestInit & {
+    [key: string]: any;
+};
 /**
  * The Wretcher class used to perform easy fetch requests.
  *
@@ -8,19 +11,19 @@ import { ConfiguredMiddleware } from "./middleware";
  */
 export declare class Wretcher {
     _url: string;
-    _options: RequestInit;
+    _options: WretcherOptions;
     _catchers: Map<number | string, (error: WretcherError, originalRequest: Wretcher) => void>;
     _resolvers: Array<(resolver: ResponseChain, originalRequest: Wretcher) => any>;
     _middlewares: ConfiguredMiddleware[];
-    protected constructor(_url: string, _options: RequestInit, _catchers?: Map<number | string, (error: WretcherError, originalRequest: Wretcher) => void>, _resolvers?: Array<(resolver: ResponseChain, originalRequest: Wretcher) => any>, _middlewares?: ConfiguredMiddleware[]);
-    static factory(url?: string, opts?: RequestInit): Wretcher;
+    protected constructor(_url: string, _options: WretcherOptions, _catchers?: Map<number | string, (error: WretcherError, originalRequest: Wretcher) => void>, _resolvers?: Array<(resolver: ResponseChain, originalRequest: Wretcher) => any>, _middlewares?: ConfiguredMiddleware[]);
+    static factory(url?: string, opts?: WretcherOptions): Wretcher;
     private selfFactory({url, options, catchers, resolvers, middlewares}?);
     /**
      * Sets the default fetch options used for every subsequent fetch call.
      * @param opts New default options
      * @param mixin If true, mixes in instead of replacing the existing options
      */
-    defaults(opts: RequestInit, mixin?: boolean): this;
+    defaults(opts: WretcherOptions, mixin?: boolean): this;
     /**
      * Sets the method (text, json ...) used to parse the data contained in the response body in case of an HTTP error.
      *
@@ -48,7 +51,7 @@ export declare class Wretcher {
      * @param options New options
      * @param mixin If true, mixes in instead of replacing the existing options
      */
-    options(options: RequestInit, mixin?: boolean): Wretcher;
+    options(options: WretcherOptions, mixin?: boolean): Wretcher;
     /**
      * Converts a javascript object to query parameters,
      * then appends this query string to the current url.
