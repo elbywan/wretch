@@ -138,27 +138,23 @@ div.tags > * {
     font-size: 0.7em;
     font-weight: bold;
     border-radius: 15px;
-    border: 3px solid transparent;
+    border: 3px solid;
     cursor: pointer;
-    transition: all 0.25s;
-}
-div.tags > .active {
-    color: white;
-    border: 3px solid #fff;
-}
-div.tags > *:hover {
-    color: white;
+    transition: all 0.5s;
 }
 div.tags-boxes > * {
     display: none;
     font-family: 'Josefin Sans', sans-serif;
     padding: 10px 0px;
     line-height: 1.5em;
-    border-bottom: 2px solid;
-    margin-top: 0px;
+    /* border-bottom: 2px solid; */
 }
 div.tags > :nth-child(5n+1) {
     background-color: #e7c547;
+    border-color: #e7c547;
+}
+div.tags > :nth-child(5n+1).active {
+    color: #e7c547;
 }
 div.tags-boxes > :nth-child(5n+1) {
     color: #e7c547;
@@ -166,6 +162,10 @@ div.tags-boxes > :nth-child(5n+1) {
 }
 div.tags > :nth-child(5n+2) {
     background-color: #d54e53;
+    border-color: #d54e53;
+}
+div.tags > :nth-child(5n+2).active {
+    color: #d54e53;
 }
 div.tags-boxes > :nth-child(5n+2) {
     color: #d54e53;
@@ -173,6 +173,10 @@ div.tags-boxes > :nth-child(5n+2) {
 }
 div.tags > :nth-child(5n+3) {
     background-color: #c397d8;
+    border-color: #c397d8;
+}
+div.tags > :nth-child(5n+3).active {
+    color: #c397d8;
 }
 div.tags-boxes > :nth-child(5n+3) {
     color: #c397d8;
@@ -180,6 +184,10 @@ div.tags-boxes > :nth-child(5n+3) {
 }
 div.tags > :nth-child(5n+4) {
     background-color: #b9ca4a;
+    border-color: #b9ca4a;
+}
+div.tags > :nth-child(5n+4).active {
+    color: #b9ca4a;
 }
 div.tags-boxes > :nth-child(5n+4) {
     color: #b9ca4a;
@@ -187,10 +195,20 @@ div.tags-boxes > :nth-child(5n+4) {
 }
 div.tags > :nth-child(5n+5) {
     background-color: #7aa6da;
+    border-color: #7aa6da;
+}
+div.tags > :nth-child(5n+5).active {
+    color: #7aa6da;
 }
 div.tags-boxes > :nth-child(5n+5) {
     color: #7aa6da;
     border-color: #7aa6da;
+}
+div.tags > .active {
+    background-color: #000;
+}
+div.tags > *:hover:not(.active) {
+    border-color: #000;
 }
 
 a.github {
