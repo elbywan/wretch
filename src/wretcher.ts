@@ -83,14 +83,17 @@ export class Wretcher {
      * Converts a javascript object to query parameters,
      * then appends this query string to the current url.
      *
+     * If given a string, use the string as the query verbatim.
+     *
      * ```
      * let w = wretch("http://example.com") // url is http://example.com
      * w = w.query({ a: 1, b : 2 }) // url is now http://example.com?a=1&b=2
+     * w = w.query("foo-bar-baz-woz") // url is now http://example.com?foo-bar-baz-woz
      * ```
      *
-     * @param qp An object which will be converted.
+     * @param qp An object which will be converted, or a string which will be used verbatim.
      */
-    query(qp: object) {
+    query(qp: object | string) {
         return this.selfFactory({ url: appendQueryParams(this._url, qp) })
     }
 
@@ -245,20 +248,24 @@ export class Wretcher {
 
 // Internal helpers
 
-const appendQueryParams = (url: string, qp: object) => {
-    const usp = conf.polyfill("URLSearchParams", { instance: true })
-    const index = url.indexOf("?")
-    for(const key in qp) {
-        if(qp[key] instanceof Array) {
-            for(const val of qp[key])
-                usp.append(key, val)
-        } else {
-            usp.append(key, qp[key])
+const appendQueryParams = (url: string, qp: object | string) => {
+    let queryString
+
+    if(typeof qp === "string") {
+        queryString = qp
+    } else {
+        const usp = conf.polyfill("URLSearchParams", { instance: true })
+        for(const key in qp) {
+            if(qp[key] instanceof Array) {
+                for(const val of qp[key])
+                    usp.append(key, val)
+            } else {
+                usp.append(key, qp[key])
+            }
         }
+        queryString = usp.toString()
     }
-    return ~index ?
-        `${url.substring(0, index)}?${usp.toString()}` :
-        `${url}?${usp.toString()}`
+    return `${url.split("?")[0]}?${queryString}`
 }
 
 const convertFormData = (formObject: object) => {
