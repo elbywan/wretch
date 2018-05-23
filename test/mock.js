@@ -55,7 +55,7 @@ const mockServer = {
                 res.send(400)
         })
 
-        server.post("urlencoded/roundTrip", (req, res) => {
+        server.post("/urlencoded/roundTrip", (req, res) => {
             if(req.header("content-type") === "application/x-www-form-urlencoded")
                 res.sendRaw(req.body)
             else
@@ -129,7 +129,8 @@ const setupReplies = (server, type, fun) => {
 const setupErrors = server => {
     const errorList = [ 444, 449, 450, 451, 456, 495, 496, 497, 498, 499 ]
     for(let i = 0; i < 512; i++){
-        errorList.push(i)
+        if(!errorList.includes(i))
+            errorList.push(i)
         if(i === 418) i += 2
         else if(i === 426 || i === 429) i++
     }

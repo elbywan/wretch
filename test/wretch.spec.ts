@@ -206,20 +206,28 @@ describe("Wretch", function() {
 
     it("should set and catch errors with global catchers", async function() {
         let check = 0
-        const w = wretch(_URL + "/")
+        const w = wretch(_URL)
             .catcher(404, err => check++)
             .catcher(500, err => check++)
             .catcher(400, err => check++)
             .catcher(401, err => check--)
             .catcher("FetchError", err => check++)
 
-        await w.url("text").get().res(_ => check++)
-        await w.url("text").get().json(_ => check--)
+        // +1 : 1
+        await w.url("/text").get().res(_ => check++)
+        // +0 : 1
+        await w.url("/text").get().json(_ => check--)
+        // +1 : 2
         await w.url("/400").get().res(_ => check--)
+        // +1 : 3
         await w.url("/401").get().unauthorized(_ => check++).res(_ => check--)
+        // +1 : 4
         await w.url("/404").get().res(_ => check--)
+        // +1 : 5
         await w.url("/408").get().timeout(_ => check++).res(_ => check--)
+        // +1 : 6
         await w.url("/418").get().res(_ => check--).catch(_ => "muted")
+        // +1: 7
         await w.url("/500").get().res(_ => check--)
 
         expect(check).toBe(7)
