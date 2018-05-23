@@ -78,7 +78,7 @@ export const resolver = (wretcher: Wretcher) => {
         /**
          * Retrieves the raw result as a promise.
          */
-        res: wrapTypeParser<Response>(null),
+        res: wrapTypeParser<WretcherResponse>(null),
         /**
          * Retrieves the result as a parsed JSON object.
          */

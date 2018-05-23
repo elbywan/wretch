@@ -23,13 +23,14 @@ const allRoutes = (obj, type, action, opts?) => Promise.all([
     obj.delete(opts)[type](action),
 ])
 
-const fetchPolyfill = (timeout = null) => (
+const fetchPolyfill = (timeout = null) =>
     function(url, opts) {
         performance.mark(url + " - begin")
         const { fetch } = abortableFetch(nodeFetch)
         return fetch(url, opts).then(_ => {
             performance.mark(url + " - end")
             const measure = () => performance.measure(_.url, url + " - begin", url + " - end")
+            performance.clearMarks(url + " - begin")
             if(timeout)
                 setTimeout(measure, timeout)
             else
@@ -37,7 +38,6 @@ const fetchPolyfill = (timeout = null) => (
             return _
         })
     }
-)
 
 const duckImage = fs.readFileSync(path.resolve(__dirname, "assets", "duck.jpg"))
 
@@ -330,6 +330,9 @@ describe("Wretch", function() {
     })
 
     it("should retrieve performance timings associated with a fetch request", function(done) {
+        wretch().polyfills({
+            fetch: fetchPolyfill(1)
+        })
         // Test empty perfs()
         wretch(`${_URL}/text`).get().perfs().res(_ => expect(_.ok).toBeTruthy()).then(
             // Racing condition : observer triggered before response
@@ -343,6 +346,9 @@ describe("Wretch", function() {
 
                 wretch(`${_URL}/fakeurl`).get().perfs(_ => {
                     expect(typeof _.startTime).toBe("number")
+                    wretch().polyfills({
+                        fetch: fetchPolyfill(1)
+                    })
                     done()
                 }).res().catch(() => "ignore")
             }).res().catch(_ => "ignore") as any
@@ -396,9 +402,11 @@ describe("Wretch", function() {
                 .perfs(_ => check++)
                 .json(_ => { check++; return _ }))
         const result = await w.url("/json").get()
+        await new Promise(res => setTimeout(res, 100))
         expect(result).toEqual({ a: "json", object: "which", is: "stringified" })
         expect(check).toBe(2)
         await w.url("/401").get()
+        await new Promise(res => setTimeout(res, 100))
         expect(check).toBe(4)
     })
 

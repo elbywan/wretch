@@ -1,9 +1,12 @@
 import conf from "./config";
 var onMatch = function (entries, name, callback, _performance) {
+    if (!entries.getEntriesByName)
+        return false;
     var matches = entries.getEntriesByName(name);
     if (matches && matches.length > 0) {
         callback(matches.reverse()[0]);
-        _performance.clearMeasures(name);
+        if (_performance.clearMeasures)
+            _performance.clearMeasures(name);
         perfs.callbacks.delete(name);
         if (perfs.callbacks.size < 1) {
             perfs.observer.disconnect();

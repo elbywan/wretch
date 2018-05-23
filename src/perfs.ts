@@ -1,10 +1,13 @@
 import conf from "./config"
 
 const onMatch = (entries, name, callback, _performance) => {
+    if(!entries.getEntriesByName)
+        return false
     const matches = entries.getEntriesByName(name)
     if(matches && matches.length > 0) {
         callback(matches.reverse()[0])
-        _performance.clearMeasures(name)
+        if(_performance.clearMeasures)
+            _performance.clearMeasures(name)
         perfs.callbacks.delete(name)
 
         if(perfs.callbacks.size < 1) {
@@ -25,7 +28,8 @@ const lazyObserver = (_performance, _observer) => {
                 onMatch(entries, name, callback, _performance)
             })
         })
-        if(_performance.clearResourceTimings) _performance.clearResourceTimings()
+        if(_performance.clearResourceTimings)
+            _performance.clearResourceTimings()
     }
     return perfs.observer
 }
