@@ -56,14 +56,22 @@ export declare class Wretcher {
      * Converts a javascript object to query parameters,
      * then appends this query string to the current url.
      *
+     * If given a string, use the string as the query verbatim.
+     *
      * ```
      * let w = wretch("http://example.com") // url is http://example.com
+     *
+     * // Chain query calls
      * w = w.query({ a: 1, b : 2 }) // url is now http://example.com?a=1&b=2
+     * w = w.query("foo-bar-baz-woz") // url is now http://example.com?a=1&b=2&foo-bar-baz-woz
+     *
+     * // Pass true as the second argument to replace existing query parameters
+     * w = w.query("c=3&d=4", true) // url is now http://example.com?c=3&d=4
      * ```
      *
-     * @param qp An object which will be converted.
+     * @param qp An object which will be converted, or a string which will be used verbatim.
      */
-    query(qp: object): Wretcher;
+    query(qp: object | string, clear?: boolean): Wretcher;
     /**
      * Set request headers.
      * @param headerValues An object containing header keys and values

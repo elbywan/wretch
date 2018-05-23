@@ -73,7 +73,14 @@ var Wretcher = /** @class */ (function () {
      */
     Wretcher.prototype.url = function (url, replace) {
         if (replace === void 0) { replace = false; }
-        return replace ? this.selfFactory({ url: url }) : this.selfFactory({ url: this._url + url });
+        if (replace)
+            return this.selfFactory({ url: url });
+        var split = this._url.split("?");
+        return this.selfFactory({
+            url: split.length > 1 ?
+                split[0] + url + split[1] :
+                this._url + url
+        });
     };
     /**
      * Returns a new Wretcher object with the same url and new options.
@@ -88,15 +95,24 @@ var Wretcher = /** @class */ (function () {
      * Converts a javascript object to query parameters,
      * then appends this query string to the current url.
      *
+     * If given a string, use the string as the query verbatim.
+     *
      * ```
      * let w = wretch("http://example.com") // url is http://example.com
+     *
+     * // Chain query calls
      * w = w.query({ a: 1, b : 2 }) // url is now http://example.com?a=1&b=2
+     * w = w.query("foo-bar-baz-woz") // url is now http://example.com?a=1&b=2&foo-bar-baz-woz
+     *
+     * // Pass true as the second argument to replace existing query parameters
+     * w = w.query("c=3&d=4", true) // url is now http://example.com?c=3&d=4
      * ```
      *
-     * @param qp An object which will be converted.
+     * @param qp An object which will be converted, or a string which will be used verbatim.
      */
-    Wretcher.prototype.query = function (qp) {
-        return this.selfFactory({ url: appendQueryParams(this._url, qp) });
+    Wretcher.prototype.query = function (qp, clear) {
+        if (clear === void 0) { clear = false; }
+        return this.selfFactory({ url: appendQueryParams(this._url, qp, clear) });
     };
     /**
      * Set request headers.
@@ -248,23 +264,30 @@ var Wretcher = /** @class */ (function () {
 }());
 export { Wretcher };
 // Internal helpers
-var appendQueryParams = function (url, qp) {
-    var usp = conf.polyfill("URLSearchParams", { instance: true });
-    var index = url.indexOf("?");
-    for (var key in qp) {
-        if (qp[key] instanceof Array) {
-            for (var _i = 0, _a = qp[key]; _i < _a.length; _i++) {
-                var val = _a[_i];
-                usp.append(key, val);
+var appendQueryParams = function (url, qp, clear) {
+    var queryString;
+    if (typeof qp === "string") {
+        queryString = qp;
+    }
+    else {
+        var usp = conf.polyfill("URLSearchParams", { instance: true });
+        for (var key in qp) {
+            if (qp[key] instanceof Array) {
+                for (var _i = 0, _a = qp[key]; _i < _a.length; _i++) {
+                    var val = _a[_i];
+                    usp.append(key, val);
+                }
+            }
+            else {
+                usp.append(key, qp[key]);
             }
         }
-        else {
-            usp.append(key, qp[key]);
-        }
+        queryString = usp.toString();
     }
-    return ~index ?
-        url.substring(0, index) + "?" + usp.toString() :
-        url + "?" + usp.toString();
+    var split = url.split("?");
+    if (clear || split.length < 2)
+        return split[0] + "?" + queryString;
+    return url + "&" + queryString;
 };
 var convertFormData = function (formObject) {
     var formData = conf.polyfill("FormData", { instance: true });

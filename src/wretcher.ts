@@ -67,7 +67,14 @@ export class Wretcher {
      * @param replace Boolean If true, replaces the current url instead of appending
      */
     url(url: string, replace = false) {
-        return replace ? this.selfFactory({ url }) : this.selfFactory({ url: this._url + url })
+        if(replace)
+            return this.selfFactory({ url })
+        const split = this._url.split("?")
+        return this.selfFactory({
+            url: split.length > 1 ?
+                split[0] + url + split[1] :
+                this._url + url
+        })
     }
 
     /**
@@ -87,14 +94,19 @@ export class Wretcher {
      *
      * ```
      * let w = wretch("http://example.com") // url is http://example.com
+     *
+     * // Chain query calls
      * w = w.query({ a: 1, b : 2 }) // url is now http://example.com?a=1&b=2
-     * w = w.query("foo-bar-baz-woz") // url is now http://example.com?foo-bar-baz-woz
+     * w = w.query("foo-bar-baz-woz") // url is now http://example.com?a=1&b=2&foo-bar-baz-woz
+     *
+     * // Pass true as the second argument to replace existing query parameters
+     * w = w.query("c=3&d=4", true) // url is now http://example.com?c=3&d=4
      * ```
      *
      * @param qp An object which will be converted, or a string which will be used verbatim.
      */
-    query(qp: object | string) {
-        return this.selfFactory({ url: appendQueryParams(this._url, qp) })
+    query(qp: object | string, replace: boolean = false) {
+        return this.selfFactory({ url: appendQueryParams(this._url, qp, replace) })
     }
 
     /**
@@ -248,7 +260,7 @@ export class Wretcher {
 
 // Internal helpers
 
-const appendQueryParams = (url: string, qp: object | string) => {
+const appendQueryParams = (url: string, qp: object | string, replace: boolean) => {
     let queryString
 
     if(typeof qp === "string") {
@@ -265,7 +277,12 @@ const appendQueryParams = (url: string, qp: object | string) => {
         }
         queryString = usp.toString()
     }
-    return `${url.split("?")[0]}?${queryString}`
+
+    const split = url.split("?")
+    if(replace || split.length < 2)
+        return split[0] + "?" + queryString
+
+    return url + "&" + queryString
 }
 
 const convertFormData = (formObject: object) => {

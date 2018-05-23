@@ -302,10 +302,13 @@ describe("Wretch", function() {
         expect(obj2["_url"]).toBe(_URL)
         const obj5 = obj4.query({c: 6, d: [7, 8]})
         expect(obj4["_url"]).toBe(`${_URL}?a=1%21&b=2`)
-        expect(obj5["_url"]).toBe(`${_URL}?c=6&d=7&d=8`)
-        const obj6 = obj5.query('Literal[]=Query&String')
-        expect(obj5["_url"]).toBe(`${_URL}?c=6&d=7&d=8`)
+        expect(obj5["_url"]).toBe(`${_URL}?a=1%21&b=2&c=6&d=7&d=8`)
+        const obj6 = obj5.query("Literal[]=Query&String", true)
+        expect(obj5["_url"]).toBe(`${_URL}?a=1%21&b=2&c=6&d=7&d=8`)
         expect(obj6["_url"]).toBe(`${_URL}?Literal[]=Query&String`)
+        const obj7 = obj5.query("Literal[]=Query&String")
+        expect(obj5["_url"]).toBe(`${_URL}?a=1%21&b=2&c=6&d=7&d=8`)
+        expect(obj7["_url"]).toBe(`${_URL}?a=1%21&b=2&c=6&d=7&d=8&Literal[]=Query&String`)
     })
 
     it("should set the Accept header", async function() {

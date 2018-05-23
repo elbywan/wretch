@@ -285,9 +285,12 @@ await blogs.url(`/${id}`).delete().res()
 const noMoreBlogs = blogs.url("http://mywebsite.org/", true)
 ```
 
-#### query(qp: object | string)
+#### query(qp: object | string, replace: boolean)
 
-Converts a javascript object to query parameters, then appends this query string to the current url. String values are used as the query string verbatim.
+Converts a javascript object to query parameters, then appends this query string to the current url.
+String values are used as the query string verbatim.
+
+Pass `true` as the second argument to replace existing query parameters.
 
 ```js
 let w = wretch("http://example.com")
@@ -295,9 +298,11 @@ let w = wretch("http://example.com")
 w = w.query({ a: 1, b: 2 })
 // url is now http://example.com?a=1&b=2
 w = w.query({ c: 3, d: [4, 5] })
-// url is now http://example.com?c=3&d=4&d=5
+// url is now http://example.com?a=1&b=2c=3&d=4&d=5
 w = w.query("five&six&seven=eight")
-// url is now http://example.com?five&six&seven=eight
+// url is now http://example.com?a=1&b=2c=3&d=4&d=5&five&six&seven=eight
+w = w.query({ reset: true }, true)
+// url is now  http://example.com?reset=true
 ```
 
 #### options(options: Object, mixin: boolean = true)
