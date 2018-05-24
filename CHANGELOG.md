@@ -1,6 +1,33 @@
+<a name="1.2.0"></a>
+# [1.2.0](https://github.com/elbywan/wretch/compare/1.1.2...1.2.0) (2018-05-24)
+
+
+### :arrow_up: Version update(s)
+
+* 1.2.0 tag ([504b10b](https://github.com/elbywan/wretch/commit/504b10b))
+
+### :factory: New feature(s)
+
+* Accept string argument in .query() #20 ([b53cca3](https://github.com/elbywan/wretch/commit/b53cca3)), closes [#20](https://github.com/elbywan/wretch/issues/20)
+
+### :fire: Breaking change(s)
+
+* Make .query() chainable #20 ([1a6a7c8](https://github.com/elbywan/wretch/commit/1a6a7c8)), closes [#20](https://github.com/elbywan/wretch/issues/20)
+
+### :white_check_mark: Test improvement(s)
+
+* Add more node.js versions used by the travis CI ([7d6d779](https://github.com/elbywan/wretch/commit/7d6d779))
+* Fixes for node.js v10 ([0dcba96](https://github.com/elbywan/wretch/commit/0dcba96))
+
+
+
 <a name="1.1.2"></a>
 ## [1.1.2](https://github.com/elbywan/wretch/compare/1.1.1...1.1.2) (2018-03-07)
 
+
+### :arrow_up: Version update(s)
+
+* 1.1.2 tag ([f4e9ffe](https://github.com/elbywan/wretch/commit/f4e9ffe))
 
 ### :art: Code improvement(s)
 

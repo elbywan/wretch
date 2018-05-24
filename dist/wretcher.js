@@ -110,9 +110,9 @@ var Wretcher = /** @class */ (function () {
      *
      * @param qp An object which will be converted, or a string which will be used verbatim.
      */
-    Wretcher.prototype.query = function (qp, clear) {
-        if (clear === void 0) { clear = false; }
-        return this.selfFactory({ url: appendQueryParams(this._url, qp, clear) });
+    Wretcher.prototype.query = function (qp, replace) {
+        if (replace === void 0) { replace = false; }
+        return this.selfFactory({ url: appendQueryParams(this._url, qp, replace) });
     };
     /**
      * Set request headers.
@@ -264,7 +264,7 @@ var Wretcher = /** @class */ (function () {
 }());
 export { Wretcher };
 // Internal helpers
-var appendQueryParams = function (url, qp, clear) {
+var appendQueryParams = function (url, qp, replace) {
     var queryString;
     if (typeof qp === "string") {
         queryString = qp;
@@ -285,7 +285,7 @@ var appendQueryParams = function (url, qp, clear) {
         queryString = usp.toString();
     }
     var split = url.split("?");
-    if (clear || split.length < 2)
+    if (replace || split.length < 2)
         return split[0] + "?" + queryString;
     return url + "&" + queryString;
 };

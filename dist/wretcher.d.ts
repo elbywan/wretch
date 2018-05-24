@@ -71,7 +71,7 @@ export declare class Wretcher {
      *
      * @param qp An object which will be converted, or a string which will be used verbatim.
      */
-    query(qp: object | string, clear?: boolean): Wretcher;
+    query(qp: object | string, replace?: boolean): Wretcher;
     /**
      * Set request headers.
      * @param headerValues An object containing header keys and values
