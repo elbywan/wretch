@@ -19,7 +19,9 @@
 
 <br>
 
-##### Wretch 1.0 is now live 🎉 ! Please check out the [changelog](https://github.com/elbywan/wretch/blob/master/CHANGELOG.md) after each update for new features and breaking changes. If you want to try out the hot stuff, look at the [dev](https://github.com/elbywan/wretch/tree/dev) branch.
+##### Wretch 1.2 is now live 🎉 ! Please check out the [changelog](https://github.com/elbywan/wretch/blob/master/CHANGELOG.md) after each update for new features and breaking changes. If you want to try out the hot stuff, look at the [dev](https://github.com/elbywan/wretch/tree/dev) branch.
+
+##### A collection of middlewares is available through the [wretch-middlewares](https://github.com/elbywan/wretch-middlewares) package! 📦
 
 # Table of Contents
 
@@ -897,6 +899,11 @@ wretch().polyfills({
 Middlewares are functions that can intercept requests before being processed by Fetch.
 Wretch includes a helper to help replicate the [middleware](http://expressjs.com/en/guide/using-middleware.html) style.
 
+
+#### Middlewares package
+
+Check out [wretch-middlewares](https://github.com/elbywan/wretch-middlewares), the official collection of middlewares.
+
 #### Signature
 
 Basically a Middleware is a function having the following signature :
@@ -966,8 +973,8 @@ const cacheMiddleware = (throttle = 0) => {
         return Promise.resolve(cache.get(key).clone())
       // If the request in already in-flight, wait until it is resolved
       else if(inflight.has(key)) {
-        return new Promise(resolve => {
-          inflight.get(key).push(resolve)
+        return new Promise((resolve, reject) => {
+          inflight.get(key).push([resolve, reject])
         })
       }
     }
@@ -988,7 +995,7 @@ const cacheMiddleware = (throttle = 0) => {
         // Add a cloned response to the cache
         cache.set(key, _.clone())
         // Resolve pending promises
-        inflight.get(key).forEach(resolve => resolve(_.clone()))
+        inflight.get(key).forEach((([resolve, reject]) => resolve(_.clone()))
         // Remove the inflight pending promises
         inflight.delete(key)
         // Return the original response
