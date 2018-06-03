@@ -148,6 +148,11 @@ externalApi
 ```sh
 npm i wretch
 ```
+## CDN
+
+```js
+<script src="https://cdn.jsdelivr.net/npm/wretch@1/dist/bundle/wretch.min.js"></script>
+```
 
 ## Clone
 
