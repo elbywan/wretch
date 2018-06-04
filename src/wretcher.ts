@@ -72,7 +72,7 @@ export class Wretcher {
         const split = this._url.split("?")
         return this.selfFactory({
             url: split.length > 1 ?
-                split[0] + url + split[1] :
+                split[0] + url + "?" + split[1] :
                 this._url + url
         })
     }
