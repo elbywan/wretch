@@ -15,15 +15,17 @@ import { resolver } from "./resolver";
  * Immutability : almost every method of this class return a fresh Wretcher object.
  */
 var Wretcher = /** @class */ (function () {
-    function Wretcher(_url, _options, _catchers, _resolvers, _middlewares) {
+    function Wretcher(_url, _options, _catchers, _resolvers, _middlewares, _deferredChain) {
         if (_catchers === void 0) { _catchers = new Map(); }
         if (_resolvers === void 0) { _resolvers = []; }
         if (_middlewares === void 0) { _middlewares = []; }
+        if (_deferredChain === void 0) { _deferredChain = []; }
         this._url = _url;
         this._options = _options;
         this._catchers = _catchers;
         this._resolvers = _resolvers;
         this._middlewares = _middlewares;
+        this._deferredChain = _deferredChain;
     }
     Wretcher.factory = function (url, opts) {
         if (url === void 0) { url = ""; }
@@ -31,8 +33,8 @@ var Wretcher = /** @class */ (function () {
         return new Wretcher(url, opts);
     };
     Wretcher.prototype.selfFactory = function (_a) {
-        var _b = _a === void 0 ? {} : _a, _c = _b.url, url = _c === void 0 ? this._url : _c, _d = _b.options, options = _d === void 0 ? this._options : _d, _e = _b.catchers, catchers = _e === void 0 ? this._catchers : _e, _f = _b.resolvers, resolvers = _f === void 0 ? this._resolvers : _f, _g = _b.middlewares, middlewares = _g === void 0 ? this._middlewares : _g;
-        return new Wretcher(url, options, catchers, resolvers, middlewares);
+        var _b = _a === void 0 ? {} : _a, _c = _b.url, url = _c === void 0 ? this._url : _c, _d = _b.options, options = _d === void 0 ? this._options : _d, _e = _b.catchers, catchers = _e === void 0 ? this._catchers : _e, _f = _b.resolvers, resolvers = _f === void 0 ? this._resolvers : _f, _g = _b.middlewares, middlewares = _g === void 0 ? this._middlewares : _g, _h = _b.deferredChain, deferredChain = _h === void 0 ? this._deferredChain : _h;
+        return new Wretcher(url, options, catchers, resolvers, middlewares, deferredChain);
     };
     /**
      * Sets the default fetch options used for every subsequent fetch call.
@@ -78,7 +80,7 @@ var Wretcher = /** @class */ (function () {
         var split = this._url.split("?");
         return this.selfFactory({
             url: split.length > 1 ?
-                split[0] + url + split[1] :
+                split[0] + url + "?" + split[1] :
                 this._url + url
         });
     };
@@ -168,6 +170,15 @@ var Wretcher = /** @class */ (function () {
         return this.selfFactory({ resolvers: clear ? [doResolve] : this._resolvers.concat([doResolve]) });
     };
     /**
+     * Defer wretcher methods that will be chained and called just before the request is performed.
+     */
+    Wretcher.prototype.defer = function (callback, clear) {
+        if (clear === void 0) { clear = false; }
+        return this.selfFactory({
+            deferredChain: clear ? [callback] : this._deferredChain.concat([callback])
+        });
+    };
+    /**
      * Add middlewares to intercept a request before being sent.
      */
     Wretcher.prototype.middlewares = function (middlewares, clear) {
@@ -177,7 +188,8 @@ var Wretcher = /** @class */ (function () {
         });
     };
     Wretcher.prototype.method = function (method, opts) {
-        return resolver(this.options(__assign({}, opts, { method: method })));
+        var deferredWretcher = this._deferredChain.reduce(function (acc, curr) { return curr(acc, acc._url, acc._options); }, this);
+        return resolver(deferredWretcher.options(__assign({}, opts, { method: method })));
     };
     /**
      * Performs a get request.

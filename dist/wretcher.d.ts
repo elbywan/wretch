@@ -4,6 +4,7 @@ import { ConfiguredMiddleware } from "./middleware";
 export declare type WretcherOptions = RequestInit & {
     [key: string]: any;
 };
+export declare type DeferredCallback = (wretcher: Wretcher, url: string, options: WretcherOptions) => Wretcher;
 /**
  * The Wretcher class used to perform easy fetch requests.
  *
@@ -15,9 +16,10 @@ export declare class Wretcher {
     _catchers: Map<number | string, (error: WretcherError, originalRequest: Wretcher) => void>;
     _resolvers: Array<(resolver: ResponseChain, originalRequest: Wretcher) => any>;
     _middlewares: ConfiguredMiddleware[];
-    protected constructor(_url: string, _options: WretcherOptions, _catchers?: Map<number | string, (error: WretcherError, originalRequest: Wretcher) => void>, _resolvers?: Array<(resolver: ResponseChain, originalRequest: Wretcher) => any>, _middlewares?: ConfiguredMiddleware[]);
+    _deferredChain: DeferredCallback[];
+    protected constructor(_url: string, _options: WretcherOptions, _catchers?: Map<number | string, (error: WretcherError, originalRequest: Wretcher) => void>, _resolvers?: Array<(resolver: ResponseChain, originalRequest: Wretcher) => any>, _middlewares?: ConfiguredMiddleware[], _deferredChain?: DeferredCallback[]);
     static factory(url?: string, opts?: WretcherOptions): Wretcher;
-    private selfFactory({url, options, catchers, resolvers, middlewares}?);
+    private selfFactory({url, options, catchers, resolvers, middlewares, deferredChain}?);
     /**
      * Sets the default fetch options used for every subsequent fetch call.
      * @param opts New default options
@@ -110,6 +112,10 @@ export declare class Wretcher {
      * @param doResolve : Resolver callback
      */
     resolve(doResolve: (chain: ResponseChain, originalRequest: Wretcher) => ResponseChain | Promise<any>, clear?: boolean): Wretcher;
+    /**
+     * Defer wretcher methods that will be chained and called just before the request is performed.
+     */
+    defer(callback: DeferredCallback, clear?: boolean): Wretcher;
     /**
      * Add middlewares to intercept a request before being sent.
      */

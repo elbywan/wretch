@@ -7,6 +7,8 @@ export type WretcherOptions = RequestInit & {
     [key: string]: any
 }
 
+export type DeferredCallback = (wretcher: Wretcher, url: string, options: WretcherOptions) => Wretcher
+
 /**
  * The Wretcher class used to perform easy fetch requests.
  *
@@ -19,12 +21,13 @@ export class Wretcher {
         public _options: WretcherOptions,
         public _catchers: Map<number | string, (error: WretcherError, originalRequest: Wretcher) => void> = new Map(),
         public _resolvers: Array<(resolver: ResponseChain, originalRequest: Wretcher) => any> = [],
-        public _middlewares: ConfiguredMiddleware[] = []) {}
+        public _middlewares: ConfiguredMiddleware[] = [],
+        public _deferredChain: DeferredCallback[] = []) {}
 
     static factory(url = "", opts: WretcherOptions = {}) { return new Wretcher(url, opts) }
     private selfFactory({ url = this._url, options = this._options, catchers = this._catchers,
-                resolvers = this._resolvers, middlewares = this._middlewares } = {}) {
-        return new Wretcher(url, options, catchers, resolvers, middlewares)
+                resolvers = this._resolvers, middlewares = this._middlewares, deferredChain = this._deferredChain } = {}) {
+        return new Wretcher(url, options, catchers, resolvers, middlewares, deferredChain)
     }
 
     /**
@@ -169,6 +172,15 @@ export class Wretcher {
     }
 
     /**
+     * Defer wretcher methods that will be chained and called just before the request is performed.
+     */
+    defer(callback: DeferredCallback, clear = false) {
+        return this.selfFactory({
+            deferredChain: clear ? [callback] : [ ...this._deferredChain, callback ]
+        })
+    }
+
+    /**
      * Add middlewares to intercept a request before being sent.
      */
     middlewares(middlewares: ConfiguredMiddleware[], clear = false) {
@@ -178,7 +190,8 @@ export class Wretcher {
     }
 
     private method(method, opts) {
-        return resolver(this.options({ ...opts, method }))
+        const deferredWretcher = this._deferredChain.reduce((acc: Wretcher, curr) => curr(acc, acc._url, acc._options), this)
+        return resolver(deferredWretcher.options({ ...opts, method }))
     }
 
     /**

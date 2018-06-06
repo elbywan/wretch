@@ -26,7 +26,7 @@ const allRoutes = (obj, type, action, opts?) => Promise.all([
 const fetchPolyfill = (timeout = null) =>
     function(url, opts) {
         performance.mark(url + " - begin")
-        const { fetch } = abortableFetch(nodeFetch)
+        const { fetch } = abortableFetch(nodeFetch) as any
         return fetch(url, opts).then(_ => {
             performance.mark(url + " - end")
             const measure = () => performance.measure(_.url, url + " - begin", url + " - end")
@@ -306,9 +306,9 @@ describe("Wretch", function() {
         const obj6 = obj5.query("Literal[]=Query&String", true)
         expect(obj5["_url"]).toBe(`${_URL}?a=1%21&b=2&c=6&d=7&d=8`)
         expect(obj6["_url"]).toBe(`${_URL}?Literal[]=Query&String`)
-        const obj7 = obj5.query("Literal[]=Query&String")
+        const obj7 = obj5.query("Literal[]=Query&String").url("/test")
         expect(obj5["_url"]).toBe(`${_URL}?a=1%21&b=2&c=6&d=7&d=8`)
-        expect(obj7["_url"]).toBe(`${_URL}?a=1%21&b=2&c=6&d=7&d=8&Literal[]=Query&String`)
+        expect(obj7["_url"]).toBe(`${_URL}/test?a=1%21&b=2&c=6&d=7&d=8&Literal[]=Query&String`)
     })
 
     it("should set the Accept header", async function() {
@@ -377,7 +377,7 @@ describe("Wretch", function() {
             count++
         }
 
-        const controller = new AbortController()
+        const controller = new AbortController() as any
         wretch(`${_URL}/longResult`)
             .signal(controller)
             .get()
@@ -455,6 +455,21 @@ describe("Wretch", function() {
         ], true)
 
         expect(await w3.url(_URL).head().text()).toBe(`POST@${_URL}`)
+    })
+
+    it("should chain actions that will be performed just before the request is sent", async function() {
+        const w = wretch(_URL + "/basicauth")
+            .defer((w, url, opts) => {
+                expect(url).toBe(_URL + "/basicauth")
+                return w.auth("toto")
+            })
+            .defer((w, url, { token }) => w.auth(token), true)
+
+        const result = await w
+            .options({ token: "Basic d3JldGNoOnJvY2tz" })
+            .get()
+            .text()
+        expect(result).toBe("ok")
     })
 })
 

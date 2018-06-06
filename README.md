@@ -11,7 +11,7 @@
   <a href="https://github.com/elbywan/wretch/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license-badge" height="20"></a>
 </h1>
 <h4 align="center">
-	A tiny (&lt; 2.4Kb g-zipped) wrapper built around fetch with an intuitive syntax.
+	A tiny (&lt; 2.5Kb g-zipped) wrapper built around fetch with an intuitive syntax.
 </h4>
 <h5 align="center">
     <i>f[ETCH] [WR]apper</i>
@@ -425,6 +425,33 @@ reAuthOn401.url("/resource")
   .get()
   .json() // <- Will only be called for the original promise
   .then(callback) // <- Will be called for the original OR the replayed promise result
+```
+
+#### defer(callback: (originalRequest: Wretcher, url: string, options: Object) => Wretcher, clear = false)
+
+Defer wretcher methods that will be chained and called just before the request is performed.
+
+```js
+/* Small fictional example: deferred authentication */
+
+// If you cannot retrieve the auth token while configuring the wretch object you can use .defer to postpone the call
+const api = wretch("...").defer((w, url, options)  => {
+  // If we are hitting the route /user…
+  if(/\/user/.test(url)) {
+    const { token } = options.context
+    return w.auth(token)
+  }
+  return w
+})
+
+// ... //
+
+const token = await getToken(request.session.user)
+
+// .auth gets called here automatically
+api.options({
+  context: { token }
+}).get().res()
 ```
 
 #### resolve(doResolve: (chain: ResponseChain, originalRequest: Wretcher) => ResponseChain | Promise<any>, clear = false)
