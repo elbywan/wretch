@@ -1,10 +1,33 @@
+<a name="1.3.0"></a>
+# [1.3.0](https://github.com/elbywan/wretch/compare/1.2.0...1.3.0) (2018-06-09)
+
+
+### :bug: Bug fix(es)
+
+* Fix .url call when the url contains query parameters ([e68764f](https://github.com/elbywan/wretch/commit/e68764f))
+
+### :factory: New feature(s)
+
+* Add deferred callback chain. ([10ddfe5](https://github.com/elbywan/wretch/commit/10ddfe5))
+
+### :fire: Breaking change(s)
+
+* Add body argument shorthand to the http methods. ([103cde3](https://github.com/elbywan/wretch/commit/103cde3))
+
+### :memo: Documentation update(s)
+
+* Mention the wretch-middlewares package in the readme ([880c02c](https://github.com/elbywan/wretch/commit/880c02c))
+* Update .query anchor ([b2670d9](https://github.com/elbywan/wretch/commit/b2670d9))
+
+
+
 <a name="1.2.0"></a>
 # [1.2.0](https://github.com/elbywan/wretch/compare/1.1.2...1.2.0) (2018-05-24)
 
 
 ### :arrow_up: Version update(s)
 
-* 1.2.0 tag ([504b10b](https://github.com/elbywan/wretch/commit/504b10b))
+* 1.2.0 tag ([3f067df](https://github.com/elbywan/wretch/commit/3f067df))
 
 ### :factory: New feature(s)
 
