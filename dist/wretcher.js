@@ -27,10 +27,10 @@ var Wretcher = /** @class */ (function () {
         this._middlewares = _middlewares;
         this._deferredChain = _deferredChain;
     }
-    Wretcher.factory = function (url, opts) {
+    Wretcher.factory = function (url, options) {
         if (url === void 0) { url = ""; }
-        if (opts === void 0) { opts = {}; }
-        return new Wretcher(url, opts);
+        if (options === void 0) { options = {}; }
+        return new Wretcher(url, options);
     };
     Wretcher.prototype.selfFactory = function (_a) {
         var _b = _a === void 0 ? {} : _a, _c = _b.url, url = _c === void 0 ? this._url : _c, _d = _b.options, options = _d === void 0 ? this._options : _d, _e = _b.catchers, catchers = _e === void 0 ? this._catchers : _e, _f = _b.resolvers, resolvers = _f === void 0 ? this._resolvers : _f, _g = _b.middlewares, middlewares = _g === void 0 ? this._middlewares : _g, _h = _b.deferredChain, deferredChain = _h === void 0 ? this._deferredChain : _h;
@@ -38,12 +38,12 @@ var Wretcher = /** @class */ (function () {
     };
     /**
      * Sets the default fetch options used for every subsequent fetch call.
-     * @param opts New default options
+     * @param options New default options
      * @param mixin If true, mixes in instead of replacing the existing options
      */
-    Wretcher.prototype.defaults = function (opts, mixin) {
+    Wretcher.prototype.defaults = function (options, mixin) {
         if (mixin === void 0) { mixin = false; }
-        conf.defaults = mixin ? mix(conf.defaults, opts) : opts;
+        conf.defaults = mixin ? mix(conf.defaults, options) : options;
         return this;
     };
     /**
@@ -187,58 +187,56 @@ var Wretcher = /** @class */ (function () {
             middlewares: clear ? middlewares : this._middlewares.concat(middlewares)
         });
     };
-    Wretcher.prototype.method = function (method, opts) {
-        var deferredWretcher = this._deferredChain.reduce(function (acc, curr) { return curr(acc, acc._url, acc._options); }, this);
-        return resolver(deferredWretcher.options(__assign({}, opts, { method: method })));
+    Wretcher.prototype.method = function (method, options, body) {
+        if (options === void 0) { options = {}; }
+        if (body === void 0) { body = null; }
+        var baseWretcher = !body ? this :
+            typeof body === "object" ? this.json(body) :
+                this.body(body);
+        var deferredWretcher = baseWretcher._deferredChain.reduce(function (acc, curr) { return curr(acc, acc._url, acc._options); }, baseWretcher);
+        return resolver(deferredWretcher.options(__assign({}, options, { method: method })));
     };
     /**
      * Performs a get request.
      */
-    Wretcher.prototype.get = function (opts) {
-        if (opts === void 0) { opts = {}; }
-        return this.method("GET", opts);
+    Wretcher.prototype.get = function (options) {
+        return this.method("GET", options);
     };
     /**
      * Performs a delete request.
      */
-    Wretcher.prototype.delete = function (opts) {
-        if (opts === void 0) { opts = {}; }
-        return this.method("DELETE", opts);
+    Wretcher.prototype.delete = function (options) {
+        return this.method("DELETE", options);
     };
     /**
      * Performs a put request.
      */
-    Wretcher.prototype.put = function (opts) {
-        if (opts === void 0) { opts = {}; }
-        return this.method("PUT", opts);
+    Wretcher.prototype.put = function (body, options) {
+        return this.method("PUT", options, body);
     };
     /**
      * Performs a post request.
      */
-    Wretcher.prototype.post = function (opts) {
-        if (opts === void 0) { opts = {}; }
-        return this.method("POST", opts);
+    Wretcher.prototype.post = function (body, options) {
+        return this.method("POST", options, body);
     };
     /**
      * Performs a patch request.
      */
-    Wretcher.prototype.patch = function (opts) {
-        if (opts === void 0) { opts = {}; }
-        return this.method("PATCH", opts);
+    Wretcher.prototype.patch = function (body, options) {
+        return this.method("PATCH", options, body);
     };
     /**
      * Performs a head request.
      */
-    Wretcher.prototype.head = function (opts) {
-        if (opts === void 0) { opts = {}; }
-        return this.method("HEAD", opts);
+    Wretcher.prototype.head = function (options) {
+        return this.method("HEAD", options);
     };
     /**
      * Performs an options request
      */
-    Wretcher.prototype.opts = function (opts) {
-        if (opts === void 0) { opts = {}; }
-        return this.method("OPTIONS", opts);
+    Wretcher.prototype.opts = function (options) {
+        return this.method("OPTIONS", options);
     };
     /**
      * Sets the request body with any content.

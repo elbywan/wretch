@@ -42,24 +42,39 @@ const mockServer = {
         setupErrors(server)
 
         server.post("/text/roundTrip", (req,res) => {
-            if(req.header("content-type") === "text/plain")
-                res.sendRaw(req.body)
-            else
+            try {
+                if(req.header("content-type") === "text/plain")
+                    res.sendRaw(req.body)
+                else
+                    res.send(400)
+            } catch(error) {
+                console.error(error)
                 res.send(400)
+            }
         })
 
         server.post("/json/roundTrip", (req, res) => {
-            if(req.header("content-type") === "application/json")
-                res.json(req.body)
-            else
+            try {
+                if(req.header("content-type") === "application/json")
+                    res.json(req.body)
+                else
+                    res.send(400)
+            } catch(error) {
+                console.error(error)
                 res.send(400)
+            }
         })
 
         server.post("/urlencoded/roundTrip", (req, res) => {
-            if(req.header("content-type") === "application/x-www-form-urlencoded")
-                res.sendRaw(req.body)
-            else
+            try {
+                if(req.header("content-type") === "application/x-www-form-urlencoded")
+                    res.sendRaw(req.body)
+                else
+                    res.send(400)
+            } catch(error) {
+                console.error(error)
                 res.send(400)
+            }
         })
 
         server.post("/formData/decode", (req, res) => {

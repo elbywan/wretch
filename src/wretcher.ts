@@ -24,7 +24,7 @@ export class Wretcher {
         public _middlewares: ConfiguredMiddleware[] = [],
         public _deferredChain: DeferredCallback[] = []) {}
 
-    static factory(url = "", opts: WretcherOptions = {}) { return new Wretcher(url, opts) }
+    static factory(url = "", options: WretcherOptions = {}) { return new Wretcher(url, options) }
     private selfFactory({ url = this._url, options = this._options, catchers = this._catchers,
                 resolvers = this._resolvers, middlewares = this._middlewares, deferredChain = this._deferredChain } = {}) {
         return new Wretcher(url, options, catchers, resolvers, middlewares, deferredChain)
@@ -32,11 +32,11 @@ export class Wretcher {
 
     /**
      * Sets the default fetch options used for every subsequent fetch call.
-     * @param opts New default options
+     * @param options New default options
      * @param mixin If true, mixes in instead of replacing the existing options
      */
-    defaults(opts: WretcherOptions, mixin = false) {
-        conf.defaults = mixin ? mix(conf.defaults, opts) : opts
+    defaults(options: WretcherOptions, mixin = false) {
+        conf.defaults = mixin ? mix(conf.defaults, options) : options
         return this
     }
 
@@ -189,52 +189,56 @@ export class Wretcher {
         })
     }
 
-    private method(method, opts) {
-        const deferredWretcher = this._deferredChain.reduce((acc: Wretcher, curr) => curr(acc, acc._url, acc._options), this)
-        return resolver(deferredWretcher.options({ ...opts, method }))
+    private method(method, options = {}, body = null) {
+        const baseWretcher =
+            !body ? this :
+            typeof body === "object" ? this.json(body) :
+            this.body(body)
+        const deferredWretcher = baseWretcher._deferredChain.reduce((acc: Wretcher, curr) => curr(acc, acc._url, acc._options), baseWretcher)
+        return resolver(deferredWretcher.options({ ...options, method }))
     }
 
     /**
      * Performs a get request.
      */
-    get(opts = {}) {
-        return this.method("GET", opts)
+    get(options?) {
+        return this.method("GET", options)
     }
     /**
      * Performs a delete request.
      */
-    delete(opts = {}) {
-        return this.method("DELETE", opts)
+    delete(options?) {
+        return this.method("DELETE", options)
     }
     /**
      * Performs a put request.
      */
-    put(opts = {}) {
-        return this.method("PUT", opts)
+    put(body?, options?) {
+        return this.method("PUT", options, body)
     }
     /**
      * Performs a post request.
      */
-    post(opts = {}) {
-        return this.method("POST", opts)
+    post(body?, options?) {
+        return this.method("POST", options, body)
     }
     /**
      * Performs a patch request.
      */
-    patch(opts = {}) {
-        return this.method("PATCH", opts)
+    patch(body?, options?) {
+        return this.method("PATCH", options, body)
     }
     /**
      * Performs a head request.
      */
-    head(opts = {}) {
-        return this.method("HEAD", opts)
+    head(options?) {
+        return this.method("HEAD", options)
     }
     /**
      * Performs an options request
      */
-    opts(opts = {}) {
-        return this.method("OPTIONS", opts)
+    opts(options?) {
+        return this.method("OPTIONS", options)
     }
 
     /**

@@ -18,14 +18,14 @@ export declare class Wretcher {
     _middlewares: ConfiguredMiddleware[];
     _deferredChain: DeferredCallback[];
     protected constructor(_url: string, _options: WretcherOptions, _catchers?: Map<number | string, (error: WretcherError, originalRequest: Wretcher) => void>, _resolvers?: Array<(resolver: ResponseChain, originalRequest: Wretcher) => any>, _middlewares?: ConfiguredMiddleware[], _deferredChain?: DeferredCallback[]);
-    static factory(url?: string, opts?: WretcherOptions): Wretcher;
+    static factory(url?: string, options?: WretcherOptions): Wretcher;
     private selfFactory({url, options, catchers, resolvers, middlewares, deferredChain}?);
     /**
      * Sets the default fetch options used for every subsequent fetch call.
-     * @param opts New default options
+     * @param options New default options
      * @param mixin If true, mixes in instead of replacing the existing options
      */
-    defaults(opts: WretcherOptions, mixin?: boolean): this;
+    defaults(options: WretcherOptions, mixin?: boolean): this;
     /**
      * Sets the method (text, json ...) used to parse the data contained in the response body in case of an HTTP error.
      *
@@ -120,35 +120,35 @@ export declare class Wretcher {
      * Add middlewares to intercept a request before being sent.
      */
     middlewares(middlewares: ConfiguredMiddleware[], clear?: boolean): Wretcher;
-    private method(method, opts);
+    private method(method, options?, body?);
     /**
      * Performs a get request.
      */
-    get(opts?: {}): ResponseChain & Promise<any>;
+    get(options?: any): ResponseChain & Promise<any>;
     /**
      * Performs a delete request.
      */
-    delete(opts?: {}): ResponseChain & Promise<any>;
+    delete(options?: any): ResponseChain & Promise<any>;
     /**
      * Performs a put request.
      */
-    put(opts?: {}): ResponseChain & Promise<any>;
+    put(body?: any, options?: any): ResponseChain & Promise<any>;
     /**
      * Performs a post request.
      */
-    post(opts?: {}): ResponseChain & Promise<any>;
+    post(body?: any, options?: any): ResponseChain & Promise<any>;
     /**
      * Performs a patch request.
      */
-    patch(opts?: {}): ResponseChain & Promise<any>;
+    patch(body?: any, options?: any): ResponseChain & Promise<any>;
     /**
      * Performs a head request.
      */
-    head(opts?: {}): ResponseChain & Promise<any>;
+    head(options?: any): ResponseChain & Promise<any>;
     /**
      * Performs an options request
      */
-    opts(opts?: {}): ResponseChain & Promise<any>;
+    opts(options?: any): ResponseChain & Promise<any>;
     /**
      * Sets the request body with any content.
      * @param contents The body contents

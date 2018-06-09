@@ -15,11 +15,11 @@ const mockServer = require("./mock")
 const _PORT = 9876
 const _URL = `http://localhost:${_PORT}`
 
-const allRoutes = (obj, type, action, opts?) => Promise.all([
+const allRoutes = (obj, type, action, opts?, body?) => Promise.all([
     obj.get(opts)[type](_ => _).then(action),
-    obj.put(opts)[type](action),
-    obj.patch(opts)[type](action),
-    obj.post(opts)[type](action),
+    obj.put(body, opts)[type](action),
+    obj.patch(body, opts)[type](action),
+    obj.post(body, opts)[type](action),
     obj.delete(opts)[type](action),
 ])
 
@@ -81,21 +81,21 @@ describe("Wretch", function() {
         const init = wretch(`${_URL}/text`)
         const test = _ => expect(_).toBe("A text string")
         await allRoutes(init, "text", test)
-        await allRoutes(init, "text", test, {})
+        await allRoutes(init, "text", test, {}, {})
     })
 
     it("should perform crud requests and parse a json response", async function() {
         const test = _ => expect(_).toEqual({ a: "json", object: "which", is: "stringified" })
         const init = wretch(`${_URL}/json`)
         await allRoutes(init, "json", test)
-        await allRoutes(init, "json", test, {})
+        await allRoutes(init, "json", test, {}, {})
     })
 
     it("should perform crud requests and parse a blob response", async function() {
         const test = _ => expect(_.size).toBe(duckImage.length)
         const init = wretch(`${_URL}/blob`)
         await allRoutes(init, "blob", test)
-        await allRoutes(init, "blob", test, {})
+        await allRoutes(init, "blob", test, {}, {})
     })
 
     it("should perform crud requests and parse an arrayBuffer response", async function() {
@@ -116,12 +116,18 @@ describe("Wretch", function() {
         const text = "hello, server !"
         const roundTrip = await wretch(`${_URL}/text/roundTrip`).content("text/plain").body(text).post().text()
         expect(roundTrip).toBe(text)
+        // Using shorthand
+        const roundTrip2 = await wretch(`${_URL}/text/roundTrip`).content("text/plain").post(text).text()
+        expect(roundTrip2).toBe(text)
     })
 
     it("should perform a json round trip", async function() {
         const jsonObject = { a: 1, b: 2, c: 3 }
         const roundTrip = await wretch(`${_URL}/json/roundTrip`).json(jsonObject).post().json()
         expect(roundTrip).toEqual(jsonObject)
+        // Using shorthand
+        const roundTrip2 = await wretch(`${_URL}/json/roundTrip`).post(jsonObject).json()
+        expect(roundTrip2).toEqual(jsonObject)
     })
 
     it("should perform an url encoded form data round trip", async function() {

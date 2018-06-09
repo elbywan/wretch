@@ -105,15 +105,14 @@ fetch("endpoint", {
 // With wretch, you have shorthands at your disposal
 
 wretch("endpoint")
-  .json({ "hello": "world" })
-  .post()
+  .post({ "hello": "world" })
   .res(response => /* ... */)
 ```
 
 #### Because configuration should not rhyme with repetition.
 
 ```javascript
-// Wretch is immutable which means that you can configure, store and reuse wretch instances
+// Wretch object is immutable which means that you can configure, store and reuse instances
 
 // Cross origin authenticated requests on an external API
 const externalApi = wretch()
@@ -136,8 +135,7 @@ externalApi
 // Post a resource
 externalApi
   .url("/resource")
-  .json({ "Shiny new": "resource object" })
-  .post()
+  .post({ "Shiny new": "resource object" })
   .json(handleNewResourceResult)
 ```
 
@@ -277,7 +275,7 @@ wretch().url("...").get().json(/* ... */)
 const blogs = wretch("http://mywebsite.org/api/blogs")
 
 // Perfect for CRUD apis
-const id = await blogs.json({ name: "my blog" }).post().json(_ => _.id)
+const id = await blogs.post({ name: "my blog" }).json(_ => _.id)
 const blog = await blogs.url(`/${id}`).get().json()
 console.log(blog.name)
 
@@ -361,8 +359,7 @@ Sets the request headers.
 ```js
 wretch("...")
   .headers({ "Content-Type": "text/plain", Accept: "application/json" })
-  .body("my text")
-  .post()
+  .post("my text")
   .json()
 ```
 
@@ -551,6 +548,8 @@ Sets the request body with any content.
 
 ```js
 wretch("...").body("hello").put()
+// Note that calling an 'http verb' method with the body as an argument is equivalent:
+wretch("...").put("hello")
 ```
 
 #### json(jsObject: Object)
@@ -560,6 +559,9 @@ Sets the content type header, stringifies an object and sets the request body.
 ```js
 const jsonObject = { a: 1, b: 2, c: 3 }
 wretch("...").json(jsonObject).post()
+// Note that calling an 'http verb' method with the object body as an argument is equivalent:
+wretch("...").post(jsonObject)
+
 ```
 
 #### formData(formObject: Object)
@@ -574,7 +576,7 @@ const form = {
 wretch("...").formData(form).post()
 ```
 
-#### formUrl(input : Object | string)
+#### formUrl(input: Object | string)
 
 Converts the input parameter to an url encoded string and sets the content-type header and body.
 If the input argument is already a string, skips the conversion part.
@@ -592,64 +594,71 @@ wretch("...").formUrl(alreadyEncodedForm).post()
 
 **Required**
 
-*You can pass the fetch options here if you prefer.*
+*You can pass optional fetch options and body arguments to these methods as a shorthand.*
 
-| [get](#getopts--) | [delete](#deleteopts--) | [put](#putopts--) | [patch](#patchopts--) | [post](#postopts--) | [head](#headopts--) | [opts](#optsopts--) |
+```js
+// This shorthand:
+wretch().post({ json: 'body' }, { credentials: "same-origin" })
+// Is equivalent to:
+wretch().json({ json: 'body'}).options({ credentials: "same-origin" }).post()
+```
+
+| [get](#getopts) | [delete](#deleteopts) | [put](#putbody-opts) | [patch](#patchbody-opts) | [post](#postbody-opts) | [head](#headopts) | [opts](#optsopts) |
 |-----|-----|-----|-----|-----|-----|-----|
 
-#### get(opts = {})
+#### get(options)
 
 Performs a get request.
 
 ```js
-wretch("...").get({ credentials: "same-origin" })
+wretch("...").get()
 ```
 
-#### delete(opts = {})
+#### delete(options)
 
 Performs a delete request.
 
 ```js
-wretch("...").delete({ credentials: "same-origin" })
+wretch("...").delete()
 ```
 
-#### put(opts = {})
+#### put(body, options)
 
 Performs a put request.
 
 ```js
-wretch("...").json({...}).put({ credentials: "same-origin" })
+wretch("...").json({...}).put()
 ```
 
-#### patch(opts = {})
+#### patch(body, options)
 
 Performs a patch request.
 
 ```js
-wretch("...").json({...}).patch({ credentials: "same-origin" })
+wretch("...").json({...}).patch()
 ```
 
-#### post(opts = {})
+#### post(body, options)
 
 Performs a post request.
 
 ```js
-wretch("...").json({...}).post({ credentials: "same-origin" })
+wretch("...").json({...}).post()
 ```
 
-#### head(opts = {})
+#### head(options)
 
 Performs a head request.
 
 ```js
-wretch("...").head({ credentials: "same-origin" })
+wretch("...").head()
 ```
-#### opts(opts = {})
+#### opts(options)
 
 Performs an options request.
 
 ```js
-wretch("...").opts({ credentials: "same-origin" })
+wretch("...").opts()
 ```
 
 ## Catchers
@@ -1060,7 +1069,6 @@ for(let i = 0; i < 10; i++) {
   printResource(resourceUrl, 500)
   printResource(resourceUrl, 1500)
 }
-
 ```
 
 # License
