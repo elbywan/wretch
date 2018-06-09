@@ -29,7 +29,8 @@
         "fix": "tslint --fix -p tsconfig.json -t codeFrame",
         "prebuild": "rimraf dist && rimraf coverage && npm run lint",
         "build": "tsc -p . && rollup -c",
-        "test": "jest",
+        "mock": "node scripts/mockServer.js",
+        "test": "concurrently --success first -k jest \"npm run mock\"",
         "coverage": "cat ./coverage/lcov.info | coveralls",
         "changelog": "conventional-changelog -p wretch -i CHANGELOG.md -s -r 0"
     },
@@ -39,6 +40,7 @@
         "@types/jest": "^22.2.3",
         "@types/node": "^10.1.2",
         "abortcontroller-polyfill": "^1.1.9",
+        "concurrently": "^3.5.1",
         "conventional-changelog-cli": "^1.3.22",
         "conventional-changelog-wretch": "file:scripts/conventional-changelog-wretch",
         "coveralls": "^3.0.1",

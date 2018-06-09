@@ -43,13 +43,13 @@ const duckImage = fs.readFileSync(path.resolve(__dirname, "assets", "duck.jpg"))
 
 describe("Wretch", function() {
 
-    beforeAll(function() {
-        mockServer.launch(_PORT)
-    })
+    // beforeAll(function() {
+    //     mockServer.launch(_PORT)
+    // })
 
-    afterAll(function() {
-        mockServer.stop()
-    })
+    // afterAll(function() {
+    //     mockServer.stop()
+    // })
 
     it("should set and use non global polyfills", async function() {
         global["FormData"] = null
