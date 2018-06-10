@@ -1,21 +1,7 @@
-import nodeFetch from "node-fetch"
-import * as FormData from "form-data"
-import { AbortController, abortableFetch } from "abortcontroller-polyfill/dist/cjs-ponyfill"
-import * as fs from "fs"
-import { URLSearchParams } from "url"
-import * as path from "path"
-import wretch from "../src"
-import { mix } from "../src/mix"
-
-const { performance, PerformanceObserver } = require("perf_hooks")
-// tslint:disable-next-line:no-empty
-performance.clearResourceTimings = () => {}
-const mockServer = require("./mock")
-
 const _PORT = 9876
-const _URL = `http://localhost:${_PORT}`
+const _URL = 'http://localhost:' + _PORT
 
-const allRoutes = (obj, type, action, opts?, body?) => Promise.all([
+const allRoutes = (obj, type, action, opts, body) => Promise.all([
     obj.get(opts)[type](_ => _).then(action),
     obj.put(body, opts)[type](action),
     obj.patch(body, opts)[type](action),
@@ -23,59 +9,11 @@ const allRoutes = (obj, type, action, opts?, body?) => Promise.all([
     obj.delete(opts)[type](action),
 ])
 
-const fetchPolyfill = (timeout = null) =>
-    function(url, opts) {
-        performance.mark(url + " - begin")
-        const { fetch } = abortableFetch(nodeFetch) as any
-        return fetch(url, opts).then(_ => {
-            performance.mark(url + " - end")
-            const measure = () => performance.measure(_.url, url + " - begin", url + " - end")
-            performance.clearMarks(url + " - begin")
-            if(timeout)
-                setTimeout(measure, timeout)
-            else
-                measure()
-            return _
-        })
-    }
-
-const duckImage = fs.readFileSync(path.resolve(__dirname, "assets", "duck.jpg"))
+const isSafari =
+    navigator.userAgent.indexOf('Safari') >= 0 &&
+    navigator.userAgent.indexOf('Chrome') < 0
 
 describe("Wretch", function() {
-
-    // beforeAll(function() {
-    //     mockServer.launch(_PORT)
-    // })
-
-    // afterAll(function() {
-    //     mockServer.stop()
-    // })
-
-    it("should set and use non global polyfills", async function() {
-        global["FormData"] = null
-        global["URLSearchParams"] = null
-
-        expect(() => wretch("...").query({ a: 1, b: 2 })).toThrow("URLSearchParams is not defined")
-        expect(() => wretch("...").formData({ a: 1, b: 2 })).toThrow("FormData is not defined")
-        expect(() => wretch("...").get("...")).toThrow("fetch is not defined")
-
-        wretch().polyfills({
-            fetch: fetchPolyfill(),
-            FormData,
-            URLSearchParams
-        })
-
-        await wretch(`${_URL}/text`).get().perfs(_ => fail("should never be called")).res()
-
-        wretch(null, null).polyfills({
-            fetch: fetchPolyfill(),
-            FormData,
-            URLSearchParams,
-            performance,
-            PerformanceObserver,
-            AbortController
-        })
-    })
 
     it("should perform crud requests and parse a text response", async function() {
         const init = wretch(`${_URL}/text`)
@@ -92,20 +30,26 @@ describe("Wretch", function() {
     })
 
     it("should perform crud requests and parse a blob response", async function() {
-        const test = _ => expect(_.size).toBe(duckImage.length)
+        const test = _ => expect(_.size).toBe(58921)
         const init = wretch(`${_URL}/blob`)
         await allRoutes(init, "blob", test)
         await allRoutes(init, "blob", test, {}, {})
     })
 
     it("should perform crud requests and parse an arrayBuffer response", async function() {
-        const test = arrayBuffer => {
-            const buffer = new Buffer(arrayBuffer.byteLength)
-            const view = new Uint8Array(arrayBuffer)
-            for (let i = 0; i < buffer.length; ++i) {
-                buffer[i] = view[i]
+        const compareBuffers = function (buf1, buf2) {
+            if (buf1.byteLength !== buf2.byteLength)
+                return false
+            for (let i = 0; i < buf1.byteLength; i++) {
+                if (buf1[i] != buf2[i])
+                    return false
             }
-            expect(buffer.equals(Buffer.from([ 0x00, 0x01, 0x02, 0x03 ]))).toBe(true)
+            return true
+        }
+        const test = arrayBuffer => {
+            const view = new Uint8Array(arrayBuffer)
+            const test = new Uint8Array([ 0x00, 0x01, 0x02, 0x03 ])
+            expect(compareBuffers(view, test)).toBe(true)
         }
         const init = wretch(`${_URL}/arrayBuffer`)
         await allRoutes(init, "arrayBuffer", test)
@@ -149,9 +93,8 @@ describe("Wretch", function() {
             hello: "world",
             duck: "Muscovy"
         })
-        // form-data package has an implementation which differs from the browser standard.
         const f = { arr: [ 1, 2, 3 ]}
-        const d = wretch(`${_URL}/formData/decode`).formData(f).post().json()
+        const d = await wretch(`${_URL}/formData/decode`).formData(f).post().json()
         // expect(d).toEqual({
         //     "arr[]": [1, 2, 3]
         // })
@@ -217,7 +160,7 @@ describe("Wretch", function() {
             .catcher(500, err => check++)
             .catcher(400, err => check++)
             .catcher(401, err => check--)
-            .catcher("FetchError", err => check++)
+            .catcher("SyntaxError", err => check++)
 
         // +1 : 1
         await w.url("/text").get().res(_ => check++)
@@ -272,23 +215,23 @@ describe("Wretch", function() {
         }).res(result => res(!result)))
         expect(rejected).toBeTruthy()
         wretch().defaults({
-            headers: { "X-Custom-Header": "Anything" } as any
+            headers: { "X-Custom-Header": "Anything" }
         })
         rejected = await new Promise(res => wretch(`${_URL}/customHeaders`).get().badRequest(_ => {
             res(true)
         }).res(result => res(!result)))
         expect(rejected).toBeTruthy()
         wretch().defaults({
-            headers: { "X-Custom-Header-2": "Anything" } as any
+            headers: { "X-Custom-Header-2": "Anything" }
         }, true)
         rejected = await new Promise(res => wretch(`${_URL}/customHeaders`).get().badRequest(_ => {
             res(true)
         }).res(result => res(!result)))
-        wretch().defaults("not an object" as any, true)
+        wretch().defaults("not an object", true)
         expect(rejected).toBeTruthy()
         const accepted = await new Promise(res => wretch(`${_URL}/customHeaders`)
-            .options({ headers: { "X-Custom-Header-3" : "Anything" } as any }, false)
-            .options({ headers: { "X-Custom-Header-4" : "Anything" } as any })
+            .options({ headers: { "X-Custom-Header-3" : "Anything" }}, false)
+            .options({ headers: { "X-Custom-Header-4" : "Anything" }})
             .get()
             .badRequest(_ => { res(false) })
             .res(result => res(!!result)))
@@ -300,7 +243,7 @@ describe("Wretch", function() {
         const obj2 = obj1.url(_URL, true)
         expect(obj1["_url"]).toBe("...")
         expect(obj2["_url"]).toBe(_URL)
-        const obj3 = obj1.options({ headers: { "X-test": "test" } as any })
+        const obj3 = obj1.options({ headers: { "X-test": "test" }})
         expect(obj3["_options"]).toEqual({ headers: { "X-test": "test" }})
         expect(obj1["_options"]).toEqual({})
         const obj4 = obj2.query({a: "1!", b: "2"})
@@ -349,33 +292,10 @@ describe("Wretch", function() {
         wretch().errorType("text")
     })
 
-    it("should retrieve performance timings associated with a fetch request", function(done) {
-        wretch().polyfills({
-            fetch: fetchPolyfill(1)
-        })
-        // Test empty perfs()
-        wretch(`${_URL}/text`).get().perfs().res(_ => expect(_.ok).toBeTruthy()).then(
-            // Racing condition : observer triggered before response
-            wretch(`${_URL}/bla`).get().perfs(_ => {
-                expect(typeof _.startTime).toBe("number")
-
-                // Racing condition : response triggered before observer
-                wretch().polyfills({
-                    fetch: fetchPolyfill(1000)
-                })
-
-                wretch(`${_URL}/fakeurl`).get().perfs(_ => {
-                    expect(typeof _.startTime).toBe("number")
-                    wretch().polyfills({
-                        fetch: fetchPolyfill(1)
-                    })
-                    done()
-                }).res().catch(() => "ignore")
-            }).res().catch(_ => "ignore") as any
-        )
-    })
-
     it("should abort a request", function(done) {
+        if(!window.AbortController || isSafari)
+            return done()
+
         let count = 0
 
         const handleError = error => {
@@ -383,7 +303,7 @@ describe("Wretch", function() {
             count++
         }
 
-        const controller = new AbortController() as any
+        const controller = new AbortController()
         wretch(`${_URL}/longResult`)
             .signal(controller)
             .get()
@@ -419,27 +339,45 @@ describe("Wretch", function() {
             .resolve(resolver => resolver
                 .unauthorized(_ => check++), true)
             .resolve(resolver => resolver
-                .perfs(_ => check++)
+                // .perfs(_ => check++)
                 .json(_ => { check++; return _ }))
         const result = await w.url("/json").get()
         await new Promise(res => setTimeout(res, 100))
         expect(result).toEqual({ a: "json", object: "which", is: "stringified" })
-        expect(check).toBe(2)
+        expect(check).toBe(1)
         await w.url("/401").get()
         await new Promise(res => setTimeout(res, 100))
-        expect(check).toBe(4)
+        expect(check).toBe(2)
     })
 
+    // it("should retrieve performance timings associated with a fetch request", async function(done) {
+    //     if(!window.performance || isSafari)
+    //         return done()
+    //     // Test empty perfs()
+    //     await wretch(`${_URL}/text`).get().perfs().res(_ => expect(_.ok).toBeTruthy()).then(() =>
+    //         // Racing condition : observer triggered before response
+    //         wretch(`${_URL}/bla`).get().perfs(_ => {
+    //             expect(typeof _.startTime).toBe("number")
+
+    //             // Racing condition : response triggered before observer
+    //             wretch(`${_URL}/fakeurl`).get().perfs(_ => {
+    //                 expect(typeof _.startTime).toBe("number")
+    //                 done()
+    //             }).res().catch(() => "ignore")
+    //         }).res().catch(_ => "ignore")
+    //     )
+    // })
+
     it("should use middlewares", async function() {
-        const shortCircuit: any = () => next => (url, opts) => Promise.resolve({
+        const shortCircuit = () => next => (url, opts) => Promise.resolve({
             ok: true,
             text: () => Promise.resolve(opts.method + "@" + url)
         })
         const setGetMethod = () => next => (url, opts) => {
-            return next(url, {...opts, method: "GET"})
+            return next(url, Object.assign(opts, { method: "GET" }))
         }
         const setPostMethod = () => next => (url, opts) => {
-            return next(url, {...opts, method: "POST"})
+            return next(url, Object.assign(opts, { method: "POST" }))
         }
         const w = wretch().middlewares([
             shortCircuit()
@@ -477,15 +415,5 @@ describe("Wretch", function() {
             .text()
         expect(result).toBe("ok")
     })
-})
 
-describe("Mix", function() {
-    it("should mix two objects", function() {
-        const obj1 = { a: 1, b: 2, c: [ 3, 4 ] }
-        const obj2proto = { z: 1 }
-        const obj2 = Object.create(obj2proto)
-        Object.assign(obj2, { a: 0, d: 5, e: [6], c: [ 5, 6 ] })
-        expect(mix(obj1, obj2, false)).toEqual({ a: 0, b: 2, c: [ 5, 6 ], d: 5, e: [6] })
-        expect(mix(obj1, obj2, true)).toEqual({ a: 0, b: 2, c: [ 3, 4, 5, 6 ], d: 5, e: [6] })
-    })
 })

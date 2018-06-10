@@ -1,6 +1,13 @@
 const fs = require("fs")
 const path = require("path")
 const restify = require("restify")
+const corsMiddleware = require("restify-cors-middleware")
+
+const cors = corsMiddleware({
+    origins: ["*"],
+    allowHeaders: ["Authorization", "X-Custom-Header", "X-Custom-Header-2", "X-Custom-Header-3", "X-Custom-Header-4"],
+    exposeHeaders: ["Allow", "Timing-Allow-Origin"]
+})
 
 const preload = {
     duck: fs.readFileSync(path.resolve(__dirname, "assets", "duck.jpg"))
@@ -15,6 +22,12 @@ const mockServer = {
         server.use(restify.plugins.jsonBodyParser())
         server.use(restify.plugins.multipartBodyParser())
         server.use(restify.plugins.authorizationParser())
+        server.pre(cors.preflight)
+        server.use(cors.actual)
+        server.pre(function(req, res, next) {
+            res.setHeader("Timing-Allow-Origin", '*')
+            return next()
+        })
 
         setupReplies(server, "text", textReply)
         setupReplies(server, "json", jsonReply)
@@ -108,6 +121,10 @@ const mockServer = {
 
         server.get("/longResult", (req, res) => {
             setTimeout(() => res.sendRaw("ok"), 1000)
+        })
+
+        server.get("/*", (req, res) => {
+            res.json(404, {})
         })
 
         server.listen(port)

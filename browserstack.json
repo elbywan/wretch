@@ -1,0 +1,11 @@
+{
+    "test_path": "test/browser/SpecRunner.html?random=false",
+    "test_framework": "jasmine2",
+    "exit_with_fail": true,
+    "browsers": [
+      "firefox_latest",
+      "chrome_latest",
+      "safari_latest",
+      "edge_latest"
+    ]
+}

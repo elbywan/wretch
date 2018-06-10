@@ -1,8 +1,11 @@
 language: node_js
-
 node_js:
-    - "stable"
-    - "9"
-    - "8"
-
+    - stable
+script:
+    - npm run test
+    - npm run test-browsers
 after_success: npm run coverage
+env:
+  global:
+  - secure: dM2968yLKnKh6lY7y5A7Vs7hDVnZDWU3VkULv0VBtBXKeArnAgG2rPuzm5Zu6jfospk8eEDXz0a/B23T3STg4mUE8iW7J30BpbdLc/+sR3qBwsxrmXDP5lpT3kWfKH3QZUrvrQ5xlhu7O+5s230wwisZPoFP5S0SMS8NxwZkkYK4QyNedSTZWNbsRLcJiSNOBUtC6U9aMFru3vGDiur+vxg1c90k1Dr3SKozKOFHcTUlRmtLvsO4saFnLyE08r1yRubaq+AQYueDNLAA7XiE5Lk60m3ty6k8R6VCd693HNKOF6F5LI8UXHuzovtUyjdzSzbKu78xz56WXMQbRA4S0ZvHmOL/mwfQkcql1A4KiF/n3/ESmwT8jjHgz7isZY7z3auaoFLJ/oRSWRey4ILa5noheXLPI7G0wYO+doZPi/V9r6aE2dFxjC8Q//PcceKJNAdl45QYzP6V1Co3xXTFp01f0c6xHTaWpdr8/5tkzENFtLukrDSglQBXPjJ7Z5Bnq9jZ4oqeujYioElYVUQUOPsYkRo6bU/ZWdCYRbBHL1xisOyqzm3GRkWYVNhdRllYYS/bGWEm4OenC0uXNnKI2YsBg9glbjcLMuSD71H2RMsOjluNcqn29MvrlgXHSdSrX+QrhVg4irvmM5UT0K0gBa2UEhWDntlp/TFtreOhJ9w=
+  - secure: pfq3vcYo9Hjt4VcyI0IwHXJFyYCy5YNhBj/zKTG2JW2YxdKgYiEr+C12zQfKL+iZUUSD3N0pxtk+LmsFKN8cJ1bKFdsRC3beJ1Tkh5FV0RlANrtT8HPxdTvxLMG+sHT73F6rq0zbflslOy0YMVW8rI5Wzw7r51lurmZanfeqO61TqdWDLI28lkB8ZSWpmTaz9tLqUCHjM2D99Oyces4l2MgcsonXrhq/GcK1ku+3BErbZbkBgF3NXcRy8NctsNa6UMcPVOB2ZNkfd6IHUJuYC0DiFCywA4+9Ed/26fXrPUsiixZC5eH/uUccqE6BfJTW0mAuqqtQ64+th1emgWayTb2LcyabmMOekHQBcNyWDKuc1ZXPwUAVw+bac8z83NhNlRDLU/HqCefSI189OgajSamHSB1g7W/H4Bkb8u1Aos1kIqACdK18saLPxw80Qine5LFyYj3OR9YiZ+KvLdxoyiQ0sf7PfQrTJs+KLURvJE0/Iqs37LXpK8vNZ6hJr+bgbDP9+YyOOch3STA8v3qjKWvlUDlKsGDKGBQ6bZBU0L8Qk/BF/tPUQDrDBlkPl1Z7I+Z3sF7McwiQ4yHWkX10YJ3oNFmsRqKmR+eXvZJQi4X+TxNywBm9i/eDXmdq1kFSVQBPl8goFCzERFj7grO0oailmsN2gfiXCyo64qa67GY=
