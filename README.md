@@ -3,16 +3,17 @@
 	<br>
     <a href="https://elbywan.github.io/wretch">Wretch</a><br>
 	<br>
-  <a href="https://elbywan.github.io/wretch"><img alt="homepage-badge" src="https://img.shields.io/website-up-down-green-red/http/shields.io.svg?label=wretch-homepage"></a>
+
   <a href="https://travis-ci.org/elbywan/wretch"><img alt="travis-badge" src="https://travis-ci.org/elbywan/wretch.svg?branch=master"></a>
   <a href="https://www.npmjs.com/package/wretch"><img alt="npm-badge" src="https://img.shields.io/npm/v/wretch.svg?colorB=ff733e" height="20"></a>
   <a href="https://www.npmjs.com/package/wretch"><img alt="npm-downloads-badge" src="https://img.shields.io/npm/dm/wretch.svg?colorB=53aabb" height="20"></a>
   <a href="https://coveralls.io/github/elbywan/wretch?branch=master"><img src="https://coveralls.io/repos/github/elbywan/wretch/badge.svg?branch=master" alt="Coverage Status"></a>
-  <a href="https://github.com/elbywan/wretch/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license-badge" height="20"></a>
   <a href="https://www.browserstack.com/automate/public-build/Y0ZoenBIa3lqRCtqTFBYV3A4a2dybVk3TUJXZHFFbFRmdFBiczVXbWJFST0tLW9mbEFSOFE3YlVKV0d5cHNsQ3hHQVE9PQ==--46a969ee3fb5db55f2641aee799838ed1b2f8ef6"><img src='https://www.browserstack.com/automate/badge.svg?badge_key=Y0ZoenBIa3lqRCtqTFBYV3A4a2dybVk3TUJXZHFFbFRmdFBiczVXbWJFST0tLW9mbEFSOFE3YlVKV0d5cHNsQ3hHQVE9PQ==--46a969ee3fb5db55f2641aee799838ed1b2f8ef6'/></a>
+  <a href="https://bundlephobia.com/result?p=wretch"><img src='https://img.shields.io/bundlephobia/minzip/wretch.svg'/></a>
+  <a href="https://github.com/elbywan/wretch/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license-badge" height="20"></a>
 </h1>
 <h4 align="center">
-	A tiny (&lt; 2.5Kb g-zipped) wrapper built around fetch with an intuitive syntax.
+	A tiny (&lt; 2.7Kb g-zipped) wrapper built around fetch with an intuitive syntax.
 </h4>
 <h5 align="center">
     <i>f[ETCH] [WR]apper</i>
