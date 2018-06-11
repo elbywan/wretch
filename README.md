@@ -166,6 +166,10 @@ Wretch is compatible with modern browsers out of the box.
 
 For older environments without fetch support, you should get a [polyfill](https://github.com/github/fetch).
 
+*A battery of unit tests is run with every build on node .js and browsers.*<br>*Automated browser unit testing is a provided courtesy of:*
+
+ <a href="https://www.browserstack.com/"><img src="assets/browserstack-logo.png" alt="browserstack-logo" height="75"></a>
+
 ## Node.js
 
 Works with any [FormData](https://github.com/form-data/form-data) or [fetch](https://www.npmjs.com/package/node-fetch) polyfills.
