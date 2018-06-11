@@ -265,8 +265,8 @@ Creates a new Wretcher object with an url and [vanilla fetch options](https://de
 
 *Helper methods are optional and can be chained.*
 
-| [url](#urlurl-string-replace-boolean--false) | [query](#queryqp-object--string-replace-boolean) | [options](#optionsoptions-object-mixin-boolean--true) | [headers](#headersheadervalues-object) | [accept](#acceptheadervalue-string) | [content](#contentheadervalue-string) | [auth](#authheadervalue-string) | [catcher](#catchererrorid-number--string-catcher-error-wretchererror-originalrequest-wretcher--void) | [resolve](#resolvedoresolve-chain-responsechain-originalrequest-wretcher--responsechain--promise-clear--false) | [defaults](#defaultsopts-object-mixin-boolean--false) | [errorType](#errortypemethod-text--json--text) | [polyfills](#polyfillspolyfills-object) |
-|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+| [url](#urlurl-string-replace-boolean--false) | [query](#queryqp-object--string-replace-boolean) | [options](#optionsoptions-object-mixin-boolean--true) | [headers](#headersheadervalues-object) | [accept](#acceptheadervalue-string) | [content](#contentheadervalue-string) | [auth](#authheadervalue-string) | [catcher](#catchererrorid-number--string-catcher-error-wretchererror-originalrequest-wretcher--void) | [resolve](#resolvedoresolve-chain-responsechain-originalrequest-wretcher--responsechain--promise-clear--false) | [defer](#defercallback-originalrequest-wretcher-url-string-options-object--wretcher-clear--false) | [defaults](#defaultsopts-object-mixin-boolean--false) | [errorType](#errortypemethod-text--json--text) | [polyfills](#polyfillspolyfills-object) |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
 
 #### url(url: string, replace: boolean = false)
 
@@ -609,7 +609,7 @@ wretch().post({ json: 'body' }, { credentials: "same-origin" })
 wretch().json({ json: 'body'}).options({ credentials: "same-origin" }).post()
 ```
 
-| [get](#getopts) | [delete](#deleteopts) | [put](#putbody-opts) | [patch](#patchbody-opts) | [post](#postbody-opts) | [head](#headopts) | [opts](#optsopts) |
+| [get](#getoptions) | [delete](#deleteoptions) | [put](#putbody-options) | [patch](#patchbody-options) | [post](#postbody-options) | [head](#headoptions) | [opts](#optsopts) |
 |-----|-----|-----|-----|-----|-----|-----|
 
 #### get(options)
