@@ -11,6 +11,7 @@
   <a href="https://www.browserstack.com/automate/public-build/Y0ZoenBIa3lqRCtqTFBYV3A4a2dybVk3TUJXZHFFbFRmdFBiczVXbWJFST0tLW9mbEFSOFE3YlVKV0d5cHNsQ3hHQVE9PQ==--46a969ee3fb5db55f2641aee799838ed1b2f8ef6"><img src='https://www.browserstack.com/automate/badge.svg?badge_key=Y0ZoenBIa3lqRCtqTFBYV3A4a2dybVk3TUJXZHFFbFRmdFBiczVXbWJFST0tLW9mbEFSOFE3YlVKV0d5cHNsQ3hHQVE9PQ==--46a969ee3fb5db55f2641aee799838ed1b2f8ef6'/></a>
   <a href="https://bundlephobia.com/result?p=wretch"><img src='https://img.shields.io/bundlephobia/minzip/wretch.svg'/></a>
   <a href="https://github.com/elbywan/wretch/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license-badge" height="20"></a>
+  <a href="https://www.paypal.me/elbywan"><img src="https://img.shields.io/badge/buy%20me%20a-coffee-yellow.svg" alt="coffee-badge" height="20"></a>
 </h1>
 <h4 align="center">
 	A tiny (&lt; 2.7Kb g-zipped) wrapper built around fetch with an intuitive syntax.
