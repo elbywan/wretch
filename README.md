@@ -167,10 +167,6 @@ Wretch is compatible with modern browsers out of the box.
 
 For older environments without fetch support, you should get a [polyfill](https://github.com/github/fetch).
 
-*This project uses automated node.js & browser unit tests. The latter are a provided courtesy of:*
-
- <a href="https://www.browserstack.com/"><img src="assets/browserstack-logo.png" alt="browserstack-logo" height="50"></a>
-
 ## Node.js
 
 Works with any [FormData](https://github.com/form-data/form-data) or [fetch](https://www.npmjs.com/package/node-fetch) polyfills.
@@ -190,6 +186,14 @@ wretch().polyfills({
     URLSearchParams: require("url").URLSearchParams
 })
 ```
+
+------
+
+*This project uses automated node.js & browser unit tests. The latter are a provided courtesy of:*
+
+<a href="https://www.browserstack.com/"><img src="assets/browserstack-logo.png" alt="browserstack-logo" height="50"></a>
+
+
 
 # Usage
 
