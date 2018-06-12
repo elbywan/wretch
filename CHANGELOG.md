@@ -1,6 +1,28 @@
+<a name="1.3.1"></a>
+## [1.3.1](https://github.com/elbywan/wretch/compare/1.3.0...1.3.1) (2018-06-12)
+
+
+### :art: Code improvement(s)
+
+* Launch the mock server aside of the test file. ([35c5a4e](https://github.com/elbywan/wretch/commit/35c5a4e))
+
+### :memo: Documentation update(s)
+
+* Add bundlephobia badge. ([0399a65](https://github.com/elbywan/wretch/commit/0399a65))
+* Add paypal badge ([cd98e4d](https://github.com/elbywan/wretch/commit/cd98e4d))
+* Fix broken readme links. ([75f767d](https://github.com/elbywan/wretch/commit/75f767d))
+* Mention browserstack in the readme. ([2f6ad8e](https://github.com/elbywan/wretch/commit/2f6ad8e))
+* Update readme package version ([04f75ce](https://github.com/elbywan/wretch/commit/04f75ce))
+
+
+
 <a name="1.3.0"></a>
 # [1.3.0](https://github.com/elbywan/wretch/compare/1.2.0...1.3.0) (2018-06-09)
 
+
+### :arrow_up: Version update(s)
+
+* 1.3.0 tag ([ff05dfc](https://github.com/elbywan/wretch/commit/ff05dfc))
 
 ### :bug: Bug fix(es)
 
