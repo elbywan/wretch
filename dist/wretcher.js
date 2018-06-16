@@ -299,7 +299,7 @@ var appendQueryParams = function (url, qp, replace) {
         return split[0] + "?" + queryString;
     return url + "&" + queryString;
 };
-var convertFormData = function (formObject) {
+function convertFormData(formObject) {
     var formData = conf.polyfill("FormData", { instance: true });
     for (var key in formObject) {
         if (formObject[key] instanceof Array) {
@@ -313,13 +313,23 @@ var convertFormData = function (formObject) {
         }
     }
     return formData;
-};
-var convertFormUrl = function (formObject) {
+}
+function encodeQueryValue(key, value) {
+    return encodeURIComponent(key) +
+        "=" +
+        encodeURIComponent(typeof value === "object" ?
+            JSON.stringify(value) :
+            value);
+}
+function convertFormUrl(formObject) {
     return Object.keys(formObject)
         .map(function (key) {
-        return encodeURIComponent(key) + "=" +
-            ("" + encodeURIComponent(typeof formObject[key] === "object" ? JSON.stringify(formObject[key]) : formObject[key]));
+        var value = formObject[key];
+        if (value instanceof Array) {
+            return value.map(function (v) { return encodeQueryValue(key, v); }).join("&");
+        }
+        return encodeQueryValue(key, value);
     })
         .join("&");
-};
+}
 //# sourceMappingURL=wretcher.js.map

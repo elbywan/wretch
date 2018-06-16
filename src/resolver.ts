@@ -49,9 +49,9 @@ export const resolver = (wretcher: Wretcher) => {
     const req = middlewareHelper(middlewares)(conf.polyfill("fetch"))(url, finalOpts)
     const wrapper: Promise<void | WretcherResponse> = req.then(response => {
         if (!response.ok) {
-            return response[conf.errorType || "text"]().then(_ => {
-                const err = new Error(_)
-                err[conf.errorType] = _
+            return response[conf.errorType || "text"]().then(msg => {
+                const err = new Error(msg)
+                err[conf.errorType] = msg
                 err["status"] = response.status
                 err["response"] = response
                 throw err

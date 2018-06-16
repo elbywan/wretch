@@ -302,7 +302,7 @@ const appendQueryParams = (url: string, qp: object | string, replace: boolean) =
     return url + "&" + queryString
 }
 
-const convertFormData = (formObject: object) => {
+function convertFormData(formObject: object) {
     const formData = conf.polyfill("FormData", { instance: true })
     for(const key in formObject) {
         if(formObject[key] instanceof Array) {
@@ -316,10 +316,23 @@ const convertFormData = (formObject: object) => {
     return formData
 }
 
-const convertFormUrl = (formObject: object) => {
+function encodeQueryValue(key: string, value: any) {
+    return encodeURIComponent(key) +
+    "=" +
+    encodeURIComponent(
+        typeof value === "object" ?
+            JSON.stringify(value) :
+        value
+    )
+}
+function convertFormUrl(formObject: object) {
     return Object.keys(formObject)
-        .map(key =>
-            encodeURIComponent(key) + "=" +
-            `${ encodeURIComponent(typeof formObject[key] === "object" ? JSON.stringify(formObject[key]) : formObject[key]) }`)
+        .map(key => {
+            const value = formObject[key]
+            if(value instanceof Array) {
+                return value.map(v => encodeQueryValue(key, v)).join("&")
+            }
+            return encodeQueryValue(key, value)
+        })
         .join("&")
 }

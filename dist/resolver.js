@@ -12,9 +12,9 @@ export var resolver = function (wretcher) {
     var req = middlewareHelper(middlewares)(conf.polyfill("fetch"))(url, finalOpts);
     var wrapper = req.then(function (response) {
         if (!response.ok) {
-            return response[conf.errorType || "text"]().then(function (_) {
-                var err = new Error(_);
-                err[conf.errorType] = _;
+            return response[conf.errorType || "text"]().then(function (msg) {
+                var err = new Error(msg);
+                err[conf.errorType] = msg;
                 err["status"] = response.status;
                 err["response"] = response;
                 throw err;
