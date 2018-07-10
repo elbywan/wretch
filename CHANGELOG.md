@@ -1,6 +1,20 @@
+<a name="1.4.0"></a>
+# [1.4.0](https://github.com/elbywan/wretch/compare/1.3.1...1.4.0) (2018-07-10)
+
+
+### :fire: Breaking change(s)
+
+* Make .formUrl encode arrays in a standard way ([4e90cba](https://github.com/elbywan/wretch/commit/4e90cba))
+
+
+
 <a name="1.3.1"></a>
 ## [1.3.1](https://github.com/elbywan/wretch/compare/1.3.0...1.3.1) (2018-06-12)
 
+
+### :arrow_up: Version update(s)
+
+* 1.3.1 tag ([f162e0e](https://github.com/elbywan/wretch/commit/f162e0e))
 
 ### :art: Code improvement(s)
 
