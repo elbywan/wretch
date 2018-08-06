@@ -51,7 +51,7 @@ export const resolver = (wretcher: Wretcher) => {
         if (!response.ok) {
             return response[conf.errorType || "text"]().then(msg => {
                 const err = new Error(msg)
-                err[conf.errorType] = msg
+                err[conf.errorType || "text"] = msg
                 err["status"] = response.status
                 err["response"] = response
                 throw err
