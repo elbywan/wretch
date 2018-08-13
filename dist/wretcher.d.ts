@@ -19,7 +19,7 @@ export declare class Wretcher {
     _deferredChain: DeferredCallback[];
     protected constructor(_url: string, _options: WretcherOptions, _catchers?: Map<number | string, (error: WretcherError, originalRequest: Wretcher) => void>, _resolvers?: Array<(resolver: ResponseChain, originalRequest: Wretcher) => any>, _middlewares?: ConfiguredMiddleware[], _deferredChain?: DeferredCallback[]);
     static factory(url?: string, options?: WretcherOptions): Wretcher;
-    private selfFactory({url, options, catchers, resolvers, middlewares, deferredChain}?);
+    private selfFactory;
     /**
      * Sets the default fetch options used for every subsequent fetch call.
      * @param options New default options
@@ -79,7 +79,7 @@ export declare class Wretcher {
      * @param headerValues An object containing header keys and values
      */
     headers(headerValues: {
-        [headerName: string]: any;
+        [headerName: string]: string;
     }): Wretcher;
     /**
      * Shortcut to set the "Accept" header.
@@ -106,7 +106,7 @@ export declare class Wretcher {
      * Associates a custom signal with the request.
      * @param controller : An AbortController
      */
-    signal(controller: any): Wretcher;
+    signal(controller: AbortController): Wretcher;
     /**
      * Program a resolver to perform response chain tasks automatically.
      * @param doResolve : Resolver callback
@@ -120,7 +120,7 @@ export declare class Wretcher {
      * Add middlewares to intercept a request before being sent.
      */
     middlewares(middlewares: ConfiguredMiddleware[], clear?: boolean): Wretcher;
-    private method(method, options?, body?);
+    private method;
     /**
      * Performs a get request.
      */

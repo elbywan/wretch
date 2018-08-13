@@ -4,15 +4,18 @@ import perfs from "./perfs";
 import { middlewareHelper } from "./middleware";
 export var resolver = function (wretcher) {
     var url = wretcher._url, catchers = wretcher._catchers, resolvers = wretcher._resolvers, middlewares = wretcher._middlewares, opts = wretcher._options;
-    var finalOpts = mix(conf.defaults, opts);
+    var finalOptions = mix(conf.defaults, opts);
     var fetchController = conf.polyfill("AbortController", { doThrow: false, instance: true });
-    if (!finalOpts["signal"] && fetchController) {
-        finalOpts["signal"] = fetchController.signal;
+    if (!finalOptions["signal"] && fetchController) {
+        finalOptions["signal"] = fetchController.signal;
     }
-    var req = middlewareHelper(middlewares)(conf.polyfill("fetch"))(url, finalOpts);
-    var wrapper = req.then(function (response) {
+    // The generated fetch request
+    var fetchRequest = middlewareHelper(middlewares)(conf.polyfill("fetch"))(url, finalOptions);
+    // Throws on an http error
+    var throwingPromise = fetchRequest.then(function (response) {
         if (!response.ok) {
             return response[conf.errorType || "text"]().then(function (msg) {
+                // Enhances the error object
                 var err = new Error(msg);
                 err[conf.errorType || "text"] = msg;
                 err["status"] = response.status;
@@ -22,7 +25,8 @@ export var resolver = function (wretcher) {
         }
         return response;
     });
-    var doCatch = function (promise) {
+    // Wraps the Promise in order to dispatch the error to a matching catcher
+    var catchersWrapper = function (promise) {
         return promise.catch(function (err) {
             if (catchers.has(err.status))
                 return catchers.get(err.status)(err, wretcher);
@@ -32,41 +36,43 @@ export var resolver = function (wretcher) {
                 throw err;
         });
     };
-    var wrapTypeParser = function (funName) { return function (cb) { return funName ?
-        doCatch(wrapper.then(function (_) { return _ && _[funName](); }).then(function (_) { return _ && cb && cb(_) || _; })) :
-        doCatch(wrapper.then(function (_) { return _ && cb && cb(_) || _; })); }; };
+    var bodyParser = function (funName) { return function (cb) { return funName ?
+        // If a callback is provided, then callback with the body result otherwise return the parsed body itself.
+        catchersWrapper(throwingPromise.then(function (_) { return _ && _[funName](); }).then(function (_) { return _ && cb && cb(_) || _; })) :
+        // No body parsing method - return the response
+        catchersWrapper(throwingPromise.then(function (_) { return _ && cb && cb(_) || _; })); }; };
     var responseChain = {
         /**
          * Retrieves the raw result as a promise.
          */
-        res: wrapTypeParser(null),
+        res: bodyParser(null),
         /**
          * Retrieves the result as a parsed JSON object.
          */
-        json: wrapTypeParser("json"),
+        json: bodyParser("json"),
         /**
          * Retrieves the result as a Blob object.
          */
-        blob: wrapTypeParser("blob"),
+        blob: bodyParser("blob"),
         /**
          * Retrieves the result as a FormData object.
          */
-        formData: wrapTypeParser("formData"),
+        formData: bodyParser("formData"),
         /**
          * Retrieves the result as an ArrayBuffer object.
          */
-        arrayBuffer: wrapTypeParser("arrayBuffer"),
+        arrayBuffer: bodyParser("arrayBuffer"),
         /**
          * Retrieves the result as a string.
          */
-        text: wrapTypeParser("text"),
+        text: bodyParser("text"),
         /**
          * Performs a callback on the API performance timings of the request.
          *
          * Warning: Still experimental on browsers and node.js
          */
         perfs: function (cb) {
-            req.then(function (res) { return perfs.observe(res.url, cb); });
+            fetchRequest.then(function (res) { return perfs.observe(res.url, cb); });
             return responseChain;
         },
         /**

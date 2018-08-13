@@ -116,7 +116,7 @@ export class Wretcher {
      * Set request headers.
      * @param headerValues An object containing header keys and values
      */
-    headers(headerValues: { [headerName: string]: any }) {
+    headers(headerValues: { [headerName: string]: string }) {
         return this.selfFactory({ options: mix(this._options, { headers: headerValues }) })
     }
 
@@ -159,8 +159,8 @@ export class Wretcher {
      * Associates a custom signal with the request.
      * @param controller : An AbortController
      */
-    signal(controller: any) {
-        return this.selfFactory({ options: { ...this._options, signal: controller.signal } as any })
+    signal(controller: AbortController) {
+        return this.selfFactory({ options: { ...this._options, signal: controller.signal }})
     }
 
     /**
@@ -316,13 +316,13 @@ function convertFormData(formObject: object) {
     return formData
 }
 
-function encodeQueryValue(key: string, value: any) {
+function encodeQueryValue(key: string, value: unknown) {
     return encodeURIComponent(key) +
     "=" +
     encodeURIComponent(
         typeof value === "object" ?
             JSON.stringify(value) :
-        value
+        "" + value
     )
 }
 function convertFormUrl(formObject: object) {

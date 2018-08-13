@@ -5,6 +5,7 @@ export declare type WretcherError = Error & {
     text?: string;
     json?: any;
 };
+export declare type WretcherErrorCallback = (error: WretcherError, originalRequest: Wretcher) => any;
 export declare type WretcherResponse = Response & {
     [key: string]: any;
 };
@@ -19,16 +20,16 @@ export declare type ResponseChain = {
     formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>;
     arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>;
     text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>;
-    perfs: (cb?: (type: any) => void) => ResponseChain;
-    setTimeout: (time: number, controller?: any) => ResponseChain;
+    perfs: (cb?: (timing: any) => void) => ResponseChain;
+    setTimeout: (time: number, controller?: AbortController) => ResponseChain;
     controller: () => [any, ResponseChain];
-    error: (code: (number | string), cb: any) => ResponseChain;
-    badRequest: (cb: (error: WretcherError, originalRequest: Wretcher) => void) => ResponseChain;
-    unauthorized: (cb: (error: WretcherError, originalRequest: Wretcher) => any) => ResponseChain;
-    forbidden: (cb: (error: WretcherError, originalRequest: Wretcher) => any) => ResponseChain;
-    notFound: (cb: (error: WretcherError, originalRequest: Wretcher) => any) => ResponseChain;
-    timeout: (cb: (error: WretcherError, originalRequest: Wretcher) => any) => ResponseChain;
-    internalError: (cb: (error: WretcherError, originalRequest: Wretcher) => any) => ResponseChain;
-    onAbort: (cb: (error: Error, originalRequest: Wretcher) => any) => ResponseChain;
+    error: (code: (number | string), cb: WretcherErrorCallback) => ResponseChain;
+    badRequest: (cb: WretcherErrorCallback) => ResponseChain;
+    unauthorized: (cb: WretcherErrorCallback) => ResponseChain;
+    forbidden: (cb: WretcherErrorCallback) => ResponseChain;
+    notFound: (cb: WretcherErrorCallback) => ResponseChain;
+    timeout: (cb: WretcherErrorCallback) => ResponseChain;
+    internalError: (cb: WretcherErrorCallback) => ResponseChain;
+    onAbort: (cb: WretcherErrorCallback) => ResponseChain;
 };
 export declare const resolver: (wretcher: Wretcher) => ResponseChain & Promise<any>;

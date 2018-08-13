@@ -25,7 +25,7 @@ const allRoutes = (obj, type, action, opts?, body?) => Promise.all([
 const fetchPolyfill = (timeout = null) =>
     function(url, opts) {
         performance.mark(url + " - begin")
-        const { fetch } = abortableFetch(nodeFetch) as any
+        const { fetch } = abortableFetch(nodeFetch)
         return fetch(url, opts).then(_ => {
             performance.mark(url + " - end")
             const measure = () => performance.measure(_.url, url + " - begin", url + " - end")
@@ -263,14 +263,14 @@ describe("Wretch", function() {
         }).res(result => res(!result)))
         expect(rejected).toBeTruthy()
         wretch().defaults({
-            headers: { "X-Custom-Header": "Anything" } as any
+            headers: { "X-Custom-Header": "Anything" }
         })
         rejected = await new Promise(res => wretch(`${_URL}/customHeaders`).get().badRequest(_ => {
             res(true)
         }).res(result => res(!result)))
         expect(rejected).toBeTruthy()
         wretch().defaults({
-            headers: { "X-Custom-Header-2": "Anything" } as any
+            headers: { "X-Custom-Header-2": "Anything" }
         }, true)
         rejected = await new Promise(res => wretch(`${_URL}/customHeaders`).get().badRequest(_ => {
             res(true)
@@ -278,8 +278,8 @@ describe("Wretch", function() {
         wretch().defaults("not an object" as any, true)
         expect(rejected).toBeTruthy()
         const accepted = await new Promise(res => wretch(`${_URL}/customHeaders`)
-            .options({ headers: { "X-Custom-Header-3" : "Anything" } as any }, false)
-            .options({ headers: { "X-Custom-Header-4" : "Anything" } as any })
+            .options({ headers: { "X-Custom-Header-3" : "Anything" }}, false)
+            .options({ headers: { "X-Custom-Header-4" : "Anything" }})
             .get()
             .badRequest(_ => { res(false) })
             .res(result => res(!!result)))
@@ -291,7 +291,7 @@ describe("Wretch", function() {
         const obj2 = obj1.url(_URL, true)
         expect(obj1["_url"]).toBe("...")
         expect(obj2["_url"]).toBe(_URL)
-        const obj3 = obj1.options({ headers: { "X-test": "test" } as any })
+        const obj3 = obj1.options({ headers: { "X-test": "test" }})
         expect(obj3["_options"]).toEqual({ headers: { "X-test": "test" }})
         expect(obj1["_options"]).toEqual({})
         const obj4 = obj2.query({a: "1!", b: "2"})
@@ -350,7 +350,7 @@ describe("Wretch", function() {
             fetch: fetchPolyfill(1)
         })
         // Test empty perfs()
-        wretch(`${_URL}/text`).get().perfs().res(_ => expect(_.ok).toBeTruthy()).then(
+        wretch(`${_URL}/text`).get().perfs().res(_ => expect(_.ok).toBeTruthy()).then(_ =>
             // Racing condition : observer triggered before response
             wretch(`${_URL}/bla`).get().perfs(_ => {
                 expect(typeof _.startTime).toBe("number")
@@ -367,7 +367,7 @@ describe("Wretch", function() {
                     })
                     done()
                 }).res().catch(() => "ignore")
-            }).res().catch(_ => "ignore") as any
+            }).res().catch(_ => "ignore")
         )
     })
 
@@ -379,7 +379,7 @@ describe("Wretch", function() {
             count++
         }
 
-        const controller = new AbortController() as any
+        const controller = new AbortController()
         wretch(`${_URL}/longResult`)
             .signal(controller)
             .get()
@@ -427,10 +427,10 @@ describe("Wretch", function() {
     })
 
     it("should use middlewares", async function() {
-        const shortCircuit: any = () => next => (url, opts) => Promise.resolve({
+        const shortCircuit = () => next => (url, opts) => Promise.resolve({
             ok: true,
             text: () => Promise.resolve(opts.method + "@" + url)
-        })
+        } as any)
         const setGetMethod = () => next => (url, opts) => {
             return next(url, {...opts, method: "GET"})
         }
