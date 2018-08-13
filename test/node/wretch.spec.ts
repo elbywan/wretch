@@ -350,25 +350,33 @@ describe("Wretch", function() {
             fetch: fetchPolyfill(1)
         })
         // Test empty perfs()
-        wretch(`${_URL}/text`).get().perfs().res(_ => expect(_.ok).toBeTruthy()).then(_ =>
+        wretch(`${_URL}/text`).get().perfs().res(_ => expect(_.ok).toBeTruthy()).then(_ => {
             // Racing condition : observer triggered before response
-            wretch(`${_URL}/bla`).get().perfs(_ => {
-                expect(typeof _.startTime).toBe("number")
+            wretch(`${_URL}/bla`).get().perfs(timings => {
+                expect(timings.name).toBe(`${_URL}/bla`)
+                expect(typeof timings.startTime).toBe("number")
 
                 // Racing condition : response triggered before observer
                 wretch().polyfills({
                     fetch: fetchPolyfill(1000)
                 })
 
-                wretch(`${_URL}/fakeurl`).get().perfs(_ => {
-                    expect(typeof _.startTime).toBe("number")
+                wretch(`${_URL}/fakeurl`).get().perfs(timings => {
+                    expect(timings.name).toBe(`${_URL}/fakeurl`)
+                    expect(typeof timings.startTime).toBe("number")
                     wretch().polyfills({
                         fetch: fetchPolyfill(1)
                     })
                     done()
                 }).res().catch(() => "ignore")
             }).res().catch(_ => "ignore")
-        )
+        })
+        // Test multiple requests concurrency and proper timings dispatching
+        for(let i = 0; i < 5; i++) {
+            wretch(`${_URL}/fake/${i}`).get().perfs(timings => {
+                expect(timings.name).toBe(`${_URL}/fake/${i}`)
+            }).res().catch(() => "ignore")
+         }
     })
 
     it("should abort a request", function(done) {
