@@ -14,7 +14,7 @@ export var resolver = function (wretcher) {
         if (!response.ok) {
             return response[conf.errorType || "text"]().then(function (msg) {
                 var err = new Error(msg);
-                err[conf.errorType] = msg;
+                err[conf.errorType || "text"] = msg;
                 err["status"] = response.status;
                 err["response"] = response;
                 throw err;

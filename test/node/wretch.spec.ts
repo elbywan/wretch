@@ -330,6 +330,11 @@ describe("Wretch", function() {
     })
 
     it("should change the parsing used in the default error handler", async function() {
+        await wretch(`${_URL}/json500`)
+            .get()
+            .internalError(error => { expect(error.text).toEqual(`{"error":500,"message":"ok"}`) })
+            .res(_ => fail("I should never be called because an error was thrown"))
+            .then(_ => expect(_).toBe(undefined))
         wretch().errorType("json")
         await wretch(`${_URL}/json500`)
             .get()
