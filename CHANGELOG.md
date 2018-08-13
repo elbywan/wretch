@@ -1,10 +1,37 @@
+<a name="1.4.1"></a>
+## [1.4.1](https://github.com/elbywan/wretch/compare/1.4.0...1.4.1) (2018-08-13)
+
+
+### :arrow_up: Version update(s)
+
+* Upgrade devDeps ([0a6c223](https://github.com/elbywan/wretch/commit/0a6c223))
+
+### :art: Code improvement(s)
+
+* Improve typedefs ([232c063](https://github.com/elbywan/wretch/commit/232c063))
+
+### :bug: Bug fix(es)
+
+* Add default errorType to response object ([c134efa](https://github.com/elbywan/wretch/commit/c134efa))
+
+### :white_check_mark: Test improvement(s)
+
+* Improve unit tests to check default error type ([3f1bb4b](https://github.com/elbywan/wretch/commit/3f1bb4b)), closes [#c134](https://github.com/elbywan/wretch/issues/c134)
+* Prevent running browserstack on PRs ([c350060](https://github.com/elbywan/wretch/commit/c350060))
+
+
+
 <a name="1.4.0"></a>
 # [1.4.0](https://github.com/elbywan/wretch/compare/1.3.1...1.4.0) (2018-07-10)
 
 
+### :arrow_up: Version update(s)
+
+* 1.4.0 tag ([27acc8e](https://github.com/elbywan/wretch/commit/27acc8e))
+
 ### :fire: Breaking change(s)
 
-* Make .formUrl encode arrays in a standard way ([4e90cba](https://github.com/elbywan/wretch/commit/4e90cba))
+* Make .formUrl encode arrays in a standard way ([f04c9af](https://github.com/elbywan/wretch/commit/f04c9af)), closes [#26](https://github.com/elbywan/wretch/issues/26)
 
 
 
