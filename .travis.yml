@@ -3,7 +3,7 @@ node_js:
     - stable
 script:
     - npm run test
-    - npm run test-browsers
+    - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then npm run test-browsers; fi'
 after_success: npm run coverage
 env:
   global:
