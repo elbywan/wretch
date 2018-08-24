@@ -316,6 +316,33 @@ w = w.query({ reset: true }, true)
 // url is now  http://example.com?reset=true
 ```
 
+**Note that .query is not meant to handle complex cases with nested objects.**
+
+For this kind of usage, you can use `wretch` in conjunction with other libraries (like [`qs`](https://github.com/ljharb/qs)).
+
+```js
+/* Using wretch with qs */
+
+const queryObject = { some: { nested: 'objects' }}
+
+// Use .qs inside .query :
+
+ wretch("https://example.com/").query(qs.stringify(queryObject))
+
+// Use .defer :
+
+const qsWretch = wretch().defer((w, url, { qs }) => (
+    qs ?
+        w.query(qs.stringify(qs.query, qs.options)) :
+        w
+))
+
+qsWretch
+  .url("https://example.com/")
+  .options({ qs: { query: queryObject }})
+  /* ... */
+```
+
 #### options(options: Object, mixin: boolean = true)
 
 Sets the fetch options.
