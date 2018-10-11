@@ -277,7 +277,7 @@ export class Wretcher {
 
 // Internal helpers
 
-const appendQueryParams = (url: string, qp: object | string, replace: boolean) => {
+export const appendQueryParams = (url: string, qp: object | string, replace: boolean) => {
     let queryString
 
     if(typeof qp === "string") {
