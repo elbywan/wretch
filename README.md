@@ -741,7 +741,7 @@ Syntactic sugar for `error(404, cb)`.
 
 #### timeout(cb: (error: WretcherError, originalRequest: Wretcher) => any)
 
-Syntactic sugar for `error(418, cb)`.
+Syntactic sugar for `error(408, cb)`.
 
 #### internalError(cb: (error: WretcherError, originalRequest: Wretcher) => any)
 
