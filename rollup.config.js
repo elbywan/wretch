@@ -4,7 +4,7 @@ import nodeResolve from "rollup-plugin-node-resolve"
 import { minify } from "uglify-es"
 
 export default {
-    input: "./src/index.ts",
+    input: "./src/index.umd.ts",
     output: {
         file: "dist/bundle/wretch.js",
         format: "umd",
