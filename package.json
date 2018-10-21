@@ -84,6 +84,9 @@
         "collectCoverage": true,
         "collectCoverageFrom": [
             "src/*.{js,ts}"
+        ],
+        "coveragePathIgnorePatterns": [
+            "src/index.umd.ts"
         ]
     },
     "dependencies": {}
