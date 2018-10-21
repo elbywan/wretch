@@ -1,9 +1,33 @@
+<a name="1.4.2"></a>
+## [1.4.2](https://github.com/elbywan/wretch/compare/1.4.1...1.4.2) (2018-10-21)
+
+
+### :arrow_up: Version update(s)
+
+* Upgrade packages ([268565d](https://github.com/elbywan/wretch/commit/268565d))
+
+### :art: Code improvement(s)
+
+* Export typedefs at the root level ([d2bcb13](https://github.com/elbywan/wretch/commit/d2bcb13))
+
+### :memo: Documentation update(s)
+
+* Fix readme typo ([78b7a2b](https://github.com/elbywan/wretch/commit/78b7a2b))
+* Update .query documentation ([03c5cbe](https://github.com/elbywan/wretch/commit/03c5cbe))
+
+### :white_check_mark: Test improvement(s)
+
+* Improve performance timings test coverage ([c4db506](https://github.com/elbywan/wretch/commit/c4db506))
+
+
+
 <a name="1.4.1"></a>
 ## [1.4.1](https://github.com/elbywan/wretch/compare/1.4.0...1.4.1) (2018-08-13)
 
 
 ### :arrow_up: Version update(s)
 
+* 1.4.1 tag ([429fd8d](https://github.com/elbywan/wretch/commit/429fd8d))
 * Upgrade devDeps ([0a6c223](https://github.com/elbywan/wretch/commit/0a6c223))
 
 ### :art: Code improvement(s)
