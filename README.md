@@ -776,12 +776,23 @@ wretch("/resource")
 
 **Required**
 
+All these methods accept an optional callback, and will return a Promise resolved with either the return value of the provided callback or the expected type.
+
+```js
+// Without a callback
+wretch("...").get().json().then(json => /* json is the parsed json of the response body */)
+// Without a callback using await
+const json = await wretch("...").get().json()
+//With a callback the value returned is passsed to the Promise
+wretch("...").get().json(() => "Hello world!").then(console.log) // Hello world!
+```
+
 *If an error is caught by catchers, the response type handler will not be called.*
 
 | [res](#rescb-response--response--any) | [json](#jsoncb-json--object--any) | [blob](#blobcb-blob--blob--any) | [formData](#formdatacb-fd--formdata--any) | [arrayBuffer](#arraybuffercb-ab--arraybuffer--any) | [text](#textcb-text--string--any) |
 |-----|-----|-----|-----|-----|-----|
 
-#### res(cb: (response : Response) => any)
+#### res(cb?: (response : Response) => T) : Promise<Response | T>
 
 Raw Response handler.
 
@@ -789,7 +800,7 @@ Raw Response handler.
 wretch("...").get().res(response => console.log(response.url))
 ```
 
-#### json(cb: (json : Object) => any)
+#### json(cb?: (json : Object) => T) : Promise<Object | T>
 
 Json handler.
 
@@ -797,7 +808,7 @@ Json handler.
 wretch("...").get().json(json => console.log(Object.keys(json)))
 ```
 
-#### blob(cb: (blob : Blob) => any)
+#### blob(cb?: (blob : Blob) => T) : Promise<Blob | T>
 
 Blob handler.
 
@@ -805,7 +816,7 @@ Blob handler.
 wretch("...").get().blob(blob => /* ... */)
 ```
 
-#### formData(cb: (fd : FormData) => any)
+#### formData(cb: (fd : FormData) => T) : Promise<FormData | T>
 
 FormData handler.
 
@@ -813,7 +824,7 @@ FormData handler.
 wretch("...").get().formData(formData => /* ... */)
 ```
 
-#### arrayBuffer(cb: (ab : ArrayBuffer) => any)
+#### arrayBuffer(cb: (ab : ArrayBuffer) => T) : Promise<ArrayBuffer | T>
 
 ArrayBuffer handler.
 
@@ -821,7 +832,7 @@ ArrayBuffer handler.
 wretch("...").get().arrayBuffer(arrayBuffer => /* ... */)
 ```
 
-#### text(cb: (text : string) => any)
+#### text(cb: (text : string) => T)  : Promise<string | T>
 
 Text handler.
 
