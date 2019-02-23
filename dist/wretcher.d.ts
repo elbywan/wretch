@@ -150,6 +150,10 @@ export declare class Wretcher {
      */
     opts(options?: any): ResponseChain & Promise<any>;
     /**
+     * Replay a request.
+     */
+    replay(options?: any): ResponseChain & Promise<any>;
+    /**
      * Sets the request body with any content.
      * @param contents The body contents
      */

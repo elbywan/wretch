@@ -23,7 +23,7 @@ const allRoutes = (obj, type, action, opts?, body?) => Promise.all([
 ])
 
 const fetchPolyfill = (timeout = null) =>
-    function(url, opts) {
+    function (url, opts) {
         performance.mark(url + " - begin")
         const { fetch } = abortableFetch(nodeFetch)
         return fetch(url, opts).then(_ => {
@@ -40,9 +40,9 @@ const fetchPolyfill = (timeout = null) =>
 
 const duckImage = fs.readFileSync(path.resolve(__dirname, "..", "assets", "duck.jpg"))
 
-describe("Wretch", function() {
+describe("Wretch", function () {
 
-    it("should set and use non global polyfills", async function() {
+    it("should set and use non global polyfills", async function () {
         global["FormData"] = null
         global["URLSearchParams"] = null
 
@@ -68,28 +68,28 @@ describe("Wretch", function() {
         })
     })
 
-    it("should perform crud requests and parse a text response", async function() {
+    it("should perform crud requests and parse a text response", async function () {
         const init = wretch(`${_URL}/text`)
         const test = _ => expect(_).toBe("A text string")
         await allRoutes(init, "text", test)
         await allRoutes(init, "text", test, {}, {})
     })
 
-    it("should perform crud requests and parse a json response", async function() {
+    it("should perform crud requests and parse a json response", async function () {
         const test = _ => expect(_).toEqual({ a: "json", object: "which", is: "stringified" })
         const init = wretch(`${_URL}/json`)
         await allRoutes(init, "json", test)
         await allRoutes(init, "json", test, {}, {})
     })
 
-    it("should perform crud requests and parse a blob response", async function() {
+    it("should perform crud requests and parse a blob response", async function () {
         const test = _ => expect(_.size).toBe(duckImage.length)
         const init = wretch(`${_URL}/blob`)
         await allRoutes(init, "blob", test)
         await allRoutes(init, "blob", test, {}, {})
     })
 
-    it("should perform crud requests and parse an arrayBuffer response", async function() {
+    it("should perform crud requests and parse an arrayBuffer response", async function () {
         const test = arrayBuffer => {
             const buffer = Buffer.alloc(arrayBuffer.byteLength)
             const view = new Uint8Array(arrayBuffer)
@@ -103,7 +103,7 @@ describe("Wretch", function() {
         await allRoutes(init, "arrayBuffer", test, {})
     })
 
-    it("should perform a plain text round trip", async function() {
+    it("should perform a plain text round trip", async function () {
         const text = "hello, server !"
         const roundTrip = await wretch(`${_URL}/text/roundTrip`).content("text/plain").body(text).post().text()
         expect(roundTrip).toBe(text)
@@ -112,7 +112,7 @@ describe("Wretch", function() {
         expect(roundTrip2).toBe(text)
     })
 
-    it("should perform a json round trip", async function() {
+    it("should perform a json round trip", async function () {
         const jsonObject = { a: 1, b: 2, c: 3 }
         const roundTrip = await wretch(`${_URL}/json/roundTrip`).json(jsonObject).post().json()
         expect(roundTrip).toEqual(jsonObject)
@@ -121,7 +121,7 @@ describe("Wretch", function() {
         expect(roundTrip2).toEqual(jsonObject)
     })
 
-    it("should perform an url encoded form data round trip", async function() {
+    it("should perform an url encoded form data round trip", async function () {
         const reference = "a=1&b=2&%20c=%203&d=%7B%22a%22%3A1%7D&e=1%20&e=2"
         const jsonObject = { "a": 1, "b": 2, " c": " 3", "d": { a: 1 }, "e": ["1 ", 2] }
         let roundTrip = await wretch(`${_URL}/urlencoded/roundTrip`).formUrl(reference).post().text()
@@ -130,7 +130,7 @@ describe("Wretch", function() {
         expect(roundTrip).toEqual(reference)
     })
 
-    it("should send a FormData object", async function() {
+    it("should send a FormData object", async function () {
         const form = {
             hello: "world",
             duck: "Muscovy"
@@ -148,7 +148,7 @@ describe("Wretch", function() {
         // })
     })
 
-    it("should perform OPTIONS and HEAD requests", async function() {
+    it("should perform OPTIONS and HEAD requests", async function () {
         const optsRes = await wretch(_URL + "/options").opts().res()
         const optsRes2 = await wretch(_URL + "/options").opts({}).res()
         expect(optsRes.headers.get("Allow")).toBe("OPTIONS")
@@ -159,7 +159,7 @@ describe("Wretch", function() {
         expect(headRes2.headers.get("content-type")).toBe("application/json")
     })
 
-    it("should catch common error codes", async function() {
+    it("should catch common error codes", async function () {
         const w = wretch(_URL + "/")
 
         let check = 0
@@ -190,7 +190,7 @@ describe("Wretch", function() {
         expect(check).toBe(6)
     })
 
-    it("should catch other error codes", async function() {
+    it("should catch other error codes", async function () {
         let check = 0
         await wretch(`${_URL}/444`)
             .get()
@@ -201,7 +201,7 @@ describe("Wretch", function() {
         expect(check).toBe(1)
     })
 
-    it("should set and catch errors with global catchers", async function() {
+    it("should set and catch errors with global catchers", async function () {
         let check = 0
         const w = wretch(_URL)
             .catcher(404, err => check++)
@@ -230,7 +230,7 @@ describe("Wretch", function() {
         expect(check).toBe(7)
     })
 
-    it("should capture the original request with resolvers/catchers", async function() {
+    it("should capture the original request with resolvers/catchers", async function () {
         let check = 0
         const redirectedNotFound = await wretch(`${_URL}/404`)
             .get()
@@ -257,7 +257,7 @@ describe("Wretch", function() {
         expect(check).toBe(3)
     })
 
-    it("should set default fetch options", async function() {
+    it("should set default fetch options", async function () {
         let rejected = await new Promise(res => wretch(`${_URL}/customHeaders`).get().badRequest(_ => {
             res(true)
         }).res(result => res(!result)))
@@ -286,7 +286,7 @@ describe("Wretch", function() {
         expect(accepted).toBeTruthy()
     })
 
-    it("should allow url, query parameters & options modifications and return a fresh new Wretcher object containing the change", async function() {
+    it("should allow url, query parameters & options modifications and return a fresh new Wretcher object containing the change", async function () {
         const obj1 = wretch("...")
         const obj2 = obj1.url(_URL, true)
         expect(obj1["_url"]).toBe("...")
@@ -308,12 +308,12 @@ describe("Wretch", function() {
         expect(obj7["_url"]).toBe(`${_URL}/test?a=1%21&b=2&c=6&d=7&d=8&Literal[]=Query&String`)
     })
 
-    it("should set the Accept header", async function() {
+    it("should set the Accept header", async function () {
         expect(await wretch(`${_URL}/accept`).get().text()).toBe("text")
         expect(await wretch(`${_URL}/accept`).accept("application/json").get().json()).toEqual({ json: "ok" })
     })
 
-    it("should set the Authorization header", async function() {
+    it("should set the Authorization header", async function () {
         try { await wretch(_URL + "/basicauth")
             .get()
             .res(_ => fail("Authenticated route should not respond without credentials."))
@@ -329,7 +329,7 @@ describe("Wretch", function() {
         expect(res).toBe("ok")
     })
 
-    it("should change the parsing used in the default error handler", async function() {
+    it("should change the parsing used in the default error handler", async function () {
         await wretch(`${_URL}/json500`)
             .get()
             .internalError(error => { expect(error.text).toEqual(`{"error":500,"message":"ok"}`) })
@@ -345,7 +345,7 @@ describe("Wretch", function() {
         wretch().errorType("text")
     })
 
-    it("should retrieve performance timings associated with a fetch request", function(done) {
+    it("should retrieve performance timings associated with a fetch request", function (done) {
         wretch().polyfills({
             fetch: fetchPolyfill(1)
         })
@@ -379,7 +379,7 @@ describe("Wretch", function() {
          }
     })
 
-    it("should abort a request", function(done) {
+    it("should abort a request", function (done) {
         let count = 0
 
         const handleError = error => {
@@ -414,7 +414,7 @@ describe("Wretch", function() {
         }, 1000)
     })
 
-    it("should program resolvers", async function() {
+    it("should program resolvers", async function () {
         let check = 0
         const w = wretch()
             .url(_URL)
@@ -434,7 +434,7 @@ describe("Wretch", function() {
         expect(check).toBe(4)
     })
 
-    it("should use middlewares", async function() {
+    it("should use middlewares", async function () {
         const shortCircuit = () => next => (url, opts) => Promise.resolve({
             ok: true,
             text: () => Promise.resolve(opts.method + "@" + url)
@@ -467,7 +467,7 @@ describe("Wretch", function() {
         expect(await w3.url(_URL).head().text()).toBe(`POST@${_URL}`)
     })
 
-    it("should chain actions that will be performed just before the request is sent", async function() {
+    it("should chain actions that will be performed just before the request is sent", async function () {
         const w = wretch(_URL + "/basicauth")
             .defer((w, url, opts) => {
                 expect(url).toBe(_URL + "/basicauth")
@@ -481,10 +481,24 @@ describe("Wretch", function() {
             .text()
         expect(result).toBe("ok")
     })
+
+    it("should replay a request with the same method", async function () {
+        const result = await wretch(_URL + "/basicauth")
+            .get()
+            .unauthorized((_, request) => {
+                return request
+                    .auth("Basic d3JldGNoOnJvY2tz")
+                    .replay()
+                    .text()
+            })
+            .text()
+
+        expect(result).toBe("ok")
+    })
 })
 
-describe("Mix", function() {
-    it("should mix two objects", function() {
+describe("Mix", function () {
+    it("should mix two objects", function () {
         const obj1 = { a: 1, b: 2, c: [ 3, 4 ] }
         const obj2proto = { z: 1 }
         const obj2 = Object.create(obj2proto)

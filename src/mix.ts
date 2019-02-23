@@ -1,4 +1,4 @@
-export const mix = function(one: object, two: object, mergeArrays: boolean = false) {
+export const mix = function (one: object, two: object, mergeArrays: boolean = false) {
     if(!one || !two || typeof one !== "object" || typeof two !== "object")
         return one
 

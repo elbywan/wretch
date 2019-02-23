@@ -451,7 +451,7 @@ const reAuthOn401 = wretch()
     const token = await wretch("/renewtoken").get().text()
     storeToken(token)
     // Replay the original request with new credentials
-    return request.auth(token).get().unauthorized(err => { throw err }).json()
+    return request.auth(token).replay().unauthorized(err => { throw err }).json()
   })
 
 reAuthOn401.url("/resource")

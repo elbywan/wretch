@@ -240,6 +240,12 @@ export class Wretcher {
     opts(options?) {
         return this.method("OPTIONS", options)
     }
+    /**
+     * Replay a request.
+     */
+    replay(options?) {
+        return this.method(this._options.method, options)
+    }
 
     /**
      * Sets the request body with any content.

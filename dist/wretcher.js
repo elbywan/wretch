@@ -242,6 +242,12 @@ var Wretcher = /** @class */ (function () {
         return this.method("OPTIONS", options);
     };
     /**
+     * Replay a request.
+     */
+    Wretcher.prototype.replay = function (options) {
+        return this.method(this._options.method, options);
+    };
+    /**
      * Sets the request body with any content.
      * @param contents The body contents
      */
