@@ -1,3 +1,26 @@
+<a name="1.5.0"></a>
+# [1.5.0](https://github.com/elbywan/wretch/compare/1.4.2...1.5.0) (2019-02-23)
+
+
+### :arrow_up: Version update(s)
+
+* Upgrade dependencies and fix package version in lock file ([b17d10a](https://github.com/elbywan/wretch/commit/b17d10a))
+* Upgrade jest and rollup ([0573f7a](https://github.com/elbywan/wretch/commit/0573f7a))
+
+### :art: Code improvement(s)
+
+* Add inline source maps ([03ca27e](https://github.com/elbywan/wretch/commit/03ca27e))
+
+### :factory: New feature(s)
+
+* Add a replay() method. ([5af4ecc](https://github.com/elbywan/wretch/commit/5af4ecc)), closes [#35](https://github.com/elbywan/wretch/issues/35)
+
+### :memo: Documentation update(s)
+
+* More details about the response types in the readme ([270fe16](https://github.com/elbywan/wretch/commit/270fe16))
+
+
+
 <a name="1.4.2"></a>
 ## [1.4.2](https://github.com/elbywan/wretch/compare/1.4.1...1.4.2) (2018-10-21)
 
