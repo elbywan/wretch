@@ -1016,6 +1016,33 @@ wretch("...").middlewares([
 ]).get().res(_ => /* ... */)
 ```
 
+#### Context
+
+If you need to manipulate data within your middleware and expose it for later consumption, a solution could be to pass a named property to the wretch options (*suggested name: `context`*).
+
+Your middleware can then take advantage of that by mutating the object reference.
+
+```js
+const contextMiddleware = next => (url, opts) => {
+  if(opts.context) {
+    // Mutate "context"
+    opts.context.property = "anything"
+  }
+  return next(url, opts)
+}
+
+// Provide the reference to a "context" object
+const context = {}
+const res = await wretch("...")
+  // Pass "context" by reference as an option
+  .options({ context })
+  .middlewares([ contextMiddleware ])
+  .get()
+  .res()
+
+console.log(context.property) // prints "anything"
+```
+
 #### Middleware examples
 
 ```javascript
