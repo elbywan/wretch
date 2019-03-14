@@ -20,7 +20,9 @@ const mockServer = {
 
         server.use(restify.plugins.queryParser())
         server.use(restify.plugins.jsonBodyParser())
-        server.use(restify.plugins.multipartBodyParser())
+        server.use(restify.plugins.multipartBodyParser({
+            mapFiles: true
+        }))
         server.use(restify.plugins.authorizationParser())
         server.pre(cors.preflight)
         server.use(cors.actual)

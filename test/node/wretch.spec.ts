@@ -38,7 +38,8 @@ const fetchPolyfill = (timeout = null) =>
         })
     }
 
-const duckImage = fs.readFileSync(path.resolve(__dirname, "..", "assets", "duck.jpg"))
+const duckImagePath = path.resolve(__dirname, "..", "assets", "duck.jpg")
+const duckImage = fs.readFileSync(duckImagePath)
 
 describe("Wretch", function () {
 
@@ -133,12 +134,17 @@ describe("Wretch", function () {
     it("should send a FormData object", async function () {
         const form = {
             hello: "world",
-            duck: "Muscovy"
+            duck: "Muscovy",
+            duckImage: fs.createReadStream(duckImagePath)
         }
         const decoded = await wretch(`${_URL}/formData/decode`).formData(form).post().json()
-        expect(decoded).toEqual({
+        expect(decoded).toMatchObject({
             hello: "world",
-            duck: "Muscovy"
+            duck: "Muscovy",
+            duckImage: {
+                data: duckImage,
+                type: "Buffer"
+            }
         })
         // form-data package has an implementation which differs from the browser standard.
         const f = { arr: [ 1, 2, 3 ]}
