@@ -37,7 +37,7 @@ var Wretcher = /** @class */ (function () {
     };
     Wretcher.prototype.selfFactory = function (_a) {
         var _b = _a === void 0 ? {} : _a, _c = _b.url, url = _c === void 0 ? this._url : _c, _d = _b.options, options = _d === void 0 ? this._options : _d, _e = _b.catchers, catchers = _e === void 0 ? this._catchers : _e, _f = _b.resolvers, resolvers = _f === void 0 ? this._resolvers : _f, _g = _b.middlewares, middlewares = _g === void 0 ? this._middlewares : _g, _h = _b.deferredChain, deferredChain = _h === void 0 ? this._deferredChain : _h;
-        return new Wretcher(url, options, catchers, resolvers, middlewares, deferredChain);
+        return new Wretcher(url, __assign({}, options), new Map(catchers), resolvers.slice(), middlewares.slice(), deferredChain.slice());
     };
     /**
      * Sets the default fetch options used for every subsequent fetch call.

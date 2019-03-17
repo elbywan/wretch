@@ -27,7 +27,7 @@ export class Wretcher {
     static factory(url = "", options: WretcherOptions = {}) { return new Wretcher(url, options) }
     private selfFactory({ url = this._url, options = this._options, catchers = this._catchers,
                 resolvers = this._resolvers, middlewares = this._middlewares, deferredChain = this._deferredChain } = {}) {
-        return new Wretcher(url, options, catchers, resolvers, middlewares, deferredChain)
+        return new Wretcher(url, {...options}, new Map(catchers), [...resolvers], [...middlewares], [...deferredChain])
     }
 
     /**

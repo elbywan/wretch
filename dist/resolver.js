@@ -3,7 +3,8 @@ import conf from "./config";
 import perfs from "./perfs";
 import { middlewareHelper } from "./middleware";
 export var resolver = function (wretcher) {
-    var url = wretcher._url, catchers = wretcher._catchers, resolvers = wretcher._resolvers, middlewares = wretcher._middlewares, opts = wretcher._options;
+    var url = wretcher._url, _catchers = wretcher._catchers, resolvers = wretcher._resolvers, middlewares = wretcher._middlewares, opts = wretcher._options;
+    var catchers = new Map(_catchers);
     var finalOptions = mix(conf.defaults, opts);
     var fetchController = conf.polyfill("AbortController", { doThrow: false, instance: true });
     if (!finalOptions["signal"] && fetchController) {

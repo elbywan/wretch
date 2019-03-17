@@ -33,11 +33,12 @@ export type ResponseChain = {
 export const resolver = (wretcher: Wretcher) => {
     const {
         _url: url,
-        _catchers: catchers,
+        _catchers: _catchers,
         _resolvers: resolvers,
         _middlewares: middlewares,
         _options: opts
     } = wretcher
+    const catchers = new Map(_catchers)
 
     const finalOptions = mix(conf.defaults, opts)
     const fetchController = conf.polyfill("AbortController", { doThrow: false, instance: true })
