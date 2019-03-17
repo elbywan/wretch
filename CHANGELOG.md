@@ -1,3 +1,27 @@
+<a name="1.5.1"></a>
+## [1.5.1](https://github.com/elbywan/wretch/compare/1.5.0...1.5.1) (2019-03-17)
+
+
+### :arrow_up: Version update(s)
+
+* Upgrade rollup dep ([d890b8a](https://github.com/elbywan/wretch/commit/d890b8a))
+
+### :bug: Bug fix(es)
+
+* Fix mutating catchers propagation to cloned wretchers ([d207027](https://github.com/elbywan/wretch/commit/d207027)), closes [#44](https://github.com/elbywan/wretch/issues/44)
+
+### :memo: Documentation update(s)
+
+* Add the concept of middleware context to the readme. ([50a78c5](https://github.com/elbywan/wretch/commit/50a78c5))
+* Change package kb size displayed in the html ([b3ebb78](https://github.com/elbywan/wretch/commit/b3ebb78))
+
+### :white_check_mark: Test improvement(s)
+
+* CI build on node.js LTS ([90290ab](https://github.com/elbywan/wretch/commit/90290ab))
+* Test form-data with streams. ([92af63a](https://github.com/elbywan/wretch/commit/92af63a))
+
+
+
 <a name="1.5.0"></a>
 # [1.5.0](https://github.com/elbywan/wretch/compare/1.4.2...1.5.0) (2019-02-23)
 
