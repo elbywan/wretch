@@ -433,9 +433,8 @@ Very useful when you need to perform a repetitive action on a specific error cod
 const w = wretch()
   .catcher(404, err => redirect("/routes/notfound", err.message))
   .catcher(500, err => flashMessage("internal.server.error"))
-  .error("SyntaxError", err => log("bad.json"))
 
-// No need to catch 404 or 500 code or the json parsing error, they are already taken care of.
+// No need to catch the 404 or 500 codes, they are already taken care of.
 w.url("http://myapi.com/get/something").get().json(json => /* ... */)
 
 // Default catchers can be overridden if needed.
