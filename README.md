@@ -438,7 +438,11 @@ const w = wretch()
 w.url("http://myapi.com/get/something").get().json(json => /* ... */)
 
 // Default catchers can be overridden if needed.
-w.url("...").notFound(err => /* overrides the default 'redirect' catcher */)
+w
+  .url("http://myapi.com/get/something")
+  .get()
+  .notFound(err => /* overrides the default 'redirect' catcher */)
+  .json(json => /* ... */)
 ```
 
 The original request is passed along the error and can be used in order to perform an additional request.
