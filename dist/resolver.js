@@ -97,7 +97,7 @@ export var resolver = function (wretcher) {
         setTimeout: function (time, controller) {
             if (controller === void 0) { controller = fetchController; }
             timeout.clear();
-            timeout.ref = setTimeout(controller.abort.bind(controller), time);
+            timeout.ref = setTimeout(function () { return controller.abort(); }, time);
             return responseChain;
         },
         /**
