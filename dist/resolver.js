@@ -10,10 +10,21 @@ export var resolver = function (wretcher) {
     if (!finalOptions["signal"] && fetchController) {
         finalOptions["signal"] = fetchController.signal;
     }
+    // Request timeout
+    var timeout = {
+        ref: null,
+        clear: function () {
+            if (timeout.ref) {
+                clearTimeout(timeout.ref);
+                timeout.ref = null;
+            }
+        }
+    };
     // The generated fetch request
     var fetchRequest = middlewareHelper(middlewares)(conf.polyfill("fetch"))(url, finalOptions);
     // Throws on an http error
     var throwingPromise = fetchRequest.then(function (response) {
+        timeout.clear();
         if (!response.ok) {
             return response[conf.errorType || "text"]().then(function (msg) {
                 // Enhances the error object
@@ -29,6 +40,7 @@ export var resolver = function (wretcher) {
     // Wraps the Promise in order to dispatch the error to a matching catcher
     var catchersWrapper = function (promise) {
         return promise.catch(function (err) {
+            timeout.clear();
             if (catchers.has(err.status))
                 return catchers.get(err.status)(err, wretcher);
             else if (catchers.has(err.name))
@@ -84,7 +96,8 @@ export var resolver = function (wretcher) {
          */
         setTimeout: function (time, controller) {
             if (controller === void 0) { controller = fetchController; }
-            setTimeout(function () { return controller.abort(); }, time);
+            timeout.clear();
+            timeout.ref = setTimeout(controller.abort.bind(controller), time);
             return responseChain;
         },
         /**

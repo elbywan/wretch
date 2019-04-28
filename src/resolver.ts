@@ -39,16 +39,26 @@ export const resolver = (wretcher: Wretcher) => {
         _options: opts
     } = wretcher
     const catchers = new Map(_catchers)
-
     const finalOptions = mix(conf.defaults, opts)
     const fetchController = conf.polyfill("AbortController", { doThrow: false, instance: true })
     if(!finalOptions["signal"] && fetchController) {
         finalOptions["signal"] = fetchController.signal
     }
+    // Request timeout
+    const timeout = {
+        ref: null,
+        clear() {
+            if(timeout.ref) {
+                clearTimeout(timeout.ref)
+                timeout.ref = null
+            }
+        }
+    }
     // The generated fetch request
     const fetchRequest = middlewareHelper(middlewares)(conf.polyfill("fetch"))(url, finalOptions)
     // Throws on an http error
     const throwingPromise: Promise<void | WretcherResponse> = fetchRequest.then(response => {
+        timeout.clear()
         if (!response.ok) {
             return response[conf.errorType || "text"]().then(msg => {
                 // Enhances the error object
@@ -64,6 +74,7 @@ export const resolver = (wretcher: Wretcher) => {
     // Wraps the Promise in order to dispatch the error to a matching catcher
     const catchersWrapper = <T>(promise: Promise<T>): Promise<void | T> => {
         return promise.catch(err => {
+            timeout.clear()
             if(catchers.has(err.status))
                 return catchers.get(err.status)(err, wretcher)
             else if(catchers.has(err.name))
@@ -121,7 +132,8 @@ export const resolver = (wretcher: Wretcher) => {
          * @param controller A custom controller
          */
         setTimeout: (time, controller = fetchController) => {
-            setTimeout(() => controller.abort(), time)
+            timeout.clear()
+            timeout.ref = setTimeout(() => controller.abort(), time)
             return responseChain
         },
         /**
