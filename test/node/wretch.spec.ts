@@ -165,6 +165,17 @@ describe("Wretch", function () {
         expect(headRes2.headers.get("content-type")).toBe("application/json")
     })
 
+    it("should preserve existing headers when undefined or null is passed to .headers()", async function () {
+        const headers = { "X-HELLO": "WORLD", "X-Y": "Z" }
+        let req = wretch().headers({ "X-HELLO": "WORLD" })
+        req = req.headers({ "X-Y": "Z" })
+        expect(req._options.headers).toEqual(headers)
+        req = req.headers(null)
+        expect(req._options.headers).toEqual(headers)
+        req = req.headers(undefined)
+        expect(req._options.headers).toEqual(headers)
+    })
+
     it("should catch common error codes", async function () {
         const w = wretch(_URL + "/")
 

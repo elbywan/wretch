@@ -117,7 +117,7 @@ export class Wretcher {
      * @param headerValues An object containing header keys and values
      */
     headers(headerValues: { [headerName: string]: string }) {
-        return this.selfFactory({ options: mix(this._options, { headers: headerValues }) })
+        return this.selfFactory({ options: mix(this._options, { headers: headerValues || {} }) })
     }
 
     /**

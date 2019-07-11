@@ -124,7 +124,7 @@ var Wretcher = /** @class */ (function () {
      * @param headerValues An object containing header keys and values
      */
     Wretcher.prototype.headers = function (headerValues) {
-        return this.selfFactory({ options: mix(this._options, { headers: headerValues }) });
+        return this.selfFactory({ options: mix(this._options, { headers: headerValues || {} }) });
     };
     /**
      * Shortcut to set the "Accept" header.
