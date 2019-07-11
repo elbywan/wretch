@@ -1,6 +1,6 @@
 {
     "name": "wretch",
-    "version": "1.5.2",
+    "version": "1.5.3",
     "description": "A tiny wrapper built around fetch with an intuitive syntax.",
     "keywords": [
         "wretch",

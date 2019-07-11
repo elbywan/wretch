@@ -1,3 +1,17 @@
+<a name="1.5.3"></a>
+## [1.5.3](https://github.com/elbywan/wretch/compare/1.5.2...1.5.3) (2019-07-11)
+
+
+### :arrow_up: Version update(s)
+
+* Upgrade dependencies ([5e77291](https://github.com/elbywan/wretch/commit/5e77291))
+
+### :bug: Bug fix(es)
+
+* Preserve headers on null/undefined argument ([9e3fe0a](https://github.com/elbywan/wretch/commit/9e3fe0a)), closes [#52](https://github.com/elbywan/wretch/issues/52)
+
+
+
 <a name="1.5.2"></a>
 ## [1.5.2](https://github.com/elbywan/wretch/compare/1.5.1...1.5.2) (2019-04-28)
 
@@ -595,6 +609,20 @@
 ### :white_check_mark: Test improvement(s)
 
 * Improve coverage ([5b10a93](https://github.com/elbywan/wretch/commit/5b10a93))
+
+
+
+<a name="0.0.1"></a>
+## [0.0.1](https://github.com/elbywan/wretch/compare/ac4ae15...0.0.1) (2017-10-03)
+
+
+### :arrow_up: Version update(s)
+
+* 0.0.1 tag ([4d6eeed](https://github.com/elbywan/wretch/commit/4d6eeed))
+
+### :factory: New feature(s)
+
+* init ([ac4ae15](https://github.com/elbywan/wretch/commit/ac4ae15))
 
 
 
