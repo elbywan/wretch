@@ -642,7 +642,7 @@ wretch().post({ json: 'body' }, { credentials: "same-origin" })
 wretch().json({ json: 'body'}).options({ credentials: "same-origin" }).post()
 ```
 
-| [get](#getoptions) | [delete](#deleteoptions) | [put](#putbody-options) | [patch](#patchbody-options) | [post](#postbody-options) | [head](#headoptions) | [opts](#optsopts) |
+| [get](#getoptions) | [delete](#deleteoptions) | [put](#putbody-options) | [patch](#patchbody-options) | [post](#postbody-options) | [head](#headoptions) | [opts](#optsoptions) |
 |-----|-----|-----|-----|-----|-----|-----|
 
 #### get(options)
