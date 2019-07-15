@@ -642,8 +642,8 @@ wretch().post({ json: 'body' }, { credentials: "same-origin" })
 wretch().json({ json: 'body'}).options({ credentials: "same-origin" }).post()
 ```
 
-| [get](#getoptions) | [delete](#deleteoptions) | [put](#putbody-options) | [patch](#patchbody-options) | [post](#postbody-options) | [head](#headoptions) | [opts](#optsoptions) |
-|-----|-----|-----|-----|-----|-----|-----|
+| [get](#getoptions) | [delete](#deleteoptions) | [put](#putbody-options) | [patch](#patchbody-options) | [post](#postbody-options) | [head](#headoptions) | [opts](#optsoptions) | [replay](#replayoptions)
+|-----|-----|-----|-----|-----|-----|-----|-----|
 
 #### get(options)
 
@@ -698,6 +698,14 @@ Performs an options request.
 
 ```js
 wretch("...").opts()
+```
+
+#### replay(options)
+
+Replay a request.
+
+```js
+wretch("...").replay()
 ```
 
 ## Catchers
