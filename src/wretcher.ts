@@ -190,12 +190,13 @@ export class Wretcher {
     }
 
     private method(method, options = {}, body = null) {
-        const baseWretcher =
+        let baseWretcher =
             !body ? this :
             typeof body === "object" ? this.json(body) :
             this.body(body)
+        baseWretcher = baseWretcher.options({ ...options, method })
         const deferredWretcher = baseWretcher._deferredChain.reduce((acc: Wretcher, curr) => curr(acc, acc._url, acc._options), baseWretcher)
-        return resolver(deferredWretcher.options({ ...options, method }))
+        return resolver(deferredWretcher)
     }
 
     /**
