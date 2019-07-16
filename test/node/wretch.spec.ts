@@ -25,7 +25,7 @@ const allRoutes = (obj, type, action, opts?, body?) => Promise.all([
 const fetchPolyfill = (timeout = null) =>
     function (url, opts) {
         performance.mark(url + " - begin")
-        const { fetch } = abortableFetch(nodeFetch)
+        const { fetch } = abortableFetch(nodeFetch) as any
         return fetch(url, opts).then(_ => {
             performance.mark(url + " - end")
             const measure = () => performance.measure(_.url, url + " - begin", url + " - end")
