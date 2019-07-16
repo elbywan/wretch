@@ -196,8 +196,9 @@ var Wretcher = /** @class */ (function () {
         var baseWretcher = !body ? this :
             typeof body === "object" ? this.json(body) :
                 this.body(body);
+        baseWretcher = baseWretcher.options(__assign({}, options, { method: method }));
         var deferredWretcher = baseWretcher._deferredChain.reduce(function (acc, curr) { return curr(acc, acc._url, acc._options); }, baseWretcher);
-        return resolver(deferredWretcher.options(__assign({}, options, { method: method })));
+        return resolver(deferredWretcher);
     };
     /**
      * Performs a get request.

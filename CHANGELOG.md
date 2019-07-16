@@ -1,3 +1,23 @@
+<a name="1.5.4"></a>
+## [1.5.4](https://github.com/elbywan/wretch/compare/1.5.3...1.5.4) (2019-07-16)
+
+
+### :arrow_up: Version update(s)
+
+* Upgrade packages to fix vulnerabilities. ([dced4c1](https://github.com/elbywan/wretch/commit/dced4c1))
+
+### :memo: Documentation update(s)
+
+* Fix readme opts link ([5595ef7](https://github.com/elbywan/wretch/commit/5595ef7))
+
+### :white_check_mark: Test improvement(s)
+
+* Add missing browser test ([2f5498c](https://github.com/elbywan/wretch/commit/2f5498c))
+* Add missing browser tests ([9bd7e4f](https://github.com/elbywan/wretch/commit/9bd7e4f))
+* Fix browserstack browser & os matrix. ([451ef23](https://github.com/elbywan/wretch/commit/451ef23))
+
+
+
 <a name="1.5.3"></a>
 ## [1.5.3](https://github.com/elbywan/wretch/compare/1.5.2...1.5.3) (2019-07-11)
 
