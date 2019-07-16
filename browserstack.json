@@ -3,9 +3,29 @@
     "test_framework": "jasmine2",
     "exit_with_fail": true,
     "browsers": [
-      "firefox_latest",
-      "chrome_latest",
-      "safari_latest",
-      "edge_latest"
+      {
+        "browser": "firefox",
+        "browser_version": "68.0",
+        "os": "Windows",
+        "os_version": "10"
+      },
+      {
+        "browser": "chrome",
+        "browser_version": "75.0",
+        "os": "Windows",
+        "os_version": "10"
+      },
+      {
+        "browser": "edge",
+        "browser_version": "18.0",
+        "os": "Windows",
+        "os_version": "10"
+      },
+      {
+        "browser": "safari",
+        "browser_version": "12.1",
+        "os": "OS X",
+        "os_version": "Mojave"
+      }
     ]
 }
