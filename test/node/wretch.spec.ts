@@ -487,6 +487,8 @@ describe("Wretch", function () {
     it("should chain actions that will be performed just before the request is sent", async function () {
         const w = wretch(_URL + "/basicauth")
             .defer((w, url, opts) => {
+                expect(opts.method).toBe('GET')
+                expect(opts.q).toBe('a')
                 expect(url).toBe(_URL + "/basicauth")
                 return w.auth("toto")
             })
@@ -494,7 +496,7 @@ describe("Wretch", function () {
 
         const result = await w
             .options({ token: "Basic d3JldGNoOnJvY2tz" })
-            .get()
+            .get({ q: 'a' })
             .text()
         expect(result).toBe("ok")
     })
