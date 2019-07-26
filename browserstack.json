@@ -6,8 +6,8 @@
       {
         "browser": "firefox",
         "browser_version": "68.0",
-        "os": "Windows",
-        "os_version": "10"
+        "os": "OS X",
+        "os_version": "Mojave"
       },
       {
         "browser": "chrome",
