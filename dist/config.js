@@ -1,3 +1,10 @@
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 var config = {
     // Default options
     defaults: {},
@@ -23,7 +30,7 @@ var config = {
             (typeof global !== "undefined" ? global[p] : null);
         if (doThrow && !res)
             throw new Error(p + " is not defined");
-        return instance && res ? new (res.bind.apply(res, [void 0].concat(args)))() : res;
+        return instance && res ? new (res.bind.apply(res, __spreadArrays([void 0], args)))() : res;
     }
 };
 export default config;

@@ -9,6 +9,13 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 import { mix } from "./mix";
 import conf from "./config";
 import { resolver } from "./resolver";
@@ -37,7 +44,7 @@ var Wretcher = /** @class */ (function () {
     };
     Wretcher.prototype.selfFactory = function (_a) {
         var _b = _a === void 0 ? {} : _a, _c = _b.url, url = _c === void 0 ? this._url : _c, _d = _b.options, options = _d === void 0 ? this._options : _d, _e = _b.catchers, catchers = _e === void 0 ? this._catchers : _e, _f = _b.resolvers, resolvers = _f === void 0 ? this._resolvers : _f, _g = _b.middlewares, middlewares = _g === void 0 ? this._middlewares : _g, _h = _b.deferredChain, deferredChain = _h === void 0 ? this._deferredChain : _h;
-        return new Wretcher(url, __assign({}, options), new Map(catchers), resolvers.slice(), middlewares.slice(), deferredChain.slice());
+        return new Wretcher(url, __assign({}, options), new Map(catchers), __spreadArrays(resolvers), __spreadArrays(middlewares), __spreadArrays(deferredChain));
     };
     /**
      * Sets the default fetch options used for every subsequent fetch call.
@@ -68,7 +75,7 @@ var Wretcher = /** @class */ (function () {
      * @param polyfills An object containing the polyfills.
      */
     Wretcher.prototype.polyfills = function (polyfills) {
-        conf.polyfills = __assign({}, conf.polyfills, polyfills);
+        conf.polyfills = __assign(__assign({}, conf.polyfills), polyfills);
         return this;
     };
     /**
@@ -162,7 +169,7 @@ var Wretcher = /** @class */ (function () {
      * @param controller : An AbortController
      */
     Wretcher.prototype.signal = function (controller) {
-        return this.selfFactory({ options: __assign({}, this._options, { signal: controller.signal }) });
+        return this.selfFactory({ options: __assign(__assign({}, this._options), { signal: controller.signal }) });
     };
     /**
      * Program a resolver to perform response chain tasks automatically.
@@ -170,7 +177,7 @@ var Wretcher = /** @class */ (function () {
      */
     Wretcher.prototype.resolve = function (doResolve, clear) {
         if (clear === void 0) { clear = false; }
-        return this.selfFactory({ resolvers: clear ? [doResolve] : this._resolvers.concat([doResolve]) });
+        return this.selfFactory({ resolvers: clear ? [doResolve] : __spreadArrays(this._resolvers, [doResolve]) });
     };
     /**
      * Defer wretcher methods that will be chained and called just before the request is performed.
@@ -178,7 +185,7 @@ var Wretcher = /** @class */ (function () {
     Wretcher.prototype.defer = function (callback, clear) {
         if (clear === void 0) { clear = false; }
         return this.selfFactory({
-            deferredChain: clear ? [callback] : this._deferredChain.concat([callback])
+            deferredChain: clear ? [callback] : __spreadArrays(this._deferredChain, [callback])
         });
     };
     /**
@@ -187,7 +194,7 @@ var Wretcher = /** @class */ (function () {
     Wretcher.prototype.middlewares = function (middlewares, clear) {
         if (clear === void 0) { clear = false; }
         return this.selfFactory({
-            middlewares: clear ? middlewares : this._middlewares.concat(middlewares)
+            middlewares: clear ? middlewares : __spreadArrays(this._middlewares, middlewares)
         });
     };
     Wretcher.prototype.method = function (method, options, body) {
@@ -196,7 +203,7 @@ var Wretcher = /** @class */ (function () {
         var baseWretcher = !body ? this :
             typeof body === "object" ? this.json(body) :
                 this.body(body);
-        baseWretcher = baseWretcher.options(__assign({}, options, { method: method }));
+        baseWretcher = baseWretcher.options(__assign(__assign({}, options), { method: method }));
         var deferredWretcher = baseWretcher._deferredChain.reduce(function (acc, curr) { return curr(acc, acc._url, acc._options); }, baseWretcher);
         return resolver(deferredWretcher);
     };
@@ -253,7 +260,7 @@ var Wretcher = /** @class */ (function () {
      * @param contents The body contents
      */
     Wretcher.prototype.body = function (contents) {
-        return this.selfFactory({ options: __assign({}, this._options, { body: contents }) });
+        return this.selfFactory({ options: __assign(__assign({}, this._options), { body: contents }) });
     };
     /**
      * Sets the content type header, stringifies an object and sets the request body.
