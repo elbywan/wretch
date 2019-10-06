@@ -8,7 +8,7 @@
   <a href="https://www.npmjs.com/package/wretch"><img alt="npm-badge" src="https://img.shields.io/npm/v/wretch.svg?colorB=ff733e" height="20"></a>
   <a href="https://www.npmjs.com/package/wretch"><img alt="npm-downloads-badge" src="https://img.shields.io/npm/dm/wretch.svg?colorB=53aabb" height="20"></a>
   <a href="https://coveralls.io/github/elbywan/wretch?branch=master"><img src="https://coveralls.io/repos/github/elbywan/wretch/badge.svg?branch=master" alt="Coverage Status"></a>
-  <a href="https://www.browserstack.com/automate/public-build/Y0ZoenBIa3lqRCtqTFBYV3A4a2dybVk3TUJXZHFFbFRmdFBiczVXbWJFST0tLW9mbEFSOFE3YlVKV0d5cHNsQ3hHQVE9PQ==--46a969ee3fb5db55f2641aee799838ed1b2f8ef6"><img src='https://www.browserstack.com/automate/badge.svg?badge_key=Y0ZoenBIa3lqRCtqTFBYV3A4a2dybVk3TUJXZHFFbFRmdFBiczVXbWJFST0tLW9mbEFSOFE3YlVKV0d5cHNsQ3hHQVE9PQ==--46a969ee3fb5db55f2641aee799838ed1b2f8ef6'/></a>
+  <a href="https://www.browserstack.com/automate/public-build/eVNpU3lNZUFuR1BTampDcXR4UnhQM0Zvb0ZTcTBBdDI0ZFdqazFHcENlWT0tLUdqM05PR0Y4OWZyR05IOUN1MWFFZ2c9PQ==--6af898b830d4bcdc3ba0ad3d4be45acdb273d96c"><img src='https://www.browserstack.com/automate/badge.svg?badge_key=eVNpU3lNZUFuR1BTampDcXR4UnhQM0Zvb0ZTcTBBdDI0ZFdqazFHcENlWT0tLUdqM05PR0Y4OWZyR05IOUN1MWFFZ2c9PQ==--6af898b830d4bcdc3ba0ad3d4be45acdb273d96c'/></a>
   <a href="https://bundlephobia.com/result?p=wretch"><img src='https://img.shields.io/bundlephobia/minzip/wretch.svg'/></a>
   <a href="https://github.com/elbywan/wretch/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license-badge" height="20"></a>
   <a href="https://www.paypal.me/elbywan"><img src="https://img.shields.io/badge/buy%20me%20a-coffee-yellow.svg" alt="coffee-badge" height="20"></a>
