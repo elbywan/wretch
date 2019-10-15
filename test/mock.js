@@ -41,6 +41,10 @@ const mockServer = {
             res.end()
         })
 
+        server.get("/json/null", (req,res) => {
+            res.json(null)
+        })
+
         server.opts("/options", (req, res) => {
             res.header("Allow", "OPTIONS")
             res.end()

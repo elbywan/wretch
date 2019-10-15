@@ -87,9 +87,9 @@ export const resolver = (wretcher: Wretcher) => {
     type BodyParser = <Type>(funName: string | null) => <Result = void>(cb?: (type: Type) => Result) => Promise<Result>
     const bodyParser: BodyParser = <T>(funName) => <R>(cb) => funName ?
         // If a callback is provided, then callback with the body result otherwise return the parsed body itself.
-        catchersWrapper(throwingPromise.then(_ => _ && _[funName]()).then(_ => _ && cb && cb(_) || _)) :
+        catchersWrapper(throwingPromise.then(_ => _ && _[funName]()).then(_ => cb ? cb(_) : _)) :
         // No body parsing method - return the response
-        catchersWrapper(throwingPromise.then(_ => _ && cb && cb(_) || _))
+        catchersWrapper(throwingPromise.then(_ => cb ? cb(_) : _))
 
     const responseChain: ResponseChain = {
         /**

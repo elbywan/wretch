@@ -17,7 +17,7 @@ export default {
             typescript: require("typescript"),
             importHelpers: true
         }),
-        nodeResolve({ jsnext: true, main: true }),
+        nodeResolve(),
         uglify({}, minify)
     ],
     external: [ "url" ]

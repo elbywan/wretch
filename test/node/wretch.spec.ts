@@ -514,6 +514,12 @@ describe("Wretch", function () {
 
         expect(result).toBe("ok")
     })
+
+    it("should handle falsey json", async function () {
+        expect(await wretch(`${_URL}/json/null`).get().json()).toEqual(null)
+        expect(await wretch(`${_URL}/json/null`).get().json(_ => true)).toEqual(true)
+        expect(await wretch(`${_URL}/json/null`).get().json(_ => false)).toEqual(false)
+    })
 })
 
 describe("Mix", function () {

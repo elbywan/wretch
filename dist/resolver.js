@@ -51,9 +51,9 @@ export var resolver = function (wretcher) {
     };
     var bodyParser = function (funName) { return function (cb) { return funName ?
         // If a callback is provided, then callback with the body result otherwise return the parsed body itself.
-        catchersWrapper(throwingPromise.then(function (_) { return _ && _[funName](); }).then(function (_) { return _ && cb && cb(_) || _; })) :
+        catchersWrapper(throwingPromise.then(function (_) { return _ && _[funName](); }).then(function (_) { return cb ? cb(_) : _; })) :
         // No body parsing method - return the response
-        catchersWrapper(throwingPromise.then(function (_) { return _ && cb && cb(_) || _; })); }; };
+        catchersWrapper(throwingPromise.then(function (_) { return cb ? cb(_) : _; })); }; };
     var responseChain = {
         /**
          * Retrieves the raw result as a promise.
