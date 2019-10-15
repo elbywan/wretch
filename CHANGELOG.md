@@ -1,3 +1,26 @@
+<a name="1.5.5"></a>
+## [1.5.5](https://github.com/elbywan/wretch/compare/1.5.4...1.5.5) (2019-10-15)
+
+
+### :arrow_up: Version update(s)
+
+* Upgrade packages ([05c0b9e](https://github.com/elbywan/wretch/commit/05c0b9e))
+
+### :bug: Bug fix(es)
+
+* Fix handling falsey values for body callback and payload. ([2d99a4f](https://github.com/elbywan/wretch/commit/2d99a4f)), closes [#58](https://github.com/elbywan/wretch/issues/58)
+
+### :memo: Documentation update(s)
+
+* Update readme browserstack badge. ([eddfd91](https://github.com/elbywan/wretch/commit/eddfd91))
+
+### :white_check_mark: Test improvement(s)
+
+* Restore latest browserstack matrix and add an exceptio ([ef09fd8](https://github.com/elbywan/wretch/commit/ef09fd8))
+* Use macos firefox on browserstack ([e51048e](https://github.com/elbywan/wretch/commit/e51048e))
+
+
+
 <a name="1.5.4"></a>
 ## [1.5.4](https://github.com/elbywan/wretch/compare/1.5.3...1.5.4) (2019-07-16)
 
