@@ -22,7 +22,7 @@
 
 <br>
 
-##### Wretch 1.5 is now live 🎉 ! Please check out the [changelog](https://github.com/elbywan/wretch/blob/master/CHANGELOG.md) after each update for new features and breaking changes. If you want to try out the hot stuff, please look into the [dev](https://github.com/elbywan/wretch/tree/dev) branch.
+##### Wretch 1.6 is now live 🎉 ! Please check out the [changelog](https://github.com/elbywan/wretch/blob/master/CHANGELOG.md) after each update for new features and breaking changes. If you want to try out the hot stuff, please look into the [dev](https://github.com/elbywan/wretch/tree/dev) branch.
 
 ##### A collection of middlewares is available through the [wretch-middlewares](https://github.com/elbywan/wretch-middlewares) package! 📦
 
@@ -197,7 +197,7 @@ wretch().polyfills({
 
 # Usage
 
-**Wretch is bundled using the UMD format (@`dist/bundle/wretch.js`) alongside es2015 modules (@`dist/index.js`) and typescript definitions.**
+**Wretch is bundled using the UMD format (@`dist/bundle/wretch.js`), ESM format (@`dist/bundle/wretch.esm.js`) alongside es2015 modules (@`dist/index.js`) and typescript definitions.**
 
 ## Import
 

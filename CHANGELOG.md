@@ -1,3 +1,14 @@
+<a name="1.6.0"></a>
+# [1.6.0](https://github.com/elbywan/wretch/compare/1.5.5...1.6.0) (2019-11-27)
+
+
+### :factory: New feature(s)
+
+* Add esm bundle. #63 ([9655b46](https://github.com/elbywan/wretch/commit/9655b46)), closes [#63](https://github.com/elbywan/wretch/issues/63)
+* Add fetch error catcher. #63 ([1794327](https://github.com/elbywan/wretch/commit/1794327)), closes [#63](https://github.com/elbywan/wretch/issues/63)
+
+
+
 <a name="1.5.5"></a>
 ## [1.5.5](https://github.com/elbywan/wretch/compare/1.5.4...1.5.5) (2019-10-15)
 
