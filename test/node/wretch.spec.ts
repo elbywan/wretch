@@ -214,11 +214,30 @@ describe("Wretch", function () {
             .notFound(_ => check++)
             .error(444, _ => check++)
             .unauthorized(_ => check++)
+            .fetchError(_ => check++)
             .res(_ => expect(_).toBe(undefined))
         expect(check).toBe(1)
+
+        wretch().polyfills({
+            fetch: () => Promise.reject("Error")
+        })
+
+        check = 0
+        await wretch(`${_URL}/444`)
+            .get()
+            .notFound(_ => check++)
+            .error(444, _ => check++)
+            .unauthorized(_ => check++)
+            .fetchError(_ => check--)
+            .res(_ => expect(_).toBe(undefined))
+        expect(check).toBe(-1)
     })
 
     it("should set and catch errors with global catchers", async function () {
+        wretch().polyfills({
+            fetch: fetchPolyfill()
+        })
+
         let check = 0
         const w = wretch(_URL)
             .catcher(404, err => check++)

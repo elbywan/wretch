@@ -27,7 +27,12 @@ export type ResponseChain = {
     notFound: (cb: WretcherErrorCallback) => ResponseChain,
     timeout: (cb: WretcherErrorCallback) => ResponseChain,
     internalError: (cb: WretcherErrorCallback) => ResponseChain,
+    fetchError: (cb: WretcherErrorCallback) => ResponseChain,
     onAbort: (cb: WretcherErrorCallback) => ResponseChain
+}
+
+class WretchErrorWrapper {
+    constructor(public error: any) {}
 }
 
 export const resolver = (wretcher: Wretcher) => {
@@ -57,30 +62,37 @@ export const resolver = (wretcher: Wretcher) => {
     // The generated fetch request
     const fetchRequest = middlewareHelper(middlewares)(conf.polyfill("fetch"))(url, finalOptions)
     // Throws on an http error
-    const throwingPromise: Promise<void | WretcherResponse> = fetchRequest.then(response => {
-        timeout.clear()
-        if (!response.ok) {
-            return response[conf.errorType || "text"]().then(msg => {
-                // Enhances the error object
-                const err = new Error(msg)
-                err[conf.errorType || "text"] = msg
-                err["status"] = response.status
-                err["response"] = response
-                throw err
-            })
-        }
-        return response
-    })
+    const throwingPromise: Promise<void | WretcherResponse> = fetchRequest
+        .catch(error => {
+            throw new WretchErrorWrapper(error)
+        })
+        .then(response => {
+            timeout.clear()
+            if (!response.ok) {
+                return response[conf.errorType || "text"]().then(msg => {
+                    // Enhances the error object
+                    const err = new Error(msg)
+                    err[conf.errorType || "text"] = msg
+                    err["status"] = response.status
+                    err["response"] = response
+                    throw err
+                })
+            }
+            return response
+        })
     // Wraps the Promise in order to dispatch the error to a matching catcher
     const catchersWrapper = <T>(promise: Promise<T>): Promise<void | T> => {
         return promise.catch(err => {
             timeout.clear()
-            if(catchers.has(err.status))
-                return catchers.get(err.status)(err, wretcher)
-            else if(catchers.has(err.name))
-                return catchers.get(err.name)(err, wretcher)
+            const error = err instanceof WretchErrorWrapper ? err.error : err
+            if(err instanceof WretchErrorWrapper && catchers.has("__fromFetch"))
+                return catchers.get("__fromFetch")(error, wretcher)
+            else if(catchers.has(error.status))
+                return catchers.get(error.status)(error, wretcher)
+            else if(catchers.has(error.name))
+                return catchers.get(error.name)(error, wretcher)
             else
-                throw err
+                throw error
         })
     }
     // Enforces the proper promise type when a body parsing method is called.
@@ -171,6 +183,10 @@ export const resolver = (wretcher: Wretcher) => {
          * Catches an internal server error (http code 500) and performs a callback.
          */
         internalError: cb => responseChain.error(500, cb),
+        /**
+         * Catches errors thrown when calling the fetch function and performs a callback.
+         */
+        fetchError: cb => responseChain.error("__fromFetch", cb),
         /**
          * Catches an AbortError and performs a callback.
          */

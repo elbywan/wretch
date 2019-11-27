@@ -30,6 +30,7 @@ export declare type ResponseChain = {
     notFound: (cb: WretcherErrorCallback) => ResponseChain;
     timeout: (cb: WretcherErrorCallback) => ResponseChain;
     internalError: (cb: WretcherErrorCallback) => ResponseChain;
+    fetchError: (cb: WretcherErrorCallback) => ResponseChain;
     onAbort: (cb: WretcherErrorCallback) => ResponseChain;
 };
 export declare const resolver: (wretcher: Wretcher) => ResponseChain & Promise<any>;

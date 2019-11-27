@@ -2,6 +2,12 @@ import { mix } from "./mix";
 import conf from "./config";
 import perfs from "./perfs";
 import { middlewareHelper } from "./middleware";
+var WretchErrorWrapper = /** @class */ (function () {
+    function WretchErrorWrapper(error) {
+        this.error = error;
+    }
+    return WretchErrorWrapper;
+}());
 export var resolver = function (wretcher) {
     var url = wretcher._url, _catchers = wretcher._catchers, resolvers = wretcher._resolvers, middlewares = wretcher._middlewares, opts = wretcher._options;
     var catchers = new Map(_catchers);
@@ -23,7 +29,11 @@ export var resolver = function (wretcher) {
     // The generated fetch request
     var fetchRequest = middlewareHelper(middlewares)(conf.polyfill("fetch"))(url, finalOptions);
     // Throws on an http error
-    var throwingPromise = fetchRequest.then(function (response) {
+    var throwingPromise = fetchRequest
+        .catch(function (error) {
+        throw new WretchErrorWrapper(error);
+    })
+        .then(function (response) {
         timeout.clear();
         if (!response.ok) {
             return response[conf.errorType || "text"]().then(function (msg) {
@@ -41,12 +51,15 @@ export var resolver = function (wretcher) {
     var catchersWrapper = function (promise) {
         return promise.catch(function (err) {
             timeout.clear();
-            if (catchers.has(err.status))
-                return catchers.get(err.status)(err, wretcher);
-            else if (catchers.has(err.name))
-                return catchers.get(err.name)(err, wretcher);
+            var error = err instanceof WretchErrorWrapper ? err.error : err;
+            if (err instanceof WretchErrorWrapper && catchers.has("__fromFetch"))
+                return catchers.get("__fromFetch")(error, wretcher);
+            else if (catchers.has(error.status))
+                return catchers.get(error.status)(error, wretcher);
+            else if (catchers.has(error.name))
+                return catchers.get(error.name)(error, wretcher);
             else
-                throw err;
+                throw error;
         });
     };
     var bodyParser = function (funName) { return function (cb) { return funName ?
@@ -135,6 +148,10 @@ export var resolver = function (wretcher) {
          * Catches an internal server error (http code 500) and performs a callback.
          */
         internalError: function (cb) { return responseChain.error(500, cb); },
+        /**
+         * Catches errors thrown when calling the fetch function and performs a callback.
+         */
+        fetchError: function (cb) { return responseChain.error("__fromFetch", cb); },
         /**
          * Catches an AbortError and performs a callback.
          */

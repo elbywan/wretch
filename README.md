@@ -706,7 +706,7 @@ wretch("...").opts()
 
 *Catchers can be chained.*
 
-| [badRequest](#badrequestcb-error-wretchererror-originalrequest-wretcher--any) | [unauthorized](#unauthorizedcb-error-wretchererror-originalrequest-wretcher--any) | [forbidden](#forbiddencb-error-wretchererror-originalrequest-wretcher--any) | [notFound](#notfoundcb-error-wretchererror-originalrequest-wretcher--any) | [timeout](#timeoutcb-error-wretchererror-originalrequest-wretcher--any) | [internalError](#internalerrorcb-error-wretchererror-originalrequest-wretcher--any) | [error](#errorerrorid-number--string-cb-error-wretchererror-originalrequest-wretcher--any) |
+| [badRequest](#badrequestcb-error-wretchererror-originalrequest-wretcher--any) | [unauthorized](#unauthorizedcb-error-wretchererror-originalrequest-wretcher--any) | [forbidden](#forbiddencb-error-wretchererror-originalrequest-wretcher--any) | [notFound](#notfoundcb-error-wretchererror-originalrequest-wretcher--any) | [timeout](#timeoutcb-error-wretchererror-originalrequest-wretcher--any) | [internalError](#internalerrorcb-error-wretchererror-originalrequest-wretcher--any) | [error](#errorerrorid-number--string-cb-error-wretchererror-originalrequest-wretcher--any) | [fetchError](#fetcherrorcb-error-networkerror-originalrequest-wretcher--any)
 |-----|-----|-----|-----|-----|-----|-----|
 
 ```ts
@@ -723,6 +723,7 @@ wretch("...")
   .timeout(err => console.log(err.status))
   .internalError(err => console.log(err.status))
   .error(418, err => console.log(err.status))
+  .fetchError(err => console.log(err))
   .res()
 ```
 
@@ -753,6 +754,10 @@ Syntactic sugar for `error(500, cb)`.
 #### error(errorId: number | string, cb: (error: WretcherError, originalRequest: Wretcher) => any)
 
 Catches a specific error given its code or name and perform the callback.
+
+#### fetchError(cb: (error: NetworkError, originalRequest: Wretcher) => any)
+
+Catches any error thrown by the fetch function and perform the callback.
 
 ---------
 
