@@ -334,7 +334,9 @@ function convertFormData(
                 !recursive.includes(key)
             )
         ) {
-            convertFormData(value, recursive, formData, [...ancestors, key])
+            if(value !== null) {
+                convertFormData(value, recursive, formData, [...ancestors, key])
+            }
         } else {
             formData.append(formKey, value)
         }

@@ -338,7 +338,9 @@ function convertFormData(formObject, recursive, formData, ancestors) {
             typeof value === "object" &&
             (!(recursive instanceof Array) ||
                 !recursive.includes(key))) {
-            convertFormData(value, recursive, formData, __spreadArrays(ancestors, [key]));
+            if (value !== null) {
+                convertFormData(value, recursive, formData, __spreadArrays(ancestors, [key]));
+            }
         }
         else {
             formData.append(formKey, value);

@@ -141,7 +141,8 @@ describe("Wretch", function () {
                 beak: {
                     color: "yellow"
                 },
-                nbOfLegs: 2
+                nbOfLegs: 2,
+                nullProp: null
             }
         }
         let decoded = await wretch(`${_URL}/formData/decode`)
