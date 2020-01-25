@@ -578,7 +578,7 @@ wretch().polyfills({
 
 *A body type is only needed when performing put/patch/post requests with a body.*
 
-| [body](#bodycontents-any) | [json](#jsonjsobject-object) | [formData](#formdataformobject-object) | [formUrl](#formurlinput--object--string) |
+| [body](#bodycontents-any) | [json](#jsonjsobject-object) | [formData](#formdataformobject-object-recursive-string--boolean--false) | [formUrl](#formurlinput--object--string) |
 |-----|-----|-----|-----|
 
 #### body(contents: any)
