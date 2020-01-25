@@ -14,10 +14,10 @@ export declare class Wretcher {
     _url: string;
     _options: WretcherOptions;
     _catchers: Map<number | string, (error: WretcherError, originalRequest: Wretcher) => void>;
-    _resolvers: Array<(resolver: ResponseChain, originalRequest: Wretcher) => any>;
+    _resolvers: ((resolver: ResponseChain, originalRequest: Wretcher) => any)[];
     _middlewares: ConfiguredMiddleware[];
     _deferredChain: DeferredCallback[];
-    protected constructor(_url: string, _options: WretcherOptions, _catchers?: Map<number | string, (error: WretcherError, originalRequest: Wretcher) => void>, _resolvers?: Array<(resolver: ResponseChain, originalRequest: Wretcher) => any>, _middlewares?: ConfiguredMiddleware[], _deferredChain?: DeferredCallback[]);
+    protected constructor(_url: string, _options: WretcherOptions, _catchers?: Map<number | string, (error: WretcherError, originalRequest: Wretcher) => void>, _resolvers?: ((resolver: ResponseChain, originalRequest: Wretcher) => any)[], _middlewares?: ConfiguredMiddleware[], _deferredChain?: DeferredCallback[]);
     static factory(url?: string, options?: WretcherOptions): Wretcher;
     private selfFactory;
     /**

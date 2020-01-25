@@ -20,7 +20,7 @@ export class Wretcher {
         public _url: string,
         public _options: WretcherOptions,
         public _catchers: Map<number | string, (error: WretcherError, originalRequest: Wretcher) => void> = new Map(),
-        public _resolvers: Array<(resolver: ResponseChain, originalRequest: Wretcher) => any> = [],
+        public _resolvers: ((resolver: ResponseChain, originalRequest: Wretcher) => any)[] = [],
         public _middlewares: ConfiguredMiddleware[] = [],
         public _deferredChain: DeferredCallback[] = []) {}
 

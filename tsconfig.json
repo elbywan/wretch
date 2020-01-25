@@ -8,7 +8,8 @@
         "declarationDir": "dist",
         "noImplicitAny": false,
         "sourceMap": true,
-        "inlineSources": true
+        "inlineSources": true,
+        "moduleResolution": "node"
     },
     "include": [
         "src/**/*"
