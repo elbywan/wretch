@@ -1,3 +1,17 @@
+<a name="1.7.0"></a>
+# [1.7.0](https://github.com/elbywan/wretch/compare/1.6.0...1.7.0) (2020-01-25)
+
+
+### :arrow_up: Version update(s)
+
+* Upgrade packages ([a68d94e](https://github.com/elbywan/wretch/commit/a68d94e))
+
+### :factory: New feature(s)
+
+* Support nested objects in formData. #68 ([90d9555](https://github.com/elbywan/wretch/commit/90d9555)), closes [#68](https://github.com/elbywan/wretch/issues/68)
+
+
+
 <a name="1.6.0"></a>
 # [1.6.0](https://github.com/elbywan/wretch/compare/1.5.5...1.6.0) (2019-11-27)
 
@@ -5,7 +19,7 @@
 ### :factory: New feature(s)
 
 * Add esm bundle. #63 ([9655b46](https://github.com/elbywan/wretch/commit/9655b46)), closes [#63](https://github.com/elbywan/wretch/issues/63)
-* Add fetch error catcher. #63 ([1794327](https://github.com/elbywan/wretch/commit/1794327)), closes [#63](https://github.com/elbywan/wretch/issues/63)
+* Add fetch error catcher. #62 ([96a147c](https://github.com/elbywan/wretch/commit/96a147c)), closes [#62](https://github.com/elbywan/wretch/issues/62)
 
 
 
