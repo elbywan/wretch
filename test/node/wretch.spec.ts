@@ -132,26 +132,75 @@ describe("Wretch", function () {
     })
 
     it("should send a FormData object", async function () {
-        const form = {
+        // Test with a nested object with an excluded field.
+        let form : any = {
             hello: "world",
             duck: "Muscovy",
-            duckImage: fs.createReadStream(duckImagePath)
+            duckImage: fs.createReadStream(duckImagePath),
+            duckProperties: {
+                beak: {
+                    color: "yellow"
+                },
+                nbOfLegs: 2
+            }
         }
-        const decoded = await wretch(`${_URL}/formData/decode`).formData(form).post().json()
+        let decoded = await wretch(`${_URL}/formData/decode`)
+            .formData(form, ["duckImage"])
+            .post()
+            .json()
         expect(decoded).toMatchObject({
             hello: "world",
             duck: "Muscovy",
             duckImage: {
                 data: duckImage,
                 type: "Buffer"
-            }
+            },
+            "duckProperties[beak][color]": "yellow",
+            "duckProperties[nbOfLegs]": "2"
         })
-        // form-data package has an implementation which differs from the browser standard.
+
+        // Test with full nesting.
+        form = {
+            hello: "world",
+            nested: {
+                property: 1
+            }
+        }
+        decoded = await wretch(`${_URL}/formData/decode`)
+            .formData(form, true)
+            .post()
+            .json()
+        expect(decoded).toMatchObject({
+            hello: "world"
+        })
+
+        // Test without nesting.
+        form = {
+            hello: "world",
+            // Unfortunately, form-data has issues casting objects to strings.
+            // This means that we cannot test this properly for now…
+            // See: https://github.com/form-data/form-data/pull/362
+            // nested: {
+            //     property: 1
+            // }
+        }
+        decoded = await wretch(`${_URL}/formData/decode`)
+            .formData(form)
+            .post()
+            .json()
+        expect(decoded).toMatchObject({
+            hello: "world"
+        })
+
+        // Test for arrays.
         const f = { arr: [ 1, 2, 3 ]}
         const d = await wretch(`${_URL}/formData/decode`).formData(f).post().json()
-        // expect(d).toEqual({
-        //     "arr[]": [1, 2, 3]
-        // })
+        expect(d).toEqual({
+            // browser FormData output:
+            // "arr[]": [1, 2, 3]
+            // form-data package has an implementation which differs from the browser standard.
+            "arr[]": "3"
+        })
     })
 
     it("should perform OPTIONS and HEAD requests", async function () {

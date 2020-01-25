@@ -48,7 +48,7 @@
         "conventional-changelog-wretch": "file:scripts/conventional-changelog-wretch",
         "coveralls": "^3.0.6",
         "dtrace-provider": "^0.8.8",
-        "form-data": "^2.5.1",
+        "form-data": "^3.0.0",
         "jest": "^24.1.0",
         "node-fetch": "^2.6.0",
         "restify": "^8.4.0",

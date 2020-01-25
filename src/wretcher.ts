@@ -265,9 +265,12 @@ export class Wretcher {
     /**
      * Converts the javascript object to a FormData and sets the request body.
      * @param formObject An object which will be converted to a FormData
+     * @param recursive If `true`, will recurse through all nested objects
+     * Can be set as an array of string to exclude specific keys.
+     * See https://github.com/elbywan/wretch/issues/68 for more details.
      */
-    formData(formObject: object) {
-        return this.body(convertFormData(formObject))
+    formData(formObject: object, recursive: string[] | boolean = false) {
+        return this.body(convertFormData(formObject, recursive))
     }
     /**
      * Converts the input to an url encoded string and sets the content-type header and body.
@@ -309,16 +312,33 @@ const appendQueryParams = (url: string, qp: object | string, replace: boolean) =
     return url + "&" + queryString
 }
 
-function convertFormData(formObject: object) {
-    const formData = conf.polyfill("FormData", { instance: true })
-    for(const key in formObject) {
-        if(formObject[key] instanceof Array) {
-            for(const item of formObject[key])
-                formData.append(key + "[]", item)
+function convertFormData(
+    formObject: object,
+    recursive: string[] | boolean = false,
+    formData =  conf.polyfill("FormData", { instance: true }),
+    ancestors = []
+) {
+    Object.entries(formObject).forEach(([key, value]) => {
+        let formKey = ancestors.reduce((acc, ancestor) => (
+            acc ? `${acc}[${ancestor}]` : ancestor
+        ), null)
+        formKey = formKey ? `${formKey}[${key}]` : key
+        if(value instanceof Array) {
+            for(const item of value)
+                formData.append(formKey + "[]", item)
+        } else if(
+            recursive &&
+            typeof value === "object" &&
+            (
+                !(recursive instanceof Array) ||
+                !recursive.includes(key)
+            )
+        ) {
+            convertFormData(value, recursive, formData, [...ancestors, key])
         } else {
-            formData.append(key, formObject[key])
+            formData.append(formKey, value)
         }
-    }
+    })
 
     return formData
 }

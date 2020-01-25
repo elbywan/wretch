@@ -166,8 +166,11 @@ export declare class Wretcher {
     /**
      * Converts the javascript object to a FormData and sets the request body.
      * @param formObject An object which will be converted to a FormData
+     * @param recursive If `true`, will recurse through all nested objects
+     * Can be set as an array of string to exclude specific keys.
+     * See https://github.com/elbywan/wretch/issues/68 for more details.
      */
-    formData(formObject: object): Wretcher;
+    formData(formObject: object, recursive?: string[] | boolean): Wretcher;
     /**
      * Converts the input to an url encoded string and sets the content-type header and body.
      * If the input argument is already a string, skips the conversion part.

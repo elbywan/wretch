@@ -86,12 +86,23 @@ describe("Wretch", function() {
     it("should send a FormData object", async function() {
         const form = {
             hello: "world",
-            duck: "Muscovy"
+            duck: "Muscovy",
+            duckProperties: {
+                beak: {
+                    color: "yellow"
+                },
+                nbOfLegs: 2
+            }
         }
-        const decoded = await wretch(`${_URL}/formData/decode`).formData(form).post().json()
+        const decoded = await wretch(`${_URL}/formData/decode`)
+            .formData(form, ["duckImage"])
+            .post()
+            .json()
         expect(decoded).toEqual({
             hello: "world",
-            duck: "Muscovy"
+            duck: "Muscovy",
+            "duckProperties[beak][color]": "yellow",
+            "duckProperties[nbOfLegs]": "2"
         })
         const f = { arr: [ 1, 2, 3 ]}
         const d = await wretch(`${_URL}/formData/decode`).formData(f).post().json()

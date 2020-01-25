@@ -14,7 +14,7 @@
   <a href="https://www.paypal.me/elbywan"><img src="https://img.shields.io/badge/buy%20me%20a-coffee-yellow.svg" alt="coffee-badge" height="20"></a>
 </h1>
 <h4 align="center">
-	A tiny (&lt; 2.7Kb g-zipped) wrapper built around fetch with an intuitive syntax.
+	A tiny (&lt; 2.8Kb g-zipped) wrapper built around fetch with an intuitive syntax.
 </h4>
 <h5 align="center">
     <i>f[ETCH] [WR]apper</i>
@@ -603,7 +603,7 @@ wretch("...").post(jsonObject)
 
 ```
 
-#### formData(formObject: Object)
+#### formData(formObject: Object, recursive: string[] | boolean = false)
 
 Converts the javascript object to a FormData and sets the request body.
 
@@ -613,6 +613,29 @@ const form = {
   duck: "Muscovy"
 }
 wretch("...").formData(form).post()
+```
+
+The `recursive` argument when set to `true` will enable recursion through all nested objects and produce `object[key]` keys.
+It can be set to an array of string to exclude specific keys.
+
+> Warning: Be careful to exclude `Blob` instances in the Browser, and `ReadableStream` and `Buffer` instances when using the node.js compatible `form-data` package.
+
+```js
+const form = {
+  duck: "Muscovy",
+  duckProperties: {
+    beak: {
+      color: "yellow"
+    },
+    legs: 2
+  },
+  ignored: {
+    key: 0
+  }
+}
+// Will append the following keys to the FormData payload:
+// "duck", "duckProperties[beak][color]", "duckProperties[legs]"
+wretch("...").formData(form, ["ignored"]).post()
 ```
 
 #### formUrl(input: Object | string)

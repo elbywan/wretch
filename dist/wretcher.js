@@ -272,9 +272,13 @@ var Wretcher = /** @class */ (function () {
     /**
      * Converts the javascript object to a FormData and sets the request body.
      * @param formObject An object which will be converted to a FormData
+     * @param recursive If `true`, will recurse through all nested objects
+     * Can be set as an array of string to exclude specific keys.
+     * See https://github.com/elbywan/wretch/issues/68 for more details.
      */
-    Wretcher.prototype.formData = function (formObject) {
-        return this.body(convertFormData(formObject));
+    Wretcher.prototype.formData = function (formObject, recursive) {
+        if (recursive === void 0) { recursive = false; }
+        return this.body(convertFormData(formObject, recursive));
     };
     /**
      * Converts the input to an url encoded string and sets the content-type header and body.
@@ -316,19 +320,30 @@ var appendQueryParams = function (url, qp, replace) {
         return split[0] + "?" + queryString;
     return url + "&" + queryString;
 };
-function convertFormData(formObject) {
-    var formData = conf.polyfill("FormData", { instance: true });
-    for (var key in formObject) {
-        if (formObject[key] instanceof Array) {
-            for (var _i = 0, _a = formObject[key]; _i < _a.length; _i++) {
-                var item = _a[_i];
-                formData.append(key + "[]", item);
+function convertFormData(formObject, recursive, formData, ancestors) {
+    if (recursive === void 0) { recursive = false; }
+    if (formData === void 0) { formData = conf.polyfill("FormData", { instance: true }); }
+    if (ancestors === void 0) { ancestors = []; }
+    Object.entries(formObject).forEach(function (_a) {
+        var key = _a[0], value = _a[1];
+        var formKey = ancestors.reduce(function (acc, ancestor) { return (acc ? acc + "[" + ancestor + "]" : ancestor); }, null);
+        formKey = formKey ? formKey + "[" + key + "]" : key;
+        if (value instanceof Array) {
+            for (var _i = 0, value_1 = value; _i < value_1.length; _i++) {
+                var item = value_1[_i];
+                formData.append(formKey + "[]", item);
             }
         }
-        else {
-            formData.append(key, formObject[key]);
+        else if (recursive &&
+            typeof value === "object" &&
+            (!(recursive instanceof Array) ||
+                !recursive.includes(key))) {
+            convertFormData(value, recursive, formData, __spreadArrays(ancestors, [key]));
         }
-    }
+        else {
+            formData.append(formKey, value);
+        }
+    });
     return formData;
 }
 function encodeQueryValue(key, value) {
