@@ -1,3 +1,17 @@
+<a name="1.7.1"></a>
+## [1.7.1](https://github.com/elbywan/wretch/compare/1.7.0...1.7.1) (2020-01-25)
+
+
+### :bug: Bug fix(es)
+
+* Fix crash on nested null formdata value. #68 ([9c1adf0](https://github.com/elbywan/wretch/commit/9c1adf0)), closes [#68](https://github.com/elbywan/wretch/issues/68)
+
+### :memo: Documentation update(s)
+
+* Update broken readme link. ([e115c63](https://github.com/elbywan/wretch/commit/e115c63))
+
+
+
 <a name="1.7.0"></a>
 # [1.7.0](https://github.com/elbywan/wretch/compare/1.6.0...1.7.0) (2020-01-25)
 
