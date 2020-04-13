@@ -9,6 +9,9 @@ export type WretcherOptions = RequestInit & {
 
 export type DeferredCallback = (wretcher: Wretcher, url: string, options: WretcherOptions) => Wretcher
 
+const JSON_MIME = "application/json"
+const CONTENT_TYPE_HEADER = "Content-Type"
+
 /**
  * The Wretcher class used to perform easy fetch requests.
  *
@@ -133,7 +136,7 @@ export class Wretcher {
      * @param headerValue Header value
      */
     content(headerValue: string) {
-        return this.headers({ "Content-Type" : headerValue })
+        return this.headers({ [CONTENT_TYPE_HEADER] : headerValue })
     }
 
     /**
@@ -189,10 +192,17 @@ export class Wretcher {
         })
     }
 
-    private method(method, options = {}, body = null) {
+    private method(method : string, options = {}, body = null) {
+        const headers = this._options.headers
         let baseWretcher =
             !body ? this :
-            typeof body === "object" ? this.json(body) :
+            typeof body === "object" && (
+                !headers ||
+                Object.entries(headers).every(([k, v]) =>
+                    k.toLowerCase() !== CONTENT_TYPE_HEADER.toLowerCase() ||
+                    v === JSON_MIME
+                )
+            ) ? this.json(body) :
             this.body(body)
         baseWretcher = baseWretcher.options({ ...options, method })
         const deferredWretcher = baseWretcher._deferredChain.reduce((acc: Wretcher, curr) => curr(acc, acc._url, acc._options), baseWretcher)
@@ -202,49 +212,49 @@ export class Wretcher {
     /**
      * Performs a get request.
      */
-    get(options?) {
+    get(options? : WretcherOptions) {
         return this.method("GET", options)
     }
     /**
      * Performs a delete request.
      */
-    delete(options?) {
+    delete(options? : WretcherOptions) {
         return this.method("DELETE", options)
     }
     /**
      * Performs a put request.
      */
-    put(body?, options?) {
+    put(body? : any, options? : WretcherOptions) {
         return this.method("PUT", options, body)
     }
     /**
      * Performs a post request.
      */
-    post(body?, options?) {
+    post(body? : any, options? : WretcherOptions) {
         return this.method("POST", options, body)
     }
     /**
      * Performs a patch request.
      */
-    patch(body?, options?) {
+    patch(body? : any, options? : WretcherOptions) {
         return this.method("PATCH", options, body)
     }
     /**
      * Performs a head request.
      */
-    head(options?) {
+    head(options? : WretcherOptions) {
         return this.method("HEAD", options)
     }
     /**
      * Performs an options request
      */
-    opts(options?) {
+    opts(options? : WretcherOptions) {
         return this.method("OPTIONS", options)
     }
     /**
      * Replay a request.
      */
-    replay(options?) {
+    replay(options? : WretcherOptions) {
         return this.method(this._options.method, options)
     }
 
@@ -260,7 +270,7 @@ export class Wretcher {
      * @param jsObject An object which will be serialized into a JSON
      */
     json(jsObject: object) {
-        return this.content("application/json").body(JSON.stringify(jsObject))
+        return this.content(JSON_MIME).body(JSON.stringify(jsObject))
     }
     /**
      * Converts the javascript object to a FormData and sets the request body.

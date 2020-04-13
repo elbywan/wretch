@@ -665,6 +665,9 @@ wretch().post({ json: 'body' }, { credentials: "same-origin" })
 wretch().json({ json: 'body'}).options({ credentials: "same-origin" }).post()
 ```
 
+**NOTE:** For methods having a body argument if the value is an `Object` it is assumed that it is a JSON payload and apply the same behaviour
+as calling `.json(body)`, unless the `Content-Type` header has been set to something else beforehand.
+
 | [get](#getoptions) | [delete](#deleteoptions) | [put](#putbody-options) | [patch](#patchbody-options) | [post](#postbody-options) | [head](#headoptions) | [opts](#optsoptions) |
 |-----|-----|-----|-----|-----|-----|-----|
 

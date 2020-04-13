@@ -124,35 +124,35 @@ export declare class Wretcher {
     /**
      * Performs a get request.
      */
-    get(options?: any): ResponseChain & Promise<any>;
+    get(options?: WretcherOptions): ResponseChain & Promise<any>;
     /**
      * Performs a delete request.
      */
-    delete(options?: any): ResponseChain & Promise<any>;
+    delete(options?: WretcherOptions): ResponseChain & Promise<any>;
     /**
      * Performs a put request.
      */
-    put(body?: any, options?: any): ResponseChain & Promise<any>;
+    put(body?: any, options?: WretcherOptions): ResponseChain & Promise<any>;
     /**
      * Performs a post request.
      */
-    post(body?: any, options?: any): ResponseChain & Promise<any>;
+    post(body?: any, options?: WretcherOptions): ResponseChain & Promise<any>;
     /**
      * Performs a patch request.
      */
-    patch(body?: any, options?: any): ResponseChain & Promise<any>;
+    patch(body?: any, options?: WretcherOptions): ResponseChain & Promise<any>;
     /**
      * Performs a head request.
      */
-    head(options?: any): ResponseChain & Promise<any>;
+    head(options?: WretcherOptions): ResponseChain & Promise<any>;
     /**
      * Performs an options request
      */
-    opts(options?: any): ResponseChain & Promise<any>;
+    opts(options?: WretcherOptions): ResponseChain & Promise<any>;
     /**
      * Replay a request.
      */
-    replay(options?: any): ResponseChain & Promise<any>;
+    replay(options?: WretcherOptions): ResponseChain & Promise<any>;
     /**
      * Sets the request body with any content.
      * @param contents The body contents

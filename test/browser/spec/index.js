@@ -81,6 +81,14 @@ describe("Wretch", function() {
         expect(roundTrip).toBe(reference)
         roundTrip = await wretch(`${_URL}/urlencoded/roundTrip`).formUrl(jsonObject).post().text()
         expect(roundTrip).toEqual(reference)
+        // Ensure that calling .json with the shorthand works
+        const roundTrip3 = await wretch(`${_URL}/json/roundTrip`).json({}).post(jsonObject).json()
+        expect(roundTrip3).toEqual(jsonObject)
+        // Ensure that it preserves any content type set previously
+        try {
+            await wretch(`${_URL}/json/roundTrip`).content("bad/content").post(jsonObject).json()
+            fail("should have thrown")
+        } catch(e) {}
     })
 
     it("should send a FormData object", async function() {

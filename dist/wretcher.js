@@ -19,6 +19,8 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 import { mix } from "./mix";
 import conf from "./config";
 import { resolver } from "./resolver";
+var JSON_MIME = "application/json";
+var CONTENT_TYPE_HEADER = "Content-Type";
 /**
  * The Wretcher class used to perform easy fetch requests.
  *
@@ -145,7 +147,8 @@ var Wretcher = /** @class */ (function () {
      * @param headerValue Header value
      */
     Wretcher.prototype.content = function (headerValue) {
-        return this.headers({ "Content-Type": headerValue });
+        var _a;
+        return this.headers((_a = {}, _a[CONTENT_TYPE_HEADER] = headerValue, _a));
     };
     /**
      * Shortcut to set the "Authorization" header.
@@ -200,8 +203,14 @@ var Wretcher = /** @class */ (function () {
     Wretcher.prototype.method = function (method, options, body) {
         if (options === void 0) { options = {}; }
         if (body === void 0) { body = null; }
+        var headers = this._options.headers;
         var baseWretcher = !body ? this :
-            typeof body === "object" ? this.json(body) :
+            typeof body === "object" && (!headers ||
+                Object.entries(headers).every(function (_a) {
+                    var k = _a[0], v = _a[1];
+                    return k.toLowerCase() !== CONTENT_TYPE_HEADER.toLowerCase() ||
+                        v === JSON_MIME;
+                })) ? this.json(body) :
                 this.body(body);
         baseWretcher = baseWretcher.options(__assign(__assign({}, options), { method: method }));
         var deferredWretcher = baseWretcher._deferredChain.reduce(function (acc, curr) { return curr(acc, acc._url, acc._options); }, baseWretcher);
@@ -267,7 +276,7 @@ var Wretcher = /** @class */ (function () {
      * @param jsObject An object which will be serialized into a JSON
      */
     Wretcher.prototype.json = function (jsObject) {
-        return this.content("application/json").body(JSON.stringify(jsObject));
+        return this.content(JSON_MIME).body(JSON.stringify(jsObject));
     };
     /**
      * Converts the javascript object to a FormData and sets the request body.

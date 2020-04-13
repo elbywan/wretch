@@ -49,7 +49,7 @@ describe("Wretch", function () {
 
         expect(() => wretch("...").query({ a: 1, b: 2 })).toThrow("URLSearchParams is not defined")
         expect(() => wretch("...").formData({ a: 1, b: 2 })).toThrow("FormData is not defined")
-        expect(() => wretch("...").get("...")).toThrow("fetch is not defined")
+        expect(() => wretch("...").get()).toThrow("fetch is not defined")
 
         wretch().polyfills({
             fetch: fetchPolyfill(),
@@ -120,6 +120,14 @@ describe("Wretch", function () {
         // Using shorthand
         const roundTrip2 = await wretch(`${_URL}/json/roundTrip`).post(jsonObject).json()
         expect(roundTrip2).toEqual(jsonObject)
+        // Ensure that calling .json with the shorthand works
+        const roundTrip3 = await wretch(`${_URL}/json/roundTrip`).json({}).post(jsonObject).json()
+        expect(roundTrip3).toEqual(jsonObject)
+        // Ensure that it preserves any content type set previously
+        try {
+            await wretch(`${_URL}/json/roundTrip`).content("bad/content").post(jsonObject).json()
+            fail("should have thrown")
+        } catch(e) {}
     })
 
     it("should perform an url encoded form data round trip", async function () {
