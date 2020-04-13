@@ -1,3 +1,18 @@
+<a name="1.7.2"></a>
+## [1.7.2](https://github.com/elbywan/wretch/compare/1.7.1...1.7.2) (2020-04-13)
+
+
+### :arrow_up: Version update(s)
+
+* Bump acorn from 6.4.0 to 6.4.1 ([24bc906](https://github.com/elbywan/wretch/commit/24bc906))
+* Upgrade dependencies ([76b32fd](https://github.com/elbywan/wretch/commit/76b32fd))
+
+### :bug: Bug fix(es)
+
+* Prevent overriding content-type when passing body in http methods.  ([f6f9302](https://github.com/elbywan/wretch/commit/f6f9302)), closes [#75](https://github.com/elbywan/wretch/issues/75)
+
+
+
 <a name="1.7.1"></a>
 ## [1.7.1](https://github.com/elbywan/wretch/compare/1.7.0...1.7.1) (2020-01-25)
 
