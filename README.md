@@ -187,6 +187,18 @@ wretch().polyfills({
 })
 ```
 
+## Deno
+
+Works with [Deno](https://deno.land/) >= [0.41.0](https://github.com/denoland/deno/releases/tag/v0.41.0) out of the box.
+
+```ts
+// You can import wretch from any CDN that serve ESModules.
+import wretch from 'https://cdn.pika.dev/wretch'
+
+const text = await wretch('https://httpstat.us/200').get().text()
+console.log(text) // -> 200 OK
+```
+
 ------
 
 *This project uses automated node.js & browser unit tests. The latter are a provided courtesy of:*
