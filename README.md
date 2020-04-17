@@ -745,7 +745,7 @@ wretch("...").opts()
 *Catchers can be chained.*
 
 | [badRequest](#badrequestcb-error-wretchererror-originalrequest-wretcher--any) | [unauthorized](#unauthorizedcb-error-wretchererror-originalrequest-wretcher--any) | [forbidden](#forbiddencb-error-wretchererror-originalrequest-wretcher--any) | [notFound](#notfoundcb-error-wretchererror-originalrequest-wretcher--any) | [timeout](#timeoutcb-error-wretchererror-originalrequest-wretcher--any) | [internalError](#internalerrorcb-error-wretchererror-originalrequest-wretcher--any) | [error](#errorerrorid-number--string-cb-error-wretchererror-originalrequest-wretcher--any) | [fetchError](#fetcherrorcb-error-networkerror-originalrequest-wretcher--any)
-|-----|-----|-----|-----|-----|-----|-----|
+|-----|-----|-----|-----|-----|-----|-----|-----|
 
 ```ts
 type WretcherError = Error & { status: number, response: WretcherResponse, text?: string, json?: Object }
