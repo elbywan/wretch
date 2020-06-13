@@ -918,7 +918,7 @@ wretch("...")
   .onAbort(_ => console.log("Aborted !"))
   .text(_ => console.log("should never be called"))
 
-c.abort()
+controller.abort()
 ```
 
 ### signal(controller: AbortController)
