@@ -829,7 +829,7 @@ All these methods accept an optional callback, and will return a Promise resolve
 wretch("...").get().json().then(json => /* json is the parsed json of the response body */)
 // Without a callback using await
 const json = await wretch("...").get().json()
-//With a callback the value returned is passsed to the Promise
+//With a callback the value returned is passed to the Promise
 wretch("...").get().json(() => "Hello world!").then(console.log) // Hello world!
 ```
 
