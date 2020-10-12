@@ -1,3 +1,25 @@
+<a name="1.7.3"></a>
+## [1.7.3](https://github.com/elbywan/wretch/compare/1.7.2...1.7.3) (2020-10-12)
+
+
+### :arrow_up: Version update(s)
+
+* Bump lodash from 4.17.14 to 4.17.19 ([c5c255f](https://github.com/elbywan/wretch/commit/c5c255f))
+* Bump node-fetch from 2.6.0 to 2.6.1 ([d536ba5](https://github.com/elbywan/wretch/commit/d536ba5))
+* Upgrade dependencies ([0bb3235](https://github.com/elbywan/wretch/commit/0bb3235))
+
+### :bug: Bug fix(es)
+
+* Allow custom charset with json body. ([52d2caa](https://github.com/elbywan/wretch/commit/52d2caa)), closes [#90](https://github.com/elbywan/wretch/issues/90)
+
+### :memo: Documentation update(s)
+
+* Fix readme arry typo. ([b465a4f](https://github.com/elbywan/wretch/commit/b465a4f))
+* Fix readme bad chars. ([12b7231](https://github.com/elbywan/wretch/commit/12b7231))
+* Mention Deno in the readme. ([b52847a](https://github.com/elbywan/wretch/commit/b52847a))
+
+
+
 <a name="1.7.2"></a>
 ## [1.7.2](https://github.com/elbywan/wretch/compare/1.7.1...1.7.2) (2020-04-13)
 

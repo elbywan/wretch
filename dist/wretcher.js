@@ -276,7 +276,12 @@ var Wretcher = /** @class */ (function () {
      * @param jsObject An object which will be serialized into a JSON
      */
     Wretcher.prototype.json = function (jsObject) {
-        return this.content(JSON_MIME).body(JSON.stringify(jsObject));
+        var _a;
+        var preservedContentType = (_a = Object.entries(this._options.headers || {}).find(function (_a) {
+            var k = _a[0], v = _a[1];
+            return k.toLowerCase() === CONTENT_TYPE_HEADER.toLowerCase() && v.startsWith(JSON_MIME);
+        })) === null || _a === void 0 ? void 0 : _a[1];
+        return this.content(preservedContentType || JSON_MIME).body(JSON.stringify(jsObject));
     };
     /**
      * Converts the javascript object to a FormData and sets the request body.
