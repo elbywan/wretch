@@ -128,6 +128,9 @@ describe("Wretch", function () {
             await wretch(`${_URL}/json/roundTrip`).content("bad/content").post(jsonObject).json()
             fail("should have thrown")
         } catch(e) {}
+        // Ensure that the charset is preserved.
+        const headerWithCharset = "application/json; charset=utf-16"
+        expect(wretch().content(headerWithCharset).json({})._options.headers['Content-Type']).toBe(headerWithCharset)
     })
 
     it("should perform an url encoded form data round trip", async function () {
