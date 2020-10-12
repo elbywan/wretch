@@ -86,7 +86,7 @@ wretch("anything")
   .get()
   .notFound(error => { /* ... */ })
   .unauthorized(error => { /* ... */ })
-  .error(418, error => { /* ... */ })
+  .error(418, error => { /* ... */ })
   .res(response => /* ... */)
   .catch(error => { /* uncaught errors */ })
 ```
@@ -349,7 +349,7 @@ const qsWretch = wretch().defer((w, url, { qsQuery, qsOptions }) => (
 
 qsWretch
   .url("https://example.com/")
-  .options({ qs: { query: queryObject }})
+  .options({ qs: { query: queryObject }})
   /* ... */
 ```
 
@@ -466,7 +466,7 @@ const reAuthOn401 = wretch()
     const token = await wretch("/renewtoken").get().text()
     storeToken(token)
     // Replay the original request with new credentials
-    return request.auth(token).replay().unauthorized(err => { throw err }).json()
+    return request.auth(token).replay().unauthorized(err => { throw err }).json()
   })
 
 reAuthOn401.url("/resource")
@@ -536,7 +536,7 @@ Sets default fetch options which will be used for every subsequent requests.
 wretch().defaults({ headers: { "Accept": "application/json" }})
 
 // The fetch request is sent with both headers.
-wretch("...", { headers: { "X-Custom": "Header" }}).get()
+wretch("...", { headers: { "X-Custom": "Header" }}).get()
 ```
 
 ```js
@@ -605,7 +605,7 @@ wretch("...").put("hello")
 
 #### json(jsObject: Object)
 
-Sets the content type header, stringifies an object and sets the request body.
+Sets the "Content-Type" header, stringifies an object and sets the request body.
 
 ```js
 const jsonObject = { a: 1, b: 2, c: 3 }
@@ -674,7 +674,7 @@ wretch("...").formUrl(alreadyEncodedForm).post()
 // This shorthand:
 wretch().post({ json: 'body' }, { credentials: "same-origin" })
 // Is equivalent to:
-wretch().json({ json: 'body'}).options({ credentials: "same-origin" }).post()
+wretch().json({ json: 'body'}).options({ credentials: "same-origin" }).post()
 ```
 
 **NOTE:** For methods having a body argument if the value is an `Object` it is assumed that it is a JSON payload and apply the same behaviour
@@ -809,7 +809,7 @@ wretch("/resource")
     const token = await wretch("/renewtoken").get().text()
     storeToken(token)
     // Replay the original request with new credentials
-    return req.auth(token).get().unauthorized(err => { throw err }).json()
+    return req.auth(token).get().unauthorized(err => { throw err }).json()
   })
   .json()
   // The promise chain is preserved as expected
@@ -870,7 +870,7 @@ FormData handler.
 wretch("...").get().formData(formData => /* ... */)
 ```
 
-#### arrayBuffer(cb: (ab : ArrayBuffer) => T) : Promise<ArrayBuffer | T>
+#### arrayBuffer(cb: (ab : ArrayBuffer) => T) : Promise<ArrayBuffer | T>
 
 ArrayBuffer handler.
 
@@ -878,7 +878,7 @@ ArrayBuffer handler.
 wretch("...").get().arrayBuffer(arrayBuffer => /* ... */)
 ```
 
-#### text(cb: (text : string) => T)  : Promise<string | T>
+#### text(cb: (text : string) => T)  : Promise<string | T>
 
 Text handler.
 
