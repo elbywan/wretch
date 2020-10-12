@@ -14,7 +14,7 @@
   <a href="https://www.paypal.me/elbywan"><img src="https://img.shields.io/badge/buy%20me%20a-coffee-yellow.svg" alt="coffee-badge" height="20"></a>
 </h1>
 <h4 align="center">
-	A tiny (&lt; 2.8Kb g-zipped) wrapper built around fetch with an intuitive syntax.
+	A tiny (&#126; 3Kb g-zipped) wrapper built around fetch with an intuitive syntax.
 </h4>
 <h5 align="center">
     <i>f[ETCH] [WR]apper</i>
