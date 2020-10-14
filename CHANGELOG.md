@@ -1,3 +1,17 @@
+<a name="1.7.4"></a>
+## [1.7.4](https://github.com/elbywan/wretch/compare/1.7.3...1.7.4) (2020-10-14)
+
+
+### :bug: Bug fix(es)
+
+* Fix post with overloaded json content-type charset. ([af48887](https://github.com/elbywan/wretch/commit/af48887))
+
+### :memo: Documentation update(s)
+
+*  Update package size approximation. ([2399419](https://github.com/elbywan/wretch/commit/2399419))
+
+
+
 <a name="1.7.3"></a>
 ## [1.7.3](https://github.com/elbywan/wretch/compare/1.7.2...1.7.3) (2020-10-12)
 
