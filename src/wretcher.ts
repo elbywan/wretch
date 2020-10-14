@@ -200,7 +200,7 @@ export class Wretcher {
                     !headers ||
                     Object.entries(headers).every(([k, v]) =>
                         k.toLowerCase() !== CONTENT_TYPE_HEADER.toLowerCase() ||
-                        v === JSON_MIME
+                        v.startsWith(JSON_MIME)
                     )
                 ) ? this.json(body) :
                     this.body(body)

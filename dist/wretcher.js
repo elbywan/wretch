@@ -209,7 +209,7 @@ var Wretcher = /** @class */ (function () {
                 Object.entries(headers).every(function (_a) {
                     var k = _a[0], v = _a[1];
                     return k.toLowerCase() !== CONTENT_TYPE_HEADER.toLowerCase() ||
-                        v === JSON_MIME;
+                        v.startsWith(JSON_MIME);
                 })) ? this.json(body) :
                 this.body(body);
         baseWretcher = baseWretcher.options(__assign(__assign({}, options), { method: method }));
