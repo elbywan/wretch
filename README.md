@@ -212,17 +212,38 @@ console.log(text) // -> 200 OK
 
 ## Import
 
+#### &lt;script&gt; tag
+
 ```html
-<!--- "wretch" will be attached to the global window object. -->
+<!--
+  Pick your favourite CDN:
+    - https://unpkg.com
+    - https://www.jsdelivr.com/package/npm/wretch
+    - https://www.skypack.dev/view/wretch
+    - https://cdnjs.com/libraries/wretch
+-->
+
+<!-- UMD import as window.wretch -->
 <script src="https://unpkg.com/wretch"></script>
+
+<!-- Modern import -->
+<script type="module">
+  import wretch from 'https://cdn.skypack.dev/wretch'
+
+  // ... //
+</script>
 ```
 
-```typescript
-// es2015 modules
-import wretch from "wretch"
+#### ESModule
 
-// commonjs
-var wretch = require("wretch")
+```typescript
+import wretch from "wretch"
+```
+
+#### CommonJS
+
+```typescript
+const wretch = require("wretch")
 ```
 
 ## Code
