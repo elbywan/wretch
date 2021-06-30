@@ -1,3 +1,29 @@
+<a name="1.7.5"></a>
+## [1.7.5](https://github.com/elbywan/wretch/compare/1.7.4...1.7.5) (2021-06-30)
+
+
+### :arrow_up: Version update(s)
+
+* Bump find-my-way from 2.2.1 to 2.2.5 ([687a999](https://github.com/elbywan/wretch/commit/687a999))
+* Bump handlebars from 4.7.6 to 4.7.7 ([0cb2ac2](https://github.com/elbywan/wretch/commit/0cb2ac2))
+* Bump hosted-git-info from 2.8.8 to 2.8.9 ([c862315](https://github.com/elbywan/wretch/commit/c862315))
+* Bump ini from 1.3.5 to 1.3.7 ([79fd31f](https://github.com/elbywan/wretch/commit/79fd31f))
+* Bump lodash from 4.17.19 to 4.17.21 ([fe66a14](https://github.com/elbywan/wretch/commit/fe66a14))
+* Bump node-notifier from 8.0.0 to 8.0.1 ([43cd685](https://github.com/elbywan/wretch/commit/43cd685))
+* Bump ws from 7.3.1 to 7.4.6 ([d0f89f1](https://github.com/elbywan/wretch/commit/d0f89f1))
+* Bump y18n from 4.0.0 to 4.0.1 ([6d0fbdc](https://github.com/elbywan/wretch/commit/6d0fbdc))
+* Upgrade dependencies. ([805fade](https://github.com/elbywan/wretch/commit/805fade))
+
+### :bug: Bug fix(es)
+
+* Take into account the options argument headers when stringifying bo ([23484fd](https://github.com/elbywan/wretch/commit/23484fd)), closes [#75](https://github.com/elbywan/wretch/issues/75)
+
+### :memo: Documentation update(s)
+
+* Update readme import section ([5970e6d](https://github.com/elbywan/wretch/commit/5970e6d))
+
+
+
 <a name="1.7.4"></a>
 ## [1.7.4](https://github.com/elbywan/wretch/compare/1.7.3...1.7.4) (2020-10-14)
 
