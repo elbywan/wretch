@@ -7,9 +7,8 @@ import * as path from "path"
 import wretch from "../../src"
 import { mix } from "../../src/mix"
 
-const { performance, PerformanceObserver } = require("perf_hooks")
-// tslint:disable-next-line:no-empty
-performance.clearResourceTimings = () => {}
+import { performance, PerformanceObserver } from "perf_hooks"
+performance["clearResourceTimings"] = () => {}
 
 const _PORT = 9876
 const _URL = `http://localhost:${_PORT}`
@@ -26,15 +25,14 @@ const fetchPolyfill = (timeout = null) =>
     function (url, opts) {
         performance.mark(url + " - begin")
         const { fetch } = abortableFetch(nodeFetch) as any
-        return fetch(url, opts).then(_ => {
+        return fetch(url, opts).then(res => {
             performance.mark(url + " - end")
-            const measure = () => performance.measure(_.url, url + " - begin", url + " - end")
-            performance.clearMarks(url + " - begin")
+            const measure = () => performance.measure(res.url, url + " - begin", url + " - end")
             if(timeout)
                 setTimeout(measure, timeout)
             else
                 measure()
-            return _
+            return res
         })
     }
 
@@ -88,6 +86,28 @@ describe("Wretch", function () {
         const init = wretch(`${_URL}/blob`)
         await allRoutes(init, "blob", test)
         await allRoutes(init, "blob", test, {}, {})
+    })
+
+    it("should not stringify a blob when the content-type is not json", async function () {
+        expect((
+            await wretch(`${_URL}/blob/roundTrip`, {
+                // using 'xxx-' prefix because otherwise node-fetch sends an empty body
+                headers: { "content-type": "application/xxx-octet-stream" }
+            })
+            .post(duckImage)
+            .res(res => res["buffer"]() as Buffer))
+            .compare(duckImage)
+        ).toBe(0)
+
+        // Headers are set in the options argument of the http method
+        expect((
+            await wretch(`${_URL}/blob/roundTrip`)
+            .post(duckImage, {
+                headers: { "content-type":"application/xxx-octet-stream" }
+            })
+            .res(res => res["buffer"]() as Buffer)
+            ).compare(duckImage)
+        ).toBe(0)
     })
 
     it("should perform crud requests and parse an arrayBuffer response", async function () {

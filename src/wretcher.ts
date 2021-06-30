@@ -193,20 +193,23 @@ export class Wretcher {
     }
 
     private method(method: string, options = {}, body = null) {
-        const headers = this._options.headers
-        let baseWretcher =
-            !body ? this :
+        let base = this.options({ ...options, method })
+        const headers = base._options.headers
+        base =
+            !body ? base :
                 typeof body === "object" && (
                     !headers ||
                     Object.entries(headers).every(([k, v]) =>
                         k.toLowerCase() !== CONTENT_TYPE_HEADER.toLowerCase() ||
                         v.startsWith(JSON_MIME)
                     )
-                ) ? this.json(body) :
-                    this.body(body)
-        baseWretcher = baseWretcher.options({ ...options, method })
-        const deferredWretcher = baseWretcher._deferredChain.reduce((acc: Wretcher, curr) => curr(acc, acc._url, acc._options), baseWretcher)
-        return resolver(deferredWretcher)
+                ) ? base.json(body) :
+                base.body(body)
+        return resolver(
+            base
+                ._deferredChain
+                .reduce((acc: Wretcher, curr) => curr(acc, acc._url, acc._options), base)
+        )
     }
 
     /**

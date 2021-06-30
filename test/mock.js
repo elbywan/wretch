@@ -96,6 +96,20 @@ const mockServer = {
             }
         })
 
+        server.post("/blob/roundTrip", (req, res) => {
+            try {
+                if(req.header("content-type") === "application/xxx-octet-stream") {
+                    res.header("content-type", "application/octet-stream")
+                    res.sendRaw(req.body)
+                } else {
+                    res.send(400)
+                }
+            } catch (error) {
+                console.error(error)
+                res.send(400)
+            }
+        })
+
         server.post("/formData/decode", (req, res) => {
             if(req.header("content-type").startsWith("multipart/form-data"))
                 res.json(req.params)
