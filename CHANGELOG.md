@@ -1,3 +1,21 @@
+<a name="1.7.6"></a>
+## [1.7.6](https://github.com/elbywan/wretch/compare/1.7.5...1.7.6) (2021-08-06)
+
+
+### :arrow_up: Version update(s)
+
+* Upgrade dependencies. ([f62f977](https://github.com/elbywan/wretch/commit/f62f977))
+
+### :bug: Bug fix(es)
+
+* Prevent appending an extra ?/& for empty query strings. #114 ([15464a8](https://github.com/elbywan/wretch/commit/15464a8)), closes [#114](https://github.com/elbywan/wretch/issues/114)
+
+### :memo: Documentation update(s)
+
+* Update readme badges. ([b65878f](https://github.com/elbywan/wretch/commit/b65878f))
+
+
+
 <a name="1.7.5"></a>
 ## [1.7.5](https://github.com/elbywan/wretch/compare/1.7.4...1.7.5) (2021-06-30)
 
