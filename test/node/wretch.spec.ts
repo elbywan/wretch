@@ -620,6 +620,16 @@ describe("Wretch", function () {
         expect(await wretch(`${_URL}/json/null`).get().json(_ => true)).toEqual(true)
         expect(await wretch(`${_URL}/json/null`).get().json(_ => false)).toEqual(false)
     })
+
+    it("should not append an extra character (&/?) when trying to append or replace empty query params", function() {
+        const w = wretch(_URL)
+        expect(w.query("")._url).toBe(_URL)
+        expect(w.query("", true)._url).toBe(_URL)
+        expect(w.query("a=1").query("", true)._url).toBe(_URL)
+        expect(w.query({})._url).toBe(_URL)
+        expect(w.query({}, true)._url).toBe(_URL)
+        expect(w.query({a: 1}).query({}, true)._url).toBe(_URL)
+    })
 })
 
 describe("Mix", function () {

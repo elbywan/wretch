@@ -304,7 +304,7 @@ export class Wretcher {
 // Internal helpers
 
 const appendQueryParams = (url: string, qp: object | string, replace: boolean) => {
-    let queryString
+    let queryString : string
 
     if (typeof qp === "string") {
         queryString = qp
@@ -322,6 +322,10 @@ const appendQueryParams = (url: string, qp: object | string, replace: boolean) =
     }
 
     const split = url.split("?")
+
+    if (!queryString)
+        return replace ? split[0] : url
+
     if (replace || split.length < 2)
         return split[0] + "?" + queryString
 
