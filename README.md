@@ -4,11 +4,11 @@
     <a href="https://elbywan.github.io/wretch">Wretch</a><br>
 	<br>
 
-  <a href="https://travis-ci.com/elbywan/wretch"><img alt="travis-badge" src="https://travis-ci.com/elbywan/wretch.svg?branch=master"></a>
+  <a href="https://app.travis-ci.com/elbywan/wretch"><img alt="travis-badge" src="https://travis-ci.com/elbywan/wretch.svg?branch=master"></a>
   <a href="https://www.npmjs.com/package/wretch"><img alt="npm-badge" src="https://img.shields.io/npm/v/wretch.svg?colorB=ff733e" height="20"></a>
   <a href="https://www.npmjs.com/package/wretch"><img alt="npm-downloads-badge" src="https://img.shields.io/npm/dm/wretch.svg?colorB=53aabb" height="20"></a>
   <a href="https://coveralls.io/github/elbywan/wretch?branch=master"><img src="https://coveralls.io/repos/github/elbywan/wretch/badge.svg?branch=master" alt="Coverage Status"></a>
-  <a href="https://automate.browserstack.com/public-build/WGRwalJLNFJ2YWRvcHZMcE5mSVUwUnE1UmowN21jRWIwUjFTdWtpSzlSND0tLW1TTWJQbjg0Ym1nMkdNZDRWRC9tNmc9PQ==--edc2697c905758569371bfbe755350b92c8976b8"><img src='https://automate.browserstack.com/badge.svg?badge_key=WGRwalJLNFJ2YWRvcHZMcE5mSVUwUnE1UmowN21jRWIwUjFTdWtpSzlSND0tLW1TTWJQbjg0Ym1nMkdNZDRWRC9tNmc9PQ==--edc2697c905758569371bfbe755350b92c8976b8'/></a>
+  <a href="https://automate.browserstack.com/public-build/Z0JQZWdadTkvVjdtRG9adkt2d0l3VUlacEVMckx3Rlc2Z1RDbXBncXR0TT0tLVV6d2trTlNPTjVmZVJlcDN4T25YL0E9PQ==--39cb00c3b97fed50312e9777c99d12d31d784431"><img src='https://automate.browserstack.com/badge.svg?badge_key=Z0JQZWdadTkvVjdtRG9adkt2d0l3VUlacEVMckx3Rlc2Z1RDbXBncXR0TT0tLVV6d2trTlNPTjVmZVJlcDN4T25YL0E9PQ==--39cb00c3b97fed50312e9777c99d12d31d784431'/></a>
   <a href="https://bundlephobia.com/result?p=wretch"><img src='https://img.shields.io/bundlephobia/minzip/wretch.svg'/></a>
   <a href="https://github.com/elbywan/wretch/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license-badge" height="20"></a>
 </h1>
