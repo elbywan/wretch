@@ -1,3 +1,17 @@
+<a name="1.7.7"></a>
+## [1.7.7](https://github.com/elbywan/wretch/compare/1.7.6...1.7.7) (2021-12-13)
+
+
+### :bug: Bug fix(es)
+
+* Fix errorType argument type. ([5efd606](https://github.com/elbywan/wretch/commit/5efd606)), closes [#118](https://github.com/elbywan/wretch/issues/118)
+
+### :memo: Documentation update(s)
+
+* Update outdated badges. ([f286481](https://github.com/elbywan/wretch/commit/f286481))
+
+
+
 <a name="1.7.6"></a>
 ## [1.7.6](https://github.com/elbywan/wretch/compare/1.7.5...1.7.6) (2021-08-06)
 
