@@ -50,7 +50,7 @@ export class Wretcher {
      *
      * Default is "text".
      */
-    errorType(method: "text" | "json") {
+    errorType(method: string) {
         conf.errorType = method
         return this
     }

@@ -573,7 +573,7 @@ wretch().defaults({ encoding: "same-origin", headers: { "X-Custom": "Header" }},
 */
 ```
 
-#### errorType(method: "text" | "json" = "text")
+#### errorType(method: string = "text")
 
 Sets the method (text, json ...) used to parse the data contained in the response body in case of an HTTP error.
 
