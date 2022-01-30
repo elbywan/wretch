@@ -1,3 +1,18 @@
+<a name="1.7.8"></a>
+## [1.7.8](https://github.com/elbywan/wretch/compare/1.7.7...1.7.8) (2022-01-30)
+
+
+### :arrow_up: Version update(s)
+
+* Bump dependencies and npm audit. ([881d17a](https://github.com/elbywan/wretch/commit/881d17a))
+
+### :bug: Bug fix(es)
+
+* Fix error for opaque responses. ([bbb5912](https://github.com/elbywan/wretch/commit/bbb5912)), closes [#121](https://github.com/elbywan/wretch/issues/121)
+* Preserve exotic json content types when strigifying body. ([d51c17b](https://github.com/elbywan/wretch/commit/d51c17b)), closes [#122](https://github.com/elbywan/wretch/issues/122)
+
+
+
 <a name="1.7.7"></a>
 ## [1.7.7](https://github.com/elbywan/wretch/compare/1.7.6...1.7.7) (2021-12-13)
 
