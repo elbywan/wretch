@@ -12,6 +12,12 @@ export type DeferredCallback = (wretcher: Wretcher, url: string, options: Wretch
 const JSON_MIME = "application/json"
 const CONTENT_TYPE_HEADER = "Content-Type"
 
+function extractJsonContentType(headers: HeadersInit = {}) {
+    return Object.entries(headers).find(([k, v]) =>
+        k.toLowerCase() === CONTENT_TYPE_HEADER.toLowerCase() && /^application\/.*json.*/.test(v)
+    )?.[1]
+}
+
 /**
  * The Wretcher class used to perform easy fetch requests.
  *
@@ -119,7 +125,7 @@ export class Wretcher {
      * Set request headers.
      * @param headerValues An object containing header keys and values
      */
-    headers(headerValues: { [headerName: string]: string }) {
+    headers(headerValues: HeadersInit) {
         return this.selfFactory({ options: mix(this._options, { headers: headerValues || {} }) })
     }
 
@@ -194,17 +200,13 @@ export class Wretcher {
 
     private method(method: string, options = {}, body = null) {
         let base = this.options({ ...options, method })
-        const headers = base._options.headers
+        // "Jsonify" the body if it is an object and if it is likely that the content type targets json.
+        const jsonContentType = extractJsonContentType(base._options.headers)
+        const jsonify = typeof body === "object" && (!base._options.headers || jsonContentType)
         base =
             !body ? base :
-                typeof body === "object" && (
-                    !headers ||
-                    Object.entries(headers).every(([k, v]) =>
-                        k.toLowerCase() !== CONTENT_TYPE_HEADER.toLowerCase() ||
-                        v.startsWith(JSON_MIME)
-                    )
-                ) ? base.json(body) :
-                base.body(body)
+                jsonify ? base.json(body, jsonContentType) :
+                    base.body(body)
         return resolver(
             base
                 ._deferredChain
@@ -271,12 +273,10 @@ export class Wretcher {
     /**
      * Sets the content type header, stringifies an object and sets the request body.
      * @param jsObject An object which will be serialized into a JSON
+     * @param contentType A custom content type.
      */
-    json(jsObject: object) {
-        const preservedContentType = Object.entries(this._options.headers || {}).find(([k, v]) =>
-            k.toLowerCase() === CONTENT_TYPE_HEADER.toLowerCase() && v.startsWith(JSON_MIME)
-        )?.[1]
-        return this.content(preservedContentType || JSON_MIME).body(JSON.stringify(jsObject))
+    json(jsObject: object, contentType?: string) {
+        return this.content(contentType || extractJsonContentType(this._options.headers) || JSON_MIME).body(JSON.stringify(jsObject))
     }
     /**
      * Converts the javascript object to a FormData and sets the request body.
@@ -304,7 +304,7 @@ export class Wretcher {
 // Internal helpers
 
 const appendQueryParams = (url: string, qp: object | string, replace: boolean) => {
-    let queryString : string
+    let queryString: string
 
     if (typeof qp === "string") {
         queryString = qp

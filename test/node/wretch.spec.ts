@@ -8,7 +8,7 @@ import wretch from "../../src"
 import { mix } from "../../src/mix"
 
 import { performance, PerformanceObserver } from "perf_hooks"
-performance["clearResourceTimings"] = () => {}
+performance["clearResourceTimings"] = () => { }
 
 const _PORT = 9876
 const _URL = `http://localhost:${_PORT}`
@@ -28,7 +28,7 @@ const fetchPolyfill = (timeout = null) =>
         return fetch(url, opts).then(res => {
             performance.mark(url + " - end")
             const measure = () => performance.measure(res.url, url + " - begin", url + " - end")
-            if(timeout)
+            if (timeout)
                 setTimeout(measure, timeout)
             else
                 measure()
@@ -94,19 +94,19 @@ describe("Wretch", function () {
                 // using 'xxx-' prefix because otherwise node-fetch sends an empty body
                 headers: { "content-type": "application/xxx-octet-stream" }
             })
-            .post(duckImage)
-            .res(res => res["buffer"]() as Buffer))
+                .post(duckImage)
+                .res(res => res["buffer"]() as Buffer))
             .compare(duckImage)
         ).toBe(0)
 
         // Headers are set in the options argument of the http method
         expect((
             await wretch(`${_URL}/blob/roundTrip`)
-            .post(duckImage, {
-                headers: { "content-type":"application/xxx-octet-stream" }
-            })
-            .res(res => res["buffer"]() as Buffer)
-            ).compare(duckImage)
+                .post(duckImage, {
+                    headers: { "content-type": "application/xxx-octet-stream" }
+                })
+                .res(res => res["buffer"]() as Buffer)
+        ).compare(duckImage)
         ).toBe(0)
     })
 
@@ -117,7 +117,7 @@ describe("Wretch", function () {
             for (let i = 0; i < buffer.length; ++i) {
                 buffer[i] = view[i]
             }
-            expect(buffer.equals(Buffer.from([ 0x00, 0x01, 0x02, 0x03 ]))).toBe(true)
+            expect(buffer.equals(Buffer.from([0x00, 0x01, 0x02, 0x03]))).toBe(true)
         }
         const init = wretch(`${_URL}/arrayBuffer`)
         await allRoutes(init, "arrayBuffer", test)
@@ -147,7 +147,7 @@ describe("Wretch", function () {
         try {
             await wretch(`${_URL}/json/roundTrip`).content("bad/content").post(jsonObject).json()
             fail("should have thrown")
-        } catch(e) {}
+        } catch (e) { }
         // Ensure that the charset is preserved.
         const headerWithCharset = "application/json; charset=utf-16"
         expect(wretch().content(headerWithCharset).json({})._options.headers['Content-Type']).toBe(headerWithCharset)
@@ -164,7 +164,7 @@ describe("Wretch", function () {
 
     it("should send a FormData object", async function () {
         // Test with a nested object with an excluded field.
-        let form : any = {
+        let form: any = {
             hello: "world",
             duck: "Muscovy",
             duckImage: fs.createReadStream(duckImagePath),
@@ -225,7 +225,7 @@ describe("Wretch", function () {
         })
 
         // Test for arrays.
-        const f = { arr: [ 1, 2, 3 ]}
+        const f = { arr: [1, 2, 3] }
         const d = await wretch(`${_URL}/formData/decode`).formData(f).post().json()
         expect(d).toEqual({
             // browser FormData output:
@@ -395,8 +395,8 @@ describe("Wretch", function () {
         wretch().defaults("not an object" as any, true)
         expect(rejected).toBeTruthy()
         const accepted = await new Promise(res => wretch(`${_URL}/customHeaders`)
-            .options({ headers: { "X-Custom-Header-3" : "Anything" }}, false)
-            .options({ headers: { "X-Custom-Header-4" : "Anything" }})
+            .options({ headers: { "X-Custom-Header-3": "Anything" } }, false)
+            .options({ headers: { "X-Custom-Header-4": "Anything" } })
             .get()
             .badRequest(_ => { res(false) })
             .res(result => res(!!result)))
@@ -408,13 +408,13 @@ describe("Wretch", function () {
         const obj2 = obj1.url(_URL, true)
         expect(obj1["_url"]).toBe("...")
         expect(obj2["_url"]).toBe(_URL)
-        const obj3 = obj1.options({ headers: { "X-test": "test" }})
-        expect(obj3["_options"]).toEqual({ headers: { "X-test": "test" }})
+        const obj3 = obj1.options({ headers: { "X-test": "test" } })
+        expect(obj3["_options"]).toEqual({ headers: { "X-test": "test" } })
         expect(obj1["_options"]).toEqual({})
-        const obj4 = obj2.query({a: "1!", b: "2"})
+        const obj4 = obj2.query({ a: "1!", b: "2" })
         expect(obj4["_url"]).toBe(`${_URL}?a=1%21&b=2`)
         expect(obj2["_url"]).toBe(_URL)
-        const obj5 = obj4.query({c: 6, d: [7, 8]})
+        const obj5 = obj4.query({ c: 6, d: [7, 8] })
         expect(obj4["_url"]).toBe(`${_URL}?a=1%21&b=2`)
         expect(obj5["_url"]).toBe(`${_URL}?a=1%21&b=2&c=6&d=7&d=8`)
         const obj6 = obj5.query("Literal[]=Query&String", true)
@@ -431,12 +431,13 @@ describe("Wretch", function () {
     })
 
     it("should set the Authorization header", async function () {
-        try { await wretch(_URL + "/basicauth")
-            .get()
-            .res(_ => fail("Authenticated route should not respond without credentials."))
-         } catch(e) {
-             expect(e.status).toBe(401)
-         }
+        try {
+            await wretch(_URL + "/basicauth")
+                .get()
+                .res(_ => fail("Authenticated route should not respond without credentials."))
+        } catch (e) {
+            expect(e.status).toBe(401)
+        }
 
         const res = await wretch(_URL + "/basicauth")
             .auth("Basic d3JldGNoOnJvY2tz")
@@ -489,11 +490,11 @@ describe("Wretch", function () {
             }).res().catch(_ => "ignore")
         })
         // Test multiple requests concurrency and proper timings dispatching
-        for(let i = 0; i < 5; i++) {
+        for (let i = 0; i < 5; i++) {
             wretch(`${_URL}/fake/${i}`).get().perfs(timings => {
                 expect(timings.name).toBe(`${_URL}/fake/${i}`)
             }).res().catch(() => "ignore")
-         }
+        }
     })
 
     it("should abort a request", function (done) {
@@ -557,10 +558,10 @@ describe("Wretch", function () {
             text: () => Promise.resolve(opts.method + "@" + url)
         } as any)
         const setGetMethod = () => next => (url, opts) => {
-            return next(url, {...opts, method: "GET"})
+            return next(url, { ...opts, method: "GET" })
         }
         const setPostMethod = () => next => (url, opts) => {
-            return next(url, {...opts, method: "POST"})
+            return next(url, { ...opts, method: "POST" })
         }
         const w = wretch().middlewares([
             shortCircuit()
@@ -621,24 +622,24 @@ describe("Wretch", function () {
         expect(await wretch(`${_URL}/json/null`).get().json(_ => false)).toEqual(false)
     })
 
-    it("should not append an extra character (&/?) when trying to append or replace empty query params", function() {
+    it("should not append an extra character (&/?) when trying to append or replace empty query params", function () {
         const w = wretch(_URL)
         expect(w.query("")._url).toBe(_URL)
         expect(w.query("", true)._url).toBe(_URL)
         expect(w.query("a=1").query("", true)._url).toBe(_URL)
         expect(w.query({})._url).toBe(_URL)
         expect(w.query({}, true)._url).toBe(_URL)
-        expect(w.query({a: 1}).query({}, true)._url).toBe(_URL)
+        expect(w.query({ a: 1 }).query({}, true)._url).toBe(_URL)
     })
 })
 
 describe("Mix", function () {
     it("should mix two objects", function () {
-        const obj1 = { a: 1, b: 2, c: [ 3, 4 ] }
+        const obj1 = { a: 1, b: 2, c: [3, 4] }
         const obj2proto = { z: 1 }
         const obj2 = Object.create(obj2proto)
-        Object.assign(obj2, { a: 0, d: 5, e: [6], c: [ 5, 6 ] })
-        expect(mix(obj1, obj2, false)).toEqual({ a: 0, b: 2, c: [ 5, 6 ], d: 5, e: [6] })
-        expect(mix(obj1, obj2, true)).toEqual({ a: 0, b: 2, c: [ 3, 4, 5, 6 ], d: 5, e: [6] })
+        Object.assign(obj2, { a: 0, d: 5, e: [6], c: [5, 6] })
+        expect(mix(obj1, obj2, false)).toEqual({ a: 0, b: 2, c: [5, 6], d: 5, e: [6] })
+        expect(mix(obj1, obj2, true)).toEqual({ a: 0, b: 2, c: [3, 4, 5, 6], d: 5, e: [6] })
     })
 })
