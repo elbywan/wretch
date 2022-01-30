@@ -10,7 +10,7 @@ export type WretcherResponse = Response & { [key: string]: any }
 export type ResponseChain = {
     // Response types
     res: <Result = WretcherResponse>(cb?: (type: WretcherResponse) => Result) => Promise<Result>,
-    json: <Result = {[key: string]: any}>(cb?: (type: {[key: string]: any}) => Result) => Promise<Result>,
+    json: <Result = { [key: string]: any }>(cb?: (type: { [key: string]: any }) => Result) => Promise<Result>,
     blob: <Result = Blob>(cb?: (type: Blob) => Result) => Promise<Result>,
     formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>,
     arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>,
@@ -32,7 +32,7 @@ export type ResponseChain = {
 }
 
 class WretchErrorWrapper {
-    constructor(public error: any) {}
+    constructor(public error: any) { }
 }
 
 export const resolver = (wretcher: Wretcher) => {
@@ -46,14 +46,14 @@ export const resolver = (wretcher: Wretcher) => {
     const catchers = new Map(_catchers)
     const finalOptions = mix(conf.defaults, opts)
     const fetchController = conf.polyfill("AbortController", { doThrow: false, instance: true })
-    if(!finalOptions["signal"] && fetchController) {
+    if (!finalOptions["signal"] && fetchController) {
         finalOptions["signal"] = fetchController.signal
     }
     // Request timeout
     const timeout = {
         ref: null,
         clear() {
-            if(timeout.ref) {
+            if (timeout.ref) {
                 clearTimeout(timeout.ref)
                 timeout.ref = null
             }
@@ -69,6 +69,12 @@ export const resolver = (wretcher: Wretcher) => {
         .then(response => {
             timeout.clear()
             if (!response.ok) {
+                if (response.type === "opaque") {
+                    const err = new Error("Opaque response")
+                    err["status"] = response.status
+                    err["response"] = response
+                    throw err
+                }
                 return response[conf.errorType || "text"]().then(msg => {
                     // Enhances the error object
                     const err = new Error(msg)
@@ -85,11 +91,11 @@ export const resolver = (wretcher: Wretcher) => {
         return promise.catch(err => {
             timeout.clear()
             const error = err instanceof WretchErrorWrapper ? err.error : err
-            if(err instanceof WretchErrorWrapper && catchers.has("__fromFetch"))
+            if (err instanceof WretchErrorWrapper && catchers.has("__fromFetch"))
                 return catchers.get("__fromFetch")(error, wretcher)
-            else if(catchers.has(error.status))
+            else if (catchers.has(error.status))
                 return catchers.get(error.status)(error, wretcher)
-            else if(catchers.has(error.name))
+            else if (catchers.has(error.name))
                 return catchers.get(error.name)(error, wretcher)
             else
                 throw error
@@ -151,7 +157,7 @@ export const resolver = (wretcher: Wretcher) => {
         /**
          * Returns the automatically generated AbortController alongside the current wretch response as a pair.
          */
-        controller: () => [ fetchController, responseChain ],
+        controller: () => [fetchController, responseChain],
         /**
          * Catches an http response with a specific error code or name and performs a callback.
          */
