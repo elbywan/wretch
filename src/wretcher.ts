@@ -12,10 +12,14 @@ export type DeferredCallback = (wretcher: Wretcher, url: string, options: Wretch
 const JSON_MIME = "application/json"
 const CONTENT_TYPE_HEADER = "Content-Type"
 
-function extractJsonContentType(headers: HeadersInit = {}) {
-    return Object.entries(headers).find(([k, v]) =>
-        k.toLowerCase() === CONTENT_TYPE_HEADER.toLowerCase() && /^application\/.*json.*/.test(v)
+function extractContentType(headers: HeadersInit = {}): string | undefined {
+    return Object.entries(headers).find(([k]) =>
+        k.toLowerCase() === CONTENT_TYPE_HEADER.toLowerCase()
     )?.[1]
+}
+
+function isLikelyJsonMime(value: string): boolean {
+    return /^application\/.*json.*/.test(value)
 }
 
 /**
@@ -201,11 +205,11 @@ export class Wretcher {
     private method(method: string, options = {}, body = null) {
         let base = this.options({ ...options, method })
         // "Jsonify" the body if it is an object and if it is likely that the content type targets json.
-        const jsonContentType = extractJsonContentType(base._options.headers)
-        const jsonify = typeof body === "object" && (!base._options.headers || jsonContentType)
+        const contentType = extractContentType(base._options.headers)
+        const jsonify = typeof body === "object" && (!base._options.headers || !contentType || isLikelyJsonMime(contentType))
         base =
             !body ? base :
-                jsonify ? base.json(body, jsonContentType) :
+                jsonify ? base.json(body, contentType) :
                     base.body(body)
         return resolver(
             base
@@ -276,7 +280,12 @@ export class Wretcher {
      * @param contentType A custom content type.
      */
     json(jsObject: object, contentType?: string) {
-        return this.content(contentType || extractJsonContentType(this._options.headers) || JSON_MIME).body(JSON.stringify(jsObject))
+        const currentContentType = extractContentType(this._options.headers)
+        return this.content(
+            contentType ||
+            isLikelyJsonMime(currentContentType) && currentContentType ||
+            JSON_MIME
+        ).body(JSON.stringify(jsObject))
     }
     /**
      * Converts the javascript object to a FormData and sets the request body.
