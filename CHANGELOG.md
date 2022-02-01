@@ -1,3 +1,13 @@
+<a name="1.7.9"></a>
+## [1.7.9](https://github.com/elbywan/wretch/compare/1.7.8...1.7.9) (2022-02-05)
+
+
+### :bug: Bug fix(es)
+
+* Body json serialization condition fix. ([1c90fa3](https://github.com/elbywan/wretch/commit/1c90fa3)), closes [#123](https://github.com/elbywan/wretch/issues/123)
+
+
+
 <a name="1.7.8"></a>
 ## [1.7.8](https://github.com/elbywan/wretch/compare/1.7.7...1.7.8) (2022-01-30)
 
