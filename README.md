@@ -3,8 +3,7 @@
 	<br>
     <a href="https://elbywan.github.io/wretch">Wretch</a><br>
 	<br>
-
-  <a href="https://app.travis-ci.com/elbywan/wretch"><img alt="travis-badge" src="https://travis-ci.com/elbywan/wretch.svg?branch=master"></a>
+  <a href="https://github.com/elbywan/wretch/actions/workflows/ci.yml"><img alt="travis-badge" src="https://github.com/elbywan/wretch/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://www.npmjs.com/package/wretch"><img alt="npm-badge" src="https://img.shields.io/npm/v/wretch.svg?colorB=ff733e" height="20"></a>
   <a href="https://www.npmjs.com/package/wretch"><img alt="npm-downloads-badge" src="https://img.shields.io/npm/dm/wretch.svg?colorB=53aabb" height="20"></a>
   <a href="https://coveralls.io/github/elbywan/wretch?branch=master"><img src="https://coveralls.io/repos/github/elbywan/wretch/badge.svg?branch=master" alt="Coverage Status"></a>
@@ -27,12 +26,12 @@
 
 # Table of Contents
 
-* [Motivation](#motivation)
-* [Installation](#installation)
-* [Compatibility](#compatibility)
-* [Usage](#usage)
-* [Api](#api)
-* [License](#license)
+- [Motivation](#motivation)
+- [Installation](#installation)
+- [Compatibility](#compatibility)
+- [Usage](#usage)
+- [Api](#api)
+- [License](#license)
 
 # Motivation
 
@@ -42,10 +41,10 @@
 // Fetch needs a second callback to process the response body
 
 fetch("examples/example.json")
-  .then(response => response.json())
-  .then(json => {
+  .then((response) => response.json())
+  .then((json) => {
     //Do stuff with the parsed json
-  })
+  });
 ```
 
 ```javascript
@@ -54,9 +53,9 @@ fetch("examples/example.json")
 // Use .res for the raw response, .text for raw text, .json for json, .blob for a blob ...
 wretch("examples/example.json")
   .get()
-  .json(json => {
+  .json((json) => {
     // Do stuff with the parsed json
-  })
+  });
 ```
 
 #### Because manually checking and throwing every request error code is tedious.
@@ -121,11 +120,11 @@ const externalApi = wretch()
   // Set the base url
   .url("http://external.api")
   // Authorization header
-  .auth(`Bearer ${ token }`)
+  .auth(`Bearer ${token}`)
   // Cors fetch options
   .options({ credentials: "include", mode: "cors" })
   // Handle 403 errors
-  .resolve(_ => _.forbidden(handle403))
+  .resolve((_) => _.forbidden(handle403));
 
 // Fetch a resource
 externalApi
@@ -133,12 +132,12 @@ externalApi
   // Add a custom header for this request
   .headers({ "If-Unmodified-Since": "Wed, 21 Oct 2015 07:28:00 GMT" })
   .get()
-  .json(handleResource)
+  .json(handleResource);
 // Post a resource
 externalApi
   .url("/resource")
   .post({ "Shiny new": "resource object" })
-  .json(handleNewResourceResult)
+  .json(handleNewResourceResult);
 ```
 
 # Installation
@@ -164,51 +163,55 @@ npm start
 
 Wretch is compatible with modern browsers out of the box.
 
-For older environments without fetch support, you should get a [polyfill](https://github.com/github/fetch).
+For older environments without fetch support, you should get a
+[polyfill](https://github.com/github/fetch).
 
 ## Node.js
 
-Works with any [FormData](https://github.com/form-data/form-data) or [fetch](https://www.npmjs.com/package/node-fetch) polyfills.
+Works with any [FormData](https://github.com/form-data/form-data) or
+[fetch](https://www.npmjs.com/package/node-fetch) polyfills.
 
 ```javascript
 // The global way :
 
-global.fetch = require("node-fetch")
-global.FormData = require("form-data")
-global.URLSearchParams = require("url").URLSearchParams
+global.fetch = require("node-fetch");
+global.FormData = require("form-data");
+global.URLSearchParams = require("url").URLSearchParams;
 
 // Or the non-global way :
 
 wretch().polyfills({
-    fetch: require("node-fetch"),
-    FormData: require("form-data"),
-    URLSearchParams: require("url").URLSearchParams
-})
+  fetch: require("node-fetch"),
+  FormData: require("form-data"),
+  URLSearchParams: require("url").URLSearchParams,
+});
 ```
 
 ## Deno
 
-Works with [Deno](https://deno.land/) >= [0.41.0](https://github.com/denoland/deno/releases/tag/v0.41.0) out of the box.
+Works with [Deno](https://deno.land/) >=
+[0.41.0](https://github.com/denoland/deno/releases/tag/v0.41.0) out of the box.
 
 ```ts
 // You can import wretch from any CDN that serve ESModules.
-import wretch from 'https://cdn.pika.dev/wretch'
+import wretch from "https://cdn.pika.dev/wretch";
 
-const text = await wretch('https://httpstat.us/200').get().text()
-console.log(text) // -> 200 OK
+const text = await wretch("https://httpstat.us/200").get().text();
+console.log(text); // -> 200 OK
 ```
 
-------
+---
 
-*This project uses automated node.js & browser unit tests. The latter are a provided courtesy of:*
+_This project uses automated node.js & browser unit tests. The latter are a
+provided courtesy of:_
 
 <a href="https://www.browserstack.com/"><img src="assets/browserstack-logo.png" alt="browserstack-logo" height="50"></a>
 
-
-
 # Usage
 
-**Wretch is bundled using the UMD format (@`dist/bundle/wretch.js`), ESM format (@`dist/bundle/wretch.esm.js`) alongside es2015 modules (@`dist/index.js`) and typescript definitions.**
+**Wretch is bundled using the UMD format (@`dist/bundle/wretch.js`), ESM format
+(@`dist/bundle/wretch.esm.js`) alongside es2015 modules (@`dist/index.js`) and
+typescript definitions.**
 
 ## Import
 
@@ -237,13 +240,13 @@ console.log(text) // -> 200 OK
 #### ESModule
 
 ```typescript
-import wretch from "wretch"
+import wretch from "wretch";
 ```
 
 #### CommonJS
 
 ```typescript
-const wretch = require("wretch")
+const wretch = require("wretch");
 ```
 
 ## Code
@@ -285,92 +288,94 @@ wretch(url, options)
 
 # API
 
-* [Helper Methods](#helper-methods)
-* [Body Types](#body-types)
-* [Http Methods](#http-methods)
-* [Catchers](#catchers)
-* [Response Types](#response-types)
-* [Extras](#extras)
+- [Helper Methods](#helper-methods)
+- [Body Types](#body-types)
+- [Http Methods](#http-methods)
+- [Catchers](#catchers)
+- [Response Types](#response-types)
+- [Extras](#extras)
 
-------
+---
 
 #### wretch(url = "", opts = {})
 
-Creates a new Wretcher object with an url and [vanilla fetch options](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch).
+Creates a new Wretcher object with an url and
+[vanilla fetch options](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch).
 
 ## Helper Methods
 
-*Helper methods are optional and can be chained.*
+_Helper methods are optional and can be chained._
 
 | [url](#urlurl-string-replace-boolean--false) | [query](#queryqp-object--string-replace-boolean) | [options](#optionsoptions-object-mixin-boolean--true) | [headers](#headersheadervalues-object) | [accept](#acceptheadervalue-string) | [content](#contentheadervalue-string) | [auth](#authheadervalue-string) | [catcher](#catchererrorid-number--string-catcher-error-wretchererror-originalrequest-wretcher--void) | [resolve](#resolvedoresolve-chain-responsechain-originalrequest-wretcher--responsechain--promise-clear--false) | [defer](#defercallback-originalrequest-wretcher-url-string-options-object--wretcher-clear--false) | [defaults](#defaultsopts-object-mixin-boolean--false) | [errorType](#errortypemethod-text--json--text) | [polyfills](#polyfillspolyfills-object) |
-|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+| -------------------------------------------- | ------------------------------------------------ | ----------------------------------------------------- | -------------------------------------- | ----------------------------------- | ------------------------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------- | --------------------------------------- |
 
 #### url(url: string, replace: boolean = false)
 
 Appends or replaces the url.
 
 ```js
-wretch().url("...").get().json(/* ... */)
+wretch().url("...").get().json(); /* ... */
 
 // Can be used to set a base url
 
 // Subsequent requests made using the 'blogs' object will be prefixed with "http://mywebsite.org/api/blogs"
-const blogs = wretch("http://mywebsite.org/api/blogs")
+const blogs = wretch("http://mywebsite.org/api/blogs");
 
 // Perfect for CRUD apis
-const id = await blogs.post({ name: "my blog" }).json(_ => _.id)
-const blog = await blogs.url(`/${id}`).get().json()
-console.log(blog.name)
+const id = await blogs.post({ name: "my blog" }).json((_) => _.id);
+const blog = await blogs.url(`/${id}`).get().json();
+console.log(blog.name);
 
-await blogs.url(`/${id}`).delete().res()
+await blogs.url(`/${id}`).delete().res();
 
 // And to replace the base url if needed :
-const noMoreBlogs = blogs.url("http://mywebsite.org/", true)
+const noMoreBlogs = blogs.url("http://mywebsite.org/", true);
 ```
 
 #### query(qp: object | string, replace: boolean)
 
-Converts a javascript object to query parameters, then appends this query string to the current url.
-String values are used as the query string verbatim.
+Converts a javascript object to query parameters, then appends this query string
+to the current url. String values are used as the query string verbatim.
 
 Pass `true` as the second argument to replace existing query parameters.
 
 ```js
-let w = wretch("http://example.com")
+let w = wretch("http://example.com");
 // url is http://example.com
-w = w.query({ a: 1, b: 2 })
+w = w.query({ a: 1, b: 2 });
 // url is now http://example.com?a=1&b=2
-w = w.query({ c: 3, d: [4, 5] })
+w = w.query({ c: 3, d: [4, 5] });
 // url is now http://example.com?a=1&b=2c=3&d=4&d=5
-w = w.query("five&six&seven=eight")
+w = w.query("five&six&seven=eight");
 // url is now http://example.com?a=1&b=2c=3&d=4&d=5&five&six&seven=eight
-w = w.query({ reset: true }, true)
+w = w.query({ reset: true }, true);
 // url is now  http://example.com?reset=true
 ```
 
 ##### **Note that .query is not meant to handle complex cases with nested objects.**
 
-For this kind of usage, you can use `wretch` in conjunction with other libraries (like [`qs`](https://github.com/ljharb/qs)).
+For this kind of usage, you can use `wretch` in conjunction with other libraries
+(like [`qs`](https://github.com/ljharb/qs)).
 
 ```js
 /* Using wretch with qs */
 
-const queryObject = { some: { nested: 'objects' }}
+const queryObject = { some: { nested: "objects" } };
 
 // Use .qs inside .query :
 
- wretch("https://example.com/").query(qs.stringify(queryObject))
+wretch("https://example.com/").query(qs.stringify(queryObject));
 
 // Use .defer :
 
 const qsWretch = wretch().defer((w, url, { qsQuery, qsOptions }) => (
-    qsQuery ? w.query(qs.stringify(qsQuery, qsOptions)) : w
-))
+  qsQuery ? w.query(qs.stringify(qsQuery, qsOptions)) : w
+));
 
 qsWretch
   .url("https://example.com/")
-  .options({ qs: { query: queryObject }})
-  /* ... */
+  .options({ qs: { query: queryObject } });
+/* ... */
 ```
 
 #### options(options: Object, mixin: boolean = true)
@@ -378,26 +383,27 @@ qsWretch
 Sets the fetch options.
 
 ```js
-wretch("...").options({ credentials: "same-origin" })
+wretch("...").options({ credentials: "same-origin" });
 ```
 
 Wretch being immutable, you can store the object for later use.
 
 ```js
-const corsWretch = wretch().options({ credentials: "include", mode: "cors" })
+const corsWretch = wretch().options({ credentials: "include", mode: "cors" });
 
-corsWretch.url("http://endpoint1").get()
-corsWretch.url("http://endpoint2").get()
+corsWretch.url("http://endpoint1").get();
+corsWretch.url("http://endpoint2").get();
 ```
 
-You can override instead of mixing in the existing options by passing a boolean flag.
+You can override instead of mixing in the existing options by passing a boolean
+flag.
 
 ```js
 // By default options mixed in :
 
 wretch()
-  .options({ headers: { "Accept": "application/json" }})
-  .options({ encoding: "same-origin", headers: { "X-Custom": "Header" }})
+  .options({ headers: { "Accept": "application/json" } })
+  .options({ encoding: "same-origin", headers: { "X-Custom": "Header" } });
 
 /*
 {
@@ -409,8 +415,11 @@ wretch()
 // With the flag, options are overridden :
 
 wretch()
-  .options({ headers: { "Accept": "application/json" }})
-  .options({ encoding: "same-origin", headers: { "X-Custom": "Header" }}, false)
+  .options({ headers: { "Accept": "application/json" } })
+  .options(
+    { encoding: "same-origin", headers: { "X-Custom": "Header" } },
+    false,
+  );
 
 /*
 {
@@ -428,7 +437,7 @@ Sets the request headers.
 wretch("...")
   .headers({ "Content-Type": "text/plain", Accept: "application/json" })
   .post("my text")
-  .json()
+  .json();
 ```
 
 #### accept(headerValue: string)
@@ -436,7 +445,7 @@ wretch("...")
 Shortcut to set the "Accept" header.
 
 ```js
-wretch("...").accept("application/json")
+wretch("...").accept("application/json");
 ```
 
 #### content(headerValue: string)
@@ -444,7 +453,7 @@ wretch("...").accept("application/json")
 Shortcut to set the "Content-Type" header.
 
 ```js
-wretch("...").content("application/json")
+wretch("...").content("application/json");
 ```
 
 #### auth(headerValue: string)
@@ -452,14 +461,16 @@ wretch("...").content("application/json")
 Shortcut to set the "Authorization" header.
 
 ```js
-wretch("...").auth("Basic d3JldGNoOnJvY2tz")
+wretch("...").auth("Basic d3JldGNoOnJvY2tz");
 ```
 
 #### catcher(errorId: number | string, catcher: (error: WretcherError, originalRequest: Wretcher) => void)
 
-Adds a [catcher](https://github.com/elbywan/wretch#catchers) which will be called on every subsequent request error.
+Adds a [catcher](https://github.com/elbywan/wretch#catchers) which will be
+called on every subsequent request error.
 
-Very useful when you need to perform a repetitive action on a specific error code.
+Very useful when you need to perform a repetitive action on a specific error
+code.
 
 ```js
 const w = wretch()
@@ -477,58 +488,63 @@ w
   .json(json => /* ... */)
 ```
 
-The original request is passed along the error and can be used in order to perform an additional request.
+The original request is passed along the error and can be used in order to
+perform an additional request.
 
 ```js
 const reAuthOn401 = wretch()
   .catcher(401, async (error, request) => {
     // Renew credentials
-    const token = await wretch("/renewtoken").get().text()
-    storeToken(token)
+    const token = await wretch("/renewtoken").get().text();
+    storeToken(token);
     // Replay the original request with new credentials
-    return request.auth(token).replay().unauthorized(err => { throw err }).json()
-  })
+    return request.auth(token).replay().unauthorized((err) => {
+      throw err;
+    }).json();
+  });
 
 reAuthOn401.url("/resource")
   .get()
   .json() // <- Will only be called for the original promise
-  .then(callback) // <- Will be called for the original OR the replayed promise result
+  .then(callback); // <- Will be called for the original OR the replayed promise result
 ```
 
 #### defer(callback: (originalRequest: Wretcher, url: string, options: Object) => Wretcher, clear = false)
 
-Defer wretcher methods that will be chained and called just before the request is performed.
+Defer wretcher methods that will be chained and called just before the request
+is performed.
 
 ```js
 /* Small fictional example: deferred authentication */
 
 // If you cannot retrieve the auth token while configuring the wretch object you can use .defer to postpone the call
-const api = wretch("...").defer((w, url, options)  => {
+const api = wretch("...").defer((w, url, options) => {
   // If we are hitting the route /user…
-  if(/\/user/.test(url)) {
-    const { token } = options.context
-    return w.auth(token)
+  if (/\/user/.test(url)) {
+    const { token } = options.context;
+    return w.auth(token);
   }
-  return w
-})
+  return w;
+});
 
 // ... //
 
-const token = await getToken(request.session.user)
+const token = await getToken(request.session.user);
 
 // .auth gets called here automatically
 api.options({
-  context: { token }
-}).get().res()
+  context: { token },
+}).get().res();
 ```
 
 #### resolve(doResolve: (chain: ResponseChain, originalRequest: Wretcher) => ResponseChain | Promise<any>, clear = false)
 
-Programs a resolver which will automatically be injected to perform response chain tasks.
+Programs a resolver which will automatically be injected to perform response
+chain tasks.
 
 Very useful when you need to perform repetitive actions on the wretch response.
 
-*The clear argument, if set to true, removes previously defined resolvers.*
+_The clear argument, if set to true, removes previously defined resolvers._
 
 ```js
 // Program "response" chain actions early on
@@ -553,17 +569,20 @@ Sets default fetch options which will be used for every subsequent requests.
 ```js
 // Interestingly enough, default options are mixed in :
 
-wretch().defaults({ headers: { "Accept": "application/json" }})
+wretch().defaults({ headers: { "Accept": "application/json" } });
 
 // The fetch request is sent with both headers.
-wretch("...", { headers: { "X-Custom": "Header" }}).get()
+wretch("...", { headers: { "X-Custom": "Header" } }).get();
 ```
 
 ```js
 // You can mix in with the existing options instead of overriding them by passing a boolean flag :
 
-wretch().defaults({ headers: { "Accept": "application/json" }})
-wretch().defaults({ encoding: "same-origin", headers: { "X-Custom": "Header" }}, true)
+wretch().defaults({ headers: { "Accept": "application/json" } });
+wretch().defaults({
+  encoding: "same-origin",
+  headers: { "X-Custom": "Header" },
+}, true);
 
 /* The new options are :
 {
@@ -575,7 +594,8 @@ wretch().defaults({ encoding: "same-origin", headers: { "X-Custom": "Header" }},
 
 #### errorType(method: string = "text")
 
-Sets the method (text, json ...) used to parse the data contained in the response body in case of an HTTP error.
+Sets the method (text, json ...) used to parse the data contained in the
+response body in case of an HTTP error.
 
 Persists for every subsequent requests.
 
@@ -596,31 +616,32 @@ wretch("http://server/which/returns/an/error/with/a/json/body")
 Sets the non-global polyfills which will be used for every subsequent calls.
 
 ```javascript
-const fetch = require("node-fetch")
-const FormData = require("form-data")
+const fetch = require("node-fetch");
+const FormData = require("form-data");
 
 wretch().polyfills({
-    fetch: fetch,
-    FormData: FormData,
-    URLSearchParams: require("url").URLSearchParams
-})
+  fetch: fetch,
+  FormData: FormData,
+  URLSearchParams: require("url").URLSearchParams,
+});
 ```
 
 ## Body Types
 
-*A body type is only needed when performing put/patch/post requests with a body.*
+_A body type is only needed when performing put/patch/post requests with a
+body._
 
 | [body](#bodycontents-any) | [json](#jsonjsobject-object) | [formData](#formdataformobject-object-recursive-string--boolean--false) | [formUrl](#formurlinput--object--string) |
-|-----|-----|-----|-----|
+| ------------------------- | ---------------------------- | ----------------------------------------------------------------------- | ---------------------------------------- |
 
 #### body(contents: any)
 
 Sets the request body with any content.
 
 ```js
-wretch("...").body("hello").put()
+wretch("...").body("hello").put();
 // Note that calling an 'http verb' method with the body as an argument is equivalent:
-wretch("...").put("hello")
+wretch("...").put("hello");
 ```
 
 #### json(jsObject: Object)
@@ -628,11 +649,10 @@ wretch("...").put("hello")
 Sets the "Content-Type" header, stringifies an object and sets the request body.
 
 ```js
-const jsonObject = { a: 1, b: 2, c: 3 }
-wretch("...").json(jsonObject).post()
+const jsonObject = { a: 1, b: 2, c: 3 };
+wretch("...").json(jsonObject).post();
 // Note that calling an 'http verb' method with the object body as an argument is equivalent:
-wretch("...").post(jsonObject)
-
+wretch("...").post(jsonObject);
 ```
 
 #### formData(formObject: Object, recursive: string[] | boolean = false)
@@ -642,73 +662,80 @@ Converts the javascript object to a FormData and sets the request body.
 ```js
 const form = {
   hello: "world",
-  duck: "Muscovy"
-}
-wretch("...").formData(form).post()
+  duck: "Muscovy",
+};
+wretch("...").formData(form).post();
 ```
 
-The `recursive` argument when set to `true` will enable recursion through all nested objects and produce `object[key]` keys.
-It can be set to an array of string to exclude specific keys.
+The `recursive` argument when set to `true` will enable recursion through all
+nested objects and produce `object[key]` keys. It can be set to an array of
+string to exclude specific keys.
 
-> Warning: Be careful to exclude `Blob` instances in the Browser, and `ReadableStream` and `Buffer` instances when using the node.js compatible `form-data` package.
+> Warning: Be careful to exclude `Blob` instances in the Browser, and
+> `ReadableStream` and `Buffer` instances when using the node.js compatible
+> `form-data` package.
 
 ```js
 const form = {
   duck: "Muscovy",
   duckProperties: {
     beak: {
-      color: "yellow"
+      color: "yellow",
     },
-    legs: 2
+    legs: 2,
   },
   ignored: {
-    key: 0
-  }
-}
+    key: 0,
+  },
+};
 // Will append the following keys to the FormData payload:
 // "duck", "duckProperties[beak][color]", "duckProperties[legs]"
-wretch("...").formData(form, ["ignored"]).post()
+wretch("...").formData(form, ["ignored"]).post();
 ```
 
 #### formUrl(input: Object | string)
 
-Converts the input parameter to an url encoded string and sets the content-type header and body.
-If the input argument is already a string, skips the conversion part.
+Converts the input parameter to an url encoded string and sets the content-type
+header and body. If the input argument is already a string, skips the conversion
+part.
 
 ```js
-const form = { a: 1, b: { c: 2 }}
-const alreadyEncodedForm = "a=1&b=%7B%22c%22%3A2%7D"
+const form = { a: 1, b: { c: 2 } };
+const alreadyEncodedForm = "a=1&b=%7B%22c%22%3A2%7D";
 
 // Automatically sets the content-type header to "application/x-www-form-urlencoded"
-wretch("...").formUrl(form).post()
-wretch("...").formUrl(alreadyEncodedForm).post()
+wretch("...").formUrl(form).post();
+wretch("...").formUrl(alreadyEncodedForm).post();
 ```
 
 ## Http Methods
 
 **Required**
 
-*You can pass optional fetch options and body arguments to these methods as a shorthand.*
+_You can pass optional fetch options and body arguments to these methods as a
+shorthand._
 
 ```js
 // This shorthand:
-wretch().post({ json: 'body' }, { credentials: "same-origin" })
+wretch().post({ json: "body" }, { credentials: "same-origin" });
 // Is equivalent to:
-wretch().json({ json: 'body'}).options({ credentials: "same-origin" }).post()
+wretch().json({ json: "body" }).options({ credentials: "same-origin" }).post();
 ```
 
-**NOTE:** For methods having a body argument if the value is an `Object` it is assumed that it is a JSON payload and apply the same behaviour
-as calling `.json(body)`, unless the `Content-Type` header has been set to something else beforehand.
+**NOTE:** For methods having a body argument if the value is an `Object` it is
+assumed that it is a JSON payload and apply the same behaviour as calling
+`.json(body)`, unless the `Content-Type` header has been set to something else
+beforehand.
 
 | [get](#getoptions) | [delete](#deleteoptions) | [put](#putbody-options) | [patch](#patchbody-options) | [post](#postbody-options) | [head](#headoptions) | [opts](#optsoptions) |
-|-----|-----|-----|-----|-----|-----|-----|
+| ------------------ | ------------------------ | ----------------------- | --------------------------- | ------------------------- | -------------------- | -------------------- |
 
 #### get(options)
 
 Performs a get request.
 
 ```js
-wretch("...").get()
+wretch("...").get();
 ```
 
 #### delete(options)
@@ -716,7 +743,7 @@ wretch("...").get()
 Performs a delete request.
 
 ```js
-wretch("...").delete()
+wretch("...").delete();
 ```
 
 #### put(body, options)
@@ -748,41 +775,48 @@ wretch("...").json({...}).post()
 Performs a head request.
 
 ```js
-wretch("...").head()
+wretch("...").head();
 ```
+
 #### opts(options)
 
 Performs an options request.
 
 ```js
-wretch("...").opts()
+wretch("...").opts();
 ```
 
 ## Catchers
 
-*Catchers are optional, but if you do not provide them an error will still be thrown in case of an http error code received.*
+_Catchers are optional, but if you do not provide them an error will still be
+thrown in case of an http error code received._
 
-*Catchers can be chained.*
+_Catchers can be chained._
 
-| [badRequest](#badrequestcb-error-wretchererror-originalrequest-wretcher--any) | [unauthorized](#unauthorizedcb-error-wretchererror-originalrequest-wretcher--any) | [forbidden](#forbiddencb-error-wretchererror-originalrequest-wretcher--any) | [notFound](#notfoundcb-error-wretchererror-originalrequest-wretcher--any) | [timeout](#timeoutcb-error-wretchererror-originalrequest-wretcher--any) | [internalError](#internalerrorcb-error-wretchererror-originalrequest-wretcher--any) | [error](#errorerrorid-number--string-cb-error-wretchererror-originalrequest-wretcher--any) | [fetchError](#fetcherrorcb-error-networkerror-originalrequest-wretcher--any)
-|-----|-----|-----|-----|-----|-----|-----|-----|
+| [badRequest](#badrequestcb-error-wretchererror-originalrequest-wretcher--any) | [unauthorized](#unauthorizedcb-error-wretchererror-originalrequest-wretcher--any) | [forbidden](#forbiddencb-error-wretchererror-originalrequest-wretcher--any) | [notFound](#notfoundcb-error-wretchererror-originalrequest-wretcher--any) | [timeout](#timeoutcb-error-wretchererror-originalrequest-wretcher--any) | [internalError](#internalerrorcb-error-wretchererror-originalrequest-wretcher--any) | [error](#errorerrorid-number--string-cb-error-wretchererror-originalrequest-wretcher--any) | [fetchError](#fetcherrorcb-error-networkerror-originalrequest-wretcher--any) |
+| ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
 
 ```ts
-type WretcherError = Error & { status: number, response: WretcherResponse, text?: string, json?: Object }
+type WretcherError = Error & {
+  status: number;
+  response: WretcherResponse;
+  text?: string;
+  json?: Object;
+};
 ```
 
 ```js
 wretch("...")
   .get()
-  .badRequest(err => console.log(err.status))
-  .unauthorized(err => console.log(err.status))
-  .forbidden(err => console.log(err.status))
-  .notFound(err => console.log(err.status))
-  .timeout(err => console.log(err.status))
-  .internalError(err => console.log(err.status))
-  .error(418, err => console.log(err.status))
-  .fetchError(err => console.log(err))
-  .res()
+  .badRequest((err) => console.log(err.status))
+  .unauthorized((err) => console.log(err.status))
+  .forbidden((err) => console.log(err.status))
+  .notFound((err) => console.log(err.status))
+  .timeout((err) => console.log(err.status))
+  .internalError((err) => console.log(err.status))
+  .error(418, (err) => console.log(err.status))
+  .fetchError((err) => console.log(err))
+  .res();
 ```
 
 #### badRequest(cb: (error: WretcherError, originalRequest: Wretcher) => any)
@@ -817,32 +851,37 @@ Catches a specific error given its code or name and perform the callback.
 
 Catches any error thrown by the fetch function and perform the callback.
 
----------
+---
 
-The original request is passed along the error and can be used in order to perform an additional request.
+The original request is passed along the error and can be used in order to
+perform an additional request.
 
 ```js
 wretch("/resource")
   .get()
   .unauthorized(async (error, req) => {
     // Renew credentials
-    const token = await wretch("/renewtoken").get().text()
-    storeToken(token)
+    const token = await wretch("/renewtoken").get().text();
+    storeToken(token);
     // Replay the original request with new credentials
-    return req.auth(token).get().unauthorized(err => { throw err }).json()
+    return req.auth(token).get().unauthorized((err) => {
+      throw err;
+    }).json();
   })
   .json()
   // The promise chain is preserved as expected
   // ".then" will be performed on the result of the original request
   // or the replayed one (if a 401 error was thrown)
-  .then(callback)
+  .then(callback);
 ```
 
 ## Response Types
 
 **Required**
 
-All these methods accept an optional callback, and will return a Promise resolved with either the return value of the provided callback or the expected type.
+All these methods accept an optional callback, and will return a Promise
+resolved with either the return value of the provided callback or the expected
+type.
 
 ```js
 // Without a callback
@@ -853,17 +892,18 @@ const json = await wretch("...").get().json()
 wretch("...").get().json(() => "Hello world!").then(console.log) // Hello world!
 ```
 
-*If an error is caught by catchers, the response type handler will not be called.*
+_If an error is caught by catchers, the response type handler will not be
+called._
 
 | [res](#rescb-response--response--any) | [json](#jsoncb-json--object--any) | [blob](#blobcb-blob--blob--any) | [formData](#formdatacb-fd--formdata--any) | [arrayBuffer](#arraybuffercb-ab--arraybuffer--any) | [text](#textcb-text--string--any) |
-|-----|-----|-----|-----|-----|-----|
+| ------------------------------------- | --------------------------------- | ------------------------------- | ----------------------------------------- | -------------------------------------------------- | --------------------------------- |
 
 #### res(cb?: (response : Response) => T) : Promise<Response | T>
 
 Raw Response handler.
 
 ```js
-wretch("...").get().res(response => console.log(response.url))
+wretch("...").get().res((response) => console.log(response.url));
 ```
 
 #### json(cb?: (json : Object) => T) : Promise<Object | T>
@@ -871,7 +911,7 @@ wretch("...").get().res(response => console.log(response.url))
 Json handler.
 
 ```js
-wretch("...").get().json(json => console.log(Object.keys(json)))
+wretch("...").get().json((json) => console.log(Object.keys(json)));
 ```
 
 #### blob(cb?: (blob : Blob) => T) : Promise<Blob | T>
@@ -898,55 +938,58 @@ ArrayBuffer handler.
 wretch("...").get().arrayBuffer(arrayBuffer => /* ... */)
 ```
 
-#### text(cb: (text : string) => T)  : Promise<string | T>
+#### text(cb: (text : string) => T) : Promise<string | T>
 
 Text handler.
 
 ```js
-wretch("...").get().text(txt => console.log(txt))
+wretch("...").get().text((txt) => console.log(txt));
 ```
 
 ## Extras
 
-*A set of extra features.*
+_A set of extra features._
 
 | [Abortable requests](#abortable-requests) | [Performance API](#performance-api) | [Middlewares](#middlewares) |
-|-----|-----|-----|
+| ----------------------------------------- | ----------------------------------- | --------------------------- |
 
 ### Abortable requests
 
-*Only compatible with browsers that support [AbortControllers](https://developer.mozilla.org/en-US/docs/Web/API/AbortController). Otherwise, you could use a (partial) [polyfill](https://www.npmjs.com/package/abortcontroller-polyfill).*
+_Only compatible with browsers that support
+[AbortControllers](https://developer.mozilla.org/en-US/docs/Web/API/AbortController).
+Otherwise, you could use a (partial)
+[polyfill](https://www.npmjs.com/package/abortcontroller-polyfill)._
 
 Use case :
 
 ```js
 const [c, w] = wretch("...")
   .get()
-  .onAbort(_ => console.log("Aborted !"))
-  .controller()
+  .onAbort((_) => console.log("Aborted !"))
+  .controller();
 
-w.text(_ => console.log("should never be called"))
-c.abort()
+w.text((_) => console.log("should never be called"));
+c.abort();
 
 // Or :
 
-const controller = new AbortController()
+const controller = new AbortController();
 
 wretch("...")
   .signal(controller)
   .get()
-  .onAbort(_ => console.log("Aborted !"))
-  .text(_ => console.log("should never be called"))
+  .onAbort((_) => console.log("Aborted !"))
+  .text((_) => console.log("should never be called"));
 
-controller.abort()
+controller.abort();
 ```
 
 ### signal(controller: AbortController)
 
-*Used at "request time", like an helper.*
+_Used at "request time", like an helper._
 
-Associates a custom controller with the request.
-Useful when you need to use your own AbortController, otherwise wretch will create a new controller itself.
+Associates a custom controller with the request. Useful when you need to use
+your own AbortController, otherwise wretch will create a new controller itself.
 
 ```js
 const controller = new AbortController()
@@ -969,9 +1012,10 @@ controller.abort()
 
 #### setTimeout(time: number, controller?: AbortController)
 
-*Used at "response time".*
+_Used at "response time"._
 
-Aborts the request after a fixed time. If you use a custom AbortController associated with the request, pass it as the second argument.
+Aborts the request after a fixed time. If you use a custom AbortController
+associated with the request, pass it as the second argument.
 
 ```js
 // 1 second timeout
@@ -980,9 +1024,10 @@ wretch("...").get().setTimeout(1000).json(_ => /* will not be called in case of 
 
 #### controller()
 
-*Used at "response time".*
+_Used at "response time"._
 
-Returns the automatically generated AbortController alongside the current wretch response as a pair.
+Returns the automatically generated AbortController alongside the current wretch
+response as a pair.
 
 ```js
 // We need the controller outside the chain
@@ -999,7 +1044,7 @@ c.abort()
 
 #### onAbort(cb: (error: AbortError) => any)
 
-*Used at "response time" like a catcher.*
+_Used at "response time" like a catcher._
 
 Catches an AbortError and performs the callback.
 
@@ -1007,7 +1052,10 @@ Catches an AbortError and performs the callback.
 
 #### perfs(cb: (timings: PerformanceTiming) => void)
 
-Takes advantage of the Performance API ([browsers](https://developer.mozilla.org/en-US/docs/Web/API/Performance_API) & [node.js](https://nodejs.org/api/perf_hooks.html)) to expose timings related to the underlying request.
+Takes advantage of the Performance API
+([browsers](https://developer.mozilla.org/en-US/docs/Web/API/Performance_API) &
+[node.js](https://nodejs.org/api/perf_hooks.html)) to expose timings related to
+the underlying request.
 
 Browser timings are very accurate, node.js only contains raw measures.
 
@@ -1015,43 +1063,44 @@ Browser timings are very accurate, node.js only contains raw measures.
 // Use perfs() before the response types (text, json, ...)
 wretch("...")
   .get()
-  .perfs(timings => {
+  .perfs((timings) => {
     /* Will be called when the timings are ready. */
-    console.log(timings.startTime)
+    console.log(timings.startTime);
   })
-  .res()
-  /* ... */
+  .res();
+/* ... */
 ```
 
 For node.js, there is a little extra work to do :
 
 ```js
 // Node.js 8.5+ only
-const { performance, PerformanceObserver } = require("perf_hooks")
+const { performance, PerformanceObserver } = require("perf_hooks");
 
 wretch().polyfills({
-  fetch: function(url, opts) {
-    performance.mark(url + " - begin")
-    return fetch(url, opts).then(_ => {
-      performance.mark(url + " - end")
-      performance.measure(_.url, url + " - begin", url + " - end")
-    })
+  fetch: function (url, opts) {
+    performance.mark(url + " - begin");
+    return fetch(url, opts).then((_) => {
+      performance.mark(url + " - end");
+      performance.measure(_.url, url + " - begin", url + " - end");
+    });
   },
   /* other polyfills ... */
   performance: performance,
-  PerformanceObserver: PerformanceObserver
-})
+  PerformanceObserver: PerformanceObserver,
+});
 ```
 
 ### Middlewares
 
-Middlewares are functions that can intercept requests before being processed by Fetch.
-Wretch includes a helper to help replicate the [middleware](http://expressjs.com/en/guide/using-middleware.html) style.
-
+Middlewares are functions that can intercept requests before being processed by
+Fetch. Wretch includes a helper to help replicate the
+[middleware](http://expressjs.com/en/guide/using-middleware.html) style.
 
 #### Middlewares package
 
-Check out [wretch-middlewares](https://github.com/elbywan/wretch-middlewares), the official collection of middlewares.
+Check out [wretch-middlewares](https://github.com/elbywan/wretch-middlewares),
+the official collection of middlewares.
 
 #### Signature
 
@@ -1059,11 +1108,14 @@ Basically a Middleware is a function having the following signature :
 
 ```ts
 // A middleware accepts options and returns a configured version
-type Middleware = (options?: {[key: string]: any}) => ConfiguredMiddleware
+type Middleware = (options?: { [key: string]: any }) => ConfiguredMiddleware;
 // A configured middleware (with options curried)
-type ConfiguredMiddleware = (next: FetchLike) => FetchLike
+type ConfiguredMiddleware = (next: FetchLike) => FetchLike;
 // A "fetch like" function, accepting an url and fetch options and returning a response promise
-type FetchLike = (url: string, opts: WretcherOptions) => Promise<WretcherResponse>
+type FetchLike = (
+  url: string,
+  opts: WretcherOptions,
+) => Promise<WretcherResponse>;
 ```
 
 #### middlewares(middlewares: ConfiguredMiddleware[], clear = false)
@@ -1084,29 +1136,33 @@ wretch("...").middlewares([
 
 #### Context
 
-If you need to manipulate data within your middleware and expose it for later consumption, a solution could be to pass a named property to the wretch options (*suggested name: `context`*).
+If you need to manipulate data within your middleware and expose it for later
+consumption, a solution could be to pass a named property to the wretch options
+(_suggested name: `context`_).
 
-Your middleware can then take advantage of that by mutating the object reference.
+Your middleware can then take advantage of that by mutating the object
+reference.
 
 ```js
-const contextMiddleware = next => (url, opts) => {
-  if(opts.context) {
-    // Mutate "context"
-    opts.context.property = "anything"
-  }
-  return next(url, opts)
-}
+const contextMiddleware = (next) =>
+  (url, opts) => {
+    if (opts.context) {
+      // Mutate "context"
+      opts.context.property = "anything";
+    }
+    return next(url, opts);
+  };
 
 // Provide the reference to a "context" object
-const context = {}
+const context = {};
 const res = await wretch("...")
   // Pass "context" by reference as an option
   .options({ context })
-  .middlewares([ contextMiddleware ])
+  .middlewares([contextMiddleware])
   .get()
-  .res()
+  .res();
 
-console.log(context.property) // prints "anything"
+console.log(context.property); // prints "anything"
 ```
 
 #### Middleware examples

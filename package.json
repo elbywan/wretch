@@ -32,7 +32,6 @@
         "mock": "node scripts/mockServer.js",
         "test": "concurrently --success first -k jest \"npm run mock\"",
         "test-browsers": "rollup -c -o test/browser/src/wretch.min.js && concurrently -s first -k browserstack-runner \"npm run mock\"",
-        "coverage": "cat ./coverage/lcov.info | coveralls",
         "changelog": "conventional-changelog -p wretch -i CHANGELOG.md -s -r 0"
     },
     "author": "Julien Elbaz",
@@ -46,7 +45,6 @@
         "concurrently": "^7.0.0",
         "conventional-changelog-cli": "^2.2.2",
         "conventional-changelog-wretch": "file:scripts/conventional-changelog-wretch",
-        "coveralls": "^3.1.1",
         "dtrace-provider": "^0.8.8",
         "form-data": "^4.0.0",
         "jest": "^27.4.7",
