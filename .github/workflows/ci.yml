@@ -13,5 +13,37 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
-    - run: echo "hello world"
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        cache: 'npm'
+    - name: BrowserStack Env Setup
+      uses: 'browserstack/github-actions/setup-env@master'
+      with:
+        username:  ${{ secrets.BROWSERSTACK_USERNAME }}
+        access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+    - name: BrowserStack Local Tunnel Setup
+      uses: browserstack/github-actions/setup-local@master
+      with:
+        local-testing: start
+        local-identifier: random
+    - name: Install dependencies
+      run: npm i
+    - name: Build
+      run: npm run build
+    - name: Unit tests
+      run: npm run test
+    - name: Browser tests
+      run: npm run test-browsers
+    - name: 'BrowserStackLocal Stop'  # Terminating the BrowserStackLocal tunnel connection
+      uses: browserstack/github-actions/setup-local@master
+      if: ${{ always() }}
+      with:
+        local-testing: stop
+    - name: Coveralls
+      if: ${{ success() }}
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: "./coverage/lcov.info"
 
