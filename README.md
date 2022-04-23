@@ -1080,9 +1080,10 @@ const { performance, PerformanceObserver } = require("perf_hooks");
 wretch().polyfills({
   fetch: function (url, opts) {
     performance.mark(url + " - begin");
-    return fetch(url, opts).then((_) => {
+    return fetch(url, opts).then(res => {
       performance.mark(url + " - end");
-      performance.measure(_.url, url + " - begin", url + " - end");
+      setTimeout(() => performance.measure(res.url, url + " - begin", url + " - end"), 0);
+      return res;
     });
   },
   /* other polyfills ... */
