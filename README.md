@@ -7,7 +7,7 @@
   <a href="https://www.npmjs.com/package/wretch"><img alt="npm-badge" src="https://img.shields.io/npm/v/wretch.svg?colorB=ff733e" height="20"></a>
   <a href="https://www.npmjs.com/package/wretch"><img alt="npm-downloads-badge" src="https://img.shields.io/npm/dm/wretch.svg?colorB=53aabb" height="20"></a>
   <a href="https://coveralls.io/github/elbywan/wretch?branch=master"><img src="https://coveralls.io/repos/github/elbywan/wretch/badge.svg?branch=master" alt="Coverage Status"></a>
-  <a href="https://automate.browserstack.com/public-build/Z0JQZWdadTkvVjdtRG9adkt2d0l3VUlacEVMckx3Rlc2Z1RDbXBncXR0TT0tLVV6d2trTlNPTjVmZVJlcDN4T25YL0E9PQ==--39cb00c3b97fed50312e9777c99d12d31d784431"><img src='https://automate.browserstack.com/badge.svg?badge_key=Z0JQZWdadTkvVjdtRG9adkt2d0l3VUlacEVMckx3Rlc2Z1RDbXBncXR0TT0tLVV6d2trTlNPTjVmZVJlcDN4T25YL0E9PQ==--39cb00c3b97fed50312e9777c99d12d31d784431'/></a>
+  <a href="https://automate.browserstack.com/public-build/R3dTcUtRNThKQjVGdStBL2xDMjIzOXpqY2lzTlZ2TmdnWC9JekpaNWJDYz0tLUsrWjE3WEM5NTVuWG9BdUhDMjVuRWc9PQ==--2146089f82a924d2a8091ea89f3cfbc74091595d"><img src='https://automate.browserstack.com/badge.svg?badge_key=R3dTcUtRNThKQjVGdStBL2xDMjIzOXpqY2lzTlZ2TmdnWC9JekpaNWJDYz0tLUsrWjE3WEM5NTVuWG9BdUhDMjVuRWc9PQ==--2146089f82a924d2a8091ea89f3cfbc74091595d'/></a>
   <a href="https://bundlephobia.com/result?p=wretch"><img src='https://img.shields.io/bundlephobia/minzip/wretch.svg'/></a>
   <a href="https://github.com/elbywan/wretch/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license-badge" height="20"></a>
 </h1>
