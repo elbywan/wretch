@@ -50,7 +50,7 @@
         "jest": "^27.4.7",
         "node-fetch": "^2.6.7",
         "restify": "^8.6.0",
-        "restify-cors-middleware": "^1.1.1",
+        "restify-cors-middleware2": "^2.1.2",
         "rimraf": "^3.0.2",
         "rollup": "^2.66.1",
         "rollup-plugin-node-resolve": "^5.2.0",
