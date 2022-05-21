@@ -140,7 +140,7 @@ export const resolver = (wretcher: Wretcher) => {
          * Warning: Still experimental on browsers and node.js
          */
         perfs: cb => {
-            fetchRequest.then(res => perfs.observe(res.url, cb))
+            fetchRequest.then(res => perfs.observe(res.url, cb)).catch(() => {/* swallow */ })
             return responseChain
         },
         /**

@@ -1,7 +1,7 @@
 const fs = require("fs")
 const path = require("path")
 const restify = require("restify")
-const corsMiddleware = require("restify-cors-middleware")
+const corsMiddleware = require("restify-cors-middleware2")
 
 const cors = corsMiddleware({
     origins: ["*"],
