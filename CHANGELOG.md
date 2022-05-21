@@ -1,3 +1,27 @@
+<a name="1.7.10"></a>
+## [1.7.10](https://github.com/elbywan/wretch/compare/1.7.9...1.7.10) (2022-05-21)
+
+
+### :arrow_up: Version update(s)
+
+* Bump minimist from 1.2.5 to 1.2.6 ([6365ad0](https://github.com/elbywan/wretch/commit/6365ad0))
+* Bump moment from 2.24.0 to 2.29.2 ([26e3889](https://github.com/elbywan/wretch/commit/26e3889))
+* Bump to npm 8 ([9d5758e](https://github.com/elbywan/wretch/commit/9d5758e))
+
+### :bug: Bug fix(es)
+
+* Ignore when the .perf promise throws ([33407ea](https://github.com/elbywan/wretch/commit/33407ea)), closes [#131](https://github.com/elbywan/wretch/issues/131)
+
+### :memo: Documentation update(s)
+
+* Update performance api node.js polyfill. ([185420b](https://github.com/elbywan/wretch/commit/185420b))
+
+### :white_check_mark: Test improvement(s)
+
+* Migrate to github actions. ([4b93f43](https://github.com/elbywan/wretch/commit/4b93f43))
+
+
+
 <a name="1.7.9"></a>
 ## [1.7.9](https://github.com/elbywan/wretch/compare/1.7.8...1.7.9) (2022-02-05)
 
