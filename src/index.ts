@@ -1,27 +1,27 @@
-import { Wretcher } from "./wretcher"
+import { setDefaults, setErrorType, setPolyfills } from "./config"
+import { core } from "./core"
 
-const factory = Wretcher.factory
-factory["default"] = Wretcher.factory
+export type {
+  Wretch,
+  Config,
+  ConfiguredMiddleware,
+  FetchLike,
+  Middleware,
+  WretchResponseChain,
+  WretchOptions,
+  WretchError,
+  WretchErrorCallback,
+  WretchResponse,
+  WretchDeferredCallback,
+  WretchResolverAddon,
+} from "./types"
 
-/* Export typescript types */
-export {
-    Wretcher,
-    WretcherOptions
-} from "./wretcher"
-export {
-    WretcherResponse,
-    WretcherError,
-    WretcherErrorCallback,
-    ResponseChain
-} from "./resolver"
+function factory(url = "", options = {}) {
+  return core.clone({ url, options })
+}
 
-export {
-    Middleware,
-    ConfiguredMiddleware,
-    FetchLike
-} from "./middleware"
-
-/**
- * Return a fresh Wretcher instance.
- */
+factory["default"] = factory
+factory.defaults = setDefaults
+factory.errorType = setErrorType
+factory.polyfills = setPolyfills
 export default factory

@@ -1,17 +1,21 @@
 {
-    "compilerOptions": {
-        "target": "es5",
-        "lib": [ "es2015", "dom" ],
-        "module": "es2015",
-        "outDir": "dist",
-        "declaration": true,
-        "declarationDir": "dist",
-        "noImplicitAny": false,
-        "sourceMap": true,
-        "inlineSources": true,
-        "moduleResolution": "node"
-    },
-    "include": [
-        "src/**/*"
-    ]
+  "compilerOptions": {
+    "target": "es6",
+    "lib": [
+      "es2015",
+      "dom"
+    ],
+    "module": "es2015",
+    "outDir": "dist",
+    "declaration": true,
+    "declarationDir": "dist",
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "inlineSources": true,
+    "moduleResolution": "node"
+  },
+  "include": [
+    "src/**/*",
+    "test.ts"
+  ]
 }

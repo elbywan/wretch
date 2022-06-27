@@ -1,0 +1,21 @@
+import type { Wretch } from "./core"
+
+export type { Wretch } from "./core"
+export type { Config } from "./config"
+export type { ConfiguredMiddleware, FetchLike, Middleware } from "./middleware"
+export type { WretchResponseChain } from "./resolver"
+export type WretchOptions = Record<string, any>
+export type WretchError = Error & { status: number, response: WretchResponse, text?: string, json?: any }
+export type WretchErrorCallback<T, C> = (error: WretchError, originalRequest: Wretch<T, C>) => any
+export type WretchResponse = Response & { [key: string]: any }
+export type WretchDeferredCallback<T, C> = (wretcher: Wretch<T, C>, url: string, options: WretchOptions) => Wretch<T, C>
+export type WretchResolverAddon<Addon extends unknown> = {
+  init?<T, C>(wretch: Wretch<T, C>, options: WretchOptions): void
+  addon: Addon
+}
+export type WretchAddon<W extends unknown, R extends unknown = unknown> = {
+  beforeRequest?<T, C>(wretch: Wretch<T, C>, options: WretchOptions): void,
+  wretch?: W,
+  resolver?: R
+}
+

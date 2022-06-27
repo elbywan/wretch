@@ -8,13 +8,37 @@
         "no-console": {
             "severity": "warn"
         },
-        "indent": [ true, "spaces", 4 ],
-        "linebreak-style": [ true, "LF" ],
+        "indent": [
+            true,
+            "spaces",
+            2
+        ],
+        "linebreak-style": [
+            true,
+            "LF"
+        ],
         "new-parens": true,
-        "quotemark": [ true, "double", "avoidEscape" ],
-        "semicolon": [ true, "never" ],
-        "space-before-function-paren": [ true, {"anonymous": "always", "named": "never", "asyncArrow": "always"} ],
-        "arrow-parens": [ true, "ban-single-arg-parens" ],
+        "quotemark": [
+            true,
+            "double",
+            "avoid-escape"
+        ],
+        "semicolon": [
+            true,
+            "never"
+        ],
+        "space-before-function-paren": [
+            true,
+            {
+                "anonymous": "always",
+                "named": "never",
+                "asyncArrow": "always"
+            }
+        ],
+        "arrow-parens": [
+            true,
+            "ban-single-arg-parens"
+        ],
         "prefer-const": true,
         "variable-name": {
             "severity": "warn",
@@ -37,7 +61,10 @@
             "check-preblock"
         ],
         "no-irregular-whitespace": true,
-        "member-access": [true, "no-public"],
+        "member-access": [
+            true,
+            "no-public"
+        ],
         "only-arrow-functions": false,
         "no-var-requires": false,
         "object-literal-sort-keys": false,
