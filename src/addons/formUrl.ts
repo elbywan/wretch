@@ -1,5 +1,5 @@
-import type { Wretch } from "../core"
-import type { WretchAddon } from "../types"
+import type { Wretch } from "../core.js"
+import type { WretchAddon } from "../types.js"
 
 function encodeQueryValue(key: string, value: unknown) {
   return encodeURIComponent(key) +
@@ -22,14 +22,14 @@ function convertFormUrl(formObject: object) {
     .join("&")
 }
 
-interface FormUrl {
+export interface FormUrlAddon {
   /**
    * Converts the input to an url encoded string and sets the content-type header and body.
    * If the input argument is already a string, skips the conversion part.
    *
    * @param input - An object to convert into an url encoded string or an already encoded string
    */
-  formUrl<T extends FormUrl, C>(this: T & Wretch<T, C>, input: (object | string)): this
+  formUrl<T extends FormUrlAddon, C>(this: T & Wretch<T, C>, input: (object | string)): this
 }
 
 /**
@@ -41,7 +41,7 @@ interface FormUrl {
  * wretch().addon(FormUrlAddon)
  * ```
  */
-const formUrl: WretchAddon<FormUrl> = {
+const formUrl: WretchAddon<FormUrlAddon> = {
   wretch: {
     formUrl(input) {
       return this

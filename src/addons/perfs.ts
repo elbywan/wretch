@@ -1,5 +1,5 @@
-import type { WretchResponseChain } from "../resolver"
-import type { WretchAddon } from "../types"
+import type { WretchResponseChain } from "../resolver.js"
+import type { WretchAddon } from "../types.js"
 
 const onMatch = (entries, name, callback, _performance) => {
   if (!entries.getEntriesByName)
@@ -57,13 +57,13 @@ const utils = {
   }
 }
 
-interface Perfs {
+export interface PerfsAddon {
   /**
    * Performs a callback on the API performance timings of the request.
    *
    * Warning: Still experimental on browsers and node.js
    */
-  perfs: <T, C extends Perfs>(this: C & WretchResponseChain<T, C>, cb?: (timing: any) => void) => this,
+  perfs: <T, C extends PerfsAddon>(this: C & WretchResponseChain<T, C>, cb?: (timing: any) => void) => this,
 }
 
 /**
@@ -75,7 +75,7 @@ interface Perfs {
  * wretch().addon(PerfsAddon())
  * ```
  */
-const perfs: () => WretchAddon<unknown, Perfs> = () => ({
+const perfs: () => WretchAddon<unknown, PerfsAddon> = () => ({
   resolver: {
     perfs(cb) {
       this.fetchRequest.then(res => utils.observe(res.url, cb, this.wretchRequest._config)).catch(() => {/* swallow */ })

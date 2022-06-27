@@ -1,7 +1,7 @@
-import { Wretch } from "./core"
-import { middlewareHelper } from "./middleware"
-import { mix } from "./utils"
-import type { WretchResponse, WretchErrorCallback } from "./types"
+import { Wretch } from "./core.js"
+import { middlewareHelper } from "./middleware.js"
+import { mix } from "./utils.js"
+import type { WretchResponse, WretchErrorCallback } from "./types.js"
 
 class WretchErrorWrapper {
   constructor(public error: any) { }

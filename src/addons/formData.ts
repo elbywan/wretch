@@ -1,6 +1,6 @@
-import type { Wretch } from "../core"
-import type { Config } from "../config"
-import type { WretchAddon } from "../types"
+import type { Wretch } from "../core.js"
+import type { Config } from "../config.js"
+import type { WretchAddon } from "../types.js"
 
 function convertFormData(
   formObject: object,
@@ -36,7 +36,7 @@ function convertFormData(
   return formData
 }
 
-interface FormData {
+export interface FormDataAddon {
   /**
    * Converts the javascript object to a FormData and sets the request body.
    * @param formObject - An object which will be converted to a FormData
@@ -44,7 +44,7 @@ interface FormData {
    * Can be set as an array of string to exclude specific keys.
    * @see https://github.com/elbywan/wretch/issues/68 for more details.
    */
-  formData<T extends FormData, C>(this: T & Wretch<T, C>, formObject: object, recursive?: string[] | boolean): this
+  formData<T extends FormDataAddon, C>(this: T & Wretch<T, C>, formObject: object, recursive?: string[] | boolean): this
 }
 
 /**
@@ -56,7 +56,7 @@ interface FormData {
  * wretch().addon(FormDataAddon)
  * ```
  */
-const formData: WretchAddon<FormData> = {
+const formData: WretchAddon<FormDataAddon> = {
   wretch: {
     formData(formObject, recursive = false) {
       return this.body(convertFormData(formObject, recursive, this._config))

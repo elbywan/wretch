@@ -1,7 +1,7 @@
-import type { WretchResponseChain } from "../resolver"
-import type { Wretch, WretchAddon, WretchErrorCallback } from "../types"
+import type { WretchResponseChain } from "../resolver.js"
+import type { Wretch, WretchAddon, WretchErrorCallback } from "../types.js"
 
-interface AbortWretch {
+export interface AbortWretch {
   /**
    * Associates a custom signal with the request.
    * @param controller - An AbortController
@@ -9,7 +9,7 @@ interface AbortWretch {
   signal: <T extends AbortWretch, C>(this: T & Wretch<T, C>, controller: AbortController) => this
 }
 
-interface AbortResolver {
+export interface AbortResolver {
   /**
    * Aborts the request after a fixed time.
    *

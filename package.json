@@ -16,10 +16,59 @@
   "bugs": {
     "url": "https://github.com/elbywan/wretch/issues"
   },
-  "main": "./dist/bundle/wretch.js",
+  "type": "module",
+  "main": "./dist/bundle/wretch.min.cjs",
   "module": "./dist/index.js",
-  "jsnext:main": "./dist/index.js",
+  "browser": "./dist/bundle/wretch.min.js",
   "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "dist/*",
+        "dist/*/index.d.ts",
+        "dist/index.d.ts"
+      ]
+    }
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "node": {
+        "require": "./dist/bundle/wretch.min.cjs",
+        "import": "./dist/bundle/wretch.min.mjs"
+      },
+      "browser": "./dist/bundle/wretch.min.js",
+      "import": "./dist/index.js"
+    },
+    "./all": {
+      "types": "./dist/index.all.d.ts",
+      "node": {
+        "require": "./dist/bundle/wretch.all.min.cjs",
+        "import": "./dist/bundle/wretch.all.min.mjs"
+      },
+      "browser": "./dist/bundle/wretch.all.min.js",
+      "import": "./dist/index.all.js"
+    },
+    "./addons/*": {
+      "types": "./dist/addons/*.d.ts",
+      "node": {
+        "require": "./dist/bundle/addons/*.min.cjs",
+        "import": "./dist/bundle/addons/*.min.mjs"
+      },
+      "browser": "./dist/bundle/addons/*.min.js",
+      "import": "./dist/addons/*.js"
+    },
+    "./package.json": "./package.json",
+    "./*.mjs": {
+      "default": "./dist/*.mjs"
+    },
+    "./*.cjs": {
+      "default": "./dist/*.cjs"
+    },
+    "./*": {
+      "default": "./dist/*.js"
+    }
+  },
   "files": [
     "dist"
   ],
@@ -28,10 +77,10 @@
     "lint": "tslint -p tsconfig.json -t codeFrame",
     "fix": "tslint --fix -p tsconfig.json -t codeFrame",
     "prebuild": "rimraf dist && rimraf coverage && npm run lint",
-    "build": "tsc -p . && rollup -c && rollup -c --format esm -o dist/bundle/wretch.esm.js",
-    "mock": "node scripts/mockServer.js",
+    "build": "tsc -p . && rollup -c",
+    "mock": "node scripts/mockServer.cjs",
     "test": "concurrently --success first -k jest \"npm run mock\"",
-    "test-browsers": "rollup -c -o test/browser/src/wretch.min.js && concurrently -s first -k browserstack-runner \"npm run mock\"",
+    "test-browsers": "concurrently -s first -k browserstack-runner \"npm run mock\"",
     "changelog": "conventional-changelog -p wretch -i CHANGELOG.md -s -r 0"
   },
   "author": "Julien Elbaz",
@@ -83,7 +132,7 @@
       "src/*.{js,ts}"
     ],
     "coveragePathIgnorePatterns": [
-      "src/index.umd.ts"
+      "src/index.all.ts"
     ]
   }
 }

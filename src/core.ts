@@ -1,11 +1,11 @@
-import { mix, extractContentType, isLikelyJsonMime } from "./utils"
-import * as Constants from "./constants"
-import { resolver } from "./resolver"
-import config from "./config"
-import type { Config } from "./config"
-import type { WretchError, WretchOptions, WretchDeferredCallback, WretchAddon } from "./types"
-import type { WretchResponseChain } from "./resolver"
-import type { ConfiguredMiddleware } from "./middleware"
+import { mix, extractContentType, isLikelyJsonMime } from "./utils.js"
+import * as Constants from "./constants.js"
+import { resolver } from "./resolver.js"
+import config from "./config.js"
+import type { Config } from "./config.js"
+import type { WretchError, WretchOptions, WretchDeferredCallback, WretchAddon } from "./types.js"
+import type { WretchResponseChain } from "./resolver.js"
+import type { ConfiguredMiddleware } from "./middleware.js"
 
 /**
  * The Wretch object used to perform easy fetch requests.

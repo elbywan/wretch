@@ -1,5 +1,5 @@
-import { WretchOptions } from "./types"
-import { WretchResponse } from "./types"
+import { WretchOptions } from "./types.js"
+import { WretchResponse } from "./types.js"
 
 export type Middleware = (options?: { [key: string]: any }) => ConfiguredMiddleware
 export type ConfiguredMiddleware = (next: FetchLike) => FetchLike

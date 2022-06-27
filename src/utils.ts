@@ -1,4 +1,4 @@
-import * as Constants from "./constants"
+import * as Constants from "./constants.js"
 
 export function extractContentType(headers: HeadersInit = {}): string | undefined {
   return Object.entries(headers).find(([k]) =>

@@ -1,4 +1,4 @@
-import type { Wretch, Config, WretchAddon } from "../types"
+import type { Wretch, Config, WretchAddon } from "../types.js"
 
 const appendQueryParams = (url: string, qp: object | string, replace: boolean, config: Config) => {
   let queryString: string
@@ -29,7 +29,7 @@ const appendQueryParams = (url: string, qp: object | string, replace: boolean, c
   return url + "&" + queryString
 }
 
-interface QueryString {
+export interface QueryStringAddon {
   /**
    * Converts a javascript object to query parameters,
    * then appends this query string to the current url.
@@ -51,7 +51,7 @@ interface QueryString {
    *
    * @param qp - An object which will be converted, or a string which will be used verbatim.
    */
-  query<T extends QueryString, C>(this: T & Wretch<T, C>, qp: object | string, replace?: boolean): this
+  query<T extends QueryStringAddon, C>(this: T & Wretch<T, C>, qp: object | string, replace?: boolean): this
 }
 
 /**
@@ -63,7 +63,7 @@ interface QueryString {
  * wretch().addon(QueryAddon)
  * ```
  */
-const queryString: WretchAddon<QueryString> = {
+const queryString: WretchAddon<QueryStringAddon> = {
   wretch: {
     query(qp, replace = false) {
       return this.clone({ url: appendQueryParams(this._url, qp, replace, this._config) })

@@ -1,4 +1,4 @@
-import { mix } from "./utils"
+import { mix } from "./utils.js"
 
 declare const global
 

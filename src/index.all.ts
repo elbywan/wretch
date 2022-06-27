@@ -1,23 +1,15 @@
 import { setDefaults, setErrorType, setPolyfills } from "./config.js"
 import { core } from "./core.js"
-
-export type {
-  Wretch,
-  Config,
-  ConfiguredMiddleware,
-  FetchLike,
-  Middleware,
-  WretchResponseChain,
-  WretchOptions,
-  WretchError,
-  WretchErrorCallback,
-  WretchResponse,
-  WretchDeferredCallback,
-  WretchResolverAddon,
-} from "./types"
+import * as Addons from "./addons/index.js"
 
 function factory(url = "", options = {}) {
-  return core.clone({ url, options })
+  return core
+    .clone({ url, options })
+    .addon(Addons.abortAddon())
+    .addon(Addons.formDataAddon)
+    .addon(Addons.formUrlAddon)
+    .addon(Addons.perfsAddon())
+    .addon(Addons.queryStringAddon)
 }
 
 factory["default"] = factory
