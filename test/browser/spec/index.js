@@ -125,9 +125,9 @@ describe("Wretch", function () {
     })
     const f = { arr: [1, 2, 3] }
     const d = await wretch(`${_URL}/formData/decode`).formData(f).post().json()
-    // expect(d).toEqual({
-    //     "arr[]": [1, 2, 3]
-    // })
+    expect(d).toEqual({
+      "arr": ["1", "2", "3"]
+    })
   })
 
   it("should perform OPTIONS and HEAD requests", async function () {

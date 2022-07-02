@@ -244,10 +244,7 @@ describe("Wretch", function () {
     const f = { arr: [1, 2, 3] }
     const d = await wretch(`${_URL}/formData/decode`).addon(FormDataAddon).formData(f).post().json()
     expect(d).toEqual({
-      // browser FormData output:
-      // "arr[]": [1, 2, 3]
-      // form-data package has an implementation which differs from the browser standard.
-      "arr[]": "3"
+      "arr": ["1", "2", "3"]
     })
   })
 

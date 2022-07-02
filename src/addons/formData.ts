@@ -16,7 +16,7 @@ function convertFormData(
     formKey = formKey ? `${formKey}[${key}]` : key
     if (value instanceof Array) {
       for (const item of value)
-        formData.append(formKey + "[]", item)
+        formData.append(formKey, item)
     } else if (
       recursive &&
       typeof value === "object" &&

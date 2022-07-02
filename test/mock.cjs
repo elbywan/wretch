@@ -21,7 +21,20 @@ const mockServer = {
     server.use(restify.plugins.queryParser())
     server.use(restify.plugins.jsonBodyParser())
     server.use(restify.plugins.multipartBodyParser({
-      mapFiles: true
+      mapFiles: true,
+      multiples: true,
+      multipartHandler: function (part, req) {
+        part.on('data', function (data) {
+          const curVal = req.params[part.name]
+          if (Array.isArray(curVal)) {
+            curVal.push(data.toString())
+          } else if (curVal) {
+            req.params[part.name] = [curVal, data.toString()]
+          } else {
+            req.params[part.name] = data.toString()
+          }
+        });
+      },
     }))
     server.use(restify.plugins.authorizationParser())
     server.pre(cors.preflight)
