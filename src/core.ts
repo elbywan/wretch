@@ -33,13 +33,6 @@ export interface Wretch<Self = unknown, Chain = unknown> {
   addon: <W, R>(addon: WretchAddon<W, R>) => W & Self & Wretch<Self & W, Chain & R>
 
   /**
-   * Sets the default fetch options used for every subsequent fetch call.
-   * @param options - New default options
-   * @param replace - If true, replaces the existing options instead of mixing in
-   */
-  defaults(this: Self & Wretch<Self, Chain>, options: WretchOptions, replace?: boolean): this
-
-  /**
    * Sets the method (text, json ...) used to parse the data contained in the response body in case of an HTTP error.
    *
    * Persists for every subsequent requests.
@@ -206,17 +199,13 @@ export const core: Wretch = {
     }
   },
 
-  defaults(options, replace = false) {
+  errorType(errorType: string) {
     return this.clone({
       config: {
         ...this._config,
-        defaults: replace ? options : mix(this._config.defaults, options)
+        errorType
       }
     })
-  },
-
-  errorType(errorType: string) {
-    return this.clone({ errorType })
   },
 
   polyfills(polyfills, replace = false) {

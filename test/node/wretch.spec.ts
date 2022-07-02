@@ -50,6 +50,11 @@ const duckImage = fs.readFileSync(duckImagePath)
 
 describe("Wretch", function () {
 
+  beforeEach(() => {
+    wretch.defaults({}, true)
+    wretch.errorType("text")
+  })
+
   it("should set and use non global polyfills", async function () {
     global["FormData"] = null
     global["URLSearchParams"] = null
@@ -73,7 +78,7 @@ describe("Wretch", function () {
       performance,
       PerformanceObserver,
       AbortController
-    })
+    }, true)
   })
 
   it("should perform crud requests and parse a text response", async function () {
@@ -384,7 +389,7 @@ describe("Wretch", function () {
     expect(check).toBe(3)
   })
 
-  it("should set default fetch options", async function () {
+  it("should set global default fetch options", async function () {
     let rejected = await new Promise(res => wretch(`${_URL}/customHeaders`).get().badRequest(_ => {
       res(true)
     }).res(result => res(!result)))
@@ -458,19 +463,27 @@ describe("Wretch", function () {
   })
 
   it("should change the parsing used in the default error handler", async function () {
+    // Local
+    await wretch(`${_URL}/json500`)
+      .errorType("json")
+      .get()
+      .internalError(error => { expect(error.json).toEqual({ error: 500, message: "ok" }) })
+      .res(_ => fail("I should never be called because an error was thrown"))
+      .then(_ => expect(_).toBe(undefined))
+    // Default (text)
     await wretch(`${_URL}/json500`)
       .get()
       .internalError(error => { expect(error.text).toEqual(`{"error":500,"message":"ok"}`) })
       .res(_ => fail("I should never be called because an error was thrown"))
       .then(_ => expect(_).toBe(undefined))
+    // Global
     wretch.errorType("json")
     await wretch(`${_URL}/json500`)
       .get()
       .internalError(error => { expect(error.json).toEqual({ error: 500, message: "ok" }) })
       .res(_ => fail("I should never be called because an error was thrown"))
       .then(_ => expect(_).toBe(undefined))
-    // Change back
-    wretch.errorType("text")
+
   })
 
   it("should retrieve performance timings associated with a fetch request", function (done) {
