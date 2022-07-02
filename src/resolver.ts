@@ -4,6 +4,8 @@ import { mix } from "./utils.js"
 import type { WretchResponse, WretchErrorCallback } from "./types.js"
 import { FETCH_ERROR } from "./constants"
 
+export class WretchError extends Error { }
+
 export interface WretchResponseChain<T, Self = unknown> {
   wretchRequest: Wretch<T, Self>,
   fetchRequest: Promise<WretchResponse>,
@@ -91,7 +93,7 @@ export const resolver = <T, Chain>(wretch: Wretch<T, Chain>) => {
     })
     .then(response => {
       if (!response.ok) {
-        const err = new Error()
+        const err = new WretchError()
         // Enhance the error object
         err["cause"] = referenceError
         err.stack = err.stack + "\nCAUSE: " + referenceError.stack
