@@ -114,6 +114,7 @@
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     },
+    "resolver": "<rootDir>/test/resolver.cjs",
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
     "moduleFileExtensions": [
       "ts",
@@ -124,7 +125,7 @@
     ],
     "globals": {
       "ts-jest": {
-        "tsConfig": "test/tsconfig.tests.json"
+        "tsconfig": "test/tsconfig.json"
       }
     },
     "collectCoverage": true,
