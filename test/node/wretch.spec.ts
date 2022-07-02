@@ -23,11 +23,11 @@ const _PORT = 9876
 const _URL = `http://localhost:${_PORT}`
 
 const allRoutes = (obj, type, action, opts?, body?) => Promise.all([
-  obj.get(opts)[type](_ => _).then(action),
-  obj.put(body, opts)[type](action),
-  obj.patch(body, opts)[type](action),
-  obj.post(body, opts)[type](action),
-  obj.delete(opts)[type](action),
+  obj.get("", opts)[type](_ => _).then(action),
+  obj.put(body, "", opts)[type](action),
+  obj.patch(body, "", opts)[type](action),
+  obj.post(body, "", opts)[type](action),
+  obj.delete("", opts)[type](action),
 ])
 
 const fetchPolyfill = (timeout: number | null = null) =>
@@ -116,7 +116,7 @@ describe("Wretch", function () {
     // Headers are set in the options argument of the http method
     expect((
       await wretch(`${_URL}/blob/roundTrip`)
-        .post(duckImage, {
+        .post(duckImage, "", {
           headers: { "content-type": "application/xxx-octet-stream" }
         })
         .res(res => res["buffer"]() as Buffer)
@@ -254,11 +254,11 @@ describe("Wretch", function () {
 
   it("should perform OPTIONS and HEAD requests", async function () {
     const optsRes = await wretch(_URL + "/options").opts().res()
-    const optsRes2 = await wretch(_URL + "/options").opts({}).res()
+    const optsRes2 = await wretch(_URL + "/options").opts("", {}).res()
     expect(optsRes.headers.get("Allow")).toBe("OPTIONS")
     expect(optsRes2.headers.get("Allow")).toBe("OPTIONS")
     const headRes = await wretch(_URL + "/json").head().res()
-    const headRes2 = await wretch(_URL + "/json").head({}).res()
+    const headRes2 = await wretch(_URL + "/json").head("", {}).res()
     expect(headRes.headers.get("content-type")).toBe("application/json")
     expect(headRes2.headers.get("content-type")).toBe("application/json")
   })
@@ -626,7 +626,7 @@ describe("Wretch", function () {
 
     const result = await w
       .options({ token: "Basic d3JldGNoOnJvY2tz" })
-      .get({ q: "a" })
+      .get("", { q: "a" })
       .text()
     expect(result).toBe("ok")
   })

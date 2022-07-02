@@ -61,9 +61,9 @@ export interface Wretch<Self = unknown, Chain = unknown> {
   /**
    * Returns a new Wretch object with the same url and new options.
    * @param options - New options
-   * @param mixin - If true, mixes in instead of replacing the existing options
+   * @param replace - If true, replaces the existing options
    */
-  options(this: Self & Wretch<Self, Chain>, options: WretchOptions, mixin?: boolean): this
+  options(this: Self & Wretch<Self, Chain>, options: WretchOptions, replace?: boolean): this
 
   /**
    * Set request headers.
@@ -116,31 +116,31 @@ export interface Wretch<Self = unknown, Chain = unknown> {
   /**
    * Performs a get request.
    */
-  get(this: Self & Wretch<Self, Chain>, options?: WretchOptions): Chain & WretchResponseChain<Self, Chain>
+  get(this: Self & Wretch<Self, Chain>, url?: string, options?: WretchOptions): Chain & WretchResponseChain<Self, Chain>
   /**
    * Performs a delete request.
    */
-  delete(this: Self & Wretch<Self, Chain>, options?: WretchOptions): Chain & WretchResponseChain<Self, Chain>
+  delete(this: Self & Wretch<Self, Chain>, url?: string, options?: WretchOptions): Chain & WretchResponseChain<Self, Chain>
   /**
    * Performs a put request.
    */
-  put(this: Self & Wretch<Self, Chain>, body?: any, options?: WretchOptions): Chain & WretchResponseChain<Self, Chain>
+  put(this: Self & Wretch<Self, Chain>, body?: any, url?: string, options?: WretchOptions): Chain & WretchResponseChain<Self, Chain>
   /**
    * Performs a post request.
    */
-  post(this: Self & Wretch<Self, Chain>, body?: any, options?: WretchOptions): Chain & WretchResponseChain<Self, Chain>
+  post(this: Self & Wretch<Self, Chain>, body?: any, url?: string, options?: WretchOptions): Chain & WretchResponseChain<Self, Chain>
   /**
    * Performs a patch request.
    */
-  patch(this: Self & Wretch<Self, Chain>, body?: any, options?: WretchOptions): Chain & WretchResponseChain<Self, Chain>
+  patch(this: Self & Wretch<Self, Chain>, body?: any, url?: string, options?: WretchOptions): Chain & WretchResponseChain<Self, Chain>
   /**
    * Performs a head request.
    */
-  head(this: Self & Wretch<Self, Chain>, options?: WretchOptions): Chain & WretchResponseChain<Self, Chain>
+  head(this: Self & Wretch<Self, Chain>, url?: string, options?: WretchOptions): Chain & WretchResponseChain<Self, Chain>
   /**
    * Performs an options request
    */
-  opts(this: Self & Wretch<Self, Chain>, options?: WretchOptions): Chain & WretchResponseChain<Self, Chain>
+  opts(this: Self & Wretch<Self, Chain>, url?: string, options?: WretchOptions): Chain & WretchResponseChain<Self, Chain>
   /**
    * Replay a request.
    */
@@ -227,8 +227,8 @@ export const core: Wretch = {
         this._url + url
     })
   },
-  options(options, mixin = true) {
-    return this.clone({ options: mixin ? mix(this._options, options) : options })
+  options(options, replace = false) {
+    return this.clone({ options: replace ? options : mix(this._options, options) })
   },
   headers(headerValues) {
     return this.clone({ options: mix(this._options, { headers: headerValues || {} }) })
@@ -275,26 +275,26 @@ export const core: Wretch = {
         .reduce((acc: Wretch, curr) => curr(acc, acc._url, acc._options), base)
     )
   },
-  get(options) {
-    return this.method("GET", options)
+  get(url = "", options) {
+    return this.url(url).method("GET", options)
   },
-  delete(options) {
-    return this.method("DELETE", options)
+  delete(url = "", options) {
+    return this.url(url).method("DELETE", options)
   },
-  put(body, options) {
-    return this.method("PUT", options, body)
+  put(body, url = "", options) {
+    return this.url(url).method("PUT", options, body)
   },
-  post(body, options) {
-    return this.method("POST", options, body)
+  post(body, url = "", options) {
+    return this.url(url).method("POST", options, body)
   },
-  patch(body, options) {
-    return this.method("PATCH", options, body)
+  patch(body, url = "", options) {
+    return this.url(url).method("PATCH", options, body)
   },
-  head(options) {
-    return this.method("HEAD", options)
+  head(url = "", options) {
+    return this.url(url).method("HEAD", options)
   },
-  opts(options) {
-    return this.method("OPTIONS", options)
+  opts(url = "", options) {
+    return this.url(url).method("OPTIONS", options)
   },
   replay(options) {
     return this.method(this._options.method, options)
