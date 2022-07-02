@@ -87,6 +87,7 @@ export const resolver = <T, Chain>(wretch: Wretch<T, Chain>) => {
   // The generated fetch request
   const fetchRequest = middlewareHelper(middlewares)(config.polyfill("fetch"))(url, finalOptions)
   // Throws on an http error
+  const referenceError = new Error()
   const throwingPromise: Promise<void | WretchResponse> = fetchRequest
     .catch(error => {
       throw new WretchErrorWrapper(error)
@@ -95,12 +96,16 @@ export const resolver = <T, Chain>(wretch: Wretch<T, Chain>) => {
       if (!response.ok) {
         if (response.type === "opaque") {
           const err = new Error("Opaque response")
+          err["cause"] = referenceError
+          err.stack = err.stack + "\nCAUSE: " + referenceError.stack
           err["response"] = response
           throw err
         }
         return response[config.errorType || "text"]().then(body => {
           // Enhances the error object
           const err = new Error(body)
+          err["cause"] = referenceError
+          err.stack = err.stack + "\nCAUSE: " + referenceError.stack
           err[config.errorType || "text"] = body
           err["response"] = response
           err["status"] = response.status
