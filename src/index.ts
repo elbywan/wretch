@@ -16,8 +16,8 @@ export type {
   WretchResolverAddon,
 } from "./types"
 
-function factory(url = "", options = {}) {
-  return core.clone({ url, options })
+function factory(_url = "", _options = {}) {
+  return core.clone({ _url, _options })
 }
 
 factory["default"] = factory

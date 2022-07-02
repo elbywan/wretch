@@ -22,12 +22,12 @@ performance["clearResourceTimings"] = () => { }
 const _PORT = 9876
 const _URL = `http://localhost:${_PORT}`
 
-const allRoutes = (obj, type, action, opts?, body?) => Promise.all([
-  obj.get("", opts)[type](_ => _).then(action),
-  obj.put(body, "", opts)[type](action),
-  obj.patch(body, "", opts)[type](action),
-  obj.post(body, "", opts)[type](action),
-  obj.delete("", opts)[type](action),
+const allRoutes = (obj, type, action, body?) => Promise.all([
+  obj.get("")[type](_ => _).then(action),
+  obj.put(body, "")[type](action),
+  obj.patch(body, "")[type](action),
+  obj.post(body, "")[type](action),
+  obj.delete("")[type](action),
 ])
 
 const fetchPolyfill = (timeout: number | null = null) =>
@@ -85,21 +85,21 @@ describe("Wretch", function () {
     const init = wretch(`${_URL}/text`)
     const test = _ => expect(_).toBe("A text string")
     await allRoutes(init, "text", test)
-    await allRoutes(init, "text", test, {}, {})
+    await allRoutes(init, "text", test, {})
   })
 
   it("should perform crud requests and parse a json response", async function () {
     const test = _ => expect(_).toEqual({ a: "json", object: "which", is: "stringified" })
     const init = wretch(`${_URL}/json`)
     await allRoutes(init, "json", test)
-    await allRoutes(init, "json", test, {}, {})
+    await allRoutes(init, "json", test, {})
   })
 
   it("should perform crud requests and parse a blob response", async function () {
     const test = _ => expect(_.size).toBe(duckImage.length)
     const init = wretch(`${_URL}/blob`)
     await allRoutes(init, "blob", test)
-    await allRoutes(init, "blob", test, {}, {})
+    await allRoutes(init, "blob", test, {})
   })
 
   it("should not stringify a blob when the content-type is not json", async function () {
@@ -116,9 +116,8 @@ describe("Wretch", function () {
     // Headers are set in the options argument of the http method
     expect((
       await wretch(`${_URL}/blob/roundTrip`)
-        .post(duckImage, "", {
-          headers: { "content-type": "application/xxx-octet-stream" }
-        })
+        .headers({ "content-type": "application/xxx-octet-stream" })
+        .post(duckImage)
         .res(res => res["buffer"]() as Buffer)
     ).compare(duckImage)
     ).toBe(0)

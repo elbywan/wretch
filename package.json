@@ -72,6 +72,7 @@
   "files": [
     "dist"
   ],
+  "sideEffects": false,
   "scripts": {
     "start": "npm run build && npm run test",
     "lint": "tslint -p tsconfig.json -t codeFrame",

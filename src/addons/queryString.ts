@@ -66,7 +66,7 @@ export interface QueryStringAddon {
 const queryString: WretchAddon<QueryStringAddon> = {
   wretch: {
     query(qp, replace = false) {
-      return this.clone({ url: appendQueryParams(this._url, qp, replace, this._config) })
+      return this.clone({ _url: appendQueryParams(this._url, qp, replace, this._config) })
     }
   }
 }

@@ -2,10 +2,7 @@ import { Wretch } from "./core.js"
 import { middlewareHelper } from "./middleware.js"
 import { mix } from "./utils.js"
 import type { WretchResponse, WretchErrorCallback } from "./types.js"
-
-class WretchErrorWrapper {
-  constructor(public error: any) { }
-}
+import { FETCH_ERROR } from "./constants"
 
 export interface WretchResponseChain<T, Self = unknown> {
   wretchRequest: Wretch<T, Self>,
@@ -39,7 +36,7 @@ export interface WretchResponseChain<T, Self = unknown> {
   /**
    * Catches an http response with a specific error code or name and performs a callback.
    */
-  error: (this: Self & WretchResponseChain<T, Self>, code: (number | string), cb: WretchErrorCallback<T, Self>) => this,
+  error: (this: Self & WretchResponseChain<T, Self>, code: (number | string | symbol), cb: WretchErrorCallback<T, Self>) => this,
   /**
    * Catches a bad request (http code 400) and performs a callback.
    */
@@ -90,24 +87,21 @@ export const resolver = <T, Chain>(wretch: Wretch<T, Chain>) => {
   const referenceError = new Error()
   const throwingPromise: Promise<void | WretchResponse> = fetchRequest
     .catch(error => {
-      throw new WretchErrorWrapper(error)
+      throw { __wrap: error }
     })
     .then(response => {
       if (!response.ok) {
+        const err = new Error()
+        // Enhance the error object
+        err["cause"] = referenceError
+        err.stack = err.stack + "\nCAUSE: " + referenceError.stack
+        err["response"] = response
         if (response.type === "opaque") {
-          const err = new Error("Opaque response")
-          err["cause"] = referenceError
-          err.stack = err.stack + "\nCAUSE: " + referenceError.stack
-          err["response"] = response
           throw err
         }
-        return response[config.errorType || "text"]().then(body => {
-          // Enhances the error object
-          const err = new Error(body)
-          err["cause"] = referenceError
-          err.stack = err.stack + "\nCAUSE: " + referenceError.stack
-          err[config.errorType || "text"] = body
-          err["response"] = response
+        return response[config.errorType]().then((body: string) => {
+          err.message = body
+          err[config.errorType] = body
           err["status"] = response.status
           throw err
         })
@@ -117,15 +111,16 @@ export const resolver = <T, Chain>(wretch: Wretch<T, Chain>) => {
   // Wraps the Promise in order to dispatch the error to a matching catcher
   const catchersWrapper = <T>(promise: Promise<T>): Promise<void | T> => {
     return promise.catch(err => {
-      const error = err instanceof WretchErrorWrapper ? err.error : err
-      if (err instanceof WretchErrorWrapper && catchers.has("__fetchError__"))
-        return catchers.get("__fetchError__")(error, wretch)
-      else if (catchers.has(error.status))
-        return catchers.get(error.status)(error, wretch)
-      else if (catchers.has(error.name))
-        return catchers.get(error.name)(error, wretch)
-      else
-        throw error
+      const error = err.__wrap || err
+
+      const catcher =
+        err.__wrap && catchers.has(FETCH_ERROR) ? catchers.get(FETCH_ERROR) :
+          (catchers.get(error.status) || catchers.get(error.name))
+
+      if (catcher)
+        return catcher(error, wretch)
+
+      throw error
     })
   }
   // Enforces the proper promise type when a body parsing method is called.
@@ -155,7 +150,7 @@ export const resolver = <T, Chain>(wretch: Wretch<T, Chain>) => {
     notFound(cb) { return this.error(404, cb) },
     timeout(cb) { return this.error(408, cb) },
     internalError(cb) { return this.error(500, cb) },
-    fetchError(cb) { return this.error("__fetchError__", cb) },
+    fetchError(cb) { return this.error(FETCH_ERROR, cb) },
   }
 
   const enhancedResponseChain: Chain & WretchResponseChain<T, Chain> = addons.reduce((chain, addon) => ({

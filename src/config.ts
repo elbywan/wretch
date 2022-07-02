@@ -6,7 +6,7 @@ const config = {
   // Default options
   defaults: {},
   // Error type
-  errorType: null,
+  errorType: "text",
   // Polyfills
   polyfills: {
     // fetch: null,
@@ -16,7 +16,7 @@ const config = {
     // PerformanceObserver: null,
     // AbortController: null
   },
-  polyfill(p: string, { doThrow = true, instance = false } = {}, ...args) {
+  polyfill(p: string, { doThrow = true, instance = false } = {}, ...args: any[]) {
     const res = this.polyfills[p] ||
       (typeof self !== "undefined" ? self[p] : null) ||
       (typeof global !== "undefined" ? global[p] : null)
@@ -28,7 +28,7 @@ export type Config = typeof config
 
 /**
  * Sets the default fetch options used when creating a Wretch instance.
- * @param options New default options
+ * @param defaults New default options
  * @param replace If true, completely replaces the existing options instead of mixing in
  */
 export function setDefaults(defaults: any, replace = false) {

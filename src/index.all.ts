@@ -2,9 +2,9 @@ import { setDefaults, setErrorType, setPolyfills } from "./config.js"
 import { core } from "./core.js"
 import * as Addons from "./addons/index.js"
 
-function factory(url = "", options = {}) {
+function factory(_url = "", _options = {}) {
   return core
-    .clone({ url, options })
+    .clone({ _url, _options })
     .addon(Addons.abortAddon())
     .addon(Addons.formDataAddon)
     .addon(Addons.formUrlAddon)

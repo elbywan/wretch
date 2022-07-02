@@ -57,7 +57,7 @@ const abort: () => WretchAddon<AbortWretch, AbortResolver> = () => {
     },
     wretch: {
       signal(controller) {
-        return this.clone({ options: { ...this._options, signal: controller.signal } })
+        return this.clone({ _options: { ...this._options, signal: controller.signal } })
       },
     },
     resolver: {
