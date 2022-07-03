@@ -1,4 +1,4 @@
-name: Node.JS test
+name: Node.JS test and lint
 
 on:
   pull_request:
@@ -24,6 +24,8 @@ jobs:
         cache: 'npm'
     - name: Install dependencies
       run: npm ci
+    - name: Lint
+      run: npm run lint
     - name: Build
       run: npm run build
     - name: Unit tests
