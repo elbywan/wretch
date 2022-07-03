@@ -1,159 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Wretch - The fetch wrapper</title>
-    <link href="https://fonts.googleapis.com/css?family=Raleway|Josefin+Sans" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night-bright.min.css" rel="stylesheet">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="./index.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-    <script src="https://unpkg.com/smooth-scroll"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Wretch - The fetch wrapper</title>
+  <link href="https://fonts.googleapis.com/css?family=Raleway|Josefin+Sans" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night-bright.min.css"
+    rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="./index.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script src="https://unpkg.com/smooth-scroll"></script>
 </head>
+
 <body>
-    <section class="front-section" data-scroll id="front">
-        <div class="front-head">
-            <div class="logo">
-                <img src="https://cdn.rawgit.com/elbywan/wretch/08831345/wretch.svg" alt="wretch-logo">
-            </div>
-            <h1 class="logo-name">Wretch</h1>
-            <div class="tags">
-                <div>Immutable</div>
-                <div>Intuitive</div>
-                <div>Chainable</div>
-                <div>Isomorphic</div>
-                <div>Standard</div>
-            </div>
-            <div class="tags-boxes">
-                <p class="Immutable">
-                    Wretch does not mutate its internal state.<br>
-                    Each function returns a copy of the original object.<br>
-                </p>
-                <p class="Intuitive">
-                    Wretch's syntax is readable and concise.<br>
-                    And it contains typescript definition files for autocompletion.
-                </p>
-                <p class="Chainable">
-                    All methods are 100% chainable.<br>
-                    Because a.b().c() is prettier than var z = a; z.b(); z.c().
-                </p>
-                <p class="Isomorphic">
-                    Wretch is compatible with browsers and node.js.<br>
-                    And you can use any polyfill you like !
-                </p>
-                <p class="Standard">
-                    Wretch relies on the latest web standards like Promises, Fetch or the Performance API.<br>
-                </p>
-            </div>
-            <div class="shortdesc"><p>A tiny (&#126; 3Kb g-zipped) wrapper built around fetch with an intuitive syntax.</p></div>
-        </div>
-        <div class="front-links">
-            <a class="github" href="https://github.com/elbywan/wretch"><i class="fa fa-github" aria-hidden="true"></i> Github</a>
-        </div>
-        <div class="front-install">
-            <a href="https://www.npmjs.com/package/wretch"><pre class="npm"><code class="bash">npm i wretch</code></pre></a>
-            <a href="https://unpkg.com/wretch"><pre class="unpkg"><code class="html">&lt;script src="https://unpkg.com/wretch">&lt;/script></code></pre></a>
-        </div>
-        <div class="page-link next">
-            <a href="#usage"><i class="fa fa-chevron-down" aria-hidden="true"></i></a>
-        </div>
-    </section>
-    <section class="usage" data-scroll id="usage">
-        <div class="page-link back">
-            <a href="#front"><i class="fa fa-chevron-up" aria-hidden="true"></i></a>
-        </div>
-        <h1 class="usage-header">Usage</h1>
-        <div>
-            <div class="helper-tag">
-                <div class="icon"><i class="fa fa-download" aria-hidden="true"></i></div>
-                <a href="https://github.com/elbywan/wretch#import">Import wretch</a>
-            </div>
-            <pre><code class="javascript">import wretch from "wretch"</code></pre>
+  <section class="front-section" data-scroll id="front">
+    <div class="front-head">
+      <div class="logo">
+        <img src="https://cdn.rawgit.com/elbywan/wretch/08831345/wretch.svg" alt="wretch-logo">
+      </div>
+      <h1 class="logo-name">Wretch</h1>
+      <div class="tags">
+        <div>Immutable</div>
+        <div>Intuitive</div>
+        <div>Chainable</div>
+        <div>Isomorphic</div>
+        <div>Modular</div>
+      </div>
+      <div class="tags-boxes">
+        <p class="Immutable">
+          Wretch does not mutate its internal state.<br>
+          Each function returns a copy of the original object.<br>
+        </p>
+        <p class="Intuitive">
+          Wretch's syntax is readable and concise.<br>
+          And it contains typescript definition files for autocompletion.
+        </p>
+        <p class="Chainable">
+          All methods are 100% chainable.<br>
+          Because a.b().c() is prettier than var z = a; z.b(); z.c().
+        </p>
+        <p class="Isomorphic">
+          Wretch is compatible with browsers and node.js.<br>
+          And you can use any polyfill you like!
+        </p>
+        <p class="Modular">
+          Use Addons to add new methods and capabilities.<br>
+          Use Middlewares to intercept requests and fully customize Wretch behaviour.
+        </p>
+      </div>
+      <div class="shortdesc">
+        <p>A tiny (&#126; 2Kb g-zipped) wrapper built around fetch with an intuitive syntax.</p>
+      </div>
+    </div>
+    <div class="front-links">
+      <a class="github" href="https://github.com/elbywan/wretch"><i class="fa fa-github" aria-hidden="true"></i>
+        Github</a>
+    </div>
+    <div class="front-install">
+      <a href="https://www.npmjs.com/package/wretch">
+        <pre class="npm"><code class="bash">npm i wretch</code></pre>
+      </a>
+      <a href="https://unpkg.com/wretch">
+        <pre class="unpkg"><code class="html">&lt;script src="https://unpkg.com/wretch">&lt;/script></code></pre>
+      </a>
+    </div>
+    <div class="page-link next">
+      <a href="#usage"><i class="fa fa-chevron-down" aria-hidden="true"></i></a>
+    </div>
+  </section>
+  <section class="usage" data-scroll id="usage">
+    <div class="page-link back">
+      <a href="#front"><i class="fa fa-chevron-up" aria-hidden="true"></i></a>
+    </div>
+    <h1 class="usage-header">Usage</h1>
+    <div>
+      <div class="helper-tag">
+        <div class="icon"><i class="fa fa-download" aria-hidden="true"></i></div>
+        <a href="https://github.com/elbywan/wretch#import">Import wretch</a>
+      </div>
+      <pre><code class="javascript">import wretch from "wretch"</code></pre>
 
-            <div class="helper-tag">
-                <div class="icon"><i class="fa fa-phone" aria-hidden="true"></i></div>
-                <a href="https://github.com/elbywan/wretch#wretchurl---opts--">Call the wretch function</a>
-            </div>
-            <pre><code class="javascript">wretch()</code></pre>
+      <div class="helper-tag">
+        <div class="icon"><i class="fa fa-phone" aria-hidden="true"></i></div>
+        <a href="https://github.com/elbywan/wretch#wretchurl---opts--">Call the wretch function</a>
+      </div>
+      <pre><code class="javascript">wretch()</code></pre>
 
-            <div class="helper-tag">
-                <div class="icon"><i class="fa fa-medkit" aria-hidden="true"></i></div>
-                <a href="https://github.com/elbywan/wretch#helper-methods">Chain helper methods</a>
-            </div>
-            <pre><code class="javascript">  .helperMethods() //.url, .options, .headers ...</code></pre>
+      <div class="helper-tag">
+        <div class="icon"><i class="fa fa-medkit" aria-hidden="true"></i></div>
+        <a href="https://github.com/elbywan/wretch#helper-methods">Chain helper methods</a>
+      </div>
+      <pre><code class="javascript">  .helperMethods() //.url, .options, .headers ...</code></pre>
 
-            <div class="helper-tag">
-                <div class="icon"><i class="fa fa-male" aria-hidden="true"></i></div>
-                <a href="https://github.com/elbywan/wretch#body-types">Add a body type if you need to upload data</a>
-            </div>
-            <pre><code class="javascript">  .bodyType()      // .json, .formData, .formUrl ...</code></pre>
+      <div class="helper-tag">
+        <div class="icon"><i class="fa fa-male" aria-hidden="true"></i></div>
+        <a href="https://github.com/elbywan/wretch#body-types">Add a body type if you need to upload data</a>
+      </div>
+      <pre><code class="javascript">  .bodyType()      // .json, .formData, .formUrl ...</code></pre>
 
-            <div class="helper-tag">
-                <div class="icon"><i class="fa fa-paper-plane" aria-hidden="true"></i></div>
-                <a href="https://github.com/elbywan/wretch#http-methods">Specify the http method</a>
-            </div>
-            <pre><code class="javascript">  .httpMethod()    // .get, .post, .put ...</code></pre>
+      <div class="helper-tag">
+        <div class="icon"><i class="fa fa-paper-plane" aria-hidden="true"></i></div>
+        <a href="https://github.com/elbywan/wretch#http-methods">Specify the http method</a>
+      </div>
+      <pre><code class="javascript">  .httpMethod()    // .get, .post, .put ...</code></pre>
 
-            <div class="helper-tag">
-                <div class="icon"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></div>
-                <a href="https://github.com/elbywan/wretch#catchers">Chain catchers</a>
-            </div>
-            <pre><code class="javascript">  .errorCatchers() // .notFound, .unauthorized ...</code></pre>
+      <div class="helper-tag">
+        <div class="icon"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></div>
+        <a href="https://github.com/elbywan/wretch#catchers">Chain catchers</a>
+      </div>
+      <pre><code class="javascript">  .errorCatchers() // .notFound, .unauthorized ...</code></pre>
 
-            <div class="helper-tag">
-                <div class="icon"><i class="fa fa-cogs" aria-hidden="true"></i></div>
-                <a href="https://github.com/elbywan/wretch#response-types">Specify the response type</a>
-            </div>
-            <pre><code class="javascript">  .responseType()  // .json, .blob ...</code></pre>
+      <div class="helper-tag">
+        <div class="icon"><i class="fa fa-cogs" aria-hidden="true"></i></div>
+        <a href="https://github.com/elbywan/wretch#response-types">Specify the response type</a>
+      </div>
+      <pre><code class="javascript">  .responseType()  // .json, .blob ...</code></pre>
 
-            <div class="helper-tag">
-                <div class="icon"><i class="fa fa-handshake-o" aria-hidden="true"></i></div>
-                <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Wretch returns a Promise</a>
-            </div>
-            <pre><code class="javascript">  .then/catch()</code></pre>
-            <div class="helper-tag">
-                <div class="icon"><i class="fa fa-magic" aria-hidden="true"></i></div>
-                <a href="https://github.com/elbywan/wretch#extras">And there are some extras !</a>
-            </div>
-            <pre><code class="javascript">// Like aborting a request <i class="fa fa-smile-o" aria-hidden="true"></i></code></pre>
-    </section>
+      <div class="helper-tag">
+        <div class="icon"><i class="fa fa-handshake-o" aria-hidden="true"></i></div>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Wretch
+          returns a Promise</a>
+      </div>
+      <pre><code class="javascript">  .then/catch()</code></pre>
+      <div class="helper-tag">
+        <div class="icon"><i class="fa fa-magic" aria-hidden="true"></i></div>
+        <a href="https://github.com/elbywan/wretch#extras">And there are some extras !</a>
+      </div>
+      <pre><code class="javascript">// Like aborting a request <i class="fa fa-smile-o" aria-hidden="true"></i></code></pre>
+  </section>
 
-    <footer>
-        <div class="icons">
-            <div><i class="fa fa-code" aria-hidden="true"></i></div>
-            <div><i class="fa fa-copyright" aria-hidden="true"></i></div>
-            <div><i class="fa fa-balance-scale" aria-hidden="true"></i></div>
-        </div>
-        <div class="text">
-            <div><a href="https://github.com/elbywan" target="_blank" rel="noopener noreferrer">Julien Elbaz</a></div>
-            <div><a href="https://github.com/elbywan/wretch/blob/master/LICENSE" target="_blank" rel="noopener noreferrer">2017</a></div>
-            <div><a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener noreferrer">MIT License</a></div>
-        </div>
-    </footer>
+  <footer>
+    <div class="icons">
+      <div><i class="fa fa-code" aria-hidden="true"></i></div>
+      <div><i class="fa fa-copyright" aria-hidden="true"></i></div>
+      <div><i class="fa fa-balance-scale" aria-hidden="true"></i></div>
+    </div>
+    <div class="text">
+      <div><a href="https://github.com/elbywan" target="_blank" rel="noopener noreferrer">Julien Elbaz</a></div>
+      <div><a href="https://github.com/elbywan/wretch/blob/master/LICENSE" target="_blank"
+          rel="noopener noreferrer">2017</a></div>
+      <div><a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener noreferrer">MIT License</a>
+      </div>
+    </div>
+  </footer>
 
-    <script>hljs.initHighlightingOnLoad()</script>
-    <script>new SmoothScroll('a[href*="#"]')</script>
-    <script>
-        const tags = document.querySelector(".tags").children
-        const tagBoxes = document.querySelector(".tags-boxes").children
-        for(let tag of tags) {
-            const text = tag.innerText
-            tag.addEventListener("click", function(e) {
-                for(let t of tags) {
-                    if(t !== tag) t.classList.remove("active")
-                    else tag.classList.toggle("active")
-                }
-                for(let tagBox of tagBoxes) {
-                    if(tagBox.className === text && tag.classList.contains("active")) {
-                        tagBox.style.display = "inline-block"
-                    } else {
-                        tagBox.style.display = "none"
-                    }
-                }
-            })
+  <script>hljs.initHighlightingOnLoad()</script>
+  <script>new SmoothScroll('a[href*="#"]')</script>
+  <script>
+    const tags = document.querySelector(".tags").children
+    const tagBoxes = document.querySelector(".tags-boxes").children
+    for (let tag of tags) {
+      const text = tag.innerText
+      tag.addEventListener("click", function (e) {
+        for (let t of tags) {
+          if (t !== tag) t.classList.remove("active")
+          else tag.classList.toggle("active")
         }
-    </script>
+        for (let tagBox of tagBoxes) {
+          if (tagBox.className === text && tag.classList.contains("active")) {
+            tagBox.style.display = "inline-block"
+          } else {
+            tagBox.style.display = "none"
+          }
+        }
+      })
+    }
+  </script>
 </body>
+
 </html>
