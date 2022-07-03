@@ -1,3 +1,44 @@
+<a name="2.0.0-next.0"></a>
+# [2.0.0-next.0](https://github.com/elbywan/wretch/compare/1.7.10...2.0.0-next.0) (2022-07-03)
+
+
+### :arrow_up: Version update(s)
+
+* Bump packages ([5302d04](https://github.com/elbywan/wretch/commit/5302d04))
+
+### :art: Code improvement(s)
+
+* Improved packaging and bundling ([69c1e35](https://github.com/elbywan/wretch/commit/69c1e35))
+
+### :bug: Bug fix(es)
+
+* Fix the jest resolver ([3a1f7b8](https://github.com/elbywan/wretch/commit/3a1f7b8))
+
+### :docs: undefined
+
+* Update readme and website ([2eb24dc](https://github.com/elbywan/wretch/commit/2eb24dc))
+
+### :factory: New feature(s)
+
+* Add error cause ([9a0a387](https://github.com/elbywan/wretch/commit/9a0a387)), closes [#98](https://github.com/elbywan/wretch/issues/98)
+* Mark errors with a custom class ([211c902](https://github.com/elbywan/wretch/commit/211c902)), closes [#79](https://github.com/elbywan/wretch/issues/79)
+
+### :fire: Breaking change(s)
+
+* Add url arg and harmonize replace/mixin arguments ([8e4d0aa](https://github.com/elbywan/wretch/commit/8e4d0aa))
+* Complete refactoring ([c2f5035](https://github.com/elbywan/wretch/commit/c2f5035))
+* Restore normal array behaviour for formdata and fix tests ([6879d48](https://github.com/elbywan/wretch/commit/6879d48)), closes [#119](https://github.com/elbywan/wretch/issues/119)
+
+### :memo: Documentation update(s)
+
+* Update browserstack badge. ([91cad34](https://github.com/elbywan/wretch/commit/91cad34))
+
+### :white_check_mark: Test improvement(s)
+
+* Better tests coverage ([77e85dc](https://github.com/elbywan/wretch/commit/77e85dc))
+
+
+
 <a name="1.7.10"></a>
 ## [1.7.10](https://github.com/elbywan/wretch/compare/1.7.9...1.7.10) (2022-05-21)
 
