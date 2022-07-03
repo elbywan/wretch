@@ -31,19 +31,19 @@ export type Config = typeof config
  * @param options New default options
  * @param replace If true, completely replaces the existing options instead of mixing in
  */
-export function setOptions(options: any, replace = false) {
+export function setOptions(options: object, replace = false) {
   config.options = replace ? options : mix(config.options, options)
 }
 
 /**
- * Sets the global polyfills which will be used for every subsequent calls.
+ * Sets the global polyfills which will be used when creating a Wretch instance.
  *
  * Needed for libraries like [fetch-ponyfill](https://github.com/qubyte/fetch-ponyfill).
  *
  * @param polyfills An object containing the polyfills
  * @param replace If true, replaces the current polyfills instead of mixing in
  */
-export function setPolyfills(polyfills: any, replace = false) {
+export function setPolyfills(polyfills: object, replace = false) {
   config.polyfills = replace ? polyfills : mix(config.polyfills, polyfills)
 }
 

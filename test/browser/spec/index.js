@@ -465,7 +465,8 @@ describe("Wretch", function () {
 
     const result = await w
       .options({ token: "Basic d3JldGNoOnJvY2tz" })
-      .get("", { q: "a" })
+      .options({ q: "a" })
+      .get("")
       .text()
     expect(result).toBe("ok")
   })

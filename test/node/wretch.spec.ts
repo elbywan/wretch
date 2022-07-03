@@ -250,11 +250,11 @@ describe("Wretch", function () {
 
   it("should perform OPTIONS and HEAD requests", async function () {
     const optsRes = await wretch(_URL + "/options").opts().res()
-    const optsRes2 = await wretch(_URL + "/options").opts("", {}).res()
+    const optsRes2 = await wretch(_URL + "/options").opts("").res()
     expect(optsRes.headers.get("Allow")).toBe("OPTIONS")
     expect(optsRes2.headers.get("Allow")).toBe("OPTIONS")
     const headRes = await wretch(_URL + "/json").head().res()
-    const headRes2 = await wretch(_URL + "/json").head("", {}).res()
+    const headRes2 = await wretch(_URL + "/json").head("").res()
     expect(headRes.headers.get("content-type")).toBe("application/json")
     expect(headRes2.headers.get("content-type")).toBe("application/json")
   })
@@ -622,7 +622,8 @@ describe("Wretch", function () {
 
     const result = await w
       .options({ token: "Basic d3JldGNoOnJvY2tz" })
-      .get("", { q: "a" })
+      .options({ q: "a" })
+      .get("")
       .text()
     expect(result).toBe("ok")
   })

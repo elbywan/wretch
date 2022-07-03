@@ -138,31 +138,31 @@ export interface Wretch<Self = unknown, Chain = unknown> {
   /**
    * Performs a get request.
    */
-  get(this: Self & Wretch<Self, Chain>, url?: string, options?: WretchOptions): Chain & WretchResponseChain<Self, Chain>
+  get(this: Self & Wretch<Self, Chain>, url?: string): Chain & WretchResponseChain<Self, Chain>
   /**
    * Performs a delete request.
    */
-  delete(this: Self & Wretch<Self, Chain>, url?: string, options?: WretchOptions): Chain & WretchResponseChain<Self, Chain>
+  delete(this: Self & Wretch<Self, Chain>, url?: string): Chain & WretchResponseChain<Self, Chain>
   /**
    * Performs a put request.
    */
-  put(this: Self & Wretch<Self, Chain>, body?: any, url?: string, options?: WretchOptions): Chain & WretchResponseChain<Self, Chain>
+  put(this: Self & Wretch<Self, Chain>, body?: any, url?: string): Chain & WretchResponseChain<Self, Chain>
   /**
    * Performs a post request.
    */
-  post(this: Self & Wretch<Self, Chain>, body?: any, url?: string, options?: WretchOptions): Chain & WretchResponseChain<Self, Chain>
+  post(this: Self & Wretch<Self, Chain>, body?: any, url?: string): Chain & WretchResponseChain<Self, Chain>
   /**
    * Performs a patch request.
    */
-  patch(this: Self & Wretch<Self, Chain>, body?: any, url?: string, options?: WretchOptions): Chain & WretchResponseChain<Self, Chain>
+  patch(this: Self & Wretch<Self, Chain>, body?: any, url?: string): Chain & WretchResponseChain<Self, Chain>
   /**
    * Performs a head request.
    */
-  head(this: Self & Wretch<Self, Chain>, url?: string, options?: WretchOptions): Chain & WretchResponseChain<Self, Chain>
+  head(this: Self & Wretch<Self, Chain>, url?: string): Chain & WretchResponseChain<Self, Chain>
   /**
    * Performs an options request
    */
-  opts(this: Self & Wretch<Self, Chain>, url?: string, options?: WretchOptions): Chain & WretchResponseChain<Self, Chain>
+  opts(this: Self & Wretch<Self, Chain>, url?: string): Chain & WretchResponseChain<Self, Chain>
 
   /**
    * Sets the request body with any content.
