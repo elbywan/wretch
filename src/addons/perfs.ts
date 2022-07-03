@@ -42,8 +42,8 @@ const utils = {
     if (!name || !callback)
       return
 
-    const _performance = config.polyfill("performance", { doThrow: false })
-    const _observer = config.polyfill("PerformanceObserver", { doThrow: false })
+    const _performance = config.polyfill("performance", false)
+    const _observer = config.polyfill("PerformanceObserver", false)
 
     if (!lazyObserver(_performance, _observer))
       return

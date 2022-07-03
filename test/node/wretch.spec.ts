@@ -51,7 +51,7 @@ const duckImage = fs.readFileSync(duckImagePath)
 describe("Wretch", function () {
 
   beforeEach(() => {
-    wretch.defaults({}, true)
+    wretch.options({}, true)
     wretch.errorType("text")
   })
 
@@ -390,20 +390,20 @@ describe("Wretch", function () {
       res(true)
     }).res(result => res(!result)))
     expect(rejected).toBeTruthy()
-    wretch.defaults({
+    wretch.options({
       headers: { "X-Custom-Header": "Anything" }
     }, true)
     rejected = await new Promise(res => wretch(`${_URL}/customHeaders`).get().badRequest(_ => {
       res(true)
     }).res(result => res(!result)))
     expect(rejected).toBeTruthy()
-    wretch.defaults({
+    wretch.options({
       headers: { "X-Custom-Header-2": "Anything" }
     })
     rejected = await new Promise(res => wretch(`${_URL}/customHeaders`).get().badRequest(_ => {
       res(true)
     }).res(result => res(!result)))
-    // wretch.defaults("not an object" as any, true)
+    // wretch.options("not an object" as any, true)
     expect(rejected).toBeTruthy()
     const accepted = await new Promise(res => wretch(`${_URL}/customHeaders`)
       .options({ headers: { "X-Custom-Header-3": "Anything" } }, false)
@@ -633,7 +633,7 @@ describe("Wretch", function () {
       .unauthorized((_, request) => {
         return request
           .auth("Basic d3JldGNoOnJvY2tz")
-          .replay()
+          .fetch()
           .text()
       })
       .text()

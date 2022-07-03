@@ -4,7 +4,7 @@ declare const global
 
 const config = {
   // Default options
-  defaults: {},
+  options: {},
   // Error type
   errorType: "text",
   // Polyfills
@@ -16,7 +16,7 @@ const config = {
     // PerformanceObserver: null,
     // AbortController: null
   },
-  polyfill(p: string, { doThrow = true, instance = false } = {}, ...args: any[]) {
+  polyfill(p: string, doThrow: boolean = true, instance: boolean = false, ...args: any[]) {
     const res = this.polyfills[p] ||
       (typeof self !== "undefined" ? self[p] : null) ||
       (typeof global !== "undefined" ? global[p] : null)
@@ -28,11 +28,11 @@ export type Config = typeof config
 
 /**
  * Sets the default fetch options used when creating a Wretch instance.
- * @param defaults New default options
+ * @param options New default options
  * @param replace If true, completely replaces the existing options instead of mixing in
  */
-export function setDefaults(defaults: any, replace = false) {
-  config.defaults = replace ? defaults : mix(config.defaults, defaults)
+export function setOptions(options: any, replace = false) {
+  config.options = replace ? options : mix(config.options, options)
 }
 
 /**

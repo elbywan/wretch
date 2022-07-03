@@ -1,8 +1,8 @@
-import * as Constants from "./constants.js"
+import { CONTENT_TYPE_HEADER } from "./constants.js"
 
 export function extractContentType(headers: HeadersInit = {}): string | undefined {
   return Object.entries(headers).find(([k]) =>
-    k.toLowerCase() === Constants.CONTENT_TYPE_HEADER.toLowerCase()
+    k.toLowerCase() === CONTENT_TYPE_HEADER.toLowerCase()
   )?.[1]
 }
 
@@ -11,21 +11,16 @@ export function isLikelyJsonMime(value: string): boolean {
 }
 
 export const mix = function (one: object, two: object, mergeArrays: boolean = false) {
-  if (!one || !two || typeof one !== "object" || typeof two !== "object")
-    return one
-
-  const clone = { ...one }
-  for (const prop in two) {
-    if (two.hasOwnProperty(prop)) {
-      if (two[prop] instanceof Array && one[prop] instanceof Array) {
-        clone[prop] = mergeArrays ? [...one[prop], ...two[prop]] : two[prop]
-      } else if (typeof two[prop] === "object" && typeof one[prop] === "object") {
-        clone[prop] = mix(one[prop], two[prop], mergeArrays)
-      } else {
-        clone[prop] = two[prop]
-      }
+  return Object.entries(two).reduce((acc, [key, newValue]) => {
+    const value = one[key]
+    if (Array.isArray(value) && Array.isArray(newValue)) {
+      acc[key] = mergeArrays ? [...value, ...newValue] : newValue
+    } else if (typeof value === "object" && typeof newValue === "object") {
+      acc[key] = mix(value, newValue, mergeArrays)
+    } else {
+      acc[key] = newValue
     }
-  }
 
-  return clone
+    return acc
+  }, { ...one })
 }

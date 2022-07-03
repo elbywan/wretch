@@ -6,7 +6,7 @@ function convertFormData(
   formObject: object,
   recursive: string[] | boolean = false,
   config: Config,
-  formData = config.polyfill("FormData", { instance: true }),
+  formData = config.polyfill("FormData", true, true),
   ancestors = [],
 ) {
   Object.entries(formObject).forEach(([key, value]) => {

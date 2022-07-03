@@ -12,8 +12,13 @@ const common = {
     }),
     nodeResolve(),
     terser({
+      ecma: 2018,
       output: {
-        comments: false
+        comments: false,
+      },
+      compress: {
+        booleans_as_integers: true,
+        passes: 2
       }
     })
   ],

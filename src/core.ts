@@ -1,5 +1,5 @@
 import { mix, extractContentType, isLikelyJsonMime } from "./utils.js"
-import * as Constants from "./constants.js"
+import { JSON_MIME, CONTENT_TYPE_HEADER } from "./constants.js"
 import { resolver } from "./resolver.js"
 import config from "./config.js"
 import type { Config } from "./config.js"
@@ -13,19 +13,38 @@ import type { ConfiguredMiddleware } from "./middleware.js"
  * Immutability : almost every method of this class return a fresh Wretch object.
  */
 export interface Wretch<Self = unknown, Chain = unknown> {
-  _url: string,
-  _options: WretchOptions,
-  _config: Config,
-  _catchers: Map<number | string | symbol, (error: WretchError, originalRequest: Wretch<Self>) => void>
-  _resolvers: ((resolver: Chain & WretchResponseChain<Self, Chain>, originalRequest: Wretch<Self>) => any)[]
-  _deferredChain: WretchDeferredCallback<Self, Chain>[]
-  _middlewares: ConfiguredMiddleware[]
-  _addons: WretchAddon<unknown, Chain>[]
-
   /**
    * @private
    */
-  clone(args: Record<string, any>): this
+  _url: string,
+  /**
+   * @private
+   */
+  _options: WretchOptions,
+  /**
+   * @private
+   */
+  _config: Config,
+  /**
+   * @private
+   */
+  _catchers: Map<number | string | symbol, (error: WretchError, originalRequest: Wretch<Self>) => void>
+  /**
+   * @private
+   */
+  _resolvers: ((resolver: Chain & WretchResponseChain<Self, Chain>, originalRequest: Wretch<Self>) => any)[]
+  /**
+   * @private
+   */
+  _deferred: WretchDeferredCallback<Self, Chain>[]
+  /**
+   * @private
+   */
+  _middlewares: ConfiguredMiddleware[]
+  /**
+   * @private
+   */
+  _addons: WretchAddon<unknown, Chain>[]
 
   /**
    * Register an Addon to enhance the wretch or response objects.
@@ -112,7 +131,10 @@ export interface Wretch<Self = unknown, Chain = unknown> {
    */
   middlewares(this: Self & Wretch<Self, Chain>, middlewares: ConfiguredMiddleware[], clear?: boolean): this
 
-  method(this: Self & Wretch<Self, Chain>, method: string, url?: string, body?: any): Chain & WretchResponseChain<Self, Chain>
+  /**
+   * Sends the request using the accumulated fetch options.
+   */
+  fetch(this: Self & Wretch<Self, Chain>, method?: string, url?: string, body?: any): Chain & WretchResponseChain<Self, Chain>
   /**
    * Performs a get request.
    */
@@ -141,10 +163,6 @@ export interface Wretch<Self = unknown, Chain = unknown> {
    * Performs an options request
    */
   opts(this: Self & Wretch<Self, Chain>, url?: string, options?: WretchOptions): Chain & WretchResponseChain<Self, Chain>
-  /**
-   * Replay a request.
-   */
-  replay(this: Self & Wretch<Self, Chain>, options?: WretchOptions): Chain & WretchResponseChain<Self, Chain>
 
   /**
    * Sets the request body with any content.
@@ -166,56 +184,52 @@ export const core: Wretch = {
   _config: config,
   _catchers: new Map(),
   _resolvers: [],
-  _deferredChain: [],
+  _deferred: [],
   _middlewares: [],
   _addons: [],
-
-  clone(properties) {
-    return {
-      ...this,
-      ...properties
-    }
-  },
   addon(addon) {
-    return this.clone({ _addons: [...this._addons, addon], ...addon.wretch })
+    return { ...this, _addons: [...this._addons, addon], ...addon.wretch }
   },
   errorType(errorType: string) {
-    return this.clone({
+    return {
+      ...this,
       _config: {
         ...this._config,
         errorType
       }
-    })
+    }
   },
   polyfills(polyfills, replace = false) {
-    return this.clone({
+    return {
+      ...this,
       _config: {
         ...this._config,
         polyfills: replace ? polyfills : mix(this._config.polyfills, polyfills)
       }
-    })
+    }
   },
   url(_url, replace = false) {
     if (replace)
-      return this.clone({ _url })
+      return { ...this, _url }
     const split = this._url.split("?")
-    return this.clone({
+    return {
+      ...this,
       _url: split.length > 1 ?
         split[0] + _url + "?" + split[1] :
         this._url + _url
-    })
+    }
   },
   options(options, replace = false) {
-    return this.clone({ _options: replace ? options : mix(this._options, options) })
+    return { ...this, _options: replace ? options : mix(this._options, options) }
   },
   headers(headerValues) {
-    return this.clone({ _options: mix(this._options, { headers: headerValues || {} }) })
+    return { ...this, _options: mix(this._options, { headers: headerValues || {} }) }
   },
   accept(headerValue) {
     return this.headers({ Accept: headerValue })
   },
   content(headerValue) {
-    return this.headers({ [Constants.CONTENT_TYPE_HEADER]: headerValue })
+    return this.headers({ [CONTENT_TYPE_HEADER]: headerValue })
   },
   auth(headerValue) {
     return this.headers({ Authorization: headerValue })
@@ -223,22 +237,24 @@ export const core: Wretch = {
   catcher(errorId, catcher) {
     const newMap = new Map(this._catchers)
     newMap.set(errorId, catcher)
-    return this.clone({ _catchers: newMap })
+    return { ...this, _catchers: newMap }
   },
   resolve(resolver, clear: boolean = false) {
-    return this.clone({ _resolvers: clear ? [resolver] : [...this._resolvers, resolver] })
+    return { ...this, _resolvers: clear ? [resolver] : [...this._resolvers, resolver] }
   },
   defer(callback, clear = false) {
-    return this.clone({
-      _deferredChain: clear ? [callback] : [...this._deferredChain, callback]
-    })
+    return {
+      ...this,
+      _deferred: clear ? [callback] : [...this._deferred, callback]
+    }
   },
   middlewares(middlewares, clear = false) {
-    return this.clone({
+    return {
+      ...this,
       _middlewares: clear ? middlewares : [...this._middlewares, ...middlewares]
-    })
+    }
   },
-  method(method: string, url = "", body = null) {
+  fetch(method: string = this._options.method, url = "", body = null) {
     let base = this.url(url).options({ method })
     // "Jsonify" the body if it is an object and if it is likely that the content type targets json.
     const contentType = extractContentType(base._options.headers)
@@ -249,43 +265,40 @@ export const core: Wretch = {
           base.body(body)
     return resolver(
       base
-        ._deferredChain
+        ._deferred
         .reduce((acc: Wretch, curr) => curr(acc, acc._url, acc._options), base)
     )
   },
   get(url = "") {
-    return this.method("GET", url)
+    return this.fetch("GET", url)
   },
   delete(url = "") {
-    return this.method("DELETE", url)
+    return this.fetch("DELETE", url)
   },
   put(body, url = "") {
-    return this.method("PUT", url, body)
+    return this.fetch("PUT", url, body)
   },
   post(body, url = "") {
-    return this.method("POST", url, body)
+    return this.fetch("POST", url, body)
   },
   patch(body, url = "") {
-    return this.method("PATCH", url, body)
+    return this.fetch("PATCH", url, body)
   },
   head(url = "") {
-    return this.method("HEAD", url)
+    return this.fetch("HEAD", url)
   },
   opts(url = "") {
-    return this.method("OPTIONS", url)
-  },
-  replay() {
-    return this.method(this._options.method)
+    return this.fetch("OPTIONS", url)
   },
   body(contents) {
-    return this.clone({ _options: { ...this._options, body: contents } })
+    return { ...this, _options: { ...this._options, body: contents } }
   },
   json(jsObject, contentType) {
     const currentContentType = extractContentType(this._options.headers)
     return this.content(
       contentType ||
       isLikelyJsonMime(currentContentType) && currentContentType ||
-      Constants.JSON_MIME
+      JSON_MIME
     ).body(JSON.stringify(jsObject))
   }
 }

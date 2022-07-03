@@ -1,4 +1,4 @@
-import { setDefaults, setErrorType, setPolyfills } from "./config.js"
+import { setOptions, setErrorType, setPolyfills } from "./config.js"
 import { core } from "./core.js"
 
 export type {
@@ -17,11 +17,11 @@ export type {
 } from "./types"
 
 function factory(_url = "", _options = {}) {
-  return core.clone({ _url, _options })
+  return { ...core, _url, _options }
 }
 
 factory["default"] = factory
-factory.defaults = setDefaults
+factory.options = setOptions
 factory.errorType = setErrorType
 factory.polyfills = setPolyfills
 export default factory

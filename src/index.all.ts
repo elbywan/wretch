@@ -1,10 +1,9 @@
-import { setDefaults, setErrorType, setPolyfills } from "./config.js"
+import { setOptions, setErrorType, setPolyfills } from "./config.js"
 import { core } from "./core.js"
 import * as Addons from "./addons/index.js"
 
 function factory(_url = "", _options = {}) {
-  return core
-    .clone({ _url, _options })
+  return { ...core, _url, _options }
     .addon(Addons.abortAddon())
     .addon(Addons.formDataAddon)
     .addon(Addons.formUrlAddon)
@@ -13,7 +12,7 @@ function factory(_url = "", _options = {}) {
 }
 
 factory["default"] = factory
-factory.defaults = setDefaults
+factory.options = setOptions
 factory.errorType = setErrorType
 factory.polyfills = setPolyfills
 export default factory

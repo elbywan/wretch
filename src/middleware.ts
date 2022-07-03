@@ -6,13 +6,5 @@ export type ConfiguredMiddleware = (next: FetchLike) => FetchLike
 export type FetchLike = (url: string, opts: WretchOptions) => Promise<WretchResponse>
 
 export const middlewareHelper = (middlewares: ConfiguredMiddleware[]) => (fetchFunction: FetchLike): FetchLike => {
-  return (
-    middlewares.length === 0 ?
-      fetchFunction :
-      middlewares.length === 1 ?
-        middlewares[0](fetchFunction) :
-        middlewares.reduceRight((acc, curr, idx): any =>
-          (idx === middlewares.length - 2) ? curr(acc(fetchFunction)) : curr(acc as any)
-        )
-  ) as FetchLike
+  return middlewares.reduceRight((acc, curr) => curr(acc), fetchFunction) || fetchFunction
 }

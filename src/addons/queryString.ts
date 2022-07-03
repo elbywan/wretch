@@ -6,7 +6,7 @@ const appendQueryParams = (url: string, qp: object | string, replace: boolean, c
   if (typeof qp === "string") {
     queryString = qp
   } else {
-    const usp = config.polyfill("URLSearchParams", { instance: true })
+    const usp = config.polyfill("URLSearchParams", true, true)
     for (const key in qp) {
       if (qp[key] instanceof Array) {
         for (const val of qp[key])
@@ -66,7 +66,7 @@ export interface QueryStringAddon {
 const queryString: WretchAddon<QueryStringAddon> = {
   wretch: {
     query(qp, replace = false) {
-      return this.clone({ _url: appendQueryParams(this._url, qp, replace, this._config) })
+      return { ...this, _url: appendQueryParams(this._url, qp, replace, this._config) }
     }
   }
 }

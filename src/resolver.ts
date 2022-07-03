@@ -7,7 +7,13 @@ import { FETCH_ERROR } from "./constants"
 export class WretchError extends Error { }
 
 export interface WretchResponseChain<T, Self = unknown> {
+  /**
+   * @private
+   */
   wretchRequest: Wretch<T, Self>,
+  /**
+   * @private
+   */
   fetchRequest: Promise<WretchResponse>,
 
   /**
@@ -81,7 +87,7 @@ export const resolver = <T, Chain>(wretch: Wretch<T, Chain>) => {
   } = wretch
 
   const catchers = new Map(_catchers)
-  const finalOptions = mix(config.defaults, opts)
+  const finalOptions = mix(config.options, opts)
   addons.forEach(addon => addon.beforeRequest && addon.beforeRequest(wretch, finalOptions))
   // The generated fetch request
   const fetchRequest = middlewareHelper(middlewares)(config.polyfill("fetch"))(url, finalOptions)

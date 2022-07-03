@@ -41,7 +41,7 @@ const abort: () => WretchAddon<AbortWretch, AbortResolver> = () => {
   let fetchController = null
   return {
     beforeRequest(wretch, options) {
-      fetchController = wretch._config.polyfill("AbortController", { doThrow: false, instance: true })
+      fetchController = wretch._config.polyfill("AbortController", false, true)
       if (!options["signal"] && fetchController) {
         options["signal"] = fetchController.signal
       }
@@ -57,7 +57,7 @@ const abort: () => WretchAddon<AbortWretch, AbortResolver> = () => {
     },
     wretch: {
       signal(controller) {
-        return this.clone({ _options: { ...this._options, signal: controller.signal } })
+        return { ...this, _options: { ...this._options, signal: controller.signal } }
       },
     },
     resolver: {
