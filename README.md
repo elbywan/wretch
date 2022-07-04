@@ -1,5 +1,5 @@
 <h1 align="center">
-	<a href="https://elbywan.github.io/wretch"><img src="https://cdn.rawgit.com/elbywan/wretch/08831345/wretch.svg" alt="wretch-logo" width="220px"></a><br>
+	<a href="https://elbywan.github.io/wretch"><img src="assets/wretch.svg" alt="wretch-logo" width="220px"></a><br>
 	<br>
     <a href="https://elbywan.github.io/wretch">Wretch</a><br>
 	<br>
@@ -51,6 +51,7 @@ And some additional reasons to use `wretch`:
 - [**Api**](#api)
 - [**Addons**](#addons)
 - [**Middlewares**](#middlewares)
+- [**Migration from v1**](#migration-from-v1)
 - [**License**](#license)
 
 # Motivation
@@ -1439,7 +1440,7 @@ Please refer to the [Addons](#addons) documentation.
 
 ## Typescript
 
-Types have been renamed and improved. Please update your imports.
+Types have been renamed and refactored, please update your imports accordingly.
 
 ## Replace / Mixin arguments
 
