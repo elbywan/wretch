@@ -560,6 +560,9 @@ describe("Wretch", function () {
     let check = 0
     const w = wretch()
       .addon(PerfsAddon())
+      .polyfills({
+        fetch: fetchPolyfill(1)
+      })
       .url(_URL)
       .resolve(resolver => resolver
         .unauthorized(_ => check--))
