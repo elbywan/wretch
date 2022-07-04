@@ -8,6 +8,9 @@
     "ajax",
     "request"
   ],
+  "engines": {
+    "node": ">=14"
+  },
   "homepage": "https://elbywan.github.io/wretch",
   "repository": {
     "type": "git",
