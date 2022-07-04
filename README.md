@@ -26,6 +26,8 @@
 
 # Features
 
+#### `wretch` is a small wrapper around [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) designed to simplify the way to perform and handle network requests and responses.
+
 - 🪶 Small size (less than 2KB g-zipped)
 - 💡 Intuitive - lean API, handles errors, headers and serialization
 - 🧊 Immutable - every call creates a cloned instance
@@ -42,45 +44,45 @@ And some additional reasons to use `wretch`:
 
 # Table of Contents
 
-- [Motivation](#motivation)
-- [Installation](#installation)
-- [Compatibility](#compatibility)
-- [Usage](#usage)
-- [Api](#api)
-- [Addons](#addons)
-- [Middlewares](#middlewares)
-- [License](#license)
+- [**Motivation**](#motivation)
+- [**Installation**](#installation)
+- [**Compatibility**](#compatibility)
+- [**Usage**](#usage)
+- [**Api**](#api)
+- [**Addons**](#addons)
+- [**Middlewares**](#middlewares)
+- [**License**](#license)
 
 # Motivation
 
 #### Because having to write a second callback to process a response body feels awkward.
 
-```javascript
-// Fetch needs a second callback to process the response body
+_Fetch needs a second callback to process the response body._
 
+```javascript
 fetch("examples/example.json")
-  .then((response) => response.json())
-  .then((json) => {
+  .then(response => response.json())
+  .then(json => {
     //Do stuff with the parsed json
   });
 ```
 
-```javascript
-// Wretch does it for you
+_Wretch does it for you._
 
+```javascript
 // Use .res for the raw response, .text for raw text, .json for json, .blob for a blob ...
 wretch("examples/example.json")
   .get()
-  .json((json) => {
+  .json(json => {
     // Do stuff with the parsed json
   });
 ```
 
 #### Because manually checking and throwing every request error code is tedious.
 
-```javascript
-// Fetch won’t reject on HTTP error status
+_Fetch won’t reject on HTTP error status._
 
+```javascript
 fetch("anything")
   .then(response => {
     if(!response.ok) {
@@ -95,9 +97,9 @@ fetch("anything")
   .catch(error => { /* ... */ })
 ```
 
-```javascript
-// Wretch throws when the response is not successful and contains helper methods to handle common codes
+_Wretch throws when the response is not successful and contains helper methods to handle common codes._
 
+```javascript
 wretch("anything")
   .get()
   .notFound(error => { /* ... */ })
@@ -109,20 +111,20 @@ wretch("anything")
 
 #### Because sending a json object should be easy.
 
-```javascript
-// With fetch you have to set the header, the method and the body manually
+_With fetch you have to set the header, the method and the body manually._
 
+```javascript
 fetch("endpoint", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({ "hello": "world" })
 }).then(response => /* ... */)
-// Omitting the data retrieval and error management parts
+// Omitting the data retrieval and error management parts…
 ```
 
-```javascript
-// With wretch, you have shorthands at your disposal
+_With wretch, you have shorthands at your disposal._
 
+```javascript
 wretch("endpoint")
   .post({ "hello": "world" })
   .res(response => /* ... */)
@@ -130,9 +132,9 @@ wretch("endpoint")
 
 #### Because configuration should not rhyme with repetition.
 
-```javascript
-// A Wretch object is immutable which means that you can reuse configured instances
+_A Wretch object is immutable which means that you can reuse configured instances._
 
+```javascript
 // Cross origin authenticated requests on an external API
 const externalApi = wretch("http://external.api") // Base url
   // Authorization header
@@ -166,19 +168,20 @@ npm i wretch # or yarn/pnpm add wretch
 
 ## &lt;script&gt; tag
 
-The package contains multiple bundles for each entry point and addon having their own extension:
-- ESM -> `.min.js`
-- CommonJS -> `.min.cjs`
-- URM -> `.min.js`
+The package contains multiple bundles depending on the format and feature set located under the `/dist/bundle` folder.
 
-The bundles are located under the `dist/bundle` folder.
+> If you pick the core bundle, then to plug addons you must import them separately from `/dist/bundle/addons/[addonName].min.js`
 
-**Flavours:**
-  - `wretch.min.js`: only the wretch core features
-  - `wretch.all.min.js`: wretch and all addons
+| Feature set        | Name                |
+| ------------------ | ------------------- |
+| Core features only | `wretch.min.js`     |
+| Core + all addons  | `wretch.all.min.js` |
 
-If you picked the core bundle, addons can be added separately under `dist/bundle/addons/[addonName].min.js`.
-
+| Format   | Extension  |
+| -------- | ---------- |
+| ESM      | `.min.mjs` |
+| CommonJS | `.min.cjs` |
+| UMD      | `.min.js`  |
 
 ```html
 <!--
@@ -205,16 +208,20 @@ If you picked the core bundle, addons can be added separately under `dist/bundle
 
 ## Browsers
 
-Wretch `^2` is compatible with modern browsers only. For older browsers please use `^1`.
+`wretch@^2` is compatible with modern browsers only. For older browsers please use `wretch@^1`.
 
 ## Node.js
 
 Works with any [FormData](https://github.com/form-data/form-data) or
 [fetch](https://www.npmjs.com/package/node-fetch) polyfills.
 
-```javascript
-// The non-global way (preferred):
+### Polyfills
 
+Since the `node.js` standard library does not provide a native implementation of fetch (and other Browsers-only APIs), polyfilling is mandatory.
+
+_The non-global way (preferred):_
+
+```javascript
 // w is a reusable wretch instance
 const w = wretch().polyfills({
   fetch: require("node-fetch"),
@@ -223,9 +230,9 @@ const w = wretch().polyfills({
 });
 ```
 
-```javascript
-// Globally:
+_Globally:_
 
+```javascript
 // Either mutate the global object…
 global.fetch = require("node-fetch");
 global.FormData = require("form-data");
@@ -258,10 +265,10 @@ console.log(text); // -> 200 OK
 
 ```typescript
 // ECMAScript modules
-import wretch from "wretch";
+import wretch from "wretch"
 // CommonJS
-const wretch = require("wretch");
-// Script tag
+const wretch = require("wretch")
+// Global variable (script tag)
 window.wretch
 ```
 
@@ -269,24 +276,23 @@ window.wretch
 
 ### Overview
 
-_Note: Wretch objects are immutable._
+A high level overview of the successive steps that can be chained to perform a request and parse the result.
 
 ```javascript
-wretch(baseUrl, baseOptions) // <- Instantiation - arguments are optional
+// Instantiate wretch.
+wretch(baseUrl, baseOptions)
   /*
     --------------------------------
     The "request" chain starts here.
     --------------------------------
   */
  .[helper method(s)]()
-     // (Optional)
-     // A set of helper methods to set the default options, set accept header, change the current url ...
+  // Optional - A set of helper methods to set the default options, set accept header, change the current url…
  .[body type]()
-     // (Optional)
-     // Serialize an object to json or FormData formats and sets the body & header field if needed
+  // Optional - Serialize an object to json or FormData formats and sets the body & header field if needed
  .[http method]()
-     // [Required, ends the request chain]
-     // Sends the get/put/post/delete/patch request.
+  // Required - Sends the get/put/post/delete/patch request.
+  // Ends the request chain.
   /*
     Fetch is called here, after the request chain ends and before the response chain starts.
     The request is sent, and from this point on you can chain catchers and call a response type handler.
@@ -296,11 +302,10 @@ wretch(baseUrl, baseOptions) // <- Instantiation - arguments are optional
     ---------------------------------
   */
  .[catcher(s)]()
-    // (Optional)
-    // You can chain error handlers here
+  // Optional - You can chain error handlers here
  .[response type]()
-    // [Required, ends the response chain]
-    // Specify the data type you need, which will be parsed and handed to you
+  // Required - Specify the data type you need, which will be parsed and handed to you
+  // Ends the response chain.
   /*
     From this point on, wretch returns a standard Promise so you can continue chaining actions afterwards.
   */
@@ -308,7 +313,13 @@ wretch(baseUrl, baseOptions) // <- Instantiation - arguments are optional
   .catch(/* ... */)
 ```
 
-### Instantiation
+### Samples
+
+Some coding examples to illustrate each step of the process.
+
+#### Instantiation
+
+Arguments are all optional.
 
 ```js
 let w = wretch(
@@ -319,9 +330,9 @@ let w = wretch(
 )
 ```
 
-### The request chain
+#### The request chain
 
-- Chain helper methods to configure the request
+Chain helper methods to configure the request.
 
 ```js
 w = w
@@ -330,12 +341,12 @@ w = w
   .content("text/html")
 ```
 
-- Specify a body type if uploading data (optional for json)
+Specify a body type if uploading data (optional for json).
 
 ```js
 w = w.body("<html><body><div/></body></html>")
 ```
-- Setting the http method ends the chain and returns a 'response' chain
+Setting the http method ends the chain and returns a 'response' chain.
 
 ```js
 // Optional argument.
@@ -343,9 +354,9 @@ w = w.body("<html><body><div/></body></html>")
 w = w.put({ "hello": world })
 ```
 
-### The response chain
+#### The response chain
 
-- Add error catchers
+Add error catchers.
 
 ```js
 w = w
@@ -353,11 +364,10 @@ w = w
   .catcher(500, err => flashMessage("internal.server.error"))
 ```
 
-- Set the final response body type ends the chain and returns a regular promise
+Setting the final response body type ends the chain and returns a regular promise.
 
 ```js
-const json = await w.json()
-console.log(json.property)
+const payload = await w.json()
 ```
 
 
@@ -374,16 +384,27 @@ console.log(json.property)
 
 ## Static Methods
 
+**The following static methods are defined at the import level, do not call them from an instanciated wretch object.**
+
 ### wretch(url = "", opts = {})
 
 Creates a new Wretch instance and set a base url and base
 [fetch options](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch).
 
+```js
+import wretch from "wretch"
+
+// Reusable instance
+const w = wretch("https://domain.com", { mode: "cors" })
+```
+
 ### options(options: object, replace = false)
 
-Sets the default fetch options that will be stored internally when instantiating fresh Wretch objects.
+Sets the default fetch options that will be stored internally when instantiating wretch objects.
 
 ```js
+import wretch from "wretch"
+
 wretch.options({ headers: { "Accept": "application/json" } });
 
 // The fetch request is sent with both headers.
@@ -392,10 +413,12 @@ wretch("...", { headers: { "X-Custom": "Header" } }).get().res();
 
 ### polyfills(polyfills: object, replace = false)
 
-Sets the default polyfills that will be stored internally when instantiating fresh Wretch objects.
-Useful for browserless environments.
+Sets the default polyfills that will be stored internally when instantiating wretch objects.
+Useful for browserless environments like `node.js`.
 
 ```js
+import wretch from "wretch"
+
 wretch.polyfills({
   fetch: require("node-fetch"),
   FormData: require("form-data"),
@@ -409,9 +432,11 @@ wretch("...").get().res();
 ### errorType(method: string)
 
 Sets the default method (text, json, …) used to parse the data contained in the response body in case of an HTTP error.
-As with other static methods, it will affect Wretch instances created after calling this function.
+As with other static methods, it will affect wretch instances created after calling this function.
 
 ```js
+import wretch from "wretch"
+
 wretch.errorType("json")
 
 wretch("http://server/which/returns/an/error/with/a/json/body")
@@ -440,23 +465,23 @@ wretch("/root").url("/sub").get().json(); /* ... */
 
 // Can be used to set a base url
 
-// Subsequent requests made using the 'blogs' object will be prefixed with "http://mywebsite.org/api/blogs"
-const blogs = wretch("http://mywebsite.org/api/blogs");
+// Subsequent requests made using the 'blogs' object will be prefixed with "http://domain.com/api/blogs"
+const blogs = wretch("http://domain.com/api/blogs");
 
 // Perfect for CRUD apis
 const id = await blogs.post({ name: "my blog" }).json(blog => blog.id);
-const blog = await blogs.url(`/${id}`).get().json();
+const blog = await blogs.get(`/${id}`).json();
 console.log(blog.name);
 
 await blogs.url(`/${id}`).delete().res();
 
 // And to replace the base url if needed :
-const noMoreBlogs = blogs.url("http://mywebsite.org/", true);
+const noMoreBlogs = blogs.url("http://domain2.com/", true);
 ```
 
 ### options(options: Object, replace: boolean = false)
 
-Sets the fetch options.
+#### Sets the fetch options.
 
 ```js
 wretch("...").options({ credentials: "same-origin" });
@@ -476,33 +501,21 @@ flag.
 
 ```js
 // By default options mixed in :
-
-wretch()
+let w = wretch()
   .options({ headers: { "Accept": "application/json" } })
   .options({ encoding: "same-origin", headers: { "X-Custom": "Header" } });
-
-/*
-{
-  headers: { "Accept": "application/json", "X-Custom": "Header" },
-  encoding: "same-origin"
-}
-*/
+console.log(JSON.stringify(w._options))
+// => {"encoding":"same-origin", "headers":{"Accept":"application/json","X-Custom":"Header"}}
 
 // With the flag, options are overridden :
-
-wretch()
+w = wretch()
   .options({ headers: { "Accept": "application/json" } })
   .options(
     { encoding: "same-origin", headers: { "X-Custom": "Header" } },
     true,
   );
-
-/*
-{
-  headers: { "X-Custom": "Header" },
-  encoding: "same-origin"
-}
-*/
+console.log(JSON.stringify(w._options))
+// => {"encoding":"same-origin","headers":{"X-Custom":"Header"}}
 ```
 
 ### headers(headerValues: Object)
@@ -586,7 +599,7 @@ reAuthOn401
 
 ### defer(callback: (originalRequest: Wretch, url: string, options: Object) => Wretch, clear = false)
 
-Defer methods that will be chained and called just before the request is performed.
+Defer one or multiple request chain methods that will get called just before the request is sent.
 
 ```js
 /* Small fictional example: deferred authentication */
@@ -613,8 +626,7 @@ api.options({
 
 ### resolve(doResolve: (chain: WretchResponseChain, originalRequest: Wretch) => WretchResponseChain | Promise<any>, clear = false)
 
-Programs a resolver which will automatically be injected to perform response
-chain tasks.
+Programs a resolver to perform response chain tasks automatically.
 
 Very useful when you need to perform repetitive actions on the wretch response.
 
@@ -640,7 +652,7 @@ const myJson = await w.url("http://a.com").get()
 ### errorType(method: string = "text")
 
 Sets the method (text, json ...) used to parse the data contained in the
-response body in case of an HTTP error.
+response body in case of an HTTP error is returned.
 
 ```js
 wretch("http://server/which/returns/an/error/with/a/json/body")
@@ -655,7 +667,7 @@ wretch("http://server/which/returns/an/error/with/a/json/body")
 
 ### polyfills(polyfills: Object)
 
-Sets non-global polyfills - for browserless environments.
+Sets non-global polyfills - for instance in browserless environments.
 
 ```javascript
 const fetch = require("node-fetch");
@@ -683,7 +695,7 @@ Sets the request body with any content.
 
 ```js
 wretch("...").body("hello").put();
-// Note that calling an 'http verb' method with the body as an argument is equivalent:
+// Note that calling put/post methods with a non-object argument is equivalent:
 wretch("...").put("hello");
 ```
 
@@ -694,7 +706,7 @@ Sets the "Content-Type" header, stringifies an object and sets the request body.
 ```js
 const jsonObject = { a: 1, b: 2, c: 3 };
 wretch("...").json(jsonObject).post();
-// Note that calling an 'http verb' method with the object body as an argument is equivalent:
+// Note that calling an 'http verb' method with an object argument is equivalent:
 wretch("...").post(jsonObject);
 ```
 
@@ -702,27 +714,27 @@ wretch("...").post(jsonObject);
 
 **Required**
 
-_You can pass optional url and body arguments to these methods as a
-shorthand._
+_You can pass optional url and body arguments to these methods._
 
 ```js
-// This shorthand:
+// These shorthands:
+wretch().get("/url");
 wretch().post({ json: "body" }, "/url");
-// Is equivalent to:
+// Are equivalent to:
+wretch().url("/url").get();
 wretch().json({ json: "body" }).url("/url").post();
 ```
 
-**NOTE:** For methods having a body argument if the value is an `Object` it is
-assumed that it is a JSON payload and apply the same behaviour as calling
-`.json(body)`, unless the `Content-Type` header has been set to something else
-beforehand.
+**NOTE:** if the body argument is an `Object` it is assumed that it is a JSON payload and it will have the same behaviour as calling `.json(body)` unless the `Content-Type` header has been set to something else beforehand.
+
+-----
 
 | [get](#geturl) | [delete](#deleteurl) | [put](#putbody-url) | [patch](#patchbody-url) | [post](#postbody-url) | [head](#headurl) | [opts](#optsurl) |
 | -------------- | -------------------- | ------------------- | ----------------------- | --------------------- | ---------------- | ---------------- |
 
 ### get(url)
 
-Performs a get request.
+Performs a [GET](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET) request.
 
 ```js
 wretch("...").get();
@@ -730,7 +742,7 @@ wretch("...").get();
 
 ### delete(url)
 
-Performs a delete request.
+Performs a [DELETE](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE) request.
 
 ```js
 wretch("...").delete();
@@ -738,7 +750,7 @@ wretch("...").delete();
 
 ### put(body, url)
 
-Performs a put request.
+Performs a [PUT](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PUT) request.
 
 ```js
 wretch("...").json({...}).put()
@@ -746,7 +758,7 @@ wretch("...").json({...}).put()
 
 ### patch(body, url)
 
-Performs a patch request.
+Performs a [PATCH](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PATCH) request.
 
 ```js
 wretch("...").json({...}).patch()
@@ -754,7 +766,7 @@ wretch("...").json({...}).patch()
 
 ### post(body, url)
 
-Performs a post request.
+Performs a [POST](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST) request.
 
 ```js
 wretch("...").json({...}).post()
@@ -762,7 +774,7 @@ wretch("...").json({...}).post()
 
 ### head(url)
 
-Performs a head request.
+Performs a [HEAD](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/HEAD) request.
 
 ```js
 wretch("...").head();
@@ -770,7 +782,7 @@ wretch("...").head();
 
 ### opts(url)
 
-Performs an options request.
+Performs an [OPTIONS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS) request.
 
 ```js
 wretch("...").opts();
@@ -780,8 +792,6 @@ wretch("...").opts();
 
 _Catchers are optional, but if none are provided an error will still be
 thrown for http error codes and it will be up to you to catch it._
-
-_Catchers can be chained._
 
 | [badRequest](#badrequestcb-error-wretcherror-originalrequest-wretch--any) | [unauthorized](#unauthorizedcb-error-wretcherror-originalrequest-wretch--any) | [forbidden](#forbiddencb-error-wretcherror-originalrequest-wretch--any) | [notFound](#notfoundcb-error-wretcherror-originalrequest-wretch--any) | [timeout](#timeoutcb-error-wretcherror-originalrequest-wretch--any) | [internalError](#internalerrorcb-error-wretcherror-originalrequest-wretch--any) | [error](#errorerrorid-number--string-cb-error-wretcherror-originalrequest-wretch--any) | [fetchError](#fetcherrorcb-error-networkerror-originalrequest-wretch--any) |
 | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
@@ -879,7 +889,7 @@ wretch("...").get().json().then(json => /* json is the parsed json of the respon
 // Without a callback using await
 const json = await wretch("...").get().json()
 // With a callback the value returned is passed to the Promise
-wretch("...").get().json(() => "Hello world!").then(console.log) // Hello world!
+wretch("...").get().json(json => "Hello world!").then(console.log) // => Hello world!
 ```
 
 _If an error is caught by catchers, the response type handler will not be
@@ -888,9 +898,11 @@ called._
 | [res](#rescb-response--response--t--promiseresponse--t) | [json](#jsoncb-json--object--t--promiseobject--t) | [blob](#blobcb-blob--blob--t--promiseblob--t) | [formData](#formdatacb-fd--formdata--t--promiseformdata--t) | [arrayBuffer](#arraybuffercb-ab--arraybuffer--t--promisearraybuffer--t) | [text](#textcb-text--string--t--promisestring--t) |
 | ------------------------------------------------------- | ------------------------------------------------- | --------------------------------------------- | ----------------------------------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------- |
 
+
 ### res(cb?: (response : Response) => T) : Promise<Response | T>
 
 Raw Response handler.
+Check the [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Response) documentation for more details on the Response class.
 
 ```js
 wretch("...").get().res((response) => console.log(response.url));
