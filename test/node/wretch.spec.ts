@@ -16,8 +16,10 @@ import QueryStringAddon from "../../src/addons/queryString"
 declare const global
 
 import { performance, PerformanceObserver } from "perf_hooks"
+// clearResourceTimings is read-only since node 18. Use `defineProperty` to force override it
+// See https://github.com/facebook/jest/issues/2227#issuecomment-265005782
 // tslint:disable-next-line: no-empty
-performance["clearResourceTimings"] = () => { }
+Object.defineProperty(performance, 'clearResourceTimings', { value: () => {} })
 
 const _PORT = 9876
 const _URL = `http://localhost:${_PORT}`
@@ -58,6 +60,7 @@ describe("Wretch", function () {
   it("should set and use non global polyfills", async function () {
     global["FormData"] = null
     global["URLSearchParams"] = null
+    global["fetch"] = null
 
     expect(() => wretch("...").addon(QueryStringAddon).query({ a: 1, b: 2 })).toThrow("URLSearchParams is not defined")
     expect(() => wretch("...").addon(FormDataAddon).formData({ a: 1, b: 2 })).toThrow("FormData is not defined")
