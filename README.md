@@ -32,7 +32,7 @@
 - 🧊 Immutable - every call creates a cloned instance
 - 🔌 Modular - features can be added with Addons
 - 🤸 Flexible - behaviour can be fully customized by Middlewares
-- 🧩 Isomorphic - compatible with modern browsers, node.js 14+ and deno
+- 🧩 Isomorphic - compatible with modern browsers, Node.js 14+ and Deno
 - 🦺 Type safe - built with TypeScript
 
 And some additional reasons to use `wretch`:
