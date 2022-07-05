@@ -56,15 +56,7 @@ export default [
         name: "wretch",
         exports: "default",
         sourcemap: true
-      }),
-      // For tests
-      {
-        file: "test/browser/src/wretch.all.min.js",
-        format: "umd",
-        name: "wretch",
-        exports: "default",
-        sourcemap: true
-      }
+      })
     ],
     ...common
   },
