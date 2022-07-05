@@ -78,6 +78,7 @@ div.front-head {
   text-align: center;
 }
 div.front-links {
+  display: flex;
   margin-top: 10px;
 }
 div.front-install {
@@ -125,6 +126,7 @@ div.logo img {
 }
 div.shortdesc {
   text-align: center;
+  font-weight: 600;
   margin: 20px 0px;
 }
 div.tags {
@@ -135,7 +137,7 @@ div.tags > * {
   margin: 10px 10px;
   color: black;
   padding: 3px 10px;
-  font-size: 0.7em;
+  font-size: 0.9em;
   font-weight: bold;
   border-radius: 15px;
   border: 3px solid;
@@ -145,6 +147,7 @@ div.tags > * {
 div.tags-boxes > * {
   display: none;
   font-family: 'Josefin Sans', sans-serif;
+  font-size: 1.1em;
   padding: 10px 0px;
   line-height: 1.5em;
   /* border-bottom: 2px solid; */
@@ -218,16 +221,36 @@ a.github {
   padding: 0px 10px 5px 10px;
   border-bottom: 2px solid #e78c45;
   transition: all 0.25s;
+  margin-right: 5px;
 }
 a.github:hover {
   color: #e78c45;
 }
+a.api-doc-link {
+  display: flex;
+  align-items: center;
+  font-size: 1.2em;
+  line-height: 1.5em;
+  padding: 0px 10px 5px 10px;
+  border-bottom: 2px solid #3178c6;
+  transition: all 0.25s;
+}
+a.api-doc-link > img {
+  height: 1em;
+  width: 1em;
+  margin-right: 5px;
+}
+a.api-doc-link:hover {
+  color: #3178c6;
+}
 pre.npm {
+  font-size: 1.3em;
   display: inline-block;
   padding-bottom: 5px;
   border-bottom: 2px solid #d54e53;
 }
 pre.unpkg {
+  font-size: 1.3em;
   display: inline-block;
   padding-bottom: 5px;
   border-bottom: 2px solid #b9ca4a;

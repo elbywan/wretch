@@ -6,7 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Wretch - The fetch wrapper</title>
-  <link href="https://fonts.googleapis.com/css?family=Raleway|Josefin+Sans" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600&family=Raleway:wght@400;600"
+    rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night-bright.min.css"
     rel="stylesheet">
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
@@ -19,7 +20,7 @@
   <section class="front-section" data-scroll id="front">
     <div class="front-head">
       <div class="logo">
-        <img src="https://cdn.rawgit.com/elbywan/wretch/08831345/wretch.svg" alt="wretch-logo">
+        <img src="./assets/wretch.svg" alt="wretch-logo">
       </div>
       <h1 class="logo-name">Wretch</h1>
       <div class="tags">
@@ -56,8 +57,14 @@
       </div>
     </div>
     <div class="front-links">
-      <a class="github" href="https://github.com/elbywan/wretch"><i class="fa fa-github" aria-hidden="true"></i>
-        Github</a>
+      <a class="github" href="https://github.com/elbywan/wretch">
+        <i class="fa fa-github" aria-hidden="true"></i>
+        Github
+      </a>
+      <a class="api-doc-link" href="https://elbywan.github.io/wretch/api">
+        <img src="assets/ts-logo.svg" />
+        API
+      </a>
     </div>
     <div class="front-install">
       <a href="https://www.npmjs.com/package/wretch">
@@ -79,43 +86,43 @@
     <div>
       <div class="helper-tag">
         <div class="icon"><i class="fa fa-download" aria-hidden="true"></i></div>
-        <a href="https://github.com/elbywan/wretch#import">Import wretch</a>
+        <a href="https://github.com/elbywan/wretch#usage">Import wretch</a>
       </div>
       <pre><code class="javascript">import wretch from "wretch"</code></pre>
 
       <div class="helper-tag">
         <div class="icon"><i class="fa fa-phone" aria-hidden="true"></i></div>
-        <a href="https://github.com/elbywan/wretch#wretchurl---opts--">Call the wretch function</a>
+        <a href="https://elbywan.github.io/wretch/api/functions/index.default-1.html">Create a new instance</a>
       </div>
       <pre><code class="javascript">wretch()</code></pre>
 
       <div class="helper-tag">
         <div class="icon"><i class="fa fa-medkit" aria-hidden="true"></i></div>
-        <a href="https://github.com/elbywan/wretch#helper-methods">Chain helper methods</a>
+        <a href="https://github.com/elbywan/wretch#helper-methods-">Chain helper methods</a>
       </div>
       <pre><code class="javascript">  .helperMethods() //.url, .options, .headers ...</code></pre>
 
       <div class="helper-tag">
         <div class="icon"><i class="fa fa-male" aria-hidden="true"></i></div>
-        <a href="https://github.com/elbywan/wretch#body-types">Add a body type if you need to upload data</a>
+        <a href="https://github.com/elbywan/wretch#body-types-">Add a body type if you need to upload data</a>
       </div>
       <pre><code class="javascript">  .bodyType()      // .json, .formData, .formUrl ...</code></pre>
 
       <div class="helper-tag">
         <div class="icon"><i class="fa fa-paper-plane" aria-hidden="true"></i></div>
-        <a href="https://github.com/elbywan/wretch#http-methods">Specify the http method</a>
+        <a href="https://github.com/elbywan/wretch#http-methods-">Specify the http method</a>
       </div>
       <pre><code class="javascript">  .httpMethod()    // .get, .post, .put ...</code></pre>
 
       <div class="helper-tag">
         <div class="icon"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></div>
-        <a href="https://github.com/elbywan/wretch#catchers">Chain catchers</a>
+        <a href="https://github.com/elbywan/wretch#catchers-">Chain catchers</a>
       </div>
       <pre><code class="javascript">  .errorCatchers() // .notFound, .unauthorized ...</code></pre>
 
       <div class="helper-tag">
         <div class="icon"><i class="fa fa-cogs" aria-hidden="true"></i></div>
-        <a href="https://github.com/elbywan/wretch#response-types">Specify the response type</a>
+        <a href="https://github.com/elbywan/wretch#response-types-">Specify the response type</a>
       </div>
       <pre><code class="javascript">  .responseType()  // .json, .blob ...</code></pre>
 
@@ -127,7 +134,7 @@
       <pre><code class="javascript">  .then/catch()</code></pre>
       <div class="helper-tag">
         <div class="icon"><i class="fa fa-magic" aria-hidden="true"></i></div>
-        <a href="https://github.com/elbywan/wretch#extras">And there are some extras !</a>
+        <a href="https://github.com/elbywan/wretch#addons">And there are some extras!</a>
       </div>
       <pre><code class="javascript">// Like aborting a request <i class="fa fa-smile-o" aria-hidden="true"></i></code></pre>
   </section>
