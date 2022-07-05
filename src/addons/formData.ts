@@ -1,6 +1,4 @@
-import type { Wretch } from "../core.js"
-import type { Config } from "../config.js"
-import type { WretchAddon } from "../types.js"
+import type { Wretch, Config, WretchAddon } from "../types"
 
 function convertFormData(
   formObject: object,

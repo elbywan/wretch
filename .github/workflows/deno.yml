@@ -1,0 +1,30 @@
+name: Deno tests
+
+on:
+  pull_request:
+    branches:
+      - "**"
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.version }}
+        cache: 'npm'
+    - uses: denoland/setup-deno@v1
+      with:
+        deno-version: v1.x
+    - name: Install dependencies
+      run: npm ci
+    - name: Build
+      run: npm run build
+    - name: Unit tests
+      run: npm run test:deno
+

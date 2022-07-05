@@ -23,21 +23,21 @@ describe("Wretch", function () {
     const init = wretch(`${_URL}/text`)
     const test = _ => expect(_).toBe("A text string")
     await allRoutes(init, "text", test)
-    await allRoutes(init, "text", test, {}, {})
+    await allRoutes(init, "text", test, {})
   })
 
   it("should perform crud requests and parse a json response", async function () {
     const test = _ => expect(_).toEqual({ a: "json", object: "which", is: "stringified" })
     const init = wretch(`${_URL}/json`)
     await allRoutes(init, "json", test)
-    await allRoutes(init, "json", test, {}, {})
+    await allRoutes(init, "json", test, {})
   })
 
   it("should perform crud requests and parse a blob response", async function () {
     const test = _ => expect(_.size).toBe(58921)
     const init = wretch(`${_URL}/blob`)
     await allRoutes(init, "blob", test)
-    await allRoutes(init, "blob", test, {}, {})
+    await allRoutes(init, "blob", test, {})
   })
 
   it("should perform crud requests and parse an arrayBuffer response", async function () {

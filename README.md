@@ -266,6 +266,8 @@ wretch.polyfills({
 Works with [Deno](https://deno.land/) >=
 [0.41.0](https://github.com/denoland/deno/releases/tag/v0.41.0) out of the box.
 
+Types should be imported from `/dist/types.d.ts`.
+
 ```ts
 // You can import wretch from any CDN that serve ESModules.
 import wretch from "https://cdn.pika.dev/wretch";
