@@ -28,7 +28,7 @@
 
 #### `wretch` is a small wrapper around [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) designed to simplify the way to perform and handle network requests and responses.
 
-- 🪶 Small size (less than 2KB g-zipped)
+- 🪶 Small - less than 2KB g-zipped
 - 💡 Intuitive - lean API, handles errors, headers and serialization
 - 🧊 Immutable - every call creates a cloned instance
 - 🔌 Modular - features can be added with Addons
@@ -38,9 +38,9 @@
 
 And some additional reasons to use `wretch`:
 
-- ⚔ Battle tested - fully covered by unit tests
-- ✅ Proven - used by many companies in production
-- 💓 Alive - maintained for many years
+- ⚔ Battle tested - covered by browser/node.js matrix tests
+- ✅ Proven - used by a lot of projects, very few bug reports
+- 💓 Maintained - alive for many years now
 
 # Table of Contents
 
@@ -58,7 +58,7 @@ And some additional reasons to use `wretch`:
 
 #### Because having to write a second callback to process a response body feels awkward.
 
-_Fetch needs a second callback to process the response body._
+Fetch needs a second callback to process the response body.
 
 ```javascript
 fetch("examples/example.json")
@@ -68,7 +68,7 @@ fetch("examples/example.json")
   });
 ```
 
-_Wretch does it for you._
+Wretch does it for you.
 
 ```javascript
 // Use .res for the raw response, .text for raw text, .json for json, .blob for a blob ...
@@ -81,7 +81,7 @@ wretch("examples/example.json")
 
 #### Because manually checking and throwing every request error code is tedious.
 
-_Fetch won’t reject on HTTP error status._
+Fetch won’t reject on HTTP error status.
 
 ```javascript
 fetch("anything")
@@ -98,7 +98,7 @@ fetch("anything")
   .catch(error => { /* ... */ })
 ```
 
-_Wretch throws when the response is not successful and contains helper methods to handle common codes._
+Wretch throws when the response is not successful and contains helper methods to handle common codes.
 
 ```javascript
 wretch("anything")
@@ -112,7 +112,7 @@ wretch("anything")
 
 #### Because sending a json object should be easy.
 
-_With fetch you have to set the header, the method and the body manually._
+With fetch you have to set the header, the method and the body manually.
 
 ```javascript
 fetch("endpoint", {
@@ -123,7 +123,7 @@ fetch("endpoint", {
 // Omitting the data retrieval and error management parts…
 ```
 
-_With wretch, you have shorthands at your disposal._
+With wretch, you have shorthands at your disposal.
 
 ```javascript
 wretch("endpoint")
@@ -133,7 +133,7 @@ wretch("endpoint")
 
 #### Because configuration should not rhyme with repetition.
 
-_A Wretch object is immutable which means that you can reuse configured instances._
+A Wretch object is immutable which means that you can reuse previous instances safely.
 
 ```javascript
 // Cross origin authenticated requests on an external API
@@ -221,7 +221,7 @@ The package contains multiple bundles depending on the format and feature set lo
 ## Node.js
 
 Wretch is compatible with and tested in _Node >= 14_. Older versions of node may work
-but is not guaranteed.
+but it is not guaranteed.
 
 🥳 Starting from node 18, [node includes experimental fetch
 support](https://nodejs.org/en/blog/announcements/v18-release-announce/). Wretch will
@@ -292,39 +292,34 @@ window.wretch
 
 A high level overview of the successive steps that can be chained to perform a request and parse the result.
 
-```javascript
-// Instantiate wretch.
+```ts
 wretch(baseUrl, baseOptions)
-  /*
-    --------------------------------
-    The "request" chain starts here.
-    --------------------------------
-  */
- .[helper method(s)]()
+// --------------------------------
+// The "request" chain starts here.
+// --------------------------------
   // Optional - A set of helper methods to set the default options, set accept header, change the current url…
- .[body type]()
+  .<helper method(s)>()
   // Optional - Serialize an object to json or FormData formats and sets the body & header field if needed
- .[http method]()
+  .<body type>()
   // Required - Sends the get/put/post/delete/patch request.
-  // Ends the request chain.
-  /*
-    Fetch is called here, after the request chain ends and before the response chain starts.
-    The request is sent, and from this point on you can chain catchers and call a response type handler.
-
-    ---------------------------------
-    The "response" chain starts here.
-    ---------------------------------
-  */
- .[catcher(s)]()
+  .<http method>()
+  // >> Ends the request chain.
+/*
+  ---------------------------------
+  The "response" chain starts here.
+  ---------------------------------
+  Fetch is called after the request chain ends and before the response chain starts.
+  The request is on the fly and now it is time to chain catchers and finally call a response type handler.
+*/
   // Optional - You can chain error handlers here
- .[response type]()
+  .<catcher(s)>()
   // Required - Specify the data type you need, which will be parsed and handed to you
-  // Ends the response chain.
-  /*
-    From this point on, wretch returns a standard Promise so you can continue chaining actions afterwards.
-  */
-  .then(/* ... */)
-  .catch(/* ... */)
+  .<response type>()
+  // >> Ends the response chain.
+
+// From this point on, wretch returns a standard Promise.
+  .then(…)
+  .catch(…)
 ```
 
 # [API 🔗](https://elbywan.github.io/wretch/api)
@@ -385,17 +380,6 @@ wretch().json({ json: "body" }).url("/url").post();
 
 Catchers are optional, but if none are provided an error will still be thrown for http error codes and it will be up to you to catch it.
 
-The error passed to catchers is enhanced with additional properties.
-
-```ts
-type WretchError = Error & {
-  status: number;
-  response: WretchResponse;
-  text?: string;
-  json?: Object;
-};
-```
-
 ```js
 wretch("...")
   .get()
@@ -408,6 +392,17 @@ wretch("...")
   .error(418, (err) => console.log(err.status))
   .fetchError((err) => console.log(err))
   .res();
+```
+
+The error passed to catchers is enhanced with additional properties.
+
+```ts
+type WretchError = Error & {
+  status: number;
+  response: WretchResponse;
+  text?: string;
+  json?: Object;
+};
 ```
 
 The original request is passed along the error and can be used in order to
@@ -722,6 +717,14 @@ for(let i = 0; i < 10; i++) {
 
 # Migration from v1
 
+## Compatibility
+
+`wretch@1` was transpiled to es5, `wretch@2` is now transpiled to es2018.
+Any "modern" browser and node.js versions >= 14 should support the output without issues.
+
+If you need compatibility with older browsers/nodejs versions then either stick with v1, use poyfills
+or configure `@babel` to make it transpile wretch.
+
 ## Addons
 
 Some methods that were part of `wretch` are now split and stored inside addons.
@@ -731,7 +734,7 @@ Please refer to the [Addons](#addons) documentation.
 
 ## Typescript
 
-Types have been renamed and refactored, please update your imports accordingly.
+Types have been renamed and refactored, please update your imports accordingly and refer to the [typescript api documentation](https://elbywan.github.io/wretch/api/modules/index.html).
 
 ## Replace / Mixin arguments
 
@@ -747,7 +750,7 @@ In v1 it was possible to set fetch options while calling the http methods enfind
 wretch("...").get({ my: "option" })
 ```
 
-This argument now appends to the base url instead.
+This was a rarely used feature and the argument now appends to the base url instead.
 
 ```js
 // v2

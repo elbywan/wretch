@@ -407,7 +407,30 @@ export interface Wretch<Self = unknown, Chain = unknown> {
   /**
    * Sends the request using the accumulated fetch options.
    *
+   * Can be used to replay requests.
+   *
+   * ```js
+   * const reAuthOn401 = wretch()
+   * .catcher(401, async (error, request) => {
+   *   // Renew credentials
+   *   const token = await wretch("/renewtoken").get().text();
+   *   storeToken(token);
+   *   // Replay the original request with new credentials
+   *   return request.auth(token).fetch().unauthorized((err) => {
+   *     throw err;
+   *   }).json();
+   * });
+   *
+   * reAuthOn401
+   * .get("/resource")
+   * .json() // <- Will only be called for the original promise
+   * .then(callback); // <- Will be called for the original OR the replayed promise result
+   * ```
+   *
    * @category HTTP
+   * @param method - The HTTP method to use
+   * @param url - Some url to append
+   * @param body - Set the body. Behaviour varies depending on the argument type, an object is considered as json.
    */
   fetch(this: Self & Wretch<Self, Chain>, method?: string, url?: string, body?: any): Chain & WretchResponseChain<Self, Chain>
   /**
