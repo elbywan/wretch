@@ -12,7 +12,8 @@
     "noImplicitAny": false,
     "sourceMap": true,
     "inlineSources": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "isolatedModules": true
   },
   "include": [
     "src/**/*",

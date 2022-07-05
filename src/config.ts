@@ -1,8 +1,9 @@
 import { mix } from "./utils.js"
+import type { Config } from "./types"
 
 declare const global
 
-const config = {
+const config: Config = {
   // Default options
   options: {},
   // Error type
@@ -24,7 +25,6 @@ const config = {
     return instance && res ? new res(...args) : res
   }
 }
-export type Config = typeof config
 
 /**
  * Sets the default fetch options that will be stored internally when instantiating wretch objects.

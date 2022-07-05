@@ -1,5 +1,4 @@
-import type { Wretch } from "../core.js"
-import type { WretchAddon } from "../types.js"
+import type { Wretch, WretchAddon } from "../types"
 
 function encodeQueryValue(key: string, value: unknown) {
   return encodeURIComponent(key) +

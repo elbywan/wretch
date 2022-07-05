@@ -1,4 +1,4 @@
-import type { Wretch, Config, WretchAddon } from "../types.js"
+import type { Wretch, Config, WretchAddon } from "../types"
 
 const appendQueryParams = (url: string, qp: object | string, replace: boolean, config: Config) => {
   let queryString: string

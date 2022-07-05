@@ -1,5 +1,4 @@
-import type { WretchResponseChain } from "../resolver.js"
-import type { Wretch, WretchAddon, WretchErrorCallback } from "../types.js"
+import type { Wretch, WretchAddon, WretchErrorCallback, WretchResponseChain } from "../types"
 
 export interface AbortWretch {
   /**

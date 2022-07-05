@@ -86,6 +86,7 @@
     "test": "concurrently --success first -k jest \"npm run mock\"",
     "test:karma": "concurrently --success first -k \"karma start --single-run --browsers ChromeHeadless,FirefoxHeadless,SafariNative karma.conf.cjs\" \"npm run mock\"",
     "test:karma:watch": "concurrently --success first -k \"karma start --auto-watch --browsers ChromeHeadless karma.conf.cjs\" \"npm run mock\"",
+    "test:deno": "concurrently --success first -k \"deno test --allow-net ./test/deno/wretch_test.ts\" \"npm run mock\"",
     "changelog": "conventional-changelog -p wretch -i CHANGELOG.md -s -r 0",
     "typedoc": "typedoc --out docs/api --readme none --excludeInternal src/index.ts 'src/addons/*.ts'"
   },
@@ -132,7 +133,8 @@
   "jest": {
     "testPathIgnorePatterns": [
       "/node_modules/",
-      "/test/browser/"
+      "/test/browser/",
+      "/test/deno"
     ],
     "transform": {
       "^.+\\.tsx?$": "ts-jest"

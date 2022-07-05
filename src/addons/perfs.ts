@@ -1,5 +1,4 @@
-import type { WretchResponseChain } from "../resolver.js"
-import type { WretchAddon } from "../types.js"
+import type { WretchResponseChain, WretchAddon } from "../types"
 
 const onMatch = (entries, name, callback, _performance) => {
   if (!entries.getEntriesByName)
