@@ -84,7 +84,8 @@
     "build": "tsc -p . && rollup -c",
     "mock": "node scripts/mockServer.js",
     "test": "concurrently --success first -k jest \"npm run mock\"",
-    "test-browsers": "concurrently -s first -k browserstack-runner \"npm run mock\"",
+    "test:browsers": "concurrently -s first -k browserstack-runner \"npm run mock\"",
+    "test:browsers:local": "concurrently -s first \"sleep 3 && open ./test/browser/SpecRunner.html\" \"npm run mock\"",
     "changelog": "conventional-changelog -p wretch -i CHANGELOG.md -s -r 0",
     "typedoc": "typedoc --out docs/api --readme none --excludeInternal src/index.ts 'src/addons/*.ts'"
   },
