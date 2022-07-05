@@ -6,71 +6,173 @@ import { FETCH_ERROR } from "./constants"
 
 export class WretchError extends Error { }
 
+/**
+ * The resolver interface to chaining catchers and extra methods after the request has been sent.
+ * Ultimately returns a Promise.
+ *
+ */
 export interface WretchResponseChain<T, Self = unknown> {
   /**
-   * @private
+   * @private @internal
    */
-  wretchRequest: Wretch<T, Self>,
+  _wretchReq: Wretch<T, Self>,
   /**
-   * @private
+   * @private @internal
    */
-  fetchRequest: Promise<WretchResponse>,
+  _fetchReq: Promise<WretchResponse>,
 
   /**
-   * Retrieves the raw result as a promise.
+   *
+   * The handler for the raw fetch Response.
+   * Check the [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Response) documentation for more details on the Response class.
+   *
+   * ```js
+   * wretch("...").get().res((response) => console.log(response.url));
+   * ```
+   *
+   * @category Response Type
    */
   res: <Result = WretchResponse>(cb?: (type: WretchResponse) => Result) => Promise<Result>,
   /**
-   * Retrieves the result as a parsed JSON object.
+   * Read the payload and deserialize it as JSON.
+   *
+   * ```js
+   * wretch("...").get().json((json) => console.log(Object.keys(json)));
+   * ```
+   *
+   * @category Response Type
    */
   json: <Result = { [key: string]: any }>(cb?: (type: { [key: string]: any }) => Result) => Promise<Result>,
   /**
-   * Retrieves the result as a Blob object.
+   * Read the payload and deserialize it as a Blob.
+   *
+   * ```js
+   * wretch("...").get().blob(blob => …)
+   * ```
+   *
+   * @category Response Type
    */
   blob: <Result = Blob>(cb?: (type: Blob) => Result) => Promise<Result>,
   /**
-   * Retrieves the result as a FormData object.
+   * Read the payload and deserialize it as a FormData object.
+   *
+   * ```js
+   * wretch("...").get().formData(formData => …)
+   * ```
+   *
+   * @category Response Type
    */
   formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>,
   /**
-   * Retrieves the result as an ArrayBuffer object.
+   * Read the payload and deserialize it as an ArrayBuffer object.
+   *
+   * ```js
+   * wretch("...").get().arrayBuffer(arrayBuffer => …)
+   * ```
+   *
+   * @category Response Type
    */
   arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>,
   /**
-   * Retrieves the result as a string.
+   * Retrieves the payload as a string.
+   *
+   * ```js
+   * wretch("...").get().text((txt) => console.log(txt));
+   * ```
+   *
+   * @category Response Type
    */
   text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>,
 
   /**
    * Catches an http response with a specific error code or name and performs a callback.
+   *
+   * The original request is passed along the error and can be used in order to
+   * perform an additional request.
+   *
+   * ```js
+   * wretch("/resource")
+   *   .get()
+   *   .unauthorized(async (error, req) => {
+   *     // Renew credentials
+   *     const token = await wretch("/renewtoken").get().text();
+   *     storeToken(token);
+   *     // Replay the original request with new credentials
+   *     return req.auth(token).get().unauthorized((err) => {
+   *       throw err;
+   *     }).json();
+   *   })
+   *   .json()
+   *   // The promise chain is preserved as expected
+   *   // ".then" will be performed on the result of the original request
+   *   // or the replayed one (if a 401 error was thrown)
+   *   .then(callback);
+   * ```
+   *
+   * @category Catchers
    */
   error: (this: Self & WretchResponseChain<T, Self>, code: (number | string | symbol), cb: WretchErrorCallback<T, Self>) => this,
   /**
    * Catches a bad request (http code 400) and performs a callback.
+   *
+   * _Syntactic sugar for `error(400, cb)`._
+   *
+   * @see {@link error}
+   * @category Catchers
    */
   badRequest: (this: Self & WretchResponseChain<T, Self>, cb: WretchErrorCallback<T, Self>) => this,
   /**
    * Catches an unauthorized request (http code 401) and performs a callback.
+   *
+   * _Syntactic sugar for `error(401, cb)`._
+   *
+   * @see {@link error}
+   * @category Catchers
    */
   unauthorized: (this: Self & WretchResponseChain<T, Self>, cb: WretchErrorCallback<T, Self>) => this,
   /**
    * Catches a forbidden request (http code 403) and performs a callback.
+   *
+   * _Syntactic sugar for `error(403, cb)`._
+   *
+   * @see {@link error}
+   * @category Catchers
    */
   forbidden: (this: Self & WretchResponseChain<T, Self>, cb: WretchErrorCallback<T, Self>) => this,
   /**
    * Catches a "not found" request (http code 404) and performs a callback.
+   *
+   * _Syntactic sugar for `error(404, cb)`._
+   *
+   * @see {@link error}
+   * @category Catchers
    */
   notFound: (this: Self & WretchResponseChain<T, Self>, cb: WretchErrorCallback<T, Self>) => this,
   /**
    * Catches a timeout (http code 408) and performs a callback.
+   *
+   *
+   * _Syntactic sugar for `error(408, cb)`._
+   *
+   * @see {@link error}
+   * @category Catchers
    */
   timeout: (this: Self & WretchResponseChain<T, Self>, cb: WretchErrorCallback<T, Self>) => this,
   /**
    * Catches an internal server error (http code 500) and performs a callback.
+   *
+   *
+   * _Syntactic sugar for `error(500, cb)`._
+   *
+   * @see {@link error}
+   * @category Catchers
    */
   internalError: (this: Self & WretchResponseChain<T, Self>, cb: WretchErrorCallback<T, Self>) => this,
   /**
-   * Catches errors thrown when calling the fetch function and performs a callback.
+   * Catches any error thrown by the fetch function and perform the callback.
+   *
+   * @see {@link error}
+   * @category Catchers
    */
   fetchError: (this: Self & WretchResponseChain<T, Self>, cb: WretchErrorCallback<T, Self>) => this,
 }
@@ -90,10 +192,10 @@ export const resolver = <T, Chain>(wretch: Wretch<T, Chain>) => {
   const finalOptions = mix(config.options, opts)
   addons.forEach(addon => addon.beforeRequest && addon.beforeRequest(wretch, finalOptions))
   // The generated fetch request
-  const fetchRequest = middlewareHelper(middlewares)(config.polyfill("fetch"))(url, finalOptions)
+  const _fetchReq = middlewareHelper(middlewares)(config.polyfill("fetch"))(url, finalOptions)
   // Throws on an http error
   const referenceError = new Error()
-  const throwingPromise: Promise<void | WretchResponse> = fetchRequest
+  const throwingPromise: Promise<void | WretchResponse> = _fetchReq
     .catch(error => {
       throw { __wrap: error }
     })
@@ -140,8 +242,8 @@ export const resolver = <T, Chain>(wretch: Wretch<T, Chain>) => {
     catchersWrapper(throwingPromise.then(_ => cb ? cb(_ as any) : _))
 
   const responseChain: WretchResponseChain<T> = {
-    wretchRequest: wretch,
-    fetchRequest,
+    _wretchReq: wretch,
+    _fetchReq,
     res: bodyParser<WretchResponse>(null),
     json: bodyParser<any>("json"),
     blob: bodyParser<Blob>("blob"),

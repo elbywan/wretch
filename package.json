@@ -85,7 +85,8 @@
     "mock": "node scripts/mockServer.js",
     "test": "concurrently --success first -k jest \"npm run mock\"",
     "test-browsers": "concurrently -s first -k browserstack-runner \"npm run mock\"",
-    "changelog": "conventional-changelog -p wretch -i CHANGELOG.md -s -r 0"
+    "changelog": "conventional-changelog -p wretch -i CHANGELOG.md -s -r 0",
+    "typedoc": "typedoc --out docs/api --readme none --excludeInternal src/index.ts 'src/addons/*.ts'"
   },
   "author": "Julien Elbaz",
   "license": "MIT",
@@ -109,6 +110,7 @@
     "jest": "^28.1.1",
     "lodash-es": "^4.17.21",
     "node-fetch": "^2",
+    "querystring": "^0.2.1",
     "rimraf": "^3.0.2",
     "rollup": "^2.75.7",
     "rollup-plugin-node-resolve": "^5.2.0",
@@ -117,6 +119,7 @@
     "ts-jest": "^28.0.5",
     "tslib": "^2.3.1",
     "tslint": "^6.1.2",
+    "typedoc": "^0.23.5",
     "typescript": "^4.7.4"
   },
   "jest": {

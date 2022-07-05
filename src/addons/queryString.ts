@@ -31,22 +31,50 @@ const appendQueryParams = (url: string, qp: object | string, replace: boolean, c
 
 export interface QueryStringAddon {
   /**
-   * Converts a javascript object to query parameters,
-   * then appends this query string to the current url.
+   * Converts a javascript object to query parameters, then appends this query string
+   * to the current url. String values are used as the query string verbatim.
    *
-   * If given a string, use the string as the query verbatim.
+   * Pass `true` as the second argument to replace existing query parameters.
    *
    * ```
    * import QueryAddon from "wretch/addons/queryString"
    *
-   * let w = wretch("http://example.com").addon(QueryAddon) // url is http://example.com
+   * let w = wretch("http://example.com").addon(QueryStringAddon);
+   * // url is http://example.com
+   * w = w.query({ a: 1, b: 2 });
+   * // url is now http://example.com?a=1&b=2
+   * w = w.query({ c: 3, d: [4, 5] });
+   * // url is now http://example.com?a=1&b=2c=3&d=4&d=5
+   * w = w.query("five&six&seven=eight");
+   * // url is now http://example.com?a=1&b=2c=3&d=4&d=5&five&six&seven=eight
+   * w = w.query({ reset: true }, true);
+   * // url is now  http://example.com?reset=true
+   * ```
    *
-   * // Chain query calls
-   * w = w.query({ a: 1, b : 2 }) // url is now http://example.com?a=1&b=2
-   * w = w.query("foo-bar-baz-woz") // url is now http://example.com?a=1&b=2&foo-bar-baz-woz
+   * ##### **Note that .query is not meant to handle complex cases with nested objects.**
    *
-   * // Pass true as the second argument to replace existing query parameters
-   * w = w.query("c=3&d=4", true) // url is now http://example.com?c=3&d=4
+   * For this kind of usage, you can use `wretch` in conjunction with other libraries
+   * (like [`qs`](https://github.com/ljharb/qs)).
+   *
+   * ```js
+   * // Using wretch with qs
+   *
+   * const queryObject = { some: { nested: "objects" } };
+   * const w = wretch("https://example.com/").addon(QueryStringAddon)
+   *
+   * // Use .qs inside .query :
+   *
+   * w.query(qs.stringify(queryObject));
+   *
+   * // Use .defer :
+   *
+   * const qsWretch = w.defer((w, url, { qsQuery, qsOptions }) => (
+   *   qsQuery ? w.query(qs.stringify(qsQuery, qsOptions)) : w
+   * ));
+   *
+   * qsWretch
+   *   .url("https://example.com/")
+   *   .options({ qs: { query: queryObject } });
    * ```
    *
    * @param qp - An object which will be converted, or a string which will be used verbatim.
