@@ -15,6 +15,10 @@ const isSafari =
 
 describe("Wretch", function () {
 
+  beforeAll(async function () {
+    await new Promise(resolve => setTimeout(resolve, 2000))
+  })
+
   it("should perform crud requests and parse a text response", async function () {
     const init = wretch(`${_URL}/text`)
     const test = _ => expect(_).toBe("A text string")
@@ -402,22 +406,25 @@ describe("Wretch", function () {
     expect(check).toBe(2)
   })
 
-  it("should retrieve performance timings associated with a fetch request", async function (done) {
-    if (!window.performance || isSafari)
-      return done()
-    // Test empty perfs()
-    await wretch(`${_URL}/text`).get().perfs().res(_ => expect(_.ok).toBeTruthy()).then(() =>
-      // Racing condition : observer triggered before response
-      wretch(`${_URL}/bla`).get().perfs(_ => {
-        expect(typeof _.startTime).toBe("number")
+  it("should retrieve performance timings associated with a fetch request", async function () {
+    await new Promise(resolve => {
+      if (!window.performance || isSafari)
+        return resolve()
 
-        // Racing condition : response triggered before observer
-        wretch(`${_URL}/fakeurl`).get().perfs(_ => {
+      // Test empty perfs()
+      wretch(`${_URL}/text`).get().perfs().res(_ => expect(_.ok).toBeTruthy()).then(() =>
+        // Racing condition : observer triggered before response
+        wretch(`${_URL}/bla`).get().perfs(_ => {
           expect(typeof _.startTime).toBe("number")
-          done()
-        }).res().catch(() => "ignore")
-      }).res().catch(_ => "ignore")
-    )
+
+          // Racing condition : response triggered before observer
+          wretch(`${_URL}/fakeurl`).get().perfs(_ => {
+            expect(typeof _.startTime).toBe("number")
+            resolve()
+          }).res().catch(() => "ignore")
+        }).res().catch(_ => "ignore")
+      )
+    })
   })
 
   it("should use middlewares", async function () {

@@ -26,7 +26,8 @@ npm install
 ```bash
 npm start
 # To run browser specs
-npm run test:browsers:local
+npm run test:karma # same as the ci
+npm run test:karma:watch # in watch mode
 ```
 
 The code **must** pass the linter and specs.

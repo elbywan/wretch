@@ -84,8 +84,8 @@
     "build": "tsc -p . && rollup -c",
     "mock": "node scripts/mockServer.js",
     "test": "concurrently --success first -k jest \"npm run mock\"",
-    "test:browsers": "concurrently -s first -k browserstack-runner \"npm run mock\"",
-    "test:browsers:local": "concurrently -s first \"sleep 3 && open ./test/browser/SpecRunner.html\" \"npm run mock\"",
+    "test:karma": "concurrently --success first -k \"karma start --single-run --browsers ChromeHeadless,FirefoxHeadless,SafariNative karma.conf.cjs\" \"npm run mock\"",
+    "test:karma:watch": "concurrently --success first -k \"karma start --auto-watch --browsers ChromeHeadless karma.conf.cjs\" \"npm run mock\"",
     "changelog": "conventional-changelog -p wretch -i CHANGELOG.md -s -r 0",
     "typedoc": "typedoc --out docs/api --readme none --excludeInternal src/index.ts 'src/addons/*.ts'"
   },
@@ -101,14 +101,20 @@
     "@types/lodash-es": "^4.17.6",
     "@types/node": "^18.0.0",
     "abortcontroller-polyfill": "^1.7.3",
-    "browserstack-runner": "^0.9.4",
     "concurrently": "^7.2.2",
     "conventional-changelog-cli": "^2.2.2",
     "conventional-changelog-wretch": "file:scripts/conventional-changelog-wretch",
     "dtrace-provider": "^0.8.8",
     "fastify": "^4.2.0",
     "form-data": "^4.0.0",
+    "jasmine-core": "^4.2.0",
     "jest": "^28.1.1",
+    "karma": "^6.4.0",
+    "karma-chrome-launcher": "^3.1.1",
+    "karma-firefox-launcher": "^2.1.2",
+    "karma-jasmine": "^5.1.0",
+    "karma-safari-launcher": "^1.0.0",
+    "karma-safarinative-launcher": "^1.1.0",
     "lodash-es": "^4.17.21",
     "node-fetch": "^2",
     "querystring": "^0.2.1",
@@ -124,6 +130,10 @@
     "typescript": "^4.7.4"
   },
   "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/test/browser/"
+    ],
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     },
