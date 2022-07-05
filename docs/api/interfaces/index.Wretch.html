@@ -141,6 +141,9 @@
 <ul class="tsd-descriptions">
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Sends the request using the accumulated fetch options.</p>
+<p>Can be used to replay requests.</p>
+<pre><code class="language-js"><span class="hl-1">const</span><span class="hl-2"> </span><span class="hl-3">reAuthOn401</span><span class="hl-2"> = </span><span class="hl-4">wretch</span><span class="hl-2">()</span><br/><span class="hl-2">.</span><span class="hl-4">catcher</span><span class="hl-2">(</span><span class="hl-7">401</span><span class="hl-2">, </span><span class="hl-1">async</span><span class="hl-2"> (</span><span class="hl-6">error</span><span class="hl-2">, </span><span class="hl-6">request</span><span class="hl-2">) </span><span class="hl-1">=&gt;</span><span class="hl-2"> {</span><br/><span class="hl-2">  </span><span class="hl-0">// Renew credentials</span><br/><span class="hl-2">  </span><span class="hl-1">const</span><span class="hl-2"> </span><span class="hl-3">token</span><span class="hl-2"> = </span><span class="hl-8">await</span><span class="hl-2"> </span><span class="hl-4">wretch</span><span class="hl-2">(</span><span class="hl-5">&quot;/renewtoken&quot;</span><span class="hl-2">).</span><span class="hl-4">get</span><span class="hl-2">().</span><span class="hl-4">text</span><span class="hl-2">();</span><br/><span class="hl-2">  </span><span class="hl-4">storeToken</span><span class="hl-2">(</span><span class="hl-6">token</span><span class="hl-2">);</span><br/><span class="hl-2">  </span><span class="hl-0">// Replay the original request with new credentials</span><br/><span class="hl-2">  </span><span class="hl-8">return</span><span class="hl-2"> </span><span class="hl-6">request</span><span class="hl-2">.</span><span class="hl-4">auth</span><span class="hl-2">(</span><span class="hl-6">token</span><span class="hl-2">).</span><span class="hl-4">fetch</span><span class="hl-2">().</span><span class="hl-4">unauthorized</span><span class="hl-2">((</span><span class="hl-6">err</span><span class="hl-2">) </span><span class="hl-1">=&gt;</span><span class="hl-2"> {</span><br/><span class="hl-2">    </span><span class="hl-8">throw</span><span class="hl-2"> </span><span class="hl-6">err</span><span class="hl-2">;</span><br/><span class="hl-2">  }).</span><span class="hl-4">json</span><span class="hl-2">();</span><br/><span class="hl-2">});</span><br/><br/><span class="hl-6">reAuthOn401</span><br/><span class="hl-2">.</span><span class="hl-4">get</span><span class="hl-2">(</span><span class="hl-5">&quot;/resource&quot;</span><span class="hl-2">)</span><br/><span class="hl-2">.</span><span class="hl-4">json</span><span class="hl-2">() </span><span class="hl-0">// &lt;- Will only be called for the original promise</span><br/><span class="hl-2">.</span><span class="hl-4">then</span><span class="hl-2">(</span><span class="hl-6">callback</span><span class="hl-2">); </span><span class="hl-0">// &lt;- Will be called for the original OR the replayed promise result</span>
+</code></pre>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
@@ -148,11 +151,17 @@
 <li>
 <h5>this: <span class="tsd-signature-type" data-tsd-kind="Type parameter">Self</span><span class="tsd-signature-symbol"> &amp; </span><a href="index.Wretch.html" class="tsd-signature-type" data-tsd-kind="Interface">Wretch</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type" data-tsd-kind="Type parameter">Self</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type" data-tsd-kind="Type parameter">Chain</span><span class="tsd-signature-symbol">&gt;</span></h5></li>
 <li>
-<h5><code class="tsd-tag ts-flagOptional">Optional</code> method: <span class="tsd-signature-type">string</span></h5></li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> method: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The HTTP method to use</p>
+</div></li>
 <li>
-<h5><code class="tsd-tag ts-flagOptional">Optional</code> url: <span class="tsd-signature-type">string</span></h5></li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> url: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>Some url to append</p>
+</div></li>
 <li>
-<h5><code class="tsd-tag ts-flagOptional">Optional</code> body: <span class="tsd-signature-type">any</span></h5></li></ul></div>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> body: <span class="tsd-signature-type">any</span></h5>
+<div class="tsd-comment tsd-typography"><p>Set the body. Behaviour varies depending on the argument type, an object is considered as json.</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type" data-tsd-kind="Type parameter">Chain</span><span class="tsd-signature-symbol"> &amp; </span><a href="index.WretchResponseChain.html" class="tsd-signature-type" data-tsd-kind="Interface">WretchResponseChain</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type" data-tsd-kind="Type parameter">Self</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type" data-tsd-kind="Type parameter">Chain</span><span class="tsd-signature-symbol">&gt;</span></h4></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface"><a id="get" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get</span><a href="#get" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
