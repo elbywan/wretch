@@ -381,7 +381,7 @@ wretch().json({ json: "body" }).url("/url").post();
 **NOTE:** if the body argument is an `Object` it is assumed that it is a JSON payload and it will have the same behaviour as calling `.json(body)` unless the `Content-Type` header has been set to something else beforehand.
 
 
-## [Catchers 🔗](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain.html)
+### [Catchers 🔗](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain.html)
 
 Catchers are optional, but if none are provided an error will still be thrown for http error codes and it will be up to you to catch it.
 
@@ -432,7 +432,7 @@ wretch("/resource")
   .then(callback);
 ```
 
-## [Response Types 🔗](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain.html)
+### [Response Types 🔗](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain.html)
 
 Setting the final response body type ends the chain and returns a regular promise.
 
@@ -467,7 +467,7 @@ const w = wretch().addon(FormDataAddon).addon(QueryStringAddon)
 w.formData({ hello: "world" }).query({ check: true })
 ```
 
-## [QueryString 🔗](https://elbywan.github.io/wretch/api/interfaces/addons_queryString.QueryStringAddon.html)
+### [QueryString 🔗](https://elbywan.github.io/wretch/api/interfaces/addons_queryString.QueryStringAddon.html)
 
 Used to construct and append the query string part of the URL from an object.
 
@@ -475,7 +475,7 @@ Used to construct and append the query string part of the URL from an object.
 import QueryStringAddon from "wretch/addons/queryString"
 ```
 
-## [FormData 🔗](https://elbywan.github.io/wretch/api/interfaces/addons_formData.FormDataAddon.html)
+### [FormData 🔗](https://elbywan.github.io/wretch/api/interfaces/addons_formData.FormDataAddon.html)
 
 Adds a helper method to serialize a `multipart/form-data` body from an object.
 
@@ -483,7 +483,7 @@ Adds a helper method to serialize a `multipart/form-data` body from an object.
 import FormDataAddon from "wretch/addons/formData"
 ```
 
-## [FormUrl 🔗](https://elbywan.github.io/wretch/api/interfaces/addons_formUrl.FormUrlAddon.html)
+### [FormUrl 🔗](https://elbywan.github.io/wretch/api/interfaces/addons_formUrl.FormUrlAddon.html)
 
 Adds a method to serialize a `application/x-www-form-urlencoded` body from an object.
 
@@ -491,7 +491,7 @@ Adds a method to serialize a `application/x-www-form-urlencoded` body from an ob
 import FormUrlAddon from "wretch/addons/formUrl"
 ```
 
-## [Abort 🔗](https://elbywan.github.io/wretch/api/modules/addons_abort.html)
+### [Abort 🔗](https://elbywan.github.io/wretch/api/modules/addons_abort.html)
 
 Adds the ability to abort requests using AbortController and signals under the hood.
 
@@ -530,7 +530,7 @@ wretch("...")
 controller.abort();
 ```
 
-## [Performance 🔗](https://elbywan.github.io/wretch/api/modules/addons_perfs.html)
+### [Performance 🔗](https://elbywan.github.io/wretch/api/modules/addons_perfs.html)
 
 Adds the ability to measure requests using the Performance Timings API.
 
