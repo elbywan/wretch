@@ -1,4 +1,4 @@
-name: CI
+name: Browser test
 
 on:
   pull_request:
@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v3
       with:
         cache: 'npm'
     - name: BrowserStack Env Setup
@@ -28,11 +28,9 @@ jobs:
         local-testing: start
         local-identifier: random
     - name: Install dependencies
-      run: npm i
+      run: npm ci
     - name: Build
       run: npm run build
-    - name: Unit tests
-      run: npm run test
     - name: Browser tests
       run: npm run test-browsers
     - name: 'BrowserStackLocal Stop'  # Terminating the BrowserStackLocal tunnel connection
@@ -40,10 +38,4 @@ jobs:
       if: ${{ always() }}
       with:
         local-testing: stop
-    - name: Coveralls
-      if: ${{ success() }}
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: "./coverage/lcov.info"
 
