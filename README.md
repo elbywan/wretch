@@ -540,10 +540,12 @@ Middlewares are functions that can intercept requests before being processed by
 Fetch. Wretch includes a helper to help replicate the
 [middleware](http://expressjs.com/en/guide/using-middleware.html) style.
 
-### Official Middlewares package
+### 📦 `wretch-middlewares`
 
-Check out [wretch-middlewares](https://github.com/elbywan/wretch-middlewares),
-the official collection of middlewares.
+#### Check out the [wretch-middlewares](https://github.com/elbywan/wretch-middlewares) package.
+
+It contains various middlewares that can be used to [retry failed requests](https://github.com/elbywan/wretch-middlewares/#retry),
+[deduplicate requests](https://github.com/elbywan/wretch-middlewares/#dedupe) and more…
 
 ## Signature
 
@@ -611,7 +613,7 @@ console.log(context.property); // prints "anything"
 ## Advanced examples
 
 <details>
-  <summary>Show me the code</summary>
+  <summary>&nbsp;<strong>👀 Show me the code</strong></summary>
   <br>
 
 ```javascript

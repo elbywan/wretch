@@ -88,7 +88,8 @@
     "test:karma:watch": "concurrently --success first -k \"karma start --auto-watch --browsers ChromeHeadless karma.conf.cjs\" \"npm run mock\"",
     "test:deno": "concurrently --success first -k \"deno test --allow-net ./test/deno/wretch_test.ts\" \"npm run mock\"",
     "changelog": "conventional-changelog -p wretch -i CHANGELOG.md -s -r 0",
-    "typedoc": "typedoc --out docs/api --readme none --excludeInternal src/index.ts 'src/addons/*.ts'"
+    "typedoc": "typedoc --out docs/api --readme none --excludeInternal src/index.ts 'src/addons/*.ts'",
+    "prepare:release": "npm run start && npm run typedoc && npm run changelog"
   },
   "author": "Julien Elbaz",
   "license": "MIT",
