@@ -244,7 +244,7 @@ describe("Wretch", function () {
       check++
     })
     // +0 : 1
-    await w.url("/text").get().json(_ => {
+    await w.url("/text").get().json<any>(_ => {
       _.body?.cancel()
       check--
     })

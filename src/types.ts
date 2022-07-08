@@ -532,7 +532,7 @@ export interface WretchResponseChain<T, Self = unknown> {
    *
    * @category Response Type
    */
-  json: <Result = { [key: string]: any }>(cb?: (type: { [key: string]: any }) => Result) => Promise<Result>,
+  json: <Result = unknown>(cb?: (type: Result) => Result) => Promise<Result>,
   /**
    * Read the payload and deserialize it as a Blob.
    *
