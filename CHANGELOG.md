@@ -1,3 +1,36 @@
+<a name="2.0.0-next.1"></a>
+# [2.0.0-next.1](https://github.com/elbywan/wretch/compare/2.0.0-next.0...2.0.0-next.1) (2022-07-08)
+
+
+### :art: Code improvement(s)
+
+* Add editorconfig ([e81eaff](https://github.com/elbywan/wretch/commit/e81eaff))
+
+### :fire: Breaking change(s)
+
+* Drop support on node < 14 ([1ff926c](https://github.com/elbywan/wretch/commit/1ff926c))
+
+### :memo: Documentation update(s)
+
+* Additional improvements ([e79ff71](https://github.com/elbywan/wretch/commit/e79ff71))
+* Autogenerate API documentation and split it from the main README ([c710a71](https://github.com/elbywan/wretch/commit/c710a71))
+* Move svg asset and minor readme changes ([30de07c](https://github.com/elbywan/wretch/commit/30de07c))
+* Regenerate api doc ([7ae5b57](https://github.com/elbywan/wretch/commit/7ae5b57))
+* Small edits to the contributing file and renames scripts related t ([abec7f0](https://github.com/elbywan/wretch/commit/abec7f0))
+* Update bundle size ([1115d34](https://github.com/elbywan/wretch/commit/1115d34))
+* Update companion website ([d6bb842](https://github.com/elbywan/wretch/commit/d6bb842))
+* Update documentation ([15fd187](https://github.com/elbywan/wretch/commit/15fd187))
+
+### :white_check_mark: Test improvement(s)
+
+* Fix resolvers test for node14 ([ca8b559](https://github.com/elbywan/wretch/commit/ca8b559))
+* Fix test on node 18 (with polyfilled fetch) ([d3b7b00](https://github.com/elbywan/wretch/commit/d3b7b00))
+* Replace restify with fastify for mock server ([9ee2cfc](https://github.com/elbywan/wretch/commit/9ee2cfc))
+* Run lint on CI ([9b819d3](https://github.com/elbywan/wretch/commit/9b819d3))
+* Test in multiple version of node in CI ([00d80a6](https://github.com/elbywan/wretch/commit/00d80a6))
+
+
+
 <a name="2.0.0-next.0"></a>
 # [2.0.0-next.0](https://github.com/elbywan/wretch/compare/1.7.10...2.0.0-next.0) (2022-07-03)
 
