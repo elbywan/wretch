@@ -607,7 +607,7 @@ export interface WretchResponseChain<T, Self = unknown> {
    *
    * _Syntactic sugar for `error(400, cb)`._
    *
-   * @see {@link error}
+   * @see {@link WretchResponseChain.error}
    * @category Catchers
    */
   badRequest: (this: Self & WretchResponseChain<T, Self>, cb: WretchErrorCallback<T, Self>) => this,
@@ -616,7 +616,7 @@ export interface WretchResponseChain<T, Self = unknown> {
    *
    * _Syntactic sugar for `error(401, cb)`._
    *
-   * @see {@link error}
+   * @see {@link WretchResponseChain.error}
    * @category Catchers
    */
   unauthorized: (this: Self & WretchResponseChain<T, Self>, cb: WretchErrorCallback<T, Self>) => this,
@@ -625,7 +625,7 @@ export interface WretchResponseChain<T, Self = unknown> {
    *
    * _Syntactic sugar for `error(403, cb)`._
    *
-   * @see {@link error}
+   * @see {@link WretchResponseChain.error}
    * @category Catchers
    */
   forbidden: (this: Self & WretchResponseChain<T, Self>, cb: WretchErrorCallback<T, Self>) => this,
@@ -634,7 +634,7 @@ export interface WretchResponseChain<T, Self = unknown> {
    *
    * _Syntactic sugar for `error(404, cb)`._
    *
-   * @see {@link error}
+   * @see {@link WretchResponseChain.error}
    * @category Catchers
    */
   notFound: (this: Self & WretchResponseChain<T, Self>, cb: WretchErrorCallback<T, Self>) => this,
@@ -644,7 +644,7 @@ export interface WretchResponseChain<T, Self = unknown> {
    *
    * _Syntactic sugar for `error(408, cb)`._
    *
-   * @see {@link error}
+   * @see {@link WretchResponseChain.error}
    * @category Catchers
    */
   timeout: (this: Self & WretchResponseChain<T, Self>, cb: WretchErrorCallback<T, Self>) => this,
@@ -654,14 +654,14 @@ export interface WretchResponseChain<T, Self = unknown> {
    *
    * _Syntactic sugar for `error(500, cb)`._
    *
-   * @see {@link error}
+   * @see {@link WretchResponseChain.error}
    * @category Catchers
    */
   internalError: (this: Self & WretchResponseChain<T, Self>, cb: WretchErrorCallback<T, Self>) => this,
   /**
    * Catches any error thrown by the fetch function and perform the callback.
    *
-   * @see {@link error}
+   * @see {@link WretchResponseChain.error}
    * @category Catchers
    */
   fetchError: (this: Self & WretchResponseChain<T, Self>, cb: WretchErrorCallback<T, Self>) => this,

@@ -3,6 +3,7 @@ import { terser } from "rollup-plugin-terser"
 import nodeResolve from "rollup-plugin-node-resolve"
 
 const addons = ["abort", "formData", "formUrl", "perfs", "queryString"]
+const middlewares = ["dedupe", "delay", "retry", "throttlingCache"]
 
 const common = {
   plugins: [
@@ -65,8 +66,19 @@ export default [
     output: outputs({
       file: `dist/bundle/addons/${addon}.min.js`,
       format: "umd",
-      name: `wretchAddon${addon.charAt(0).toLocaleUpperCase() + addon.slice(1)}`,
+      name: `wretch${addon.charAt(0).toLocaleUpperCase() + addon.slice(1)}Addon`,
       exports: "default",
+      sourcemap: true
+    }),
+    ...common
+  })),
+  ...middlewares.map(middleware => ({
+    input: `./src/middlewares/${middleware}.ts`,
+    output: outputs({
+      file: `dist/bundle/middlewares/${middleware}.min.js`,
+      format: "umd",
+      name: `wretch${middleware.charAt(0).toLocaleUpperCase() + middleware.slice(1)}Middleware`,
+      exports: "named",
       sourcemap: true
     }),
     ...common

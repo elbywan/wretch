@@ -61,6 +61,15 @@
       "browser": "./dist/bundle/addons/*.min.js",
       "import": "./dist/addons/*.js"
     },
+    "./middlewares/*": {
+      "types": "./dist/middlewares/*.d.ts",
+      "node": {
+        "require": "./dist/bundle/middlewares/*.min.cjs",
+        "import": "./dist/bundle/middlewares/*.min.mjs"
+      },
+      "browser": "./dist/bundle/middlewares/*.min.js",
+      "import": "./dist/middlewares/*.js"
+    },
     "./package.json": "./package.json",
     "./*.mjs": {
       "default": "./dist/*.mjs"
@@ -79,7 +88,7 @@
   "scripts": {
     "start": "npm run build && npm run test",
     "lint": "tslint -p tsconfig.json -t codeFrame",
-    "fix": "tslint --fix -p tsconfig.json -t codeFrame",
+    "lint:fix": "tslint --fix -p tsconfig.json -t codeFrame",
     "prebuild": "rimraf dist && rimraf coverage && npm run lint",
     "build": "tsc -p . && rollup -c",
     "mock": "node scripts/mockServer.js",
@@ -88,8 +97,8 @@
     "test:karma:watch": "concurrently --success first -k \"karma start --auto-watch --browsers ChromeHeadless karma.conf.cjs\" \"npm run mock\"",
     "test:deno": "concurrently --success first -k \"deno test --allow-net ./test/deno/wretch_test.ts\" \"npm run mock\"",
     "changelog": "conventional-changelog -p wretch -i CHANGELOG.md -s -r 0",
-    "typedoc": "typedoc --out docs/api --readme none --excludeInternal src/index.ts 'src/addons/*.ts'",
-    "prepare:release": "npm run start && npm run typedoc && npm run changelog"
+    "doc": "typedoc --out docs/api --readme none --excludeInternal src/index.ts 'src/addons/*.ts' 'src/middlewares/*.ts'",
+    "prepare:release": "npm run start && npm run doc && npm run changelog"
   },
   "author": "Julien Elbaz",
   "license": "MIT",
@@ -156,10 +165,11 @@
     },
     "collectCoverage": true,
     "collectCoverageFrom": [
-      "src/*.{js,ts}"
+      "src/**/*.{js,ts}"
     ],
     "coveragePathIgnorePatterns": [
-      "src/index.all.ts"
+      "src/index.all.ts",
+      "src/addons/index.ts"
     ]
   }
 }

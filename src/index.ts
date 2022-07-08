@@ -14,6 +14,7 @@ export type {
   WretchErrorCallback,
   WretchResponse,
   WretchDeferredCallback,
+  WretchAddon
 } from "./types"
 
 /**

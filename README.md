@@ -21,8 +21,6 @@
 
 ##### Wretch 2.0 is now live 🎉 ! Please check out the [changelog](https://github.com/elbywan/wretch/blob/master/CHANGELOG.md) after each update for new features and breaking changes. If you want to try out the hot stuff, please look into the [dev](https://github.com/elbywan/wretch/tree/dev) branch.
 
-##### A collection of middlewares is available through the [wretch-middlewares](https://github.com/elbywan/wretch-middlewares) package! 📦
-
 # Features
 
 #### `wretch` is a small wrapper around [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) designed to simplify the way to perform and handle network requests and responses.
@@ -540,14 +538,104 @@ Middlewares are functions that can intercept requests before being processed by
 Fetch. Wretch includes a helper to help replicate the
 [middleware](http://expressjs.com/en/guide/using-middleware.html) style.
 
-### 📦 `wretch-middlewares`
+```js
+import wretch from "wretch"
+import { retry, dedupe } from "wretch/middlewares"
 
-#### Check out the [wretch-middlewares](https://github.com/elbywan/wretch-middlewares) package.
+const w = wretch().middlewares([retry(), dedupe()])
+```
 
-It contains various middlewares that can be used to [retry failed requests](https://github.com/elbywan/wretch-middlewares/#retry),
-[deduplicate requests](https://github.com/elbywan/wretch-middlewares/#dedupe) and more…
+> 💡 The following middlewares were previously provided by the [`wretch-middlewares`](https://github.com/elbywan/wretch-middlewares/) package.
 
-## Signature
+### [Retry 🔗](https://elbywan.github.io/wretch/api/functions/middlewares_retry.retry.html)
+
+**Retries a request multiple times in case of an error (or until a custom condition is true).**
+
+This function is called when resolving the fetch response from duplicate calls.
+By default it clones the response to allow reading the body from multiple sources.
+
+```js
+import wretch from 'wretch'
+import { retry } from 'wretch/middlewares'
+
+wretch().middlewares([
+  retry({
+    /* Options - defaults below */
+    delayTimer: 500,
+    delayRamp: (delay, nbOfAttempts) => delay * nbOfAttempts,
+    maxAttempts: 10,
+    until: (response, error) => response && response.ok,
+    onRetry: null,
+    retryOnNetworkError: false,
+    resolver: response => response.clone()
+  })
+])./* ... */
+
+// You can also return a Promise, which is useful if you want to inspect the body:
+wretch().middlewares([
+  retry({
+    until: response =>
+      response.json().then(body =>
+        body.field === 'something'
+      )
+  })
+])
+```
+
+### [Dedupe 🔗](https://elbywan.github.io/wretch/api/functions/middlewares_dedupe.dedupe.html)
+
+**Prevents having multiple identical requests on the fly at the same time.**
+
+```js
+import wretch from 'wretch'
+import { dedupe } from 'wretch/middlewares'
+
+wretch().middlewares([
+  dedupe({
+    /* Options - defaults below */
+    skip: (url, opts) => opts.skipDedupe || opts.method !== 'GET',
+    key: (url, opts) => opts.method + '@' + url,
+    resolver: response => response.clone()
+  })
+])./* ... */
+```
+
+### [Throttling Cache 🔗](https://elbywan.github.io/wretch/api/functionsmiddlewares_throttlingCache.throttlingCache.html)
+
+**A throttling cache which stores and serves server responses for a certain amount of time.**
+
+```js
+import wretch from 'wretch'
+import { throttlingCache } from 'wretch/middlewares'
+
+wretch().middlewares([
+  throttlingCache({
+    /* Options - defaults below */
+    throttle: 1000,
+    skip: (url, opts) => opts.skipCache || opts.method !== 'GET',
+    key: (url, opts) => opts.method + '@' + url,
+    clear: (url, opts) => false,
+    invalidate: (url, opts) => null,
+    condition: response => response.ok,
+    flagResponseOnCacheHit: '__cached'
+  })
+])./* ... */
+```
+
+### [Delay 🔗](https://elbywan.github.io/wretch/api/functions/middlewares_delay.delay.html)
+
+**Delays the request by a specific amount of time.**
+
+```js
+import wretch from 'wretch'
+import { delay } from 'wretch/middlewares'
+
+wretch().middlewares([
+  delay(1000)
+])./* ... */
+```
+
+## Writing a Middleware
 
 Basically a Middleware is a function having the following signature :
 
@@ -563,23 +651,7 @@ type FetchLike = (
 ) => Promise<WretchResponse>;
 ```
 
-### middlewares(middlewares: ConfiguredMiddleware[], clear = false)
-
-Add middlewares to intercept a request before being sent.
-
-```javascript
-/* A simple delay middleware. */
-const delayMiddleware = delay => next => (url, opts) => {
-  return new Promise(res => setTimeout(() => res(next(url, opts)), delay))
-}
-
-// The request will be delayed by 1 second.
-wretch("...").middlewares([
-  delayMiddleware(1000)
-]).get().res(_ => /* ... */)
-```
-
-## Context
+### Context
 
 If you need to manipulate data within your middleware and expose it for later
 consumption, a solution could be to pass a named property to the wretch options
@@ -610,7 +682,7 @@ const res = await wretch("...")
 console.log(context.property); // prints "anything"
 ```
 
-## Advanced examples
+### Advanced examples
 
 <details>
   <summary>&nbsp;<strong>👀 Show me the code</strong></summary>
