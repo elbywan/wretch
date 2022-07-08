@@ -1,6 +1,7 @@
 {
   "name": "wretch",
   "version": "2.0.0-next.1",
+  "type": "module",
   "description": "A tiny wrapper built around fetch with an intuitive syntax.",
   "keywords": [
     "wretch",
@@ -19,10 +20,8 @@
   "bugs": {
     "url": "https://github.com/elbywan/wretch/issues"
   },
-  "type": "module",
   "main": "./dist/bundle/wretch.min.cjs",
   "module": "./dist/index.js",
-  "browser": "./dist/bundle/wretch.min.js",
   "types": "./dist/index.d.ts",
   "typesVersions": {
     "*": {
@@ -36,38 +35,22 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "node": {
-        "require": "./dist/bundle/wretch.min.cjs",
-        "import": "./dist/bundle/wretch.min.mjs"
-      },
-      "browser": "./dist/bundle/wretch.min.js",
+      "require": "./dist/bundle/wretch.min.cjs",
       "import": "./dist/index.js"
     },
     "./all": {
       "types": "./dist/index.all.d.ts",
-      "node": {
-        "require": "./dist/bundle/wretch.all.min.cjs",
-        "import": "./dist/bundle/wretch.all.min.mjs"
-      },
-      "browser": "./dist/bundle/wretch.all.min.js",
+      "require": "./dist/bundle/wretch.all.min.cjs",
       "import": "./dist/index.all.js"
     },
     "./addons/*": {
       "types": "./dist/addons/*.d.ts",
-      "node": {
-        "require": "./dist/bundle/addons/*.min.cjs",
-        "import": "./dist/bundle/addons/*.min.mjs"
-      },
-      "browser": "./dist/bundle/addons/*.min.js",
+      "require": "./dist/bundle/addons/*.min.cjs",
       "import": "./dist/addons/*.js"
     },
     "./middlewares/*": {
       "types": "./dist/middlewares/*.d.ts",
-      "node": {
-        "require": "./dist/bundle/middlewares/*.min.cjs",
-        "import": "./dist/bundle/middlewares/*.min.mjs"
-      },
-      "browser": "./dist/bundle/middlewares/*.min.js",
+      "require": "./dist/bundle/middlewares/*.min.cjs",
       "import": "./dist/middlewares/*.js"
     },
     "./package.json": "./package.json",

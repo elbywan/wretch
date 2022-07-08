@@ -1,4 +1,4 @@
-import { ConfiguredMiddleware } from "../types"
+import type { ConfiguredMiddleware } from "../types"
 
 /* Types */
 
