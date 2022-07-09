@@ -1,4 +1,4 @@
-import type { Wretch, WretchAddon } from "../types"
+import type { Wretch, WretchAddon } from "../types.js"
 
 function encodeQueryValue(key: string, value: unknown) {
   return encodeURIComponent(key) +
@@ -38,7 +38,7 @@ export interface FormUrlAddon {
    *
    * @param input - An object to convert into an url encoded string or an already encoded string
    */
-  formUrl<T extends FormUrlAddon, C>(this: T & Wretch<T, C>, input: (object | string)): this
+  formUrl<T extends FormUrlAddon, C, R>(this: T & Wretch<T, C, R>, input: (object | string)): this
 }
 
 /**

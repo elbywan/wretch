@@ -1,4 +1,4 @@
-import type { ConfiguredMiddleware } from "../types"
+import type { ConfiguredMiddleware } from "../types.js"
 
 /* Types */
 

@@ -1,4 +1,4 @@
-import type { Wretch, Config, WretchAddon } from "../types"
+import type { Wretch, Config, WretchAddon } from "../types.js"
 
 function convertFormData(
   formObject: object,
@@ -77,7 +77,7 @@ export interface FormDataAddon {
    * @param formObject - An object which will be converted to a FormData
    * @param recursive - If `true`, will recurse through all nested objects. Can be set as an array of string to exclude specific keys.
    */
-  formData<T extends FormDataAddon, C>(this: T & Wretch<T, C>, formObject: object, recursive?: string[] | boolean): this
+  formData<T extends FormDataAddon, C, R>(this: T & Wretch<T, C, R>, formObject: object, recursive?: string[] | boolean): this
 }
 
 /**

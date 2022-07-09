@@ -1,6 +1,6 @@
 import { setOptions, setErrorType, setPolyfills } from "./config.js"
 import { core } from "./core.js"
-import type { Wretch } from "./types"
+import type { Wretch } from "./types.js"
 
 export type {
   Wretch,
@@ -15,7 +15,7 @@ export type {
   WretchResponse,
   WretchDeferredCallback,
   WretchAddon
-} from "./types"
+} from "./types.js"
 
 /**
  * Creates a new wretch instance with a base url and base

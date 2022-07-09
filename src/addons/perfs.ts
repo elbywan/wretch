@@ -1,4 +1,4 @@
-import type { WretchResponseChain, WretchAddon } from "../types"
+import type { WretchResponseChain, WretchAddon } from "../types.js"
 
 const onMatch = (entries, name, callback, _performance) => {
   if (!entries.getEntriesByName)
@@ -62,7 +62,7 @@ export interface PerfsAddon {
    *
    * Warning: Still experimental on browsers and node.js
    */
-  perfs: <T, C extends PerfsAddon>(this: C & WretchResponseChain<T, C>, cb?: (timing: any) => void) => this,
+  perfs: <T, C extends PerfsAddon, R>(this: C & WretchResponseChain<T, C, R>, cb?: (timing: any) => void) => this,
 }
 
 /**

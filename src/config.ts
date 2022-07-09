@@ -1,5 +1,5 @@
 import { mix } from "./utils.js"
-import type { Config } from "./types"
+import type { Config } from "./types.js"
 
 declare const global
 

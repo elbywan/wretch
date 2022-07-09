@@ -1,4 +1,4 @@
-import type { ConfiguredMiddleware, FetchLike } from "./types"
+import type { ConfiguredMiddleware, FetchLike } from "./types.js"
 
 /**
  * @private @internal

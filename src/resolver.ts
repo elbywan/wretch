@@ -1,11 +1,11 @@
 import { middlewareHelper } from "./middleware.js"
 import { mix } from "./utils.js"
-import type { Wretch, WretchResponse, WretchResponseChain } from "./types"
+import type { Wretch, WretchResponse, WretchResponseChain } from "./types.js"
 import { FETCH_ERROR } from "./constants.js"
 
 export class WretchError extends Error { }
 
-export const resolver = <T, Chain>(wretch: Wretch<T, Chain>) => {
+export const resolver = <T, Chain, R>(wretch: Wretch<T, Chain, R>) => {
   const {
     _url: url,
     _options: opts,
@@ -69,7 +69,7 @@ export const resolver = <T, Chain>(wretch: Wretch<T, Chain>) => {
     // No body parsing method - return the response
     catchersWrapper(throwingPromise.then(_ => cb ? cb(_ as any) : _))
 
-  const responseChain: WretchResponseChain<T> = {
+  const responseChain: WretchResponseChain<T, Chain, R> = {
     _wretchReq: wretch,
     _fetchReq,
     res: bodyParser<WretchResponse>(null),
@@ -91,10 +91,10 @@ export const resolver = <T, Chain>(wretch: Wretch<T, Chain>) => {
     fetchError(cb) { return this.error(FETCH_ERROR, cb) },
   }
 
-  const enhancedResponseChain: Chain & WretchResponseChain<T, Chain> = addons.reduce((chain, addon) => ({
+  const enhancedResponseChain: R extends undefined ? Chain & WretchResponseChain<T, Chain, undefined> : R = addons.reduce((chain, addon) => ({
     ...chain,
     ...(addon.resolver as any)
   }), responseChain)
 
-  return resolvers.reduce((chain, r) => r(chain, wretch), enhancedResponseChain) as (Chain & WretchResponseChain<T, Chain> & Promise<any>)
+  return resolvers.reduce((chain, r) => r(chain, wretch), enhancedResponseChain)
 }

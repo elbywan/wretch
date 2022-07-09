@@ -2,7 +2,7 @@ import { mix, extractContentType, isLikelyJsonMime } from "./utils.js"
 import { JSON_MIME, CONTENT_TYPE_HEADER } from "./constants.js"
 import { resolver } from "./resolver.js"
 import config from "./config.js"
-import type { Wretch } from "./types"
+import type { Wretch } from "./types.js"
 
 export const core: Wretch = {
   _url: "",
@@ -65,10 +65,10 @@ export const core: Wretch = {
     newMap.set(errorId, catcher)
     return { ...this, _catchers: newMap }
   },
-  resolve(resolver, clear: boolean = false) {
+  resolve<R = unknown>(resolver, clear: boolean = false) {
     return { ...this, _resolvers: clear ? [resolver] : [...this._resolvers, resolver] }
   },
-  defer(callback, clear = false) {
+  defer<R = unknown>(callback, clear = false) {
     return {
       ...this,
       _deferred: clear ? [callback] : [...this._deferred, callback]

@@ -1,4 +1,4 @@
-import type { WretchOptions, ConfiguredMiddleware } from "../types"
+import type { WretchOptions, ConfiguredMiddleware } from "../types.js"
 
 /* Types */
 

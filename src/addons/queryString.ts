@@ -1,4 +1,4 @@
-import type { Wretch, Config, WretchAddon } from "../types"
+import type { Wretch, Config, WretchAddon } from "../types.js"
 
 const appendQueryParams = (url: string, qp: object | string, replace: boolean, config: Config) => {
   let queryString: string
@@ -79,7 +79,7 @@ export interface QueryStringAddon {
    *
    * @param qp - An object which will be converted, or a string which will be used verbatim.
    */
-  query<T extends QueryStringAddon, C>(this: T & Wretch<T, C>, qp: object | string, replace?: boolean): this
+  query<T extends QueryStringAddon, C, R>(this: T & Wretch<T, C, R>, qp: object | string, replace?: boolean): this
 }
 
 /**
