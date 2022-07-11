@@ -6,13 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Wretch - The fetch wrapper</title>
-  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600&family=Raleway:wght@400;600"
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600&family=Raleway:wght@400;600;700"
     rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night-bright.min.css"
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/atom-one-dark-reasonable.min.css"
     rel="stylesheet">
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
   <link href="./index.css" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
   <script src="https://unpkg.com/smooth-scroll"></script>
 </head>
 
@@ -23,37 +23,39 @@
         <img src="./assets/wretch.svg" alt="wretch-logo">
       </div>
       <h1 class="logo-name">Wretch</h1>
-      <div class="tags">
-        <div>Immutable</div>
-        <div>Intuitive</div>
-        <div>Chainable</div>
-        <div>Isomorphic</div>
-        <div>Modular</div>
-      </div>
-      <div class="tags-boxes">
-        <p class="Immutable">
-          Wretch does not mutate its internal state.<br>
-          Each function returns a copy of the original object.<br>
-        </p>
-        <p class="Intuitive">
-          Wretch's syntax is readable and concise.<br>
-          And it contains typescript definition files for autocompletion.
-        </p>
-        <p class="Chainable">
-          All methods are 100% chainable.<br>
-          Because a.b().c() is prettier than var z = a; z.b(); z.c().
-        </p>
-        <p class="Isomorphic">
-          Wretch is compatible with browsers and node.js.<br>
-          And you can use any polyfill you like!
-        </p>
-        <p class="Modular">
-          Use Addons to add new methods and capabilities.<br>
-          Use Middlewares to intercept requests and fully customize Wretch behaviour.
-        </p>
-      </div>
       <div class="shortdesc">
         <p>A tiny (&#126; 1.7Kb g-zipped) wrapper built around fetch with an intuitive syntax.</p>
+      </div>
+      <div class="tags-wrapper">
+        <div class="tags">
+          <div>Immutable</div>
+          <div>Intuitive</div>
+          <div>Chainable</div>
+          <div>Isomorphic</div>
+          <div>Modular</div>
+        </div>
+        <div class="tags-boxes">
+          <p class="Immutable">
+            Wretch does not mutate its internal state.<br>
+            Each function returns a copy of the original object.<br>
+          </p>
+          <p class="Intuitive">
+            Wretch's syntax is readable and concise.<br>
+            And it contains typescript definition files for autocompletion.
+          </p>
+          <p class="Chainable">
+            All methods are 100% chainable.<br>
+            Because a.b().c() is prettier than var z = a; z.b(); z.c().
+          </p>
+          <p class="Isomorphic">
+            Wretch is compatible with browsers and node.js.<br>
+            And you can use any polyfill you like!
+          </p>
+          <p class="Modular">
+            Use Addons to add new methods and capabilities.<br>
+            Use Middlewares to intercept requests and fully customize Wretch behaviour.
+          </p>
+        </div>
       </div>
     </div>
     <div class="front-links">
@@ -83,7 +85,7 @@
       <a href="#front"><i class="fa fa-chevron-up" aria-hidden="true"></i></a>
     </div>
     <h1 class="usage-header">Usage</h1>
-    <div>
+    <div class="usage-example">
       <div class="helper-tag">
         <div class="icon"><i class="fa fa-download" aria-hidden="true"></i></div>
         <a href="https://github.com/elbywan/wretch#usage">Import wretch</a>

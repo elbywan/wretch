@@ -1,7 +1,18 @@
+@media screen and (max-width: 720px) {
+  body {
+    font-size: 0.9rem;
+  }
+}
+@media screen and (max-width: 480px) {
+  body {
+    font-size: 0.8rem;
+  }
+}
+
 body {
   margin: 0;
   padding: 0;
-  background: black;
+  background: #08080f;
   color: #eaeaea;
   font-family: 'Raleway', sans-serif;
 }
@@ -56,7 +67,7 @@ footer > div.icons > div {
   margin: 4px 0px;
 }
 footer > div.icons .fa {
-  font-weight: bold;
+  font-weight: 600;
 }
 footer > div.text {
   text-align: left;
@@ -80,10 +91,21 @@ div.front-head {
 div.front-links {
   display: flex;
   margin-top: 10px;
+  font-size: 1.2em;
+  font-weight: 600;
 }
 div.front-install {
   text-align: center;
   margin-top: 30px;
+}
+div.front-install code.hljs {
+  background: transparent;
+}
+div.front-install > * * {
+  transition: color 0.25s;
+}
+div.front-install > *:hover * {
+  color: white !important;
 }
 
 div.page-link {
@@ -127,7 +149,11 @@ div.logo img {
 div.shortdesc {
   text-align: center;
   font-weight: 600;
+  font-size: 1.3em;
   margin: 20px 0px;
+}
+div.tags-wrapper {
+  margin-bottom: 2em;
 }
 div.tags {
   text-align: center;
@@ -135,10 +161,10 @@ div.tags {
 div.tags > * {
   display: inline-block;
   margin: 10px 10px;
-  color: black;
+  color: #08080f;
   padding: 3px 10px;
   font-size: 0.9em;
-  font-weight: bold;
+  font-weight: 700;
   border-radius: 15px;
   border: 3px solid;
   cursor: pointer;
@@ -147,10 +173,11 @@ div.tags > * {
 div.tags-boxes > * {
   display: none;
   font-family: 'Josefin Sans', sans-serif;
-  font-size: 1.1em;
-  padding: 10px 0px;
+  font-size: 1.25em;
   line-height: 1.5em;
-  /* border-bottom: 2px solid; */
+  font-weight: 600;
+  margin: 0;
+  margin-top: 2em;
 }
 div.tags > :nth-child(5n+1) {
   background-color: #e7c547;
@@ -208,10 +235,10 @@ div.tags-boxes > :nth-child(5n+5) {
   border-color: #7aa6da;
 }
 div.tags > .active {
-  background-color: #000;
+  background-color: #08080f;
 }
 div.tags > *:hover:not(.active) {
-  border-color: #000;
+  border-color: #08080f;
 }
 
 a.github {
@@ -221,7 +248,7 @@ a.github {
   padding: 0px 10px 5px 10px;
   border-bottom: 2px solid #e78c45;
   transition: all 0.25s;
-  margin-right: 5px;
+  margin-right: 1em;
 }
 a.github:hover {
   color: #e78c45;
@@ -256,20 +283,15 @@ pre.unpkg {
   border-bottom: 2px solid #b9ca4a;
 }
 
-@media (max-height: 800px) {
-  section.usage {
-    padding-top: 50px;
-  }
-  h1.usage-header {
-    margin-bottom: 40px;
-  }
+section.usage {
+  padding-top: 50px;
 }
 h1.usage-header {
   margin-bottom: 80px;
 }
 div.helper-tag {
-  font-size: 0.8em;
-  font-weight: bold;
+  font-size: 0.85em;
+  font-weight: 600;
 }
 div.helper-tag > a:hover {
   background: #d54e53;
@@ -279,8 +301,8 @@ div.helper-tag > a {
   display: inline-block;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
-  background: #222;
-  color: #ccc;
+  background: #282c34;
+  color: #ddd;
   text-align: center;
   transition: all 0.25s;
   padding: 5px 10px;
@@ -290,4 +312,12 @@ div.helper-tag > .icon {
   padding: 5px 10px;
   background: #e7c547;
   color: black;
+}
+div.usage-example {
+  font-size: 1.25em;
+}
+@media screen and (max-width: 720px) {
+  div.usage-example {
+    font-size: 1.1em;
+  }
 }
