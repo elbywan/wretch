@@ -21,22 +21,20 @@
 
 ##### Wretch 2.0 is now live 🎉 ! Please have a look at the [changelog](https://github.com/elbywan/wretch/blob/master/CHANGELOG.md) after each update for new features and breaking changes. If you want to try out the hot stuff, please look into the [dev](https://github.com/elbywan/wretch/tree/dev) branch.
 
+##### And if you like the library please consider becoming a [sponsor](https://github.com/sponsors/elbywan) ❤️.
+
 # Features
 
-#### `wretch` is a small wrapper around [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) designed to simplify the way to perform and handle network requests and responses.
+#### `wretch` is a small wrapper around [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) designed to simplify the way to perform network requests and handle responses.
 
-- 🪶 **Small** - less than 2KB g-zipped
-- 💡 **Intuitive** - lean API, handles errors, headers and serialization
-- 🧊 **Immutable** - every call creates a cloned instance
-- 🔌 **Modular** - features can be added with Addons
-- 🤸 **Flexible** - behaviour can be fully customized by Middlewares
+- 🪶 **Small** - core is less than 2KB g-zipped
+- 💡 **Intuitive** - lean API, handles errors, headers and (de)serialization
+- 🧊 **Immutable** - every call creates a cloned instance that can then be reused safely
+- 🔌 **Modular** - plug addons to add new features, and middlewares to intercept requests
 - 🧩 **Isomorphic** - compatible with modern browsers, Node.js 14+ and Deno
-- 🦺 **Type safe** - built with TypeScript
-
-And some additional reasons to use `wretch`:
-
-- ✅ **Proven** - covered by tests and used by a lot of projects
-- 💓 **Maintained** - alive for many years now
+- 🦺 **Type safe** - strongly typed, written in TypeScript
+- ✅ **Proven** - fully covered by unit tests and widely used
+- 💓 **Maintained** - alive and well for many years
 
 # Table of Contents
 
