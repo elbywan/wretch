@@ -282,6 +282,38 @@ const wretch = require("wretch")
 window.wretch
 ```
 
+## Minimal Example
+
+```js
+import wretch from "wretch"
+
+const api =
+  wretch("https://jsonplaceholder.typicode.com", { mode: "cors" })
+    .errorType("json")
+    .resolve(r => r.json())
+
+try {
+  const users = await api.get("/users")
+  const user = users.find(({ name }) => name === "Nicholas Runolfsdottir V")
+  const postsByUser = await api.get(`/posts?userId=${user.id}`)
+  const newPost = await api.url("/posts").post({
+    title: "New Post",
+    body: "My shiny new post"
+  })
+  await api.url("/posts/" + newPost.id).patch({
+    title: "Updated Post",
+    body: "Edited body"
+  })
+  await api.get("/posts/" + newPost.id)
+} catch (error) {
+  const message =
+    typeof error.message === "object" && Object.keys(error.message).length > 0
+      ? JSON.stringify(error.message)
+      : error.response.statusText
+  console.error(`${error.status}: ${message}`)
+}
+```
+
 ## Code
 
 A high level overview of the successive steps that can be chained to perform a request and parse the result.
