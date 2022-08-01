@@ -817,6 +817,12 @@ for(let i = 0; i < 10; i++) {
 
 # Migration from v1
 
+Wretch v2 has been refactored with the following goals in mind:
+
+- **reduce its size** by making it modular
+- preserve the typescript type coverage
+- improve the API by removing several awkward choices
+
 ## Compatibility
 
 `wretch@1` was transpiled to es5, `wretch@2` is now transpiled to es2018.
@@ -827,10 +833,28 @@ or configure `@babel` to make it transpile wretch.
 
 ## Addons
 
-Some methods that were part of `wretch` are now split and stored inside addons.
-It is now needed to import and pass the Addon to the [`.addon`](#addonaddon-wretchaddon) method to register the features.
+Some features that were part of `wretch` v1 are now split apart and must be imported through addons.
+It is now needed to pass the Addon to the [`.addon`](#addonaddon-wretchaddon) method to register it.
 
 Please refer to the [Addons](#addons) documentation.
+
+ ```js
+/* Previously (wretch@1) */
+import wretch from "wretch"
+
+wretch.formData({ hello: "world" }).query({ check: true })
+
+/* Now (wretch@2) */
+import FormDataAddon from "wretch/addons/formData"
+import QueryStringAddon from "wretch/addons/queryString"
+import wretch as baseWretch from "wretch"
+
+// Add both addons
+const wretch = baseWretch().addon(FormDataAddon).addon(QueryStringAddon)
+
+// Additional features are now available
+wretch.formData({ hello: "world" }).query({ check: true })
+```
 
 ## Typescript
 
@@ -838,22 +862,32 @@ Types have been renamed and refactored, please update your imports accordingly a
 
 ## Replace / Mixin arguments
 
-Some functions used to have a `mixin = true` argument, others a `replace = false` argument doing the opposite.
-In v2 there are only `replace = false` arguments.
+Some functions used to have a `mixin = true` argument that could be used to merge the value, others a `replace = false` argument performing the opposite.
+In v2 there are only `replace = false` arguments but the default behaviour should be preserved.
+
+```js
+/* Previously (wretch@1) */
+wretch.options({ credentials: "same-origin" }, false) // false: do not merge the value
+wretch.options({ credentials: "same-origin" }) // Default behaviour stays the same
+
+/* Now (wretch@2) */
+wretch.options({ credentials: "same-origin" }, true) // true: replace the existing value
+wretch.options({ credentials: "same-origin" }) // Default behaviour stays the same
+```
 
 ## HTTP method - Options argument
 
 In v1 it was possible to set fetch options while calling the http methods enfind the request chain.
 
 ```js
-// v1
+/* Previously (wretch@1) */
 wretch("...").get({ my: "option" })
 ```
 
 This was a rarely used feature and the argument now appends to the base url instead.
 
 ```js
-// v2
+/* Now (wretch@2) */
 wretch("https://base.com").get("/resource/1")
 ```
 
