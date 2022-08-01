@@ -11,7 +11,7 @@
   <a href="https://github.com/elbywan/wretch/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license-badge" height="20"></a>
 </h1>
 <h4 align="center">
-	A tiny (~1.7KB g-zipped) wrapper built around <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch">fetch</a> with an intuitive syntax.
+	A tiny (~1.9KB g-zipped) wrapper built around <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch">fetch</a> with an intuitive syntax.
 </h4>
 <h5 align="center">
     <i>f[ETCH] [WR]apper</i>
