@@ -188,8 +188,8 @@ The package contains multiple bundles depending on the format and feature set lo
 ```html
 <!--
   Pick your favourite CDN:
-    - https://unpkg.com/wretch
-    - https://www.jsdelivr.com/package/npm/wretch
+    - https://unpkg.com/wretch/dist/bundle/wretch.min.js
+    - https://cdn.jsdelivr.net/npm/wretch/dist/bundle/wretch.min.js
     - https://www.skypack.dev/view/wretch
     - https://cdnjs.com/libraries/wretch
     - …
