@@ -3,7 +3,7 @@
 	<br>
     <a href="https://elbywan.github.io/wretch">Wretch</a><br>
 	<br>
-  <a href="https://github.com/elbywan/wretch/actions/workflows/ci.yml"><img alt="travis-badge" src="https://github.com/elbywan/wretch/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/elbywan/wretch/actions/workflows/node.yml"><img alt="github-badge" src="https://github.com/elbywan/wretch/actions/workflows/node.yml/badge.svg"></a>
   <a href="https://www.npmjs.com/package/wretch"><img alt="npm-badge" src="https://img.shields.io/npm/v/wretch.svg?colorB=ff733e" height="20"></a>
   <a href="https://www.npmjs.com/package/wretch"><img alt="npm-downloads-badge" src="https://img.shields.io/npm/dm/wretch.svg?colorB=53aabb" height="20"></a>
   <a href="https://coveralls.io/github/elbywan/wretch?branch=master"><img src="https://coveralls.io/repos/github/elbywan/wretch/badge.svg?branch=master" alt="Coverage Status"></a>
