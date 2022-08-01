@@ -285,25 +285,32 @@ window.wretch
 ```js
 import wretch from "wretch"
 
+// Instantiate and configure wretch
 const api =
   wretch("https://jsonplaceholder.typicode.com", { mode: "cors" })
     .errorType("json")
     .resolve(r => r.json())
 
 try {
+  // Fetch users
   const users = await api.get("/users")
+  // Find all posts from a given user
   const user = users.find(({ name }) => name === "Nicholas Runolfsdottir V")
   const postsByUser = await api.get(`/posts?userId=${user.id}`)
+  // Create a new post
   const newPost = await api.url("/posts").post({
     title: "New Post",
     body: "My shiny new post"
   })
+  // Patch it
   await api.url("/posts/" + newPost.id).patch({
     title: "Updated Post",
     body: "Edited body"
   })
+  // Fetch it
   await api.get("/posts/" + newPost.id)
 } catch (error) {
+  // The API could return an empty object - in which case the status text is logged instead.
   const message =
     typeof error.message === "object" && Object.keys(error.message).length > 0
       ? JSON.stringify(error.message)
@@ -312,36 +319,42 @@ try {
 }
 ```
 
-## Code
+## Chaining
 
-A high level overview of the successive steps that can be chained to perform a request and parse the result.
+**A high level overview of the successive steps that can be chained to perform a request and parse the result.**
 
 ```ts
+// First, instantiate wretch
 wretch(baseUrl, baseOptions)
-// --------------------------------
-// The "request" chain starts here.
-// --------------------------------
+```
+
+_The "request" chain starts here._
+
+```ts
   // Optional - A set of helper methods to set the default options, set accept header, change the current url…
   .<helper method(s)>()
   // Optional - Serialize an object to json or FormData formats and sets the body & header field if needed
   .<body type>()
-  // Required - Sends the get/put/post/delete/patch request.
+    // Required - Sends the get/put/post/delete/patch request.
   .<http method>()
-  // >> Ends the request chain.
-/*
-  ---------------------------------
-  The "response" chain starts here.
-  ---------------------------------
-  Fetch is called after the request chain ends and before the response chain starts.
-  The request is on the fly and now it is time to chain catchers and finally call a response type handler.
-*/
+```
+
+_The "response" chain starts here._
+
+_Fetch is called after the request chain ends and before the response chain starts._<br>
+_The request is on the fly and now it is time to chain catchers and finally call a response type handler._
+
+```ts
   // Optional - You can chain error handlers here
   .<catcher(s)>()
   // Required - Specify the data type you need, which will be parsed and handed to you
   .<response type>()
   // >> Ends the response chain.
+```
 
-// From this point on, wretch returns a standard Promise.
+_From this point on, wretch returns a standard Promise._
+
+```ts
   .then(…)
   .catch(…)
 ```
