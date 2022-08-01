@@ -75,7 +75,7 @@
     "prebuild": "rimraf dist && rimraf coverage && npm run lint",
     "build": "tsc -p . && rollup -c",
     "mock": "node scripts/mockServer.js",
-    "mock:wait": "wait-on -t 5000 http://localhost:9876/ping",
+    "mock:wait": "wait-on -t 10000 http://localhost:9876/ping",
     "test": "concurrently --success first -k \"npm run mock:wait && jest\" \"npm run mock\"",
     "test:karma": "concurrently --success first -k \"npm run mock:wait && karma start --single-run --browsers ChromeHeadless,FirefoxHeadless,SafariNative karma.conf.cjs\" \"npm run mock\"",
     "test:karma:watch": "concurrently --success first -k \"npm run mock:wait && karma start --auto-watch --browsers ChromeHeadless karma.conf.cjs\" \"npm run mock\"",
