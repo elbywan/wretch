@@ -830,9 +830,11 @@ for(let i = 0; i < 10; i++) {
 
 # Migration from v1
 
-Wretch v2 has been refactored with the following goals in mind:
+## Philosophy
 
-- **reduce its size** by making it modular
+Wretch has been **completely rewritten** with the following goals in mind:
+
+- reduce its size by making it modular
 - preserve the typescript type coverage
 - improve the API by removing several awkward choices
 
@@ -888,16 +890,16 @@ wretch.options({ credentials: "same-origin" }, true) // true: replace the existi
 wretch.options({ credentials: "same-origin" }) // Default behaviour stays the same
 ```
 
-## HTTP method - Options argument
+## HTTP methods extra argument
 
-In v1 it was possible to set fetch options while calling the http methods enfind the request chain.
+In v1 it was possible to set fetch options while calling the http methods to end the request chain.
 
 ```js
 /* Previously (wretch@1) */
 wretch("...").get({ my: "option" })
 ```
 
-This was a rarely used feature and the argument now appends to the base url instead.
+This was a rarely used feature and the extra argument now appends a string to the base url.
 
 ```js
 /* Now (wretch@2) */
