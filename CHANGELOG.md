@@ -1,3 +1,9 @@
+<a name="2.0.0"></a>
+# [2.0.0](https://github.com/elbywan/wretch/compare/2.0.0-next.1...2.0.0) (2022-08-01)
+
+
+
+
 <a name="2.0.0-next.1"></a>
 # [2.0.0-next.1](https://github.com/elbywan/wretch/compare/2.0.0-next.0...2.0.0-next.1) (2022-07-08)
 

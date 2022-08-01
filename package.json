@@ -1,6 +1,6 @@
 {
   "name": "wretch",
-  "version": "2.0.0-next.1",
+  "version": "2.0.0",
   "type": "module",
   "description": "A tiny wrapper built around fetch with an intuitive syntax.",
   "keywords": [
@@ -75,10 +75,11 @@
     "prebuild": "rimraf dist && rimraf coverage && npm run lint",
     "build": "tsc -p . && rollup -c",
     "mock": "node scripts/mockServer.js",
-    "test": "concurrently --success first -k jest \"npm run mock\"",
-    "test:karma": "concurrently --success first -k \"karma start --single-run --browsers ChromeHeadless,FirefoxHeadless,SafariNative karma.conf.cjs\" \"npm run mock\"",
-    "test:karma:watch": "concurrently --success first -k \"karma start --auto-watch --browsers ChromeHeadless karma.conf.cjs\" \"npm run mock\"",
-    "test:deno": "concurrently --success first -k \"deno test --allow-net ./test/deno/wretch_test.ts\" \"npm run mock\"",
+    "mock:wait": "wait-on -t 5000 http://localhost:9876/ping",
+    "test": "concurrently --success first -k \"npm run mock:wait && jest\" \"npm run mock\"",
+    "test:karma": "concurrently --success first -k \"npm run mock:wait && karma start --single-run --browsers ChromeHeadless,FirefoxHeadless,SafariNative karma.conf.cjs\" \"npm run mock\"",
+    "test:karma:watch": "concurrently --success first -k \"npm run mock:wait && karma start --auto-watch --browsers ChromeHeadless karma.conf.cjs\" \"npm run mock\"",
+    "test:deno": "concurrently --success first -k \"npm run mock:wait && deno test --allow-net ./test/deno/wretch_test.ts\" \"npm run mock\"",
     "changelog": "conventional-changelog -p wretch -i CHANGELOG.md -s -r 0",
     "doc": "typedoc --out docs/api --readme none --excludeInternal src/index.ts 'src/addons/*.ts' 'src/middlewares/*.ts'",
     "prepare:release": "npm run start && npm run doc && npm run changelog"
@@ -121,7 +122,8 @@
     "tslib": "^2.3.1",
     "tslint": "^6.1.2",
     "typedoc": "^0.23.7",
-    "typescript": "^4.7.4"
+    "typescript": "^4.7.4",
+    "wait-on": "^6.0.1"
   },
   "jest": {
     "testPathIgnorePatterns": [

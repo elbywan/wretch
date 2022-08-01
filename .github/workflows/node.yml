@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
+  nodejs-test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -41,7 +41,7 @@ jobs:
         path-to-lcov: "./coverage/lcov.info"
 
   finish:
-    needs: test
+    needs: nodejs-test
     runs-on: ubuntu-latest
     steps:
     - name: Coveralls Finished

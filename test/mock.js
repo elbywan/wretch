@@ -36,7 +36,7 @@ export function launch(port) {
   server.register(multipartPlugin, { attachFieldsToBody: true })
   server.register(formBodyPlugin)
   server.register(authPlugin, { validate })
-  server.addContentTypeParser('*', async function () {})
+  server.addContentTypeParser('*', async function () { })
 
   server.register(corsPlugin, {
     allowedHeaders: ["Authorization", "X-Custom-Header", "X-Custom-Header-2", "X-Custom-Header-3", "X-Custom-Header-4", "content-type"],
@@ -66,6 +66,10 @@ export function launch(port) {
   setupReplies(server, "blob", imgReply)
   setupReplies(server, "arrayBuffer", binaryReply)
 
+  server.get("/ping", async (request, reply) => {
+    return null
+  })
+
   server.get("/json/null", async (request, reply) => {
     reply.type("application/json")
     return null;
@@ -87,7 +91,7 @@ export function launch(port) {
   })
 
   server.post("/text/roundTrip", async (request, reply) => {
-    if(request.headers["content-type"] === "text/plain") {
+    if (request.headers["content-type"] === "text/plain") {
       return request.body
     }
 
@@ -223,7 +227,7 @@ const imgReply = async (request, reply) => {
 /** @type {import('fastify').RouteHandler} */
 const binaryReply = async (request, reply) => {
   reply.type("application/octet-stream")
-  return Buffer.from([ 0x00, 0x01, 0x02, 0x03 ])
+  return Buffer.from([0x00, 0x01, 0x02, 0x03])
 }
 
 /**
@@ -232,10 +236,10 @@ const binaryReply = async (request, reply) => {
 * @param {import('fastify').RouteHandler} fun
 */
 const setupReplies = (server, type, fun) => {
-  server.get(   "/" + type, fun)
-  server.post(  "/" + type, fun)
-  server.put(   "/" + type, fun)
-  server.patch( "/" + type, fun)
+  server.get("/" + type, fun)
+  server.post("/" + type, fun)
+  server.put("/" + type, fun)
+  server.patch("/" + type, fun)
   server.delete("/" + type, fun)
 }
 
@@ -243,15 +247,15 @@ const setupReplies = (server, type, fun) => {
 * @param {import('fastify').FastifyInstance} server
 */
 const setupErrors = async server => {
-  const errorList = [ 444, 449, 450, 451, 456, 495, 496, 497, 498, 499 ]
-  for(let i = 0; i < 512; i++){
-    if(!errorList.includes(i))
-    errorList.push(i)
-    if(i === 418) i += 2
-    else if(i === 426 || i === 429) i++
+  const errorList = [444, 449, 450, 451, 456, 495, 496, 497, 498, 499]
+  for (let i = 0; i < 512; i++) {
+    if (!errorList.includes(i))
+      errorList.push(i)
+    if (i === 418) i += 2
+    else if (i === 426 || i === 429) i++
   }
 
-  for(let error of errorList) {
+  for (let error of errorList) {
     server.get("/" + error, async (request, reply) => {
       reply.code(error)
       return "error code : " + error
