@@ -499,6 +499,10 @@ const w = wretch().addon(FormDataAddon).addon(QueryStringAddon)
 w.formData({ hello: "world" }).query({ check: true })
 ```
 
+Typescript should also be fully supported and will provide completions.
+
+https://user-images.githubusercontent.com/3428394/182319457-504a0856-abdd-4c1d-bd04-df5a061e515d.mov
+
 ### [QueryString 🔗](https://elbywan.github.io/wretch/api/interfaces/addons_queryString.QueryStringAddon.html)
 
 Used to construct and append the query string part of the URL from an object.
