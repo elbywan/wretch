@@ -1,3 +1,18 @@
+<a name="2.0.1"></a>
+## [2.0.1](https://github.com/elbywan/wretch/compare/2.0.0...2.0.1) (2022-08-02)
+
+
+### :arrow_up: Version update(s)
+
+* Add unpkg field to map to the right bundle. ([ae87b64](https://github.com/elbywan/wretch/commit/ae87b64))
+* Upgrade dependencies. ([b6a1258](https://github.com/elbywan/wretch/commit/b6a1258))
+
+### :memo: Documentation update(s)
+
+* Update cdn links. ([7571101](https://github.com/elbywan/wretch/commit/7571101))
+
+
+
 <a name="2.0.0"></a>
 # [2.0.0](https://github.com/elbywan/wretch/compare/2.0.0-next.1...2.0.0) (2022-08-01)
 
