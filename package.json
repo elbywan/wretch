@@ -21,6 +21,7 @@
     "url": "https://github.com/elbywan/wretch/issues"
   },
   "main": "./dist/bundle/wretch.min.cjs",
+  "unpkg": "./dist/bundle/wretch.min.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "typesVersions": {
