@@ -188,15 +188,15 @@ The package contains multiple bundles depending on the format and feature set lo
 ```html
 <!--
   Pick your favourite CDN:
-    - https://unpkg.com/wretch/dist/bundle/wretch.min.js
-    - https://cdn.jsdelivr.net/npm/wretch/dist/bundle/wretch.min.js
+    - https://unpkg.com/browse/wretch
+    - https://cdn.jsdelivr.net/npm/wretch/
     - https://www.skypack.dev/view/wretch
     - https://cdnjs.com/libraries/wretch
     - …
 -->
 
 <!-- UMD import as window.wretch -->
-<script src="https://unpkg.com/wretch/dist/bundle/wretch.all.min.js"></script>
+<script src="https://unpkg.com/wretch"></script>
 
 <!-- Modern import -->
 <script type="module">
@@ -261,7 +261,7 @@ Types should be imported from `/dist/types.d.ts`.
 
 ```ts
 // You can import wretch from any CDN that serve ESModules.
-import wretch from "https://cdn.pika.dev/wretch";
+import wretch from "https://cdn.skypack.dev/wretch";
 
 const text = await wretch("https://httpstat.us").get("/200").text();
 console.log(text); // -> 200 OK
