@@ -879,7 +879,9 @@ wretch.formData({ hello: "world" }).query({ check: true })
 
 Types have been renamed and refactored, please update your imports accordingly and refer to the [typescript api documentation](https://elbywan.github.io/wretch/api/modules/index.html).
 
-## Replace / Mixin arguments
+## API Changes
+
+### Replace / Mixin arguments
 
 Some functions used to have a `mixin = true` argument that could be used to merge the value, others a `replace = false` argument performing the opposite.
 In v2 there are only `replace = false` arguments but the default behaviour should be preserved.
@@ -894,7 +896,7 @@ wretch.options({ credentials: "same-origin" }, true) // true: replace the existi
 wretch.options({ credentials: "same-origin" }) // Default behaviour stays the same
 ```
 
-## HTTP methods extra argument
+### HTTP methods extra argument
 
 In v1 it was possible to set fetch options while calling the http methods to end the request chain.
 
@@ -909,6 +911,10 @@ This was a rarely used feature and the extra argument now appends a string to th
 /* Now (wretch@2) */
 wretch("https://base.com").get("/resource/1")
 ```
+
+### Replay function
+
+The `.replay` function has been renamed to [`.fetch`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch.html#fetch).
 
 # License
 
