@@ -1,3 +1,13 @@
+<a name="2.0.2"></a>
+## [2.0.2](https://github.com/elbywan/wretch/compare/2.0.1...2.0.2) (2022-08-03)
+
+
+### :bug: Bug fix(es)
+
+* Fix defer and resolve return types. ([0c59c6c](https://github.com/elbywan/wretch/commit/0c59c6c)), closes [#140](https://github.com/elbywan/wretch/issues/140)
+
+
+
 <a name="2.0.1"></a>
 ## [2.0.1](https://github.com/elbywan/wretch/compare/2.0.0...2.0.1) (2022-08-02)
 
