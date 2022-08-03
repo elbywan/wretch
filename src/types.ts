@@ -315,7 +315,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined> {
     this: Self & Wretch<Self, Chain, Resolver>,
     callback: WretchDeferredCallback<Self, Chain, Resolver>,
     clear?: Clear
-  ): Wretch<Self, Chain, Resolver>
+  ): this
 
   /**
    * Programs a resolver to perform response chain tasks automatically.
@@ -359,7 +359,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined> {
       originalRequest: Wretch<Self, Chain, Clear extends true ? undefined : Resolver>
     ) => ResolverReturn,
     clear?: Clear
-  ): Wretch<Self, Chain, ResolverReturn>
+  ): Self & Wretch<Self, Chain, ResolverReturn>
 
   /**
    * Add middlewares to intercept a request before being sent.

@@ -68,7 +68,7 @@ export const core: Wretch = {
   resolve<R = unknown>(resolver, clear: boolean = false) {
     return { ...this, _resolvers: clear ? [resolver] : [...this._resolvers, resolver] }
   },
-  defer<R = unknown>(callback, clear = false) {
+  defer(callback, clear: boolean = false) {
     return {
       ...this,
       _deferred: clear ? [callback] : [...this._deferred, callback]
