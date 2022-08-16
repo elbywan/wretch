@@ -1,5 +1,6 @@
 import { setOptions, setErrorType, setPolyfills } from "./config.js"
 import { core } from "./core.js"
+import { WretchError } from "./resolver.js"
 import type { Wretch } from "./types.js"
 
 export type {
@@ -43,4 +44,7 @@ factory.options = setOptions
 factory.errorType = setErrorType
 /** {@inheritDoc setPolyfills} */
 factory.polyfills = setPolyfills
+/** {@inheritDoc WretchError } */
+factory.WretchError = WretchError
+
 export default factory
