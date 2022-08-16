@@ -1,3 +1,13 @@
+<a name="2.0.3"></a>
+## [2.0.3](https://github.com/elbywan/wretch/compare/2.0.2...2.0.3) (2022-08-16)
+
+
+### :art: Code improvement(s)
+
+* Export WretchError from the root index ([76f9096](https://github.com/elbywan/wretch/commit/76f9096)), closes [#79](https://github.com/elbywan/wretch/issues/79)
+
+
+
 <a name="2.0.2"></a>
 ## [2.0.2](https://github.com/elbywan/wretch/compare/2.0.1...2.0.2) (2022-08-03)
 

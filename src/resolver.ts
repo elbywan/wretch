@@ -3,6 +3,9 @@ import { mix } from "./utils.js"
 import type { Wretch, WretchResponse, WretchResponseChain } from "./types.js"
 import { FETCH_ERROR } from "./constants.js"
 
+/**
+ * This class inheriting from Error is thrown when the fetch response is not "ok".
+ */
 export class WretchError extends Error { }
 
 export const resolver = <T, Chain, R>(wretch: Wretch<T, Chain, R>) => {
