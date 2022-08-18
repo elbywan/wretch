@@ -593,9 +593,6 @@ const w = wretch().middlewares([retry(), dedupe()])
 
 **Retries a request multiple times in case of an error (or until a custom condition is true).**
 
-This function is called when resolving the fetch response from duplicate calls.
-By default it clones the response to allow reading the body from multiple sources.
-
 ```js
 import wretch from 'wretch'
 import { retry } from 'wretch/middlewares'
@@ -608,8 +605,7 @@ wretch().middlewares([
     maxAttempts: 10,
     until: (response, error) => response && response.ok,
     onRetry: null,
-    retryOnNetworkError: false,
-    resolver: response => response.clone()
+    retryOnNetworkError: false
   })
 ])./* ... */
 
@@ -617,7 +613,7 @@ wretch().middlewares([
 wretch().middlewares([
   retry({
     until: response =>
-      response.json().then(body =>
+      response.clone().json().then(body =>
         body.field === 'something'
       )
   })
