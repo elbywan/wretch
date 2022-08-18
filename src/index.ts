@@ -44,7 +44,6 @@ factory.options = setOptions
 factory.errorType = setErrorType
 /** {@inheritDoc setPolyfills} */
 factory.polyfills = setPolyfills
-/** {@inheritDoc WretchError } */
 factory.WretchError = WretchError
 
 export default factory

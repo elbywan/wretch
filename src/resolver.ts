@@ -1,12 +1,18 @@
 import { middlewareHelper } from "./middleware.js"
 import { mix } from "./utils.js"
-import type { Wretch, WretchResponse, WretchResponseChain } from "./types.js"
+import type { Wretch, WretchResponse, WretchResponseChain, WretchError as WretchErrorType } from "./types.js"
 import { FETCH_ERROR } from "./constants.js"
 
 /**
  * This class inheriting from Error is thrown when the fetch response is not "ok".
+ * It extends Error and adds status, text and body fields.
  */
-export class WretchError extends Error { }
+export class WretchError extends Error implements WretchErrorType {
+  status: number
+  response: WretchResponse
+  text?: string
+  json?: any
+}
 
 export const resolver = <T, Chain, R>(wretch: Wretch<T, Chain, R>) => {
   const {
@@ -36,7 +42,7 @@ export const resolver = <T, Chain, R>(wretch: Wretch<T, Chain, R>) => {
         // Enhance the error object
         err["cause"] = referenceError
         err.stack = err.stack + "\nCAUSE: " + referenceError.stack
-        err["response"] = response
+        err.response = response
         if (response.type === "opaque") {
           throw err
         }
