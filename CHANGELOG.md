@@ -1,3 +1,13 @@
+<a name="2.0.4"></a>
+## [2.0.4](https://github.com/elbywan/wretch/compare/2.0.3...2.0.4) (2022-08-18)
+
+
+### :art: Code improvement(s)
+
+* Harmonize WretchError types ([1981837](https://github.com/elbywan/wretch/commit/1981837))
+
+
+
 <a name="2.0.3"></a>
 ## [2.0.3](https://github.com/elbywan/wretch/compare/2.0.2...2.0.3) (2022-08-16)
 
