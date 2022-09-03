@@ -111,8 +111,8 @@ export default describe("Retry Middleware", () => {
     expect(counter).toBe(10)
   })
 
-  it("should pass the latest response instead of throwing an error if resolveWithLatestReponse is true", async () => {
-    const w = base().middlewares([retry({ delayTimer: 1, resolveWithLatestReponse: true })], true)
+  it("should pass the latest response instead of throwing an error if resolveWithLatestResponse is true", async () => {
+    const w = base().middlewares([retry({ delayTimer: 1, resolveWithLatestResponse: true })], true)
     // WretchError
     await expect(w.get("/retry").res()).rejects.toMatchObject({ response: { ok: false, counter: 12 } })
   })

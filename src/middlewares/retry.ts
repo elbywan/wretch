@@ -53,7 +53,7 @@ export type RetryOptions = {
    *
    * _Default: `false`_
    */
-  resolveWithLatestReponse?: boolean
+  resolveWithLatestResponse?: boolean
 }
 
 /**
@@ -74,7 +74,7 @@ export type RetryOptions = {
  *     until: (response, error) => response && response.ok,
  *     onRetry: null,
  *     retryOnNetworkError: false,
- *     resolveWithLatestReponse: false
+ *     resolveWithLatestResponse: false
  *   })
  * ])
  *
@@ -105,7 +105,7 @@ export const retry: RetryMiddleware = ({
   until = defaultUntil,
   onRetry = null,
   retryOnNetworkError = false,
-  resolveWithLatestReponse = false
+  resolveWithLatestResponse = false
 } = {}) => {
 
   return next => (url, opts) => {
@@ -141,11 +141,11 @@ export const retry: RetryMiddleware = ({
               return checkStatus(null, error)
             })
           } else {
-            return resolveWithLatestReponse ? response : Promise.reject(error || new Error("Number of attempts exceeded."))
+            return resolveWithLatestResponse ? response : Promise.reject(error || new Error("Number of attempts exceeded."))
           }
         }
 
-        return resolveWithLatestReponse ? response : error ? Promise.reject(error) : response
+        return resolveWithLatestResponse ? response : error ? Promise.reject(error) : response
       })
     }
 

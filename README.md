@@ -606,7 +606,7 @@ wretch().middlewares([
     until: (response, error) => response && response.ok,
     onRetry: null,
     retryOnNetworkError: false,
-    resolveWithLatestReponse: false
+    resolveWithLatestResponse: false
   })
 ])./* ... */
 
