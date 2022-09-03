@@ -30,61 +30,8 @@
 <a href="#retries-a-request-multiple-times-in-case-of-an-error-or-until-a-custom-condition-is-true" id="retries-a-request-multiple-times-in-case-of-an-error-or-until-a-custom-condition-is-true" style="color: inherit; text-decoration: none;">
   <h4>Retries a request multiple times in case of an error (or until a custom condition is true).</h4>
 </a>
-<p><strong>Options</strong></p>
-<ul>
-<li><em>delayTimer</em> <code>milliseconds</code></li>
-</ul>
-<blockquote>
-<p>The timer between each attempt.</p>
-</blockquote>
-<blockquote>
-<p><em>(default: 500)</em></p>
-</blockquote>
-<ul>
-<li><em>delayRamp</em> <code>(delay, nbOfAttempts) =&gt; milliseconds</code></li>
-</ul>
-<blockquote>
-<p>The custom function that is used to calculate the actual delay based on the the timer &amp; the number of attemps.</p>
-</blockquote>
-<blockquote>
-<p><em>(default: delay * nbOfAttemps)</em></p>
-</blockquote>
-<ul>
-<li><em>maxAttempts</em> <code>number</code></li>
-</ul>
-<blockquote>
-<p>The maximum number of retries before resolving the promise with the last error. Specifying 0 means infinite retries.</p>
-</blockquote>
-<blockquote>
-<p><em>(default: 10)</em></p>
-</blockquote>
-<ul>
-<li><em>until</em> <code>(response, error) =&gt; boolean || Promise&lt;boolean&gt;</code></li>
-</ul>
-<blockquote>
-<p>The request will be retried until that condition is satisfied.</p>
-</blockquote>
-<blockquote>
-<p><em>(default: response &amp;&amp; response.ok)</em></p>
-</blockquote>
-<ul>
-<li><em>onRetry</em> <code>({ response, error, url, options }) =&gt; { url?, options? } || Promise&lt;{url?, options?}&gt;</code></li>
-</ul>
-<blockquote>
-<p>Callback that will get executed before retrying the request. If this function returns an object having url and/or options properties, they will override existing values in the retried request.</p>
-</blockquote>
-<blockquote>
-<p><em>(default: null)</em></p>
-</blockquote>
-<ul>
-<li><em>retryOnNetworkError</em> <code>boolean</code></li>
-</ul>
-<blockquote>
-<p>If true, will retry the request if a network error was thrown. Will also provide an &#39;error&#39; argument to the <code>onRetry</code> and <code>until</code> methods.</p>
-</blockquote>
-<blockquote>
-<p><em>(default: false)</em></p>
-</blockquote>
+<pre><code class="language-ts"><span class="hl-8">import</span><span class="hl-2"> </span><span class="hl-6">wretch</span><span class="hl-2"> </span><span class="hl-8">from</span><span class="hl-2"> </span><span class="hl-5">&#39;wretch&#39;</span><br/><span class="hl-8">import</span><span class="hl-2"> { </span><span class="hl-6">retry</span><span class="hl-2"> } </span><span class="hl-8">from</span><span class="hl-2"> </span><span class="hl-5">&#39;wretch/middlewares&#39;</span><br/><br/><span class="hl-4">wretch</span><span class="hl-2">().</span><span class="hl-4">middlewares</span><span class="hl-2">([</span><br/><span class="hl-2">  </span><span class="hl-4">retry</span><span class="hl-2">({</span><br/><span class="hl-2">    </span><span class="hl-0">// Options - defaults below</span><br/><span class="hl-2">    </span><span class="hl-6">delayTimer:</span><span class="hl-2"> </span><span class="hl-7">500</span><span class="hl-2">,</span><br/><span class="hl-2">    </span><span class="hl-4">delayRamp</span><span class="hl-6">:</span><span class="hl-2"> (</span><span class="hl-6">delay</span><span class="hl-2">, </span><span class="hl-6">nbOfAttempts</span><span class="hl-2">) </span><span class="hl-1">=&gt;</span><span class="hl-2"> </span><span class="hl-6">delay</span><span class="hl-2"> * </span><span class="hl-6">nbOfAttempts</span><span class="hl-2">,</span><br/><span class="hl-2">    </span><span class="hl-6">maxAttempts:</span><span class="hl-2"> </span><span class="hl-7">10</span><span class="hl-2">,</span><br/><span class="hl-2">    </span><span class="hl-4">until</span><span class="hl-6">:</span><span class="hl-2"> (</span><span class="hl-6">response</span><span class="hl-2">, </span><span class="hl-6">error</span><span class="hl-2">) </span><span class="hl-1">=&gt;</span><span class="hl-2"> </span><span class="hl-6">response</span><span class="hl-2"> &amp;&amp; </span><span class="hl-6">response</span><span class="hl-2">.</span><span class="hl-6">ok</span><span class="hl-2">,</span><br/><span class="hl-2">    </span><span class="hl-6">onRetry:</span><span class="hl-2"> </span><span class="hl-1">null</span><span class="hl-2">,</span><br/><span class="hl-2">    </span><span class="hl-6">retryOnNetworkError:</span><span class="hl-2"> </span><span class="hl-1">false</span><span class="hl-2">,</span><br/><span class="hl-2">    </span><span class="hl-6">resolveWithLatestReponse:</span><span class="hl-2"> </span><span class="hl-1">false</span><br/><span class="hl-2">  })</span><br/><span class="hl-2">])</span><br/><br/><span class="hl-0">// You can also return a Promise, which is useful if you want to inspect the body:</span><br/><span class="hl-4">wretch</span><span class="hl-2">().</span><span class="hl-4">middlewares</span><span class="hl-2">([</span><br/><span class="hl-2">  </span><span class="hl-4">retry</span><span class="hl-2">({</span><br/><span class="hl-2">    </span><span class="hl-4">until</span><span class="hl-6">:</span><span class="hl-2"> </span><span class="hl-6">response</span><span class="hl-2"> </span><span class="hl-1">=&gt;</span><br/><span class="hl-2">      </span><span class="hl-6">response</span><span class="hl-2">.</span><span class="hl-4">clone</span><span class="hl-2">().</span><span class="hl-4">json</span><span class="hl-2">().</span><span class="hl-4">then</span><span class="hl-2">(</span><span class="hl-6">body</span><span class="hl-2"> </span><span class="hl-1">=&gt;</span><br/><span class="hl-2">        </span><span class="hl-6">body</span><span class="hl-2">.</span><span class="hl-6">field</span><span class="hl-2"> === </span><span class="hl-5">&#39;something&#39;</span><br/><span class="hl-2">      )</span><br/><span class="hl-2">  })</span><br/><span class="hl-2">])</span>
+</code></pre>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
@@ -93,7 +40,7 @@
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> options: <a href="middlewares_retry.RetryOptions.html" class="tsd-signature-type" data-tsd-kind="Type alias">RetryOptions</a></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="index.ConfiguredMiddleware.html" class="tsd-signature-type" data-tsd-kind="Type alias">ConfiguredMiddleware</a></h4></li></ul></li></ul></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/elbywan/wretch/blob/1981837/src/middlewares/retry.ts#L66">src/middlewares/retry.ts:66</a></li></ul></aside></div>
+<li>Defined in <a href="https://github.com/elbywan/wretch/blob/60a7453/src/middlewares/retry.ts#L92">src/middlewares/retry.ts:92</a></li></ul></aside></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tsd-navigation settings">
 <details class="tsd-index-accordion"><summary class="tsd-accordion-summary">

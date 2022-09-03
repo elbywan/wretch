@@ -1,3 +1,17 @@
+<a name="2.1.0"></a>
+# [2.1.0](https://github.com/elbywan/wretch/compare/2.0.4...2.1.0) (2022-09-03)
+
+
+### :factory: New feature(s)
+
+* Add ability to resolve with latest response to the retry middle ([60a7453](https://github.com/elbywan/wretch/commit/60a7453)), closes [#141](https://github.com/elbywan/wretch/issues/141)
+
+### :memo: Documentation update(s)
+
+* Remove outdated documentation entries for the retry middleware ([7a5620c](https://github.com/elbywan/wretch/commit/7a5620c))
+
+
+
 <a name="2.0.4"></a>
 ## [2.0.4](https://github.com/elbywan/wretch/compare/2.0.3...2.0.4) (2022-08-18)
 
