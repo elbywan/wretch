@@ -12,12 +12,48 @@ export type OnRetryFunction = (args: {
   options: WretchOptions
 }) => void | OnRetryFunctionResponse | Promise<OnRetryFunctionResponse>
 export type RetryOptions = {
+  /**
+   * The timer between each attempt in milliseconds.
+   *
+   * _Default: `500`_
+   */
   delayTimer?: number,
+  /**
+   * The custom function that is used to calculate the actual delay based on the the timer & the number of attemps.
+   *
+   * _Default: `delay * nbOfAttemps`_
+   */
   delayRamp?: DelayRampFunction,
+  /**
+   * The maximum number of retries before resolving the promise with the last error. Specifying 0 means infinite retries.
+   *
+   * _Default: `10`_
+   */
   maxAttempts?: number,
+  /**
+   * The request will be retried until that condition is satisfied.
+   *
+   * _Default: `response && response.ok`_
+   */
   until?: UntilFunction,
+  /**
+   * Callback that will get executed before retrying the request. If this function returns an object having url and/or options properties, they will override existing values in the retried request.
+   *
+   * _Default: `undefined`_
+   */
   onRetry?: OnRetryFunction,
+  /**
+   * If true, will retry the request if a network error was thrown. Will also provide an 'error' argument to the `onRetry` and `until` methods.
+   *
+   * _Default: `false`_
+   */
   retryOnNetworkError?: boolean,
+  /**
+   * If true, the request will be resolved with the latest response instead of rejected with an error.
+   *
+   * _Default: `false`_
+   */
+  resolveWithLatestReponse?: boolean
 }
 
 /**
@@ -25,43 +61,33 @@ export type RetryOptions = {
  *
  * #### Retries a request multiple times in case of an error (or until a custom condition is true).
  *
- * **Options**
+ * ```ts
+ * import wretch from 'wretch'
+ * import { retry } from 'wretch/middlewares'
  *
- * - *delayTimer* `milliseconds`
+ * wretch().middlewares([
+ *   retry({
+ *     // Options - defaults below
+ *     delayTimer: 500,
+ *     delayRamp: (delay, nbOfAttempts) => delay * nbOfAttempts,
+ *     maxAttempts: 10,
+ *     until: (response, error) => response && response.ok,
+ *     onRetry: null,
+ *     retryOnNetworkError: false,
+ *     resolveWithLatestReponse: false
+ *   })
+ * ])
  *
- * > The timer between each attempt.
- *
- * > *(default: 500)*
- *
- * - *delayRamp* `(delay, nbOfAttempts) => milliseconds`
- *
- * > The custom function that is used to calculate the actual delay based on the the timer & the number of attemps.
- *
- * > *(default: delay * nbOfAttemps)*
- *
- * - *maxAttempts* `number`
- *
- * > The maximum number of retries before resolving the promise with the last error. Specifying 0 means infinite retries.
- *
- * > *(default: 10)*
- *
- * - *until* `(response, error) => boolean || Promise<boolean>`
- *
- * > The request will be retried until that condition is satisfied.
- *
- * > *(default: response && response.ok)*
- *
- * - *onRetry* `({ response, error, url, options }) => { url?, options? } || Promise<{url?, options?}>`
- *
- * > Callback that will get executed before retrying the request. If this function returns an object having url and/or options properties, they will override existing values in the retried request.
- *
- * > *(default: null)*
- *
- * - *retryOnNetworkError* `boolean`
- *
- * > If true, will retry the request if a network error was thrown. Will also provide an 'error' argument to the `onRetry` and `until` methods.
- *
- * > *(default: false)*
+ * // You can also return a Promise, which is useful if you want to inspect the body:
+ * wretch().middlewares([
+ *   retry({
+ *     until: response =>
+ *       response.clone().json().then(body =>
+ *         body.field === 'something'
+ *       )
+ *   })
+ * ])
+ * ```
  */
 export type RetryMiddleware = (options?: RetryOptions) => ConfiguredMiddleware
 
@@ -78,7 +104,8 @@ export const retry: RetryMiddleware = ({
   maxAttempts = 10,
   until = defaultUntil,
   onRetry = null,
-  retryOnNetworkError = false
+  retryOnNetworkError = false,
+  resolveWithLatestReponse = false
 } = {}) => {
 
   return next => (url, opts) => {
@@ -86,7 +113,7 @@ export const retry: RetryMiddleware = ({
 
     const checkStatus = (response?: Response, error?: Error) => {
       return Promise.resolve(until(response, error)).then(done => {
-        // If the response is unexpected
+        // If the response is not suitable
         if (!done) {
           numberOfAttemptsMade++
 
@@ -102,7 +129,7 @@ export const retry: RetryMiddleware = ({
                     url,
                     options: opts
                   })).then((values = {}) => {
-                    resolve(next((values as any).url ?? url, (values as any).options ?? opts))
+                    resolve(next((values && values.url) ?? url, (values && values.options) ?? opts))
                   })
                 } else {
                   resolve(next(url, opts))
@@ -114,11 +141,11 @@ export const retry: RetryMiddleware = ({
               return checkStatus(null, error)
             })
           } else {
-            return Promise.reject(error || new Error("Number of attempts exceeded."))
+            return resolveWithLatestReponse ? response : Promise.reject(error || new Error("Number of attempts exceeded."))
           }
         }
 
-        return error ? Promise.reject(error) : response
+        return resolveWithLatestReponse ? response : error ? Promise.reject(error) : response
       })
     }
 

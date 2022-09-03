@@ -57,7 +57,7 @@ export default describe("Retry Middleware", () => {
   })
 
   it("should execute 'onRetry'", async () => {
-    let counter = 0;
+    let counter = 0
     const w = base().middlewares([retry({
       delayTimer: 1,
       onRetry({ url, options, error }) {
@@ -73,7 +73,7 @@ export default describe("Retry Middleware", () => {
   })
 
   it("should allow 'onRetry' to modify url and options", async () => {
-    let counter = 0;
+    let counter = 0
     const w = base().middlewares([retry({
       delayTimer: 1,
       onRetry() {
@@ -96,7 +96,7 @@ export default describe("Retry Middleware", () => {
         fail("Should never be called")
       }
     })], true)
-    let counter = 0;
+    let counter = 0
     const wRetry = wretch().polyfills({ fetch: throwPolyfill }).middlewares([retry({
       delayTimer: 1,
       retryOnNetworkError: true,
@@ -109,5 +109,11 @@ export default describe("Retry Middleware", () => {
     await expect(wThrow.get("/retry").res()).rejects.toThrowError("Network Error")
     await expect(wRetry.get("/retry").res()).rejects.toThrowError("Network Error")
     expect(counter).toBe(10)
+  })
+
+  it("should pass the latest response instead of throwing an error if resolveWithLatestReponse is true", async () => {
+    const w = base().middlewares([retry({ delayTimer: 1, resolveWithLatestReponse: true })], true)
+    // WretchError
+    await expect(w.get("/retry").res()).rejects.toMatchObject({ response: { ok: false, counter: 12 } })
   })
 })

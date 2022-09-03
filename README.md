@@ -605,7 +605,8 @@ wretch().middlewares([
     maxAttempts: 10,
     until: (response, error) => response && response.ok,
     onRetry: null,
-    retryOnNetworkError: false
+    retryOnNetworkError: false,
+    resolveWithLatestReponse: false
   })
 ])./* ... */
 
