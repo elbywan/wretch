@@ -1,3 +1,13 @@
+<a name="2.1.1"></a>
+## [2.1.1](https://github.com/elbywan/wretch/compare/2.1.0...2.1.1) (2022-09-03)
+
+
+### :bug: Bug fix(es)
+
+* Fix typo in function name #141 ([d82cfd5](https://github.com/elbywan/wretch/commit/d82cfd5)), closes [#141](https://github.com/elbywan/wretch/issues/141)
+
+
+
 <a name="2.1.0"></a>
 # [2.1.0](https://github.com/elbywan/wretch/compare/2.0.4...2.1.0) (2022-09-03)
 
