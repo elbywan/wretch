@@ -71,7 +71,7 @@ export const resolver = <T, Chain, R>(wretch: Wretch<T, Chain, R>) => {
     })
   }
   // Enforces the proper promise type when a body parsing method is called.
-  type BodyParser = <Type>(funName: string | null) => <Result = void>(cb?: (type: Type) => Result) => Promise<Result>
+  type BodyParser = <Type>(funName: string | null) => <Result = void>(cb?: (type: Type) => Result) => Promise<Awaited<Result>>
   const bodyParser: BodyParser = funName => cb => funName ?
     // If a callback is provided, then callback with the body result otherwise return the parsed body itself.
     catchersWrapper(throwingPromise.then(_ => _ && _[funName]()).then(_ => cb ? cb(_) : _)) :

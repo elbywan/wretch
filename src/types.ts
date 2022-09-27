@@ -562,7 +562,7 @@ export interface WretchResponseChain<T, Self = unknown, R = undefined> {
    *
    * @category Response Type
    */
-  res: <Result = WretchResponse>(cb?: (type: WretchResponse) => Result) => Promise<Result>,
+  res: <Result = WretchResponse>(cb?: (type: WretchResponse) => Promise<Result> | Result) => Promise<Awaited<Result>>,
   /**
    * Read the payload and deserialize it as JSON.
    *
@@ -572,7 +572,7 @@ export interface WretchResponseChain<T, Self = unknown, R = undefined> {
    *
    * @category Response Type
    */
-  json: <Result = unknown>(cb?: (type: Result) => Result) => Promise<Result>,
+  json: <Result = unknown>(cb?: (type: any) => Promise<Result> | Result) => Promise<Awaited<Result>>,
   /**
    * Read the payload and deserialize it as a Blob.
    *
@@ -582,7 +582,7 @@ export interface WretchResponseChain<T, Self = unknown, R = undefined> {
    *
    * @category Response Type
    */
-  blob: <Result = Blob>(cb?: (type: Blob) => Result) => Promise<Result>,
+  blob: <Result = Blob>(cb?: (type: Blob) => Promise<Result> | Result) => Promise<Awaited<Result>>,
   /**
    * Read the payload and deserialize it as a FormData object.
    *
@@ -592,7 +592,7 @@ export interface WretchResponseChain<T, Self = unknown, R = undefined> {
    *
    * @category Response Type
    */
-  formData: <Result = FormData>(cb?: (type: FormData) => Result) => Promise<Result>,
+  formData: <Result = FormData>(cb?: (type: FormData) => Promise<Result> | Result) => Promise<Awaited<Result>>,
   /**
    * Read the payload and deserialize it as an ArrayBuffer object.
    *
@@ -602,7 +602,7 @@ export interface WretchResponseChain<T, Self = unknown, R = undefined> {
    *
    * @category Response Type
    */
-  arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Result) => Promise<Result>,
+  arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Promise<Result> | Result) => Promise<Awaited<Result>>,
   /**
    * Retrieves the payload as a string.
    *
@@ -612,7 +612,7 @@ export interface WretchResponseChain<T, Self = unknown, R = undefined> {
    *
    * @category Response Type
    */
-  text: <Result = string>(cb?: (type: string) => Result) => Promise<Result>,
+  text: <Result = string>(cb?: (type: string) => Promise<Result> | Result) => Promise<Awaited<Result>>,
 
   /**
    * Catches an http response with a specific error code or name and performs a callback.
