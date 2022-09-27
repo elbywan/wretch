@@ -1,3 +1,21 @@
+<a name="2.1.2"></a>
+## [2.1.2](https://github.com/elbywan/wretch/compare/2.1.1...2.1.2) (2022-09-27)
+
+
+### :art: Code improvement(s)
+
+* Fix some linter warnings ([c1029c8](https://github.com/elbywan/wretch/commit/c1029c8))
+
+### :bug: Bug fix(es)
+
+* Fix type inconsistencies in the body parsers ([b7cae7e](https://github.com/elbywan/wretch/commit/b7cae7e)), closes [#143](https://github.com/elbywan/wretch/issues/143)
+
+### :memo: Documentation update(s)
+
+* Fix throttling cache documentation link ([f66859d](https://github.com/elbywan/wretch/commit/f66859d))
+
+
+
 <a name="2.1.1"></a>
 ## [2.1.1](https://github.com/elbywan/wretch/compare/2.1.0...2.1.1) (2022-09-03)
 
