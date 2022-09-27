@@ -19,7 +19,7 @@ import { performance, PerformanceObserver } from "perf_hooks"
 // clearResourceTimings is read-only since node 18. Use `defineProperty` to force override it
 // See https://github.com/facebook/jest/issues/2227#issuecomment-265005782
 // tslint:disable-next-line: no-empty
-Object.defineProperty(performance, 'clearResourceTimings', { value: () => {} })
+Object.defineProperty(performance, "clearResourceTimings", { value: () => { } })
 
 const _PORT = 9876
 const _URL = `http://localhost:${_PORT}`
@@ -163,10 +163,10 @@ describe("Wretch", function () {
     try {
       await wretch(`${_URL}/json/roundTrip`).content("bad/content").post(jsonObject).json()
       fail("should have thrown")
-    } catch (e) { }
+    } catch (e) { /* ignore */ }
     // Ensure that the charset is preserved.
     const headerWithCharset = "application/json; charset=utf-16"
-    expect(wretch().content(headerWithCharset).json({})._options.headers['Content-Type']).toBe(headerWithCharset)
+    expect(wretch().content(headerWithCharset).json({})._options.headers["Content-Type"]).toBe(headerWithCharset)
   })
 
   it("should perform an url encoded form data round trip", async function () {

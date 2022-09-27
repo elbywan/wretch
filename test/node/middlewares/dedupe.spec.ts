@@ -5,7 +5,7 @@ import { mock } from "./mock"
 
 export default describe("Dedupe Middleware", () => {
   const PORT = 0
-  let server: http.Server | null = null;
+  let server: http.Server | null = null
   let logs: any[] = []
 
   const log = (url: string, options: WretchOptions) => {
@@ -20,7 +20,7 @@ export default describe("Dedupe Middleware", () => {
   beforeAll(done => {
     server = http.createServer((req, res) => {
       req.pipe(res)
-    });
+    })
     server.listen(PORT, "127.0.0.1")
     server.once("listening", () => {
       done()
@@ -57,15 +57,15 @@ export default describe("Dedupe Middleware", () => {
       [baseAddress() + "/three", "GET"],
       [baseAddress() + "/one", "POST"],
       [baseAddress() + "/one", "POST"]
-    ]);
+    ])
 
     results.forEach((result, i) => {
       expect(result).toMatchObject({
         url: baseAddress() + "/" + ((i < 3 || i > 5) ? "one" : i < 5 ? "two" : "three"),
         status: 200,
-        statusText: 'OK',
+        statusText: "OK",
       })
-    });
+    })
   })
 
   it("should skip some requests", async () => {
@@ -108,9 +108,9 @@ export default describe("Dedupe Middleware", () => {
       expect(result).toMatchObject({
         url: baseAddress() + "/one",
         status: 200,
-        statusText: 'OK',
+        statusText: "OK",
       })
-    });
+    })
   })
 
   it("should allow custom resolvers", async () => {
