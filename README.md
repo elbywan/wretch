@@ -639,7 +639,7 @@ wretch().middlewares([
 ])./* ... */
 ```
 
-### [Throttling Cache 🔗](https://elbywan.github.io/wretch/api/functionsmiddlewares_throttlingCache.throttlingCache.html)
+### [Throttling Cache 🔗](https://elbywan.github.io/wretch/api/modules/middlewares_throttlingCache.html)
 
 **A throttling cache which stores and serves server responses for a certain amount of time.**
 
