@@ -1,3 +1,13 @@
+<a name="2.1.4"></a>
+## [2.1.4](https://github.com/elbywan/wretch/compare/2.1.3...2.1.4) (2022-09-28)
+
+
+### :bug: Bug fix(es)
+
+* Relax the typechecker when using resolve within defer ([9e052c8](https://github.com/elbywan/wretch/commit/9e052c8)), closes [#146](https://github.com/elbywan/wretch/issues/146)
+
+
+
 <a name="2.1.3"></a>
 ## [2.1.3](https://github.com/elbywan/wretch/compare/2.1.2...2.1.3) (2022-09-28)
 
