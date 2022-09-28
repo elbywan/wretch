@@ -529,7 +529,7 @@ import FormUrlAddon from "wretch/addons/formUrl"
 
 ### [Abort 🔗](https://elbywan.github.io/wretch/api/modules/addons_abort.html)
 
-Adds the ability to abort requests using AbortController and signals under the hood.
+Adds the ability to abort requests and set timeouts using AbortController and signals under the hood.
 
 ```js
 import AbortAddon from "wretch/addons/abort"
@@ -540,7 +540,7 @@ _Only compatible with browsers that support
 Otherwise, you could use a (partial)
 [polyfill](https://www.npmjs.com/package/abortcontroller-polyfill)._
 
-Use case :
+Use cases :
 
 ```js
 const [c, w] = wretch("...")
@@ -564,6 +564,13 @@ wretch("...")
   .text((_) => console.log("should never be called"));
 
 controller.abort();
+```
+
+```js
+// 1 second timeout
+wretch("...").addon(AbortAddon()).get().setTimeout(1000).json(_ =>
+  // will not be called if the request timeouts
+)
 ```
 
 ### [Performance 🔗](https://elbywan.github.io/wretch/api/modules/addons_perfs.html)
