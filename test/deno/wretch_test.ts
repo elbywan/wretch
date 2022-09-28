@@ -338,7 +338,7 @@ describe("Wretch", function () {
     assertEquals(accepted, true)
   })
 
-  it("should allow url, query parameters & options modifications and return a fresh new Wretcher object containing the change", async function () {
+  it("should allow url, query parameters & options modifications and return a fresh new Wretch object containing the change", async function () {
     const obj1 = wretch("...")
     const obj2 = obj1.url(_URL, true)
     assertEquals(obj1["_url"], "...")
