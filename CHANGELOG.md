@@ -1,3 +1,13 @@
+<a name="2.1.3"></a>
+## [2.1.3](https://github.com/elbywan/wretch/compare/2.1.2...2.1.3) (2022-09-28)
+
+
+### :bug: Bug fix(es)
+
+* Fix the retry middleware crashing on network errors ([95cbad5](https://github.com/elbywan/wretch/commit/95cbad5)), closes [#145](https://github.com/elbywan/wretch/issues/145)
+
+
+
 <a name="2.1.2"></a>
 ## [2.1.2](https://github.com/elbywan/wretch/compare/2.1.1...2.1.2) (2022-09-27)
 
