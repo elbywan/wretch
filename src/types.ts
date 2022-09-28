@@ -736,7 +736,7 @@ export type WretchResponse = Response & { [key: string]: any }
 /**
  * Callback provided to the defer function allowing to chain deferred actions that will be stored and applied just before the request is sent.
  */
-export type WretchDeferredCallback<T, C, R> = (wretch: T & Wretch<T, C, R>, url: string, options: WretchOptions) => Wretch<T, C, R>
+export type WretchDeferredCallback<T, C, R> = (wretch: T & Wretch<T, C, R>, url: string, options: WretchOptions) => Wretch<T, C, any>
 
 /**
  * Shape of a typical middleware.
