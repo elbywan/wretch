@@ -141,11 +141,11 @@ export const retry: RetryMiddleware = ({
               return checkStatus(null, error)
             })
           } else {
-            return resolveWithLatestResponse ? response : Promise.reject(error || new Error("Number of attempts exceeded."))
+            return !!response && resolveWithLatestResponse ? response : Promise.reject(error || new Error("Number of attempts exceeded."))
           }
         }
 
-        return resolveWithLatestResponse ? response : error ? Promise.reject(error) : response
+        return !!response && resolveWithLatestResponse ? response : error ? Promise.reject(error) : response
       })
     }
 
