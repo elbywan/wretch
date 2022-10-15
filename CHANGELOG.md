@@ -1,3 +1,24 @@
+<a name="2.1.5"></a>
+## [2.1.5](https://github.com/elbywan/wretch/compare/2.1.4...2.1.5) (2022-10-15)
+
+
+### :arrow_up: Version update(s)
+
+* Bump dependencies ([6043c75](https://github.com/elbywan/wretch/commit/6043c75))
+* Bump fastify from 4.3.0 to 4.8.1 ([130ccc2](https://github.com/elbywan/wretch/commit/130ccc2))
+
+### :bug: Bug fix(es)
+
+* Query addon should strip undefined values ([ce395b5](https://github.com/elbywan/wretch/commit/ce395b5)), closes [#148](https://github.com/elbywan/wretch/issues/148)
+
+### :memo: Documentation update(s)
+
+* Add timeout code sample in the readme ([beb51c8](https://github.com/elbywan/wretch/commit/beb51c8))
+* Fix outdated code comments ([d4c546d](https://github.com/elbywan/wretch/commit/d4c546d))
+* Fix unpkg url  in the readme ([07d4a00](https://github.com/elbywan/wretch/commit/07d4a00))
+
+
+
 <a name="2.1.4"></a>
 ## [2.1.4](https://github.com/elbywan/wretch/compare/2.1.3...2.1.4) (2022-09-28)
 

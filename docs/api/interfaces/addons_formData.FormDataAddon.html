@@ -19,7 +19,7 @@
 <ul class="tsd-hierarchy">
 <li><span class="target">FormDataAddon</span></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/elbywan/wretch/blob/9e052c8/src/addons/formData.ts#L37">src/addons/formData.ts:37</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/elbywan/wretch/blob/b82285d/src/addons/formData.ts#L37">src/addons/formData.ts:37</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -50,15 +50,15 @@ string to exclude specific keys.</p>
 <pre><code class="language-js"><span class="hl-1">const</span><span class="hl-2"> </span><span class="hl-3">form</span><span class="hl-2"> = {</span><br/><span class="hl-2">  </span><span class="hl-6">duck:</span><span class="hl-2"> </span><span class="hl-5">&quot;Muscovy&quot;</span><span class="hl-2">,</span><br/><span class="hl-2">  </span><span class="hl-6">duckProperties:</span><span class="hl-2"> {</span><br/><span class="hl-2">    </span><span class="hl-6">beak:</span><span class="hl-2"> {</span><br/><span class="hl-2">      </span><span class="hl-6">color:</span><span class="hl-2"> </span><span class="hl-5">&quot;yellow&quot;</span><span class="hl-2">,</span><br/><span class="hl-2">    },</span><br/><span class="hl-2">    </span><span class="hl-6">legs:</span><span class="hl-2"> </span><span class="hl-7">2</span><span class="hl-2">,</span><br/><span class="hl-2">  },</span><br/><span class="hl-2">  </span><span class="hl-6">ignored:</span><span class="hl-2"> {</span><br/><span class="hl-2">    </span><span class="hl-6">key:</span><span class="hl-2"> </span><span class="hl-7">0</span><span class="hl-2">,</span><br/><span class="hl-2">  },</span><br/><span class="hl-2">};</span><br/><br/><span class="hl-0">// Will append the following keys to the FormData payload:</span><br/><span class="hl-0">// &quot;duck&quot;, &quot;duckProperties[beak][color]&quot;, &quot;duckProperties[legs]&quot;</span><br/><span class="hl-4">wretch</span><span class="hl-2">(</span><span class="hl-5">&quot;...&quot;</span><span class="hl-2">).</span><span class="hl-4">addons</span><span class="hl-2">(</span><span class="hl-6">FormDataAddon</span><span class="hl-2">).</span><span class="hl-4">formData</span><span class="hl-2">(</span><span class="hl-6">form</span><span class="hl-2">, [</span><span class="hl-5">&quot;ignored&quot;</span><span class="hl-2">]).</span><span class="hl-4">post</span><span class="hl-2">();</span>
 </code></pre>
 </div>
-<div class="tsd-type-parameters">
-<h4 class="tsd-type-parameters-title">Type Parameters</h4>
+<section class="tsd-panel tsd-type-parameters">
+<h4>Type Parameters</h4>
 <ul class="tsd-type-parameters">
 <li>
 <h4>T<span class="tsd-signature-symbol"> extends </span><a href="addons_formData.FormDataAddon.html" class="tsd-signature-type" data-tsd-kind="Interface">FormDataAddon</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type" data-tsd-kind="Type parameter">T</span><span class="tsd-signature-symbol">&gt;</span></h4></li>
 <li>
 <h4>C</h4></li>
 <li>
-<h4>R</h4></li></ul></div>
+<h4>R</h4></li></ul></section>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
@@ -74,7 +74,7 @@ string to exclude specific keys.</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="addons_formData.FormDataAddon.html" class="tsd-signature-type" data-tsd-kind="Interface">FormDataAddon</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/elbywan/wretch/blob/9e052c8/src/addons/formData.ts#L80">src/addons/formData.ts:80</a></li></ul></aside></li></ul></section></section></div>
+<li>Defined in <a href="https://github.com/elbywan/wretch/blob/b82285d/src/addons/formData.ts#L80">src/addons/formData.ts:80</a></li></ul></aside></li></ul></section></section></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tsd-navigation settings">
 <details class="tsd-index-accordion"><summary class="tsd-accordion-summary">
