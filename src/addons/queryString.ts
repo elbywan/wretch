@@ -1,5 +1,9 @@
 import type { Wretch, Config, WretchAddon } from "../types.js"
 
+function stringify(value?: string | null): string | null {
+  return typeof value !== "undefined" ? value : ""
+}
+
 const appendQueryParams = (url: string, qp: object | string, replace: boolean, config: Config) => {
   let queryString: string
 
@@ -8,11 +12,12 @@ const appendQueryParams = (url: string, qp: object | string, replace: boolean, c
   } else {
     const usp = config.polyfill("URLSearchParams", true, true)
     for (const key in qp) {
+      const value = qp[key]
       if (qp[key] instanceof Array) {
-        for (const val of qp[key])
-          usp.append(key, val)
+        for (const val of value)
+          usp.append(key, stringify(val))
       } else {
-        usp.append(key, qp[key])
+        usp.append(key, stringify(value))
       }
     }
     queryString = usp.toString()

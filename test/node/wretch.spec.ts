@@ -663,6 +663,12 @@ describe("Wretch", function () {
     expect(w.query({}, true)._url).toBe(_URL)
     expect(w.query({ a: 1 }).query({}, true)._url).toBe(_URL)
   })
+
+  it("should strip undefined values", function () {
+    const w = wretch(_URL).addon(QueryStringAddon)
+    expect(w.query({ a: undefined, b: 1 })._url).toBe(_URL + "?a=&b=1")
+    expect(w.query({ array: ["a", "b", undefined, "c"] })._url).toBe(_URL + "?array=a&array=b&array=&array=c")
+  })
 })
 
 describe("Mix", function () {
