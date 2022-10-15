@@ -75,7 +75,8 @@
     "interface-over-type-literal": false,
     "max-line-length": false,
     "member-ordering": false,
-    "no-shadowed-variable": false
+    "no-shadowed-variable": false,
+    "forin": false
   },
   "rulesDirectory": []
 }

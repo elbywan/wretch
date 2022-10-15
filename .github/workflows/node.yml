@@ -18,34 +18,34 @@ jobs:
         # Remember to update README.md and package.json when updating the version matrix
         version: [14, 16, 18]
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.version }}
-        cache: 'npm'
-    - name: Install dependencies
-      run: npm ci
-    - name: Lint
-      run: npm run lint
-    - name: Build
-      run: npm run build
-    - name: Unit tests
-      run: npm run test
-    - name: Coveralls
-      if: ${{ success() }}
-      uses: coverallsapp/github-action@master
-      with:
-        parallel: true
-        flag-name: node-${{ matrix.version }}
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        path-to-lcov: "./coverage/lcov.info"
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.version }}
+          cache: "npm"
+      - name: Install dependencies
+        run: npm ci --force
+      - name: Lint
+        run: npm run lint
+      - name: Build
+        run: npm run build
+      - name: Unit tests
+        run: npm run test
+      - name: Coveralls
+        if: ${{ success() }}
+        uses: coverallsapp/github-action@master
+        with:
+          parallel: true
+          flag-name: node-${{ matrix.version }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: "./coverage/lcov.info"
 
   finish:
     needs: nodejs-test
     runs-on: ubuntu-latest
     steps:
-    - name: Coveralls Finished
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.github_token }}
-        parallel-finished: true
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.github_token }}
+          parallel-finished: true

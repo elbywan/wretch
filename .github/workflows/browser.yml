@@ -14,13 +14,13 @@ jobs:
   browsers-test:
     runs-on: macos-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v3
-      with:
-        cache: 'npm'
-    - name: Install dependencies
-      run: npm ci
-    - name: Build
-      run: npm run build
-    - name: Run browser tests
-      run: npm run test:karma
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          cache: "npm"
+      - name: Install dependencies
+        run: npm ci --force
+      - name: Build
+        run: npm run build
+      - name: Run browser tests
+        run: npm run test:karma

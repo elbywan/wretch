@@ -1,4 +1,5 @@
-import typescript from "rollup-plugin-typescript"
+import typescript from "typescript"
+import typescriptPlugin from "rollup-plugin-typescript"
 import { terser } from "rollup-plugin-terser"
 import nodeResolve from "rollup-plugin-node-resolve"
 
@@ -7,8 +8,8 @@ const middlewares = ["dedupe", "delay", "retry", "throttlingCache"]
 
 const common = {
   plugins: [
-    typescript({
-      typescript: require("typescript"),
+    typescriptPlugin({
+      typescript,
       importHelpers: true
     }),
     nodeResolve(),
