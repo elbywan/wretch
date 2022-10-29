@@ -24,7 +24,7 @@ jobs:
           node-version: ${{ matrix.version }}
           cache: "npm"
       - name: Install dependencies
-        run: npm ci --force
+        run: npm ci
       - name: Lint
         run: npm run lint
       - name: Build

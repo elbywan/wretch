@@ -19,7 +19,7 @@ jobs:
         with:
           cache: "npm"
       - name: Install dependencies
-        run: npm ci --force
+        run: npm ci
       - name: Build
         run: npm run build
       - name: Run browser tests

@@ -1,15 +1,13 @@
-import typescript from "typescript"
-import typescriptPlugin from "rollup-plugin-typescript"
-import { terser } from "rollup-plugin-terser"
-import nodeResolve from "rollup-plugin-node-resolve"
+import typescript from '@rollup/plugin-typescript';
+import terser from '@rollup/plugin-terser';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
 
 const addons = ["abort", "formData", "formUrl", "perfs", "queryString"]
 const middlewares = ["dedupe", "delay", "retry", "throttlingCache"]
 
 const common = {
   plugins: [
-    typescriptPlugin({
-      typescript,
+    typescript({
       importHelpers: true
     }),
     nodeResolve(),
