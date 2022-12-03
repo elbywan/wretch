@@ -509,6 +509,17 @@ Used to construct and append the query string part of the URL from an object.
 
 ```js
 import QueryStringAddon from "wretch/addons/queryString"
+
+let w = wretch("http://example.com").addon(QueryStringAddon);
+// url is http://example.com
+w = w.query({ a: 1, b: 2 });
+// url is now http://example.com?a=1&b=2
+w = w.query({ c: 3, d: [4, 5] });
+// url is now http://example.com?a=1&b=2c=3&d=4&d=5
+w = w.query("five&six&seven=eight");
+// url is now http://example.com?a=1&b=2c=3&d=4&d=5&five&six&seven=eight
+w = w.query({ reset: true }, true);
+// url is now  http://example.com?reset=true
 ```
 
 ### [FormData 🔗](https://elbywan.github.io/wretch/api/interfaces/addons_formData.FormDataAddon.html)
@@ -517,6 +528,23 @@ Adds a helper method to serialize a `multipart/form-data` body from an object.
 
 ```js
 import FormDataAddon from "wretch/addons/formData"
+
+const form = {
+  duck: "Muscovy",
+  duckProperties: {
+    beak: {
+      color: "yellow",
+    },
+    legs: 2,
+  },
+  ignored: {
+    key: 0,
+  },
+};
+
+// Will append the following keys to the FormData payload:
+// "duck", "duckProperties[beak][color]", "duckProperties[legs]"
+wretch("...").addons(FormDataAddon).formData(form, ["ignored"]).post();
 ```
 
 ### [FormUrl 🔗](https://elbywan.github.io/wretch/api/interfaces/addons_formUrl.FormUrlAddon.html)
@@ -525,6 +553,13 @@ Adds a method to serialize a `application/x-www-form-urlencoded` body from an ob
 
 ```js
 import FormUrlAddon from "wretch/addons/formUrl"
+
+const form = { a: 1, b: { c: 2 } };
+const alreadyEncodedForm = "a=1&b=%7B%22c%22%3A2%7D";
+
+// Automatically sets the content-type header to "application/x-www-form-urlencoded"
+wretch("...").addon(FormUrlAddon).formUrl(form).post();
+wretch("...").addon(FormUrlAddon).formUrl(alreadyEncodedForm).post();
 ```
 
 ### [Abort 🔗](https://elbywan.github.io/wretch/api/modules/addons_abort.html)
@@ -571,6 +606,26 @@ controller.abort();
 wretch("...").addon(AbortAddon()).get().setTimeout(1000).json(_ =>
   // will not be called if the request timeouts
 )
+```
+
+### [Progress 🔗](https://elbywan.github.io/wretch/api/modules/addons_progress.html)
+
+Adds the ability to monitor progress when downloading a response.
+
+_Compatible with all platforms implementing the [TransformStream WebAPI](https://developer.mozilla.org/en-US/docs/Web/API/TransformStream#browser_compatibility)._
+
+
+```js
+import ProgressAddon from "wretch/addons/progress"
+
+wretch("some_url")
+  .addon(ProgressAddon())
+  // Called with the number of bytes loaded and the total number of bytes to load
+  .progress((loaded, total) => {
+    console.log(`${(loaded / total * 100).toFixed(0)}%`)
+  })
+  .get()
+  .json()
 ```
 
 ### [Performance 🔗](https://elbywan.github.io/wretch/api/modules/addons_perfs.html)
