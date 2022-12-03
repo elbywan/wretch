@@ -620,12 +620,12 @@ import ProgressAddon from "wretch/addons/progress"
 
 wretch("some_url")
   .addon(ProgressAddon())
+  .get()
   // Called with the number of bytes loaded and the total number of bytes to load
   .progress((loaded, total) => {
     console.log(`${(loaded / total * 100).toFixed(0)}%`)
   })
-  .get()
-  .json()
+  .text()
 ```
 
 ### [Performance 🔗](https://elbywan.github.io/wretch/api/modules/addons_perfs.html)
