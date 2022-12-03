@@ -1,61 +1,5 @@
 import type { WretchResponseChain, WretchAddon } from "../types.js"
 
-const onMatch = (entries, name, callback, _performance) => {
-  if (!entries.getEntriesByName)
-    return false
-  const matches = entries.getEntriesByName(name)
-  if (matches && matches.length > 0) {
-    callback(matches.reverse()[0])
-    if (_performance.clearMeasures)
-      _performance.clearMeasures(name)
-    utils.callbacks.delete(name)
-
-    if (utils.callbacks.size < 1) {
-      utils.observer.disconnect()
-      if (_performance.clearResourceTimings) {
-        _performance.clearResourceTimings()
-      }
-    }
-    return true
-  }
-  return false
-}
-
-const lazyObserver = (_performance, _observer) => {
-  if (!utils.observer && _performance && _observer) {
-    utils.observer = new _observer(entries => {
-      utils.callbacks.forEach((callback, name) => {
-        onMatch(entries, name, callback, _performance)
-      })
-    })
-    if (_performance.clearResourceTimings)
-      _performance.clearResourceTimings()
-  }
-  return utils.observer
-}
-
-const utils = {
-  callbacks: new Map(),
-  observer: null,
-  observe: (name, callback, config) => {
-    if (!name || !callback)
-      return
-
-    const _performance = config.polyfill("performance", false)
-    const _observer = config.polyfill("PerformanceObserver", false)
-
-    if (!lazyObserver(_performance, _observer))
-      return
-
-    if (!onMatch(_performance, name, callback, _performance)) {
-      if (utils.callbacks.size < 1)
-        utils.observer.observe({ entryTypes: ["resource", "measure"] })
-      utils.callbacks.set(name, callback)
-    }
-
-  }
-}
-
 export interface PerfsAddon {
   /**
    * Performs a callback on the API performance timings of the request.
@@ -111,13 +55,75 @@ export interface PerfsAddon {
  * });
  * ```
  */
-const perfs: () => WretchAddon<unknown, PerfsAddon> = () => ({
-  resolver: {
-    perfs(cb) {
-      this._fetchReq.then(res => utils.observe(res.url, cb, this._wretchReq._config)).catch(() => {/* swallow */ })
-      return this
-    },
+const perfs: () => WretchAddon<unknown, PerfsAddon> = () => {
+  const callbacks = new Map()
+  let observer = null
+
+  const onMatch = (entries, name, callback, performance) => {
+    if (!entries.getEntriesByName)
+      return false
+    const matches = entries.getEntriesByName(name)
+    if (matches && matches.length > 0) {
+      callback(matches.reverse()[0])
+      if (performance.clearMeasures)
+        performance.clearMeasures(name)
+      callbacks.delete(name)
+
+      if (callbacks.size < 1) {
+        observer.disconnect()
+        if (performance.clearResourceTimings) {
+          performance.clearResourceTimings()
+        }
+      }
+      return true
+    }
+    return false
   }
-})
+
+  const initObserver = (performance, performanceObserver) => {
+    if (!observer && performance && performanceObserver) {
+      observer = new performanceObserver(entries => {
+        callbacks.forEach((callback, name) => {
+          onMatch(entries, name, callback, performance)
+        })
+      })
+      if (performance.clearResourceTimings) {
+        performance.clearResourceTimings()
+      }
+    }
+
+    return observer
+  }
+
+  const monitor = (name, callback, config) => {
+    if (!name || !callback)
+      return
+
+    const performance = config.polyfill("performance", false)
+    const performanceObserver = config.polyfill("PerformanceObserver", false)
+
+    if (!initObserver(performance, performanceObserver))
+      return
+
+    if (!onMatch(performance, name, callback, performance)) {
+      if (callbacks.size < 1)
+        observer.observe({ entryTypes: ["resource", "measure"] })
+      callbacks.set(name, callback)
+    }
+  }
+
+  return {
+    resolver: {
+      perfs(cb) {
+        this._fetchReq
+          .then(res =>
+            monitor(this._wretchReq._url, cb, this._wretchReq._config)
+          )
+          .catch(() => {/* swallow */ })
+        return this
+      },
+    }
+  }
+}
 
 export default perfs
