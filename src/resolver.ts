@@ -14,7 +14,7 @@ export class WretchError extends Error implements WretchErrorType {
   json?: any
 }
 
-export const resolver = <T, Chain, R>(wretch: Wretch<T, Chain, R>) => {
+export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
   const {
     _url: url,
     _options: opts,

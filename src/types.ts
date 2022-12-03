@@ -758,7 +758,7 @@ export type FetchLike = (url: string, opts: WretchOptions) => Promise<WretchResp
  * An addon enhancing either the request or response chain (or both).
  */
 export type WretchAddon<W extends unknown, R extends unknown = unknown> = {
-  beforeRequest?<T, C, R>(wretch: Wretch<T, C, R>, options: WretchOptions): void,
+  beforeRequest?<T, C, R>(wretch: T & Wretch<T, C, R>, options: WretchOptions): void,
   wretch?: W,
   resolver?: R
 }
