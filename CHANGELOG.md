@@ -1,3 +1,13 @@
+<a name="2.2.2"></a>
+## [2.2.2](https://github.com/elbywan/wretch/compare/2.2.1...2.2.2) (2022-12-03)
+
+
+### :bug: Bug fix(es)
+
+* Fix compatibility issue between the perfs and progress addons ([b70e8cd](https://github.com/elbywan/wretch/commit/b70e8cd))
+
+
+
 <a name="2.2.1"></a>
 ## [2.2.1](https://github.com/elbywan/wretch/compare/2.2.0...2.2.1) (2022-12-03)
 
