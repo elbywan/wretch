@@ -1,3 +1,15 @@
+<a name="2.2.1"></a>
+## [2.2.1](https://github.com/elbywan/wretch/compare/2.2.0...2.2.1) (2022-12-03)
+
+
+### :bug: Bug fix(es)
+
+* Add missing export for the progress addon ([ebb0577](https://github.com/elbywan/wretch/commit/ebb0577))
+* Add missing progress addon rollup config ([bd6c89b](https://github.com/elbywan/wretch/commit/bd6c89b))
+* Register the progress addon in the .all entry point ([b01e03d](https://github.com/elbywan/wretch/commit/b01e03d))
+
+
+
 <a name="2.2.0"></a>
 # [2.2.0](https://github.com/elbywan/wretch/compare/2.1.5...2.2.0) (2022-12-03)
 
