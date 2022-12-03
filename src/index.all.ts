@@ -10,6 +10,7 @@ function factory(_url = "", _options = {}) {
     .addon(Addons.formUrlAddon)
     .addon(Addons.perfsAddon())
     .addon(Addons.queryStringAddon)
+    .addon(Addons.progressAddon())
 }
 
 factory["default"] = factory
