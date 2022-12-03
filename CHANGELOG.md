@@ -1,3 +1,27 @@
+<a name="2.2.0"></a>
+# [2.2.0](https://github.com/elbywan/wretch/compare/2.1.5...2.2.0) (2022-12-03)
+
+
+### :arrow_up: Version update(s)
+
+* Bump dependencies including outdated rollup plugins ([bcbcdc5](https://github.com/elbywan/wretch/commit/bcbcdc5))
+* Bump engine.io from 6.2.0 to 6.2.1 ([6a93854](https://github.com/elbywan/wretch/commit/6a93854))
+* Bump fastify from 4.9.2 to 4.10.2 ([8ae9122](https://github.com/elbywan/wretch/commit/8ae9122))
+
+### :art: Code improvement(s)
+
+* Add a prepare script ([17b0a76](https://github.com/elbywan/wretch/commit/17b0a76))
+
+### :bug: Bug fix(es)
+
+* Fix a minor Wretch type issue in addons ([23ba7b1](https://github.com/elbywan/wretch/commit/23ba7b1))
+
+### :factory: New feature(s)
+
+* Add progress addon ([2bae524](https://github.com/elbywan/wretch/commit/2bae524)), closes [#154](https://github.com/elbywan/wretch/issues/154)
+
+
+
 <a name="2.1.5"></a>
 ## [2.1.5](https://github.com/elbywan/wretch/compare/2.1.4...2.1.5) (2022-10-15)
 
