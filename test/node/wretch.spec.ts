@@ -547,6 +547,7 @@ describe("Wretch", function () {
       .addon(AbortAddon())
       .get()
       .setTimeout(100)
+      .fetchError(() => { /* ignore - tests precendence */ })
       .onAbort(handleError)
       .res()
 

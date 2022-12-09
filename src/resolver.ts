@@ -61,8 +61,11 @@ export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
       const error = err.__wrap || err
 
       const catcher =
-        err.__wrap && catchers.has(FETCH_ERROR) ? catchers.get(FETCH_ERROR) :
-          (catchers.get(error.status) || catchers.get(error.name))
+        catchers.get(error.name) || (
+          err.__wrap && catchers.has(FETCH_ERROR)
+            ? catchers.get(FETCH_ERROR)
+            : catchers.get(error.status)
+        )
 
       if (catcher)
         return catcher(error, wretch)
