@@ -1,3 +1,13 @@
+<a name="2.2.3"></a>
+## [2.2.3](https://github.com/elbywan/wretch/compare/2.2.2...2.2.3) (2022-12-09)
+
+
+### :bug: Bug fix(es)
+
+* Better error catching precedence ([107fc71](https://github.com/elbywan/wretch/commit/107fc71)), closes [#155](https://github.com/elbywan/wretch/issues/155)
+
+
+
 <a name="2.2.2"></a>
 ## [2.2.2](https://github.com/elbywan/wretch/compare/2.2.1...2.2.2) (2022-12-03)
 
