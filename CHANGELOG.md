@@ -1,3 +1,13 @@
+<a name="2.3.0"></a>
+# [2.3.0](https://github.com/elbywan/wretch/compare/2.2.3...2.3.0) (2022-12-12)
+
+
+### :factory: New feature(s)
+
+* Add url property to WretchError ([a1f6ac6](https://github.com/elbywan/wretch/commit/a1f6ac6)), closes [#157](https://github.com/elbywan/wretch/issues/157)
+
+
+
 <a name="2.2.3"></a>
 ## [2.2.3](https://github.com/elbywan/wretch/compare/2.2.2...2.2.3) (2022-12-09)
 
