@@ -724,7 +724,7 @@ export type WretchOptions = Record<string, any>
 /**
  * An Error enhanced with status, text and body.
  */
-export interface WretchError extends Error { status: number, response: WretchResponse, text?: string, json?: any }
+export interface WretchError extends Error { status: number, response: WretchResponse, url: string, text?: string, json?: any }
 /**
  * Callback provided to catchers on error. Contains the original wretch instance used to perform the request.
  */

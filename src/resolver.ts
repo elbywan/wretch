@@ -10,6 +10,7 @@ import { FETCH_ERROR } from "./constants.js"
 export class WretchError extends Error implements WretchErrorType {
   status: number
   response: WretchResponse
+  url: string
   text?: string
   json?: any
 }
@@ -29,7 +30,11 @@ export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
   const finalOptions = mix(config.options, opts)
   addons.forEach(addon => addon.beforeRequest && addon.beforeRequest(wretch, finalOptions))
   // The generated fetch request
-  const _fetchReq = middlewareHelper(middlewares)(config.polyfill("fetch"))(url, finalOptions)
+  let finalUrl = url
+  const _fetchReq = middlewareHelper(middlewares)((url, options) => {
+    finalUrl = url
+    return config.polyfill("fetch")(url, options)
+  })(url, finalOptions)
   // Throws on an http error
   const referenceError = new Error()
   const throwingPromise: Promise<void | WretchResponse> = _fetchReq
@@ -43,6 +48,7 @@ export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
         err["cause"] = referenceError
         err.stack = err.stack + "\nCAUSE: " + referenceError.stack
         err.response = response
+        err.url = finalUrl
         if (response.type === "opaque") {
           throw err
         }

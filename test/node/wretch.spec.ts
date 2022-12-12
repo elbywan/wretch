@@ -451,6 +451,7 @@ describe("Wretch", function () {
         .res(_ => fail("Authenticated route should not respond without credentials."))
     } catch (e) {
       expect(e.status).toBe(401)
+      expect(e.url).toBe(_URL + "/basicauth")
     }
 
     const res = await wretch(_URL + "/basicauth")
