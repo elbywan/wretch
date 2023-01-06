@@ -396,7 +396,7 @@ w = w.body("<html><body><div/></body></html>")
 
 ### [HTTP Methods 🔗](https://elbywan.github.io/wretch/api/interfaces/index.Wretch.html)
 
-Setus the HTTP method and sends the request.
+Sets the HTTP method and sends the request.
 
 Calling an HTTP method ends the request chain and returns a response chain.
 You can pass optional url and body arguments to these methods.
@@ -890,6 +890,102 @@ for(let i = 0; i < 10; i++) {
 ```
 
 </details>
+
+# Limitations
+
+## [Cloudflare Workers](https://workers.cloudflare.com/)
+
+It seems like using `wretch` in a Cloudflare Worker environment is not possible out of the box, as the Cloudflare `Response` implementation does not implement the [`type`](https://developer.mozilla.org/en-US/docs/Web/API/Response/type) property and throws an error when trying to access it.
+
+#### Please check the issue [#159](https://github.com/elbywan/wretch/issues/159) for more information.
+
+### Workaround
+
+The following middleware should fix the issue (thanks @jimmed 🙇):
+
+```js
+wretch().middlewares([
+  (next) => async (url, opts) => {
+    const response = await next(url, opts);
+    try {
+      Reflect.get(response, "type", response);
+    } catch (error) {
+      Object.defineProperty(response, "type", {
+        get: () => "default",
+      });
+    }
+    return response;
+  },
+])
+```
+
+## Headers Case Sensitivity
+
+The [`Request`](https://developer.mozilla.org/en-US/docs/Web/API/Request) object from the Fetch API uses the [`Headers`](https://developer.mozilla.org/en-US/docs/Web/API/Headers) class to store headers under the hood.
+This class is case-insensitive, meaning that setting both will actually appends the value to the same key:
+
+```js
+const headers = new Headers();
+headers.append("Accept", "application/json");
+headers.append("accept", "application/json");
+headers.forEach((value, key) => console.log(key, value));
+// prints: accept application/json, application/json
+```
+
+When using `wretch`, please be mindful of this limitation and avoid setting the same header multiple times with a different case:
+
+```js
+wretch(url)
+  .headers("content-type": "application/json")
+  // .json is a shortcut for .headers("Content-Type": "application/json").post().json()
+  .json({ foo: "bar" })
+  // Wretch stores the headers inside a plain javascript object and will not deduplicate them.
+  // Later on when fetch builds the Headers object the content type header will be set twice
+  // and its value will be "application/json, application/json".
+  // Ultimately this is certainly not what you want.
+```
+
+#### Please check the issue [#80](https://github.com/elbywan/wretch/issues/80) for more information.
+
+### Workaround
+
+You can use the following middleware to deduplicate headers (thanks @jimmed 🙇):
+
+```js
+export const manipulateHeaders =
+  callback => next => (url, { headers, ...opts }) => {
+    const nextHeaders = callback(new Headers(headers))
+    return next(url, { ...opts, headers: nextHeaders })
+  }
+
+export const dedupeHeaders = (dedupeHeaderLogic = {}) => {
+  const deduperMap = new Map(
+    Object.entries(dedupeHeaderLogic).map(([k, v]) => [k.toLowerCase(), v]),
+  )
+  const dedupe = key =>
+    deduperMap.get(key.toLowerCase()) ?? (values => new Set(values))
+
+  return manipulateHeaders((headers) => {
+    Object.entries(headers.raw()).forEach(([key, values]) => {
+      const deduped = Array.from(dedupe(key)(values))
+      headers.delete(key)
+      deduped.forEach((value, index) =>
+        headers[index ? 'append' : 'set'](key.toLowerCase(), value),
+      )
+    })
+    return headers
+  })
+}
+
+// By default, it will deduplicate identical values for a given header. This can be used as follows:
+wretch().middlewares([dedupeHeaders()])
+// If there is a specific header for which the defaults cause problems, then you can provide a callback to handle deduplication yourself:
+wretch().middlewares([
+  dedupeHeaders({
+    Accept: (values) => values.filter(v => v !== '*/*')
+  })
+])
+```
 
 # Migration from v1
 
