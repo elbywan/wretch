@@ -1,3 +1,17 @@
+<a name="2.3.1"></a>
+## [2.3.1](https://github.com/elbywan/wretch/compare/2.3.0...2.3.1) (2023-01-07)
+
+
+### :bug: Bug fix(es)
+
+* Fix middlewares and addons subpath exports ([bfd2542](https://github.com/elbywan/wretch/commit/bfd2542)), closes [#160](https://github.com/elbywan/wretch/issues/160)
+
+### :memo: Documentation update(s)
+
+* Add limitations section to the readme ([ad0a102](https://github.com/elbywan/wretch/commit/ad0a102)), closes [#159](https://github.com/elbywan/wretch/issues/159)
+
+
+
 <a name="2.3.0"></a>
 # [2.3.0](https://github.com/elbywan/wretch/compare/2.2.3...2.3.0) (2022-12-12)
 
