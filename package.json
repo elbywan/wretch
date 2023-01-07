@@ -44,10 +44,18 @@
       "require": "./dist/bundle/wretch.all.min.cjs",
       "import": "./dist/index.all.js"
     },
+    "./addons": {
+      "types": "./dist/addons/index.d.ts",
+      "import": "./dist/addons/index.js"
+    },
     "./addons/*": {
       "types": "./dist/addons/*.d.ts",
       "require": "./dist/bundle/addons/*.min.cjs",
       "import": "./dist/addons/*.js"
+    },
+    "./middlewares": {
+      "types": "./dist/middlewares/index.d.ts",
+      "import": "./dist/middlewares/index.js"
     },
     "./middlewares/*": {
       "types": "./dist/middlewares/*.d.ts",
