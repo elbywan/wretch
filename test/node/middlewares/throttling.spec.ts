@@ -132,7 +132,7 @@ export default describe("Throttling Cache Middleware", () => {
     expect(customMiddleware.throttling.has(customKey)).toBe(false)
   })
 
-  it("should be able to programatically empty the cache", async () => {
+  it("should be able to programmatically empty the cache", async () => {
     const middleware = throttlingCache({
       clear(_, options) {
         return options.clear
@@ -154,7 +154,7 @@ export default describe("Throttling Cache Middleware", () => {
     await Promise.all([p0, p1, p2, p3])
   })
 
-  it("should be able the programatically invalidate cache entries", async () => {
+  it("should be able the programmatically invalidate cache entries", async () => {
     const middleware = throttlingCache({
       invalidate(url) {
         if (url.endsWith("/invalidate")) {
