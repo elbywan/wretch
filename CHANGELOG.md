@@ -1,3 +1,13 @@
+<a name="2.3.2"></a>
+## [2.3.2](https://github.com/elbywan/wretch/compare/2.3.1...2.3.2) (2023-01-11)
+
+
+### :bug: Bug fix(es)
+
+* Fix catcher priority ([d359bd7](https://github.com/elbywan/wretch/commit/d359bd7)), closes [#162](https://github.com/elbywan/wretch/issues/162)
+
+
+
 <a name="2.3.1"></a>
 ## [2.3.1](https://github.com/elbywan/wretch/compare/2.3.0...2.3.1) (2023-01-07)
 
