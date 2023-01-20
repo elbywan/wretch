@@ -1,3 +1,13 @@
+<a name="2.4.1"></a>
+## [2.4.1](https://github.com/elbywan/wretch/compare/2.4.0...2.4.1) (2023-01-20)
+
+
+### :bug: Bug fix(es)
+
+* Fix abort/progress addons state isolation issue ([2b3a659](https://github.com/elbywan/wretch/commit/2b3a659))
+
+
+
 <a name="2.4.0"></a>
 # [2.4.0](https://github.com/elbywan/wretch/compare/2.3.2...2.4.0) (2023-01-19)
 
