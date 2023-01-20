@@ -16,6 +16,14 @@ export class WretchError extends Error implements WretchErrorType {
 }
 
 export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
+  const sharedState = Object.create(null)
+
+  wretch = wretch._addons.reduce((w, addon) =>
+    addon.beforeRequest &&
+    addon.beforeRequest(w, wretch._options, sharedState)
+    || w,
+   wretch)
+
   const {
     _url: url,
     _options: opts,
@@ -28,7 +36,7 @@ export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
 
   const catchers = new Map(_catchers)
   const finalOptions = mix(config.options, opts)
-  addons.forEach(addon => addon.beforeRequest && addon.beforeRequest(wretch, finalOptions))
+
   // The generated fetch request
   let finalUrl = url
   const _fetchReq = middlewareHelper(middlewares)((url, options) => {
@@ -89,6 +97,7 @@ export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
   const responseChain: WretchResponseChain<T, Chain, R> = {
     _wretchReq: wretch,
     _fetchReq,
+    _sharedState: sharedState,
     res: bodyParser<WretchResponse>(null),
     json: bodyParser<any>("json"),
     blob: bodyParser<Blob>("blob"),

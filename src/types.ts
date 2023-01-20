@@ -550,6 +550,10 @@ export interface WretchResponseChain<T, Self = unknown, R = undefined> {
    * @private @internal
    */
   _fetchReq: Promise<WretchResponse>,
+  /**
+   * @private @internal
+   */
+  _sharedState: Record<any, any>,
 
   /**
    *
@@ -758,7 +762,7 @@ export type FetchLike = (url: string, opts: WretchOptions) => Promise<WretchResp
  * An addon enhancing either the request or response chain (or both).
  */
 export type WretchAddon<W extends unknown, R extends unknown = unknown> = {
-  beforeRequest?<T, C, R>(wretch: T & Wretch<T, C, R>, options: WretchOptions): void,
+  beforeRequest?<T, C, R>(wretch: T & Wretch<T, C, R>, options: WretchOptions, state : Record<any, any>): T & Wretch<T, C, R>,
   wretch?: W,
   resolver?: R
 }

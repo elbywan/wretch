@@ -108,15 +108,13 @@ export interface AbortResolver {
  * ```
  */
 const abort: () => WretchAddon<AbortWretch, AbortResolver> = () => {
-  let timeout = null
-  let fetchController = null
   return {
-    beforeRequest(wretch, options) {
-      fetchController = wretch._config.polyfill("AbortController", false, true)
+    beforeRequest(wretch, options, state) {
+      const fetchController = wretch._config.polyfill("AbortController", false, true)
       if (!options["signal"] && fetchController) {
         options["signal"] = fetchController.signal
       }
-      timeout = {
+      const timeout = {
         ref: null,
         clear() {
           if (timeout.ref) {
@@ -125,6 +123,11 @@ const abort: () => WretchAddon<AbortWretch, AbortResolver> = () => {
           }
         }
       }
+      state.abort = {
+        timeout,
+        fetchController
+      }
+      return wretch
     },
     wretch: {
       signal(controller) {
@@ -132,12 +135,13 @@ const abort: () => WretchAddon<AbortWretch, AbortResolver> = () => {
       },
     },
     resolver: {
-      setTimeout(time, controller = fetchController) {
+      setTimeout(time, controller = this._sharedState.abort.fetchController) {
+        const { timeout } = this._sharedState.abort
         timeout.clear()
         timeout.ref = setTimeout(() => controller.abort(), time)
         return this
       },
-      controller() { return [fetchController, this] },
+      controller() { return [this._sharedState.abort.fetchController, this] },
       onAbort(cb) { return this.error("AbortError", cb) }
     },
   }
