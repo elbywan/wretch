@@ -464,26 +464,43 @@ describe("Wretch", function () {
 
   it("should change the parsing used in the default error handler", async function () {
     // Local
-    await wretch(`${_URL}/json500`)
+    await wretch(`${_URL}/json500raw`)
       .errorType("json")
       .get()
-      .internalError(error => { expect(error.json).toEqual({ error: 500, message: "ok" }) })
+      .internalError(error => {
+        expect(error.json).toEqual({ error: 500, message: "ok" })
+        expect(error.text).toEqual(JSON.stringify({ error: 500, message: "ok" }))
+      })
       .res(_ => fail("I should never be called because an error was thrown"))
       .then(_ => expect(_).toBe(undefined))
     // Default (text)
+    await wretch(`${_URL}/json500raw`)
+      .get()
+      .internalError(error => {
+        expect(error.text).toEqual(`{"error":500,"message":"ok"}`)
+        expect(error.json).toBeUndefined()
+      })
+      .res(_ => fail("I should never be called because an error was thrown"))
+      .then(_ => expect(_).toBe(undefined))
+    // Based on content-type
     await wretch(`${_URL}/json500`)
       .get()
-      .internalError(error => { expect(error.text).toEqual(`{"error":500,"message":"ok"}`) })
+      .internalError(error => {
+        expect(error.text).toEqual(`{"error":500,"message":"ok"}`)
+        expect(error.json).toEqual({ error: 500, message: "ok" })
+      })
       .res(_ => fail("I should never be called because an error was thrown"))
       .then(_ => expect(_).toBe(undefined))
     // Global
     wretch.errorType("json")
-    await wretch(`${_URL}/json500`)
+    await wretch(`${_URL}/json500raw`)
       .get()
-      .internalError(error => { expect(error.json).toEqual({ error: 500, message: "ok" }) })
+      .internalError(error => {
+        expect(error.json).toEqual({ error: 500, message: "ok" })
+        expect(error.text).toEqual(JSON.stringify({ error: 500, message: "ok" }))
+      })
       .res(_ => fail("I should never be called because an error was thrown"))
       .then(_ => expect(_).toBe(undefined))
-
   })
 
   it("should retrieve performance timings associated with a fetch request", function (done) {

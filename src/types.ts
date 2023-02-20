@@ -67,6 +67,8 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined> {
    * Sets the method (text, json ...) used to parse the data contained in the
    * response body in case of an HTTP error is returned.
    *
+   * _Note: if the response Content-Type header is set to "application/json", the body will be parsed as json regardless of the errorType._
+   *
    * ```js
    * wretch("http://server/which/returns/an/error/with/a/json/body")
    *   .errorType("json")
@@ -762,7 +764,7 @@ export type FetchLike = (url: string, opts: WretchOptions) => Promise<WretchResp
  * An addon enhancing either the request or response chain (or both).
  */
 export type WretchAddon<W extends unknown, R extends unknown = unknown> = {
-  beforeRequest?<T, C, R>(wretch: T & Wretch<T, C, R>, options: WretchOptions, state : Record<any, any>): T & Wretch<T, C, R>,
+  beforeRequest?<T, C, R>(wretch: T & Wretch<T, C, R>, options: WretchOptions, state: Record<any, any>): T & Wretch<T, C, R>,
   wretch?: W,
   resolver?: R
 }

@@ -75,6 +75,8 @@ export function setPolyfills(polyfills: object, replace = false) {
  * Sets the default method (text, json, …) used to parse the data contained in the response body in case of an HTTP error.
  * As with other static methods, it will affect wretch instances created after calling this function.
  *
+ * _Note: if the response Content-Type header is set to "application/json", the body will be parsed as json regardless of the errorType._
+ *
  * ```js
  * import wretch from "wretch"
  *

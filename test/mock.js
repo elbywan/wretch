@@ -191,6 +191,11 @@ export function launch(port) {
     return { error: 500, message: "ok" }
   })
 
+  server.get("/json500raw", async (request, reply) => {
+    reply.status(500)
+    return JSON.stringify({ error: 500, message: "ok" })
+  })
+
   server.get("/longResult", async () => {
     await delay(1000)
     return "ok"

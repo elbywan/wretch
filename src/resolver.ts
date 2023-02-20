@@ -22,7 +22,7 @@ export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
     addon.beforeRequest &&
     addon.beforeRequest(w, wretch._options, sharedState)
     || w,
-   wretch)
+    wretch)
 
   const {
     _url: url,
@@ -60,9 +60,12 @@ export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
         if (response.type === "opaque") {
           throw err
         }
-        return response[config.errorType]().then((body: string) => {
+        return response.text().then((body: string) => {
           err.message = body
-          err[config.errorType] = body
+          if (config.errorType === "json" || response.headers.get("Content-Type").split(";")[0] === "application/json") {
+            try { err.json = JSON.parse(body) } catch (e) { /* ignore */ }
+          }
+          err.text = body
           err["status"] = response.status
           throw err
         })
