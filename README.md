@@ -19,7 +19,7 @@
 
 <br>
 
-##### Wretch 2.3 is now live 🎉 ! Please have a look at the [releases](https://github.com/elbywan/wretch/releases) and the [changelog](https://github.com/elbywan/wretch/blob/master/CHANGELOG.md) after each update for new features and breaking changes. If you want to try out the hot stuff, please look into the [dev](https://github.com/elbywan/wretch/tree/dev) branch.
+##### Wretch 2.5 is now live 🎉 ! Please have a look at the [releases](https://github.com/elbywan/wretch/releases) and the [changelog](https://github.com/elbywan/wretch/blob/master/CHANGELOG.md) after each update for new features and breaking changes. If you want to try out the hot stuff, please look into the [dev](https://github.com/elbywan/wretch/tree/dev) branch.
 
 ##### And if you like the library please consider becoming a [sponsor](https://github.com/sponsors/elbywan) ❤️.
 
