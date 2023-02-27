@@ -62,7 +62,7 @@ export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
         }
         return response.text().then((body: string) => {
           err.message = body
-          if (config.errorType === "json" || response.headers.get("Content-Type").split(";")[0] === "application/json") {
+          if (config.errorType === "json" || response.headers.get("Content-Type")?.split(";")[0] === "application/json") {
             try { err.json = JSON.parse(body) } catch (e) { /* ignore */ }
           }
           err.text = body
