@@ -1,3 +1,13 @@
+<a name="2.5.1"></a>
+## [2.5.1](https://github.com/elbywan/wretch/compare/2.5.0...2.5.1) (2023-02-27)
+
+
+### :bug: Bug fix(es)
+
+* Update resolver.ts - Add null verification to .get("Content-Type") ([a68a524](https://github.com/elbywan/wretch/commit/a68a524))
+
+
+
 <a name="2.5.0"></a>
 # [2.5.0](https://github.com/elbywan/wretch/compare/2.4.1...2.5.0) (2023-02-20)
 
