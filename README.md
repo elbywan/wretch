@@ -217,13 +217,11 @@ The package contains multiple bundles depending on the format and feature set lo
 Wretch is compatible with and tested in _Node.js >= 14_. Older versions of node may work
 but it is not guaranteed.
 
-> 🥳 Starting from Node.js 18, [node includes experimental fetch support](https://nodejs.org/en/blog/announcements/v18-release-announce/). Wretch will work without installing any polyfill.
->
-> For older versions of Node.js, Wretch requires installing [FormData](https://github.com/form-data/form-data) and [fetch](https://www.npmjs.com/package/node-fetch) polyfills.
+### Polyfills (Node.js < 18)
 
-### Polyfills
+**Starting from Node.js 18, [node includes experimental fetch support](https://nodejs.org/en/blog/announcements/v18-release-announce/). Wretch will work without installing any polyfill.**
 
-Since the `Node.js` standard library does not provide a native implementation of fetch (and other Browsers-only APIs), polyfilling is mandatory.
+For older versions, the Node.js standard library does not provide a native implementation of fetch (and other Browsers-only APIs) and polyfilling is mandatory.
 
 _The non-global way (preferred):_
 
