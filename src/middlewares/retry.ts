@@ -80,6 +80,13 @@ export type RetryOptions = {
  *
  * #### Retries a request multiple times in case of an error (or until a custom condition is true).
  *
+ * > **💡 By default, the request will be retried if the response status is not in the 2xx range.**
+ * >
+ * > ```js
+ * > // Replace the default condition with a custom one to avoid retrying on 4xx errors:
+ * > until: (response, error) => response && (response.ok || (response.status >= 400 && response.status < 500))
+ * > ```
+ *
  * ```ts
  * import wretch from 'wretch'
  * import { retry } from 'wretch/middlewares'
