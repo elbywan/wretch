@@ -281,7 +281,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined> {
    * @param errorId - Error code or name
    * @param catcher - The catcher method
    */
-  catcher(this: Self & Wretch<Self, Chain, Resolver>, errorId: number | string, catcher: (error: WretchError, originalRequest: Wretch<Self, Chain, Resolver>) => any): this
+  catcher(this: Self & Wretch<Self, Chain, Resolver>, errorId: number | string, catcher: (error: WretchError, originalRequest: this) => any): this
 
   /**
    * Defer one or multiple request chain methods that will get called just before the request is sent.
@@ -358,7 +358,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined> {
         Clear extends true ?
         Chain & WretchResponseChain<Self, Chain, undefined> :
         Resolver,
-      originalRequest: Wretch<Self, Chain, Clear extends true ? undefined : Resolver>
+      originalRequest: Self & Wretch<Self, Chain, Clear extends true ? undefined : Resolver>
     ) => ResolverReturn,
     clear?: Clear
   ): Self & Wretch<Self, Chain, ResolverReturn>
