@@ -1,3 +1,18 @@
+<a name="2.5.2"></a>
+## [2.5.2](https://github.com/elbywan/wretch/compare/2.5.1...2.5.2) (2023-04-11)
+
+
+### :bug: Bug fix(es)
+
+* Fix catcher and resolve callback argument type. ([76c295f](https://github.com/elbywan/wretch/commit/76c295f)), closes [#177](https://github.com/elbywan/wretch/issues/177)
+
+### :memo: Documentation update(s)
+
+* Node.js 18 section wording ([b696b1c](https://github.com/elbywan/wretch/commit/b696b1c))
+* Warn to use a custom until function to avoid retrying on 4xx error ([1812c73](https://github.com/elbywan/wretch/commit/1812c73)), closes [#176](https://github.com/elbywan/wretch/issues/176)
+
+
+
 <a name="2.5.1"></a>
 ## [2.5.1](https://github.com/elbywan/wretch/compare/2.5.0...2.5.1) (2023-02-27)
 
