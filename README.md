@@ -941,7 +941,7 @@ When using `wretch`, please be mindful of this limitation and avoid setting the 
 
 ```js
 wretch(url)
-  .headers("content-type": "application/json")
+  .headers({ "content-type": "application/json" })
   // .json is a shortcut for .headers("Content-Type": "application/json").post().json()
   .json({ foo: "bar" })
   // Wretch stores the headers inside a plain javascript object and will not deduplicate them.
