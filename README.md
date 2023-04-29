@@ -226,27 +226,28 @@ For older versions, the Node.js standard library does not provide a native imple
 _The non-global way (preferred):_
 
 ```javascript
+import fetch, { FormData } from "node-fetch"
+
 // w is a reusable wretch instance
 const w = wretch().polyfills({
-  fetch: require("node-fetch"),
-  FormData: require("form-data"),
-  URLSearchParams: require("url").URLSearchParams,
+  fetch,
+  FormData,
 });
 ```
 
 _Globally:_
 
 ```javascript
+import fetch, { FormData } from "node-fetch";
+
 // Either mutate the global object…
-global.fetch = require("node-fetch");
-global.FormData = require("form-data");
-global.URLSearchParams = require("url").URLSearchParams;
+global.fetch = fetch;
+global.FormData = FormData;
 
 // …or use the static wretch.polyfills method to impact every wretch instance created afterwards.
 wretch.polyfills({
-  fetch: require("node-fetch"),
-  FormData: require("form-data"),
-  URLSearchParams: require("url").URLSearchParams,
+  fetch,
+  FormData,
 });
 ```
 
