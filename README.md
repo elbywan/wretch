@@ -543,7 +543,7 @@ const form = {
 
 // Will append the following keys to the FormData payload:
 // "duck", "duckProperties[beak][color]", "duckProperties[legs]"
-wretch("...").addons(FormDataAddon).formData(form, ["ignored"]).post();
+wretch("...").addon(FormDataAddon).formData(form, ["ignored"]).post();
 ```
 
 ### [FormUrl 🔗](https://elbywan.github.io/wretch/api/interfaces/addons_formUrl.FormUrlAddon.html)
