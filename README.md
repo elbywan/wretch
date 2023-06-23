@@ -1027,7 +1027,7 @@ wretch.formData({ hello: "world" }).query({ check: true })
 /* Now (wretch@2) */
 import FormDataAddon from "wretch/addons/formData"
 import QueryStringAddon from "wretch/addons/queryString"
-import wretch as baseWretch from "wretch"
+import baseWretch from "wretch"
 
 // Add both addons
 const wretch = baseWretch().addon(FormDataAddon).addon(QueryStringAddon)
