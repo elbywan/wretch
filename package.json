@@ -110,7 +110,7 @@
     "@types/node": "^18.11.7",
     "abortcontroller-polyfill": "^1.7.5",
     "concurrently": "^8.2.0",
-    "conventional-changelog-cli": "^3.0.0",
+    "conventional-changelog-cli": "^2.2.2",
     "conventional-changelog-wretch": "file:scripts/conventional-changelog-wretch",
     "dtrace-provider": "^0.8.8",
     "fastify": "^4.18.0",
