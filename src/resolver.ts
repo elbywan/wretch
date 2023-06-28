@@ -1,7 +1,7 @@
 import { middlewareHelper } from "./middleware.js"
 import { mix } from "./utils.js"
 import type { Wretch, WretchResponse, WretchResponseChain, WretchError as WretchErrorType } from "./types.js"
-import { FETCH_ERROR } from "./constants.js"
+import { FETCH_ERROR, CATCHER_FALLBACK } from "./constants.js"
 
 /**
  * This class inheriting from Error is thrown when the fetch response is not "ok".
@@ -47,7 +47,7 @@ export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
   const referenceError = new Error()
   const throwingPromise: Promise<void | WretchResponse> = _fetchReq
     .catch(error => {
-      throw { __wrap: error }
+      throw { [FETCH_ERROR]: error }
     })
     .then(response => {
       if (!response.ok) {
@@ -75,16 +75,21 @@ export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
   // Wraps the Promise in order to dispatch the error to a matching catcher
   const catchersWrapper = <T>(promise: Promise<T>): Promise<void | T> => {
     return promise.catch(err => {
-      const error = err.__wrap || err
+      const fetchErrorFlag = err.hasOwnProperty(FETCH_ERROR)
+      const error = fetchErrorFlag ? err[FETCH_ERROR] : err
 
       const catcher =
-        (error.status && catchers.get(error.status)) ||
-        catchers.get(error.name) || (
-          err.__wrap && catchers.has(FETCH_ERROR) && catchers.get(FETCH_ERROR)
+        (error?.status && catchers.get(error.status)) ||
+        catchers.get(error?.name) || (
+          fetchErrorFlag && catchers.has(FETCH_ERROR) && catchers.get(FETCH_ERROR)
         )
 
       if (catcher)
         return catcher(error, wretch)
+
+      const catcherFallback = catchers.get(CATCHER_FALLBACK)
+      if (catcherFallback)
+        return catcherFallback(error, wretch)
 
       throw error
     })

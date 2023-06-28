@@ -1,5 +1,5 @@
 import { mix, extractContentType, isLikelyJsonMime } from "./utils.js"
-import { JSON_MIME, CONTENT_TYPE_HEADER } from "./constants.js"
+import { JSON_MIME, CONTENT_TYPE_HEADER, CATCHER_FALLBACK } from "./constants.js"
 import { resolver } from "./resolver.js"
 import config from "./config.js"
 import type { Wretch } from "./types.js"
@@ -64,6 +64,9 @@ export const core: Wretch = {
     const newMap = new Map(this._catchers)
     newMap.set(errorId, catcher)
     return { ...this, _catchers: newMap }
+  },
+  catcherFallback(catcher) {
+    return this.catcher(CATCHER_FALLBACK, catcher)
   },
   resolve<R = unknown>(resolver, clear: boolean = false) {
     return { ...this, _resolvers: clear ? [resolver] : [...this._resolvers, resolver] }

@@ -361,6 +361,31 @@ describe("Wretch", function () {
     expect(check).toBe(7)
   })
 
+  it("should use the fallback catcher", async function () {
+    let _404 = 0
+    let fetchError = 0
+    let fallback = 0
+
+    const w = wretch(_URL)
+      .polyfills({
+        fetch: fetchPolyfill()
+      })
+      .catcher(404, _ => _404++)
+      .catcherFallback(_ => fallback++)
+
+    await w.url("/404").get().res(_ => fallback--)
+    await w
+      .polyfills({ fetch: () => Promise.reject() })
+      .get()
+      .fetchError(_ => fetchError++)
+      .res(_ => fallback--)
+    await w.url("/401").get().res(_ => fallback--)
+
+    expect(_404).toBe(1)
+    expect(fetchError).toBe(1)
+    expect(fallback).toBe(1)
+  })
+
   it("should capture the original request with resolvers/catchers", async function () {
     let check = 0
     const redirectedNotFound = await wretch(`${_URL}/404`)

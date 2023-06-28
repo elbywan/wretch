@@ -281,7 +281,27 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined> {
    * @param errorId - Error code or name
    * @param catcher - The catcher method
    */
-  catcher(this: Self & Wretch<Self, Chain, Resolver>, errorId: number | string, catcher: (error: WretchError, originalRequest: this) => any): this
+  catcher(this: Self & Wretch<Self, Chain, Resolver>, errorId: number | string | symbol, catcher: (error: WretchError, originalRequest: this) => any): this
+
+  /**
+   * A fallback catcher that will be called for any error thrown - if uncaught by other means.
+   *
+   * ```js
+   * wretch(url)
+   *   .catcher(404, err => redirect("/routes/notfound", err.message))
+   *   .catcher(500, err => flashMessage("internal.server.error"))
+   *   // this fallback will trigger for any error except the ones caught above (404 and 505)
+   *   .catcherFallback(err => {
+   *     log("Uncaught error:", err)
+   *     throw err
+   *   })
+   * ```
+   *
+   * @category Helpers
+   * @see {@link Wretch.catcher} for more details.
+   * @param catcher - The catcher method
+   */
+  catcherFallback(this: Self & Wretch<Self, Chain, Resolver>, catcher: (error: WretchError, originalRequest: this) => any): this
 
   /**
    * Defer one or multiple request chain methods that will get called just before the request is sent.
