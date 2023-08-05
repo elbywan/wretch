@@ -74,6 +74,15 @@ export interface FormDataAddon {
    * wretch("...").addons(FormDataAddon).formData(form, ["ignored"]).post();
    * ```
    *
+   * > Note: This addon does not support specifying a custom `filename`.
+   * > If you need to do so, you can use the `body` method directly:
+   * > ```js
+   * > const form = new FormData();
+   * > form.append("hello", "world", "hello.txt");
+   * > wretch("...").body(form).post();
+   * > ```
+   * > See: https://developer.mozilla.org/en-US/docs/Web/API/FormData/append#example
+   *
    * @param formObject - An object which will be converted to a FormData
    * @param recursive - If `true`, will recurse through all nested objects. Can be set as an array of string to exclude specific keys.
    */
