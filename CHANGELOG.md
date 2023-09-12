@@ -1,3 +1,17 @@
+<a name="2.7.0"></a>
+# [2.7.0](https://github.com/elbywan/wretch/compare/2.6.0...2.7.0) (2023-09-12)
+
+
+### :factory: New feature(s)
+
+* Support FileList objects in the form data addon ([3582809](https://github.com/elbywan/wretch/commit/3582809)), closes [#201](https://github.com/elbywan/wretch/issues/201)
+
+### :memo: Documentation update(s)
+
+* Mention file names in the form data addon doc ([411fb09](https://github.com/elbywan/wretch/commit/411fb09)), closes [#197](https://github.com/elbywan/wretch/issues/197)
+
+
+
 <a name="2.6.0"></a>
 # [2.6.0](https://github.com/elbywan/wretch/compare/2.5.2...2.6.0) (2023-06-28)
 

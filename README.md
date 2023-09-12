@@ -11,7 +11,7 @@
   <a href="https://github.com/elbywan/wretch/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license-badge" height="20"></a>
 </h1>
 <h4 align="center">
-	A tiny (~1.9KB g-zipped) wrapper built around <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch">fetch</a> with an intuitive syntax.
+	A tiny (~2KB g-zipped) wrapper built around <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch">fetch</a> with an intuitive syntax.
 </h4>
 <h5 align="center">
     <i>f[ETCH] [WR]apper</i>
@@ -19,7 +19,7 @@
 
 <br>
 
-##### Wretch 2.6 is now live 🎉 ! Please have a look at the [releases](https://github.com/elbywan/wretch/releases) and the [changelog](https://github.com/elbywan/wretch/blob/master/CHANGELOG.md) after each update for new features and breaking changes. If you want to try out the hot stuff, please look into the [dev](https://github.com/elbywan/wretch/tree/dev) branch.
+##### Wretch 2.7 is now live 🎉 ! Please have a look at the [releases](https://github.com/elbywan/wretch/releases) and the [changelog](https://github.com/elbywan/wretch/blob/master/CHANGELOG.md) after each update for new features and breaking changes. If you want to try out the hot stuff, please look into the [dev](https://github.com/elbywan/wretch/tree/dev) branch.
 
 ##### And if you like the library please consider becoming a [sponsor](https://github.com/sponsors/elbywan) ❤️.
 
