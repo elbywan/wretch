@@ -12,8 +12,8 @@ function convertFormData(
       acc ? `${acc}[${ancestor}]` : ancestor
     ), null)
     formKey = formKey ? `${formKey}[${key}]` : key
-    if (value instanceof Array) {
-      for (const item of value)
+    if (value instanceof Array || (globalThis.FileList && value instanceof FileList)) {
+      for (const item of value as File[])
         formData.append(formKey, item)
     } else if (
       recursive &&
