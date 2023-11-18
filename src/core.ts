@@ -49,7 +49,12 @@ export const core: Wretch = {
     return { ...this, _options: replace ? options : mix(this._options, options) }
   },
   headers(headerValues) {
-    return { ...this, _options: mix(this._options, { headers: headerValues || {} }) }
+    const headers =
+      !headerValues ? {} :
+      Array.isArray(headerValues) ? Object.fromEntries(headerValues) :
+      "entries" in headerValues ? Object.fromEntries((headerValues as Headers).entries()) :
+      headerValues
+    return { ...this, _options: mix(this._options, { headers }) }
   },
   accept(headerValue) {
     return this.headers({ Accept: headerValue })

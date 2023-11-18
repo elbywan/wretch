@@ -3,7 +3,8 @@
     "target": "ES2018",
     "lib": [
       "es2020",
-      "dom"
+      "dom",
+      "dom.iterable"
     ],
     "module": "es2015",
     "outDir": "dist",
