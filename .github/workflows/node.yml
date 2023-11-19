@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         # Remember to update README.md and package.json when updating the version matrix
-        version: [14, 16, 18]
+        version: [16, 18, 20]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
