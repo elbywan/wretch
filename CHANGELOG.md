@@ -1,3 +1,13 @@
+<a name="2.8.0"></a>
+# [2.8.0](https://github.com/elbywan/wretch/compare/2.7.1...2.8.0) (2023-12-30)
+
+
+### :factory: New feature(s)
+
+* addon.resolver can now be a function ([0bf9aa8](https://github.com/elbywan/wretch/commit/0bf9aa8)), closes [#212](https://github.com/elbywan/wretch/issues/212)
+
+
+
 <a name="2.7.1"></a>
 ## [2.7.1](https://github.com/elbywan/wretch/compare/2.7.0...2.7.1) (2023-11-19)
 
