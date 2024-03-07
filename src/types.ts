@@ -754,7 +754,7 @@ export interface WretchError extends Error { status: number, response: WretchRes
 /**
  * Callback provided to catchers on error. Contains the original wretch instance used to perform the request.
  */
-export type WretchErrorCallback<T, C, R> = (error: WretchError, originalRequest: Wretch<T, C, R>) => any
+export type WretchErrorCallback<T, C, R> = (error: WretchError, originalRequest: T & Wretch<T, C, R>) => any
 /**
  * Fetch Response object with additional properties.
  */
