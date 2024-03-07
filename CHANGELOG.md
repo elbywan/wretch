@@ -1,3 +1,17 @@
+<a name="2.8.1"></a>
+## [2.8.1](https://github.com/elbywan/wretch/compare/2.8.0...2.8.1) (2024-03-07)
+
+
+### :arrow_up: Version update(s)
+
+* Bump follow-redirects from 1.15.1 to 1.15.4 ([04fada6](https://github.com/elbywan/wretch/commit/04fada6))
+
+### :bug: Bug fix(es)
+
+* Fix error callback type missing addons extensions ([99a21a8](https://github.com/elbywan/wretch/commit/99a21a8)), closes [#222](https://github.com/elbywan/wretch/issues/222)
+
+
+
 <a name="2.8.0"></a>
 # [2.8.0](https://github.com/elbywan/wretch/compare/2.7.1...2.8.0) (2023-12-30)
 
