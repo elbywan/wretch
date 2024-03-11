@@ -19,7 +19,7 @@ const preload = {
 }
 
 async function validate(username, password, req, reply) {
-  if (username !== 'wretch' || password !== 'rocks') {
+  if (username !== 'wretch' || password !== 'röcks') {
     return new Error('Winter is coming')
   }
 }

@@ -607,6 +607,25 @@ wretch("...").addon(AbortAddon()).get().setTimeout(1000).json(_ =>
 )
 ```
 
+### [BasicAuth 🔗](https://elbywan.github.io/wretch/api/modules/addons_basicAuth.BasicAuthAddon.html)
+
+Adds the ability to set the `Authorization` header for the [basic authentication scheme](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#basic_authentication_scheme) without the need to manually encode the username/password.
+
+Also, allows using URLs with `wretch` that contain credentials, which would otherwise throw an error.
+
+```js
+import BasicAuthAddon from "wretch/addons/basicAuth"
+
+const user = "user"
+const pass = "pass"
+
+// Automatically sets the Authorization header to "Basic " + <base64 encoded credentials>
+wretch("...").addon(BasicAuthAddon).basicAuth(user, pass).get()
+
+// Allows using URLs with credentials in them
+wretch(`https://${user}:${pass}@...`).addon(BasicAuthAddon).get()
+```
+
 ### [Progress 🔗](https://elbywan.github.io/wretch/api/modules/addons_progress.html)
 
 Adds the ability to monitor progress when downloading a response.
