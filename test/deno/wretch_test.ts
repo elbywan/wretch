@@ -9,6 +9,7 @@ import {
 } from "https://deno.land/std@0.147.0/testing/bdd.ts"
 
 import wretchFn from "../../dist/bundle/wretch.min.mjs"
+import BasicAuthAddon from "../../dist/bundle/addons/basicAuth.min.mjs"
 import FormUrlAddon from "../../dist/bundle/addons/formUrl.min.mjs"
 import FormDataAddon from "../../dist/bundle/addons/formData.min.mjs"
 import QueryAddon from "../../dist/bundle/addons/queryString.min.mjs"
@@ -365,21 +366,48 @@ describe("Wretch", function () {
     assertEquals(await wretch(`${_URL}/accept`).accept("application/json").get().json(), { json: "ok" })
   })
 
-  it("should set the Authorization header", async function () {
-    try {
-      await wretch(_URL + "/basicauth")
+  describe("handling of the Authorization header", function () {
+    it("should fail without an Authorization header", async function () {
+      try {
+        await wretch(_URL + "/basicauth")
+          .get()
+          .res(_ => fail("Authenticated route should not respond without credentials."))
+      } catch (e) {
+        assertEquals(e.status, 401)
+      }
+    })
+
+    it("should set the Authorization header using the .auth() method", async function () {
+      const res = await wretch(_URL + "/basicauth")
+        .auth("Basic d3JldGNoOnLDtmNrcw==")
         .get()
-        .res(_ => fail("Authenticated route should not respond without credentials."))
-    } catch (e) {
-      assertEquals(e.status, 401)
-    }
+        .text()
+  
+      assertEquals(res, "ok")
+    })
 
-    const res = await wretch(_URL + "/basicauth")
-      .auth("Basic d3JldGNoOnJvY2tz")
-      .get()
-      .text()
+    it("should set the Authorization header using the BasicAuth addon's .basicAuth() method", async function () {
+      const res = await wretch(_URL + "/basicauth")
+        .addon(BasicAuthAddon)
+        .basicAuth("wretch", "röcks")
+        .get()
+        .text()
+  
+      assertEquals(res, "ok")
+    })
 
-    assertEquals(res, "ok")
+    it("should set the Authorization header using credentials from URL via the BasicAuth addon", async function () {
+      const url = new URL(_URL)
+      url.username = "wretch"
+      url.password = "röcks"
+      url.pathname = "/basicauth"
+      const res = await wretch(url.toString())
+        .addon(BasicAuthAddon)
+        .get()
+        .text()
+  
+      assertEquals(res, "ok")
+    })
   })
 
   it("should change the parsing used in the default error handler", async function () {
@@ -537,7 +565,7 @@ describe("Wretch", function () {
       .defer((w, url, { token }) => w.auth(token), true)
 
     const result = await w
-      .options({ token: "Basic d3JldGNoOnJvY2tz" })
+      .options({ token: "Basic d3JldGNoOnLDtmNrcw==" })
       .options({ q: "a" })
       .get("")
       .text()
