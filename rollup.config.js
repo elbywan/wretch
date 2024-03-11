@@ -2,7 +2,7 @@ import typescript from '@rollup/plugin-typescript';
 import terser from '@rollup/plugin-terser';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 
-const addons = ["abort", "formData", "formUrl", "perfs", "queryString", "progress"]
+const addons = ["abort", "basicAuth", "formData", "formUrl", "perfs", "queryString", "progress"]
 const middlewares = ["dedupe", "delay", "retry", "throttlingCache"]
 
 const common = {

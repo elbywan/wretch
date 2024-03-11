@@ -6,6 +6,7 @@ import { WretchError } from "./resolver.js"
 function factory(_url = "", _options = {}) {
   return { ...core, _url, _options }
     .addon(Addons.abortAddon())
+    .addon(Addons.basicAuthAddon)
     .addon(Addons.formDataAddon)
     .addon(Addons.formUrlAddon)
     .addon(Addons.perfsAddon())
