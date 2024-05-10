@@ -13,6 +13,7 @@ const appendQueryParams = (url: string, qp: object | string, replace: boolean, c
     const usp = config.polyfill("URLSearchParams", true, true)
     for (const key in qp) {
       const value = qp[key]
+      if (value === null || value === undefined) continue
       if (qp[key] instanceof Array) {
         for (const val of value)
           usp.append(key, stringify(val))
