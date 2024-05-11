@@ -2,8 +2,6 @@ name: Node.JS test and lint
 
 on:
   pull_request:
-    branches:
-      - "**"
   push:
     branches:
       - master
