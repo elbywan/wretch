@@ -18,9 +18,13 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           cache: "npm"
+      - name: Install firefox
+        run: brew install --cask firefox
       - name: Install dependencies
         run: npm ci
       - name: Build
         run: npm run build
       - name: Run browser tests
+        env:
+          FIREFOX_BIN: /Applications/Firefox.app/Contents/MacOS/firefox
         run: npm run test:karma
