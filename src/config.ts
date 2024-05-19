@@ -17,7 +17,6 @@ const config: Config = {
     // performance: null,
     // PerformanceObserver: null,
     // AbortController: null,
-    // TextEncoder: null
   },
   polyfill(p: string, doThrow: boolean = true, instance: boolean = false, ...args: any[]) {
     const res = this.polyfills[p] ||

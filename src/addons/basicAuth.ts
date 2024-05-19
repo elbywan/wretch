@@ -1,11 +1,7 @@
 import type { Config, ConfiguredMiddleware, Wretch, WretchAddon } from "../types.js"
 
-function utf8ToBase64(
-  input: string,
-  config: Config,
-  textEncoder = config.polyfill("TextEncoder", true, true) as TextEncoder,
-) {
-  const utf8Bytes = textEncoder.encode(input)
+function utf8ToBase64(input: string) {
+  const utf8Bytes = new TextEncoder().encode(input)
   return btoa(String.fromCharCode(...utf8Bytes))
 }
 
@@ -41,7 +37,6 @@ const makeBasicAuthMiddleware: (config: Config) => ConfiguredMiddleware = config
   if (parsedUrl?.username || parsedUrl?.password) {
     const basicAuthBase64 = utf8ToBase64(
       `${decodeURIComponent(parsedUrl.username)}:${decodeURIComponent(parsedUrl.password)}`,
-      config
     )
     opts.headers = {
       ...opts.headers,
@@ -71,7 +66,7 @@ const basicAuth: WretchAddon<BasicAuthAddon> = {
   },
   wretch: {
     basicAuth(username, password) {
-      const basicAuthBase64 = utf8ToBase64(`${username}:${password}`, this._config)
+      const basicAuthBase64 = utf8ToBase64(`${username}:${password}`)
       return this.auth(`Basic ${basicAuthBase64}`)
     },
   },
