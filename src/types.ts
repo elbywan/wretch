@@ -740,6 +740,19 @@ export type Config = {
   options: {};
   errorType: string;
   polyfills: {};
+  polyfill(p: "fetch", doThrow?: boolean): typeof fetch;
+  polyfill(p: "FormData", doThrow: boolean, instance: true, ...args: ConstructorParameters<typeof FormData>): FormData;
+  polyfill(p: "FormData", doThrow?: boolean, instance?: false): typeof FormData;
+  polyfill(p: "URL", doThrow: boolean, instance: true, ...args: ConstructorParameters<typeof URL>): URL;
+  polyfill(p: "URL", doThrow?: boolean, instance?: false): typeof URL;
+  polyfill(p: "URLSearchParams", doThrow: boolean, instance: true, ...args: ConstructorParameters<typeof URLSearchParams>): URLSearchParams;
+  polyfill(p: "URLSearchParams", doThrow?: boolean, instance?: false): typeof URLSearchParams;
+  polyfill(p: "AbortController", doThrow: boolean, instance: true, ...args: ConstructorParameters<typeof AbortController>): AbortController;
+  polyfill(p: "AbortController", doThrow?: boolean, instance?: false): typeof AbortController;
+  polyfill(p: "performance", doThrow: boolean): typeof performance;
+  // not implemented in deno yet, thus type isn't available
+  // polyfill(p: "PerformanceObserver", doThrow: boolean, instance: true, ...args: ConstructorParameters<typeof PerformanceObserver>): PerformanceObserver;
+  // polyfill(p: "PerformanceObserver", doThrow?: boolean, instance?: false): typeof PerformanceObserver;
   polyfill(p: string, doThrow?: boolean, instance?: boolean, ...args: any[]): any;
 }
 

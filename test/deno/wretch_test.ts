@@ -24,7 +24,7 @@ declare type factory = {
   polyfills: (polyfills: object, replace?: boolean | undefined) => void;
 }
 
-const wretch = wretchFn as factory
+const wretch = wretchFn as unknown as factory
 
 // Deno.test("url test", () => {
 //   const url = new URL("./foo.js", "https://deno.land/")

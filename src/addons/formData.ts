@@ -5,7 +5,7 @@ function convertFormData(
   recursive: string[] | boolean = false,
   config: Config,
   formData = config.polyfill("FormData", true, true),
-  ancestors = [],
+  ancestors = [] as string[],
 ) {
   Object.entries(formObject).forEach(([key, value]) => {
     let formKey = ancestors.reduce((acc, ancestor) => (
