@@ -134,6 +134,25 @@ describe("Wretch", function () {
     })
   })
 
+  it("should not Jasonify a FormData instance", async function () {
+    const FormData = wretch()._config.polyfill(
+      "FormData",
+      false
+    );
+
+    let formData = new FormData()
+    formData.append("hello", "world")
+    formData.append("duck", "Muscovy")
+
+    let decoded = await wretch(`${_URL}/formData/decode`)
+      .post(formData)
+      .json()
+    expect(decoded).toEqual({
+      hello: "world",
+      duck: "Muscovy",
+    })
+  })
+
   it("should perform OPTIONS and HEAD requests", async function () {
     const optsRes = await wretch(_URL + "/options").opts().res()
     const optsRes2 = await wretch(_URL + "/options").opts("").res()

@@ -92,7 +92,11 @@ export const core: Wretch = {
     let base = this.url(url).options({ method })
     // "Jsonify" the body if it is an object and if it is likely that the content type targets json.
     const contentType = extractContentType(base._options.headers)
-    const jsonify = typeof body === "object" && (!base._options.headers || !contentType || isLikelyJsonMime(contentType))
+    const isFormDataInstance = body => {
+      const formData = this._config.polyfill("FormData", false)
+      return formData !== null && body instanceof formData
+    }
+    const jsonify = typeof body === "object" && !isFormDataInstance(body) && (!base._options.headers || !contentType || isLikelyJsonMime(contentType))
     base =
       !body ? base :
         jsonify ? base.json(body, contentType) :
