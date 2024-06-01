@@ -181,7 +181,7 @@ describe("Wretch", function () {
   })
 
   it("should send a FormData object", async function () {
-    // Test with a nested object with an excluded field.
+    // Test with a nested object and the recursive property.
     let form: any = {
       hello: "world",
       duck: "Muscovy",
@@ -223,7 +223,8 @@ describe("Wretch", function () {
       .post()
       .json()
     expect(decoded).toMatchObject({
-      hello: "world"
+      hello: "world",
+      "nested[property]": "1",
     })
 
     // Test without nesting.
