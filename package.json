@@ -133,7 +133,8 @@
     "tslint": "^6.1.2",
     "typedoc": "^0.25.3",
     "typescript": "^5.2.2",
-    "wait-on": "^7.2.0"
+    "wait-on": "^7.2.0",
+    "whatwg-url": "^14.0.0"
   },
   "jest": {
     "testPathIgnorePatterns": [
