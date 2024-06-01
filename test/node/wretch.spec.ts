@@ -257,7 +257,7 @@ describe("Wretch", function () {
       false
     );
 
-    let formData = new FormData()
+    let formData: any = new FormData()
     formData.append("hello", "world")
     formData.append("duck", "Muscovy")
     formData.append("duckImage", fs.createReadStream(duckImagePath))

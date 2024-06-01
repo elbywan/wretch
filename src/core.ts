@@ -51,9 +51,9 @@ export const core: Wretch = {
   headers(headerValues) {
     const headers =
       !headerValues ? {} :
-      Array.isArray(headerValues) ? Object.fromEntries(headerValues) :
-      "entries" in headerValues ? Object.fromEntries((headerValues as Headers).entries()) :
-      headerValues
+        Array.isArray(headerValues) ? Object.fromEntries(headerValues) :
+          "entries" in headerValues ? Object.fromEntries((headerValues as Headers).entries()) :
+            headerValues
     return { ...this, _options: mix(this._options, { headers }) }
   },
   accept(headerValue) {
@@ -92,11 +92,11 @@ export const core: Wretch = {
     let base = this.url(url).options({ method })
     // "Jsonify" the body if it is an object and if it is likely that the content type targets json.
     const contentType = extractContentType(base._options.headers)
-    const isFormDataInstance = body => {
-      const formData = this._config.polyfill("FormData", false)
-      return formData !== null && body instanceof formData
-    }
-    const jsonify = typeof body === "object" && !isFormDataInstance(body) && (!base._options.headers || !contentType || isLikelyJsonMime(contentType))
+    const formDataClass = this._config.polyfill("FormData", false)
+    const jsonify =
+      typeof body === "object" &&
+      !(formDataClass && body instanceof formDataClass) &&
+      (!base._options.headers || !contentType || isLikelyJsonMime(contentType))
     base =
       !body ? base :
         jsonify ? base.json(body, contentType) :
