@@ -1,6 +1,6 @@
 {
   "name": "wretch",
-  "version": "2.8.1",
+  "version": "2.9.0",
   "type": "module",
   "description": "A tiny wrapper built around fetch with an intuitive syntax.",
   "keywords": [
