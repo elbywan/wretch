@@ -4,7 +4,7 @@ function stringify(value?: string | null): string | null {
   return typeof value !== "undefined" ? value : ""
 }
 
-const appendQueryParams = (url: string, qp: object | string, replace: boolean, config: Config) => {
+const appendQueryParams = (url: string, qp: object | string, replace: boolean, omitUndefinedOrNullValues: boolean, config: Config) => {
   let queryString: string
 
   if (typeof qp === "string") {
@@ -13,7 +13,7 @@ const appendQueryParams = (url: string, qp: object | string, replace: boolean, c
     const usp = config.polyfill("URLSearchParams", true, true)
     for (const key in qp) {
       const value = qp[key]
-      if (value === null || value === undefined) continue
+      if (omitUndefinedOrNullValues && (value === null || value === undefined)) continue
       if (qp[key] instanceof Array) {
         for (const val of value)
           usp.append(key, stringify(val))
@@ -41,6 +41,7 @@ export interface QueryStringAddon {
    * to the current url. String values are used as the query string verbatim.
    *
    * Pass `true` as the second argument to replace existing query parameters.
+   * Pass `true` as the third argument to completely omit the key=value pair for undefined or null values.
    *
    * ```
    * import QueryAddon from "wretch/addons/queryString"
@@ -85,7 +86,7 @@ export interface QueryStringAddon {
    *
    * @param qp - An object which will be converted, or a string which will be used verbatim.
    */
-  query<T extends QueryStringAddon, C, R>(this: T & Wretch<T, C, R>, qp: object | string, replace?: boolean): this
+  query<T extends QueryStringAddon, C, R>(this: T & Wretch<T, C, R>, qp: object | string, replace?: boolean, omitUndefinedOrNullValues?: boolean): this
 }
 
 /**
@@ -99,8 +100,8 @@ export interface QueryStringAddon {
  */
 const queryString: WretchAddon<QueryStringAddon> = {
   wretch: {
-    query(qp, replace = false) {
-      return { ...this, _url: appendQueryParams(this._url, qp, replace, this._config) }
+    query(qp, replace = false, omitUndefinedOrNullValues = false) {
+      return { ...this, _url: appendQueryParams(this._url, qp, replace, omitUndefinedOrNullValues, this._config) }
     }
   }
 }
