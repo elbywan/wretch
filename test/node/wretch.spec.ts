@@ -254,6 +254,30 @@ describe("Wretch", function () {
     })
   })
 
+  it("should not Jasonify a FormData instance", async function () {
+    const FormData = wretch()._config.polyfill(
+      "FormData",
+      false
+    );
+
+    let formData: any = new FormData()
+    formData.append("hello", "world")
+    formData.append("duck", "Muscovy")
+    formData.append("duckImage", fs.createReadStream(duckImagePath))
+
+    let decoded = await wretch(`${_URL}/formData/decode`)
+      .post(formData)
+      .json()
+    expect(decoded).toMatchObject({
+      hello: "world",
+      duck: "Muscovy",
+      duckImage: {
+        data: duckImage,
+        type: "Buffer"
+      }
+    })
+  })
+
   it("should perform OPTIONS and HEAD requests", async function () {
     const optsRes = await wretch(_URL + "/options").opts().res()
     const optsRes2 = await wretch(_URL + "/options").opts("").res()
