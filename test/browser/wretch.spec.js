@@ -315,21 +315,46 @@ describe("Wretch", function () {
     expect(await wretch(`${_URL}/accept`).accept("application/json").get().json()).toEqual({ json: "ok" })
   })
 
-  it("should set the Authorization header", async function () {
-    try {
-      await wretch(_URL + "/basicauth")
+  describe("handling of the Authorization header", function () {
+    it("should fail without using an Authorization header", async function () {
+      try {
+        await wretch(_URL + "/basicauth")
+          .get()
+          .res(_ => fail("Authenticated route should not respond without credentials."))
+      } catch (e) {
+        expect(e.status).toBe(401)
+      }
+    })
+
+    it("should set the Authorization header using the .auth() method", async function () {
+      const res = await wretch(_URL + "/basicauth")
+        .auth("Basic d3JldGNoOnLDtmNrcw==")
         .get()
-        .res(_ => fail("Authenticated route should not respond without credentials."))
-    } catch (e) {
-      expect(e.status).toBe(401)
-    }
+        .text()
 
-    const res = await wretch(_URL + "/basicauth")
-      .auth("Basic d3JldGNoOnJvY2tz")
-      .get()
-      .text()
+      expect(res).toBe("ok")
+    })
 
-    expect(res).toBe("ok")
+    it("should set the Authorization header using the BasicAuth addon's .basicAuth() method", async function () {
+      const res = await wretch(_URL + "/basicauth")
+        .basicAuth("wretch", "röcks")
+        .get()
+        .text()
+  
+      expect(res).toBe("ok")
+    })
+
+    it("should set the Authorization header using credentials from URL via the BasicAuth addon", async function () {
+      const url = new URL(_URL)
+      url.username = "wretch"
+      url.password = "röcks"
+      url.pathname = "/basicauth"
+      const res = await wretch(url.toString())
+        .get()
+        .text()
+  
+      expect(res).toBe("ok")
+    })
   })
 
   it("should change the parsing used in the default error handler", async function () {
@@ -471,7 +496,7 @@ describe("Wretch", function () {
       .defer((w, url, { token }) => w.auth(token), true)
 
     const result = await w
-      .options({ token: "Basic d3JldGNoOnJvY2tz" })
+      .options({ token: "Basic d3JldGNoOnLDtmNrcw==" })
       .options({ q: "a" })
       .get("")
       .text()

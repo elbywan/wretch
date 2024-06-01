@@ -1,5 +1,7 @@
 export { default as abortAddon } from "./abort.js"
 export type { AbortWretch, AbortResolver } from "./abort.js"
+export { default as basicAuthAddon } from "./basicAuth.js"
+export type { BasicAuthAddon } from "./basicAuth.js"
 export { default as formDataAddon } from "./formData.js"
 export type { FormDataAddon } from "./formData.js"
 export { default as formUrlAddon } from "./formUrl.js"

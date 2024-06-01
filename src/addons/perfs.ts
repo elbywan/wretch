@@ -1,4 +1,6 @@
-import type { WretchResponseChain, WretchAddon } from "../types.js"
+import type { WretchResponseChain, WretchAddon, Config } from "../types.js"
+
+export type PerfCallback = (timing: any) => void
 
 export interface PerfsAddon {
   /**
@@ -6,7 +8,7 @@ export interface PerfsAddon {
    *
    * Warning: Still experimental on browsers and node.js
    */
-  perfs: <T, C extends PerfsAddon, R>(this: C & WretchResponseChain<T, C, R>, cb?: (timing: any) => void) => this,
+  perfs: <T, C extends PerfsAddon, R>(this: C & WretchResponseChain<T, C, R>, cb?: PerfCallback) => this,
 }
 
 /**
@@ -56,10 +58,15 @@ export interface PerfsAddon {
  * ```
  */
 const perfs: () => WretchAddon<unknown, PerfsAddon> = () => {
-  const callbacks = new Map()
-  let observer = null
+  const callbacks = new Map<string, PerfCallback>()
+  let observer /*: PerformanceObserver | null*/ = null
 
-  const onMatch = (entries, name, callback, performance) => {
+  const onMatch = (
+    entries /*: PerformanceObserverEntryList */,
+    name: string,
+    callback: PerfCallback,
+    performance: typeof globalThis.performance
+  ) => {
     if (!entries.getEntriesByName)
       return false
     const matches = entries.getEntriesByName(name)
@@ -80,7 +87,10 @@ const perfs: () => WretchAddon<unknown, PerfsAddon> = () => {
     return false
   }
 
-  const initObserver = (performance, performanceObserver) => {
+  const initObserver = (
+    performance: (typeof globalThis.performance) | null | undefined,
+    performanceObserver /*: (typeof PerformanceObserver) | null | undefined */
+  ) => {
     if (!observer && performance && performanceObserver) {
       observer = new performanceObserver(entries => {
         callbacks.forEach((callback, name) => {
@@ -95,7 +105,11 @@ const perfs: () => WretchAddon<unknown, PerfsAddon> = () => {
     return observer
   }
 
-  const monitor = (name, callback, config) => {
+  const monitor = (
+    name: string | null | undefined,
+    callback: PerfCallback | null | undefined,
+    config: Config
+  ) => {
     if (!name || !callback)
       return
 
