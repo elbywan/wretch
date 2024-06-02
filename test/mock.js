@@ -1,3 +1,5 @@
+/* global Buffer */
+
 // @ts-check
 import { readFileSync } from "fs"
 import { dirname, resolve } from "path"
@@ -18,9 +20,9 @@ const preload = {
   duck: readFileSync(resolve(__dirname, "assets", "duck.jpg"))
 }
 
-async function validate(username, password, req, reply) {
-  if (username !== 'wretch' || password !== 'röcks') {
-    return new Error('Winter is coming')
+async function validate(username, password, _req, _reply) {
+  if (username !== "wretch" || password !== "röcks") {
+    return new Error("Winter is coming")
   }
 }
 
@@ -36,7 +38,7 @@ export function launch(port) {
   server.register(multipartPlugin, { attachFieldsToBody: true })
   server.register(formBodyPlugin)
   server.register(authPlugin, { validate })
-  server.addContentTypeParser('*', async function () { })
+  server.addContentTypeParser("*", async function () { })
 
   server.register(corsPlugin, {
     allowedHeaders: ["Authorization", "X-Custom-Header", "X-Custom-Header-2", "X-Custom-Header-3", "X-Custom-Header-4", "content-type"],
@@ -47,10 +49,10 @@ export function launch(port) {
     preflightContinue: true
   })
 
-  server.register(setupErrors);
+  server.register(setupErrors)
 
   server.addHook("preHandler", async (request, reply) => {
-    reply.header("Timing-Allow-Origin", '*')
+    reply.header("Timing-Allow-Origin", "*")
   })
 
   // Must define HEAD /json before setupReplies. Otherwise fastify will be unhappy
@@ -66,13 +68,13 @@ export function launch(port) {
   setupReplies(server, "blob", imgReply)
   setupReplies(server, "arrayBuffer", binaryReply)
 
-  server.get("/ping", async (request, reply) => {
+  server.get("/ping", async () => {
     return null
   })
 
   server.get("/json/null", async (request, reply) => {
     reply.type("application/json")
-    return null;
+    return null
   })
 
   server.options("/options", async (request, reply) => {
@@ -112,7 +114,6 @@ export function launch(port) {
 
   server.post("/urlencoded/roundTrip", async (request, reply) => {
     if (request.headers["content-type"] === "application/x-www-form-urlencoded") {
-      // @ts-ignore
       return qs.stringify(request.body)
     }
 
@@ -141,7 +142,7 @@ export function launch(port) {
       return reply
     }
 
-    const promises = values(request.body).map(async (item) => {
+    const promises = values(request.body).map(async item => {
       if (Array.isArray(item)) {
         return [
           item[0].fieldname,
@@ -164,7 +165,7 @@ export function launch(port) {
     return Object.fromEntries(pairs)
   })
 
-  server.get("/accept", async (request, reply) => {
+  server.get("/accept", async request => {
     const accept = request.headers["accept"]
 
     if (accept === "application/json") {
@@ -180,7 +181,7 @@ export function launch(port) {
       method: "GET",
       url: "/basicauth",
       onRequest: server.basicAuth,
-      handler: async (request, reply) => {
+      handler: async () => {
         return "ok"
       }
     })
@@ -260,7 +261,7 @@ const setupErrors = async server => {
     else if (i === 426 || i === 429) i++
   }
 
-  for (let error of errorList) {
+  for (const error of errorList) {
     server.get("/" + error, async (request, reply) => {
       reply.code(error)
       return "error code : " + error

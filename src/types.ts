@@ -737,9 +737,9 @@ export interface WretchResponseChain<T, Self = unknown, R = undefined> {
  * Configuration object.
  */
 export type Config = {
-  options: {};
+  options: object;
   errorType: string;
-  polyfills: {};
+  polyfills: object;
   polyfill(p: "fetch", doThrow?: boolean): typeof fetch;
   polyfill(p: "FormData", doThrow: boolean, instance: true, ...args: ConstructorParameters<typeof FormData>): FormData;
   polyfill(p: "FormData", doThrow?: boolean, instance?: false): typeof FormData;
@@ -796,7 +796,7 @@ export type FetchLike = (url: string, opts: WretchOptions) => Promise<WretchResp
 /**
  * An addon enhancing either the request or response chain (or both).
  */
-export type WretchAddon<W extends unknown, R extends unknown = unknown> = {
+export type WretchAddon<W, R = unknown> = {
   beforeRequest?<T, C, R>(wretch: T & Wretch<T, C, R>, options: WretchOptions, state: Record<any, any>): T & Wretch<T, C, R>,
   wretch?: W,
   resolver?: R | (<T, C>(_: C & WretchResponseChain<T, C, R>) => R)

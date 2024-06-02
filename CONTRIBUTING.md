@@ -34,7 +34,7 @@ The code **must** pass the linter and specs.
 
 If you add a new functionality, please write some tests!
 
-If a linter rule which is not already set in the tslint.json file is bothering you, feel free to propose a change.
+If a linter rule which is not already set in the `.eslintrc.js` file is bothering you, feel free to propose a change.
 
 ### 5 - Commit & Pull request
 

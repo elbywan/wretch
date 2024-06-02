@@ -18,7 +18,7 @@ import AbortAddon from "../../dist/bundle/addons/abort.min.mjs"
 import type { Wretch, WretchResponseChain, WretchResponse, Middleware } from "../../dist/types.d.ts"
 
 declare type factory = {
-  (_url?: string, _options?: {}): Wretch;
+  (_url?: string, _options?: object): Wretch;
   options: (options: object, replace?: boolean | undefined) => void;
   errorType: (errorType: string) => void;
   polyfills: (polyfills: object, replace?: boolean | undefined) => void;
@@ -112,7 +112,9 @@ describe("Wretch", function () {
     try {
       await wretch(`${_URL}/json/roundTrip`).content("bad/content").post(jsonObject).json()
       fail("should have thrown")
-    } catch (e) { }
+    } catch (e) {
+      // ignore
+    }
     // Ensure that the charset is preserved.
     const headerWithCharset = "application/json; charset=utf-16"
     assertEquals((wretch()).content(headerWithCharset).json({})._options.headers["Content-Type"], headerWithCharset)
@@ -132,7 +134,9 @@ describe("Wretch", function () {
     try {
       await wretch(`${_URL}/json/roundTrip`).content("bad/content").post(jsonObject).json()
       fail("should have thrown")
-    } catch (e) { }
+    } catch (e) {
+      // ignore
+    }
   })
 
   it("should send a FormData object", async function () {
@@ -168,13 +172,13 @@ describe("Wretch", function () {
     const FormData = wretch()._config.polyfill(
       "FormData",
       false
-    );
+    )
 
-    let formData = new FormData()
+    const formData = new FormData()
     formData.append("hello", "world")
     formData.append("duck", "Muscovy")
 
-    let decoded = await wretch(`${_URL}/formData/decode`)
+    const decoded = await wretch(`${_URL}/formData/decode`)
       .post(formData)
       .json()
     assertEquals(decoded, {
@@ -252,11 +256,11 @@ describe("Wretch", function () {
   it("should set and catch errors with global catchers", async function () {
     let check = 0
     const w = wretch(_URL)
-      .catcher(404, err => check++)
-      .catcher(500, err => check++)
-      .catcher(400, err => check++)
-      .catcher(401, err => check--)
-      .catcher("SyntaxError", err => check++)
+      .catcher(404, _err => check++)
+      .catcher(500, _err => check++)
+      .catcher(400, _err => check++)
+      .catcher(401, _err => check--)
+      .catcher("SyntaxError", _err => check++)
 
     // +1 : 1
     await w.url("/text").get().res(_ => {
@@ -401,7 +405,7 @@ describe("Wretch", function () {
         .auth("Basic d3JldGNoOnLDtmNrcw==")
         .get()
         .text()
-  
+
       assertEquals(res, "ok")
     })
 
@@ -411,7 +415,7 @@ describe("Wretch", function () {
         .basicAuth("wretch", "röcks")
         .get()
         .text()
-  
+
       assertEquals(res, "ok")
     })
 
@@ -424,7 +428,7 @@ describe("Wretch", function () {
         .addon(BasicAuthAddon)
         .get()
         .text()
-  
+
       assertEquals(res, "ok")
     })
   })
@@ -432,7 +436,7 @@ describe("Wretch", function () {
   it("should change the parsing used in the default error handler", async function () {
     await wretch(`${_URL}/json500`)
       .get()
-      .internalError(error => { assertEquals(error.text, `{"error":500,"message":"ok"}`) })
+      .internalError(error => { assertEquals(error.text, "{\"error\":500,\"message\":\"ok\"}") })
       .res(_ => fail("I should never be called because an error was thrown"))
       .then(_ => assertEquals(_, undefined))
     wretch.errorType("json")
@@ -541,7 +545,7 @@ describe("Wretch", function () {
   // })
 
   it("should use middlewares", async function () {
-    const shortCircuit: Middleware = () => next => (url, opts) => Promise.resolve({
+    const shortCircuit: Middleware = () => _next => (url, opts) => Promise.resolve({
       ok: true,
       text: () => Promise.resolve(opts.method + "@" + url)
     } as WretchResponse)

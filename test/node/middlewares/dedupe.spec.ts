@@ -104,7 +104,7 @@ export default describe("Dedupe Middleware", () => {
       [baseAddress() + "/one", "GET"]
     ])
 
-    results.forEach((result, i) => {
+    results.forEach(result => {
       expect(result).toMatchObject({
         url: baseAddress() + "/one",
         status: 200,

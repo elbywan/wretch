@@ -5,7 +5,7 @@ import { mock } from "./mock"
 
 export default describe("Throttling Cache Middleware", () => {
   const PORT = 5001
-  let server: http.Server | null = null;
+  let server: http.Server | null = null
   let logs: any[] = []
 
   const log = (url: string, options: WretchOptions) => {
@@ -21,7 +21,7 @@ export default describe("Throttling Cache Middleware", () => {
   beforeAll(done => {
     server = http.createServer((req, res) => {
       req.pipe(res)
-    });
+    })
     server.listen(PORT, "127.0.0.1")
     server.once("listening", () => {
       done()
@@ -56,15 +56,15 @@ export default describe("Throttling Cache Middleware", () => {
       [baseAddress() + "/one", "GET"],
       [baseAddress() + "/two", "GET"],
       [baseAddress() + "/three", "GET"],
-    ]);
+    ])
 
     results.forEach((result, i) => {
       expect(result).toMatchObject({
         url: baseAddress() + "/" + (i < 3 ? "one" : i < 5 ? "two" : "three"),
         status: 200,
-        statusText: 'OK',
+        statusText: "OK",
       })
-    });
+    })
 
     logs = []
 
@@ -72,7 +72,7 @@ export default describe("Throttling Cache Middleware", () => {
     await w.get("/one").res()
     expect(logs).toEqual([
       [baseAddress() + "/one", "GET"],
-    ]);
+    ])
   })
 
   it("should skip some requests", async () => {
@@ -93,7 +93,7 @@ export default describe("Throttling Cache Middleware", () => {
       [baseAddress() + "/two", "GET"],
       [baseAddress() + "/two", "GET"],
       [baseAddress() + "/three", "GET"],
-    ]);
+    ])
   })
 
   it("should be able to programtically customize the cache keys", async () => {
@@ -104,7 +104,7 @@ export default describe("Throttling Cache Middleware", () => {
         return url + "$" + opts.method
       }
     })
-    const wCustom = base().middlewares([customMiddleware]);
+    const wCustom = base().middlewares([customMiddleware])
 
     const promises = Promise.all([
       wDefault.url("/url").get().res(),

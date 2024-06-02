@@ -6,7 +6,7 @@ import { URLSearchParams } from "url"
 import * as path from "path"
 import wretch from "../../src"
 import { mix } from "../../src/utils"
-import { URL as URLPolyfill } from 'whatwg-url'
+import { URL as URLPolyfill } from "whatwg-url"
 
 import AbortAddon from "../../src/addons/abort"
 import BasicAuthAddon from "../../src/addons/basicAuth"
@@ -20,7 +20,6 @@ declare const global
 import { performance, PerformanceObserver } from "perf_hooks"
 // clearResourceTimings is read-only since node 18. Use `defineProperty` to force override it
 // See https://github.com/facebook/jest/issues/2227#issuecomment-265005782
-// tslint:disable-next-line: no-empty
 Object.defineProperty(performance, "clearResourceTimings", { value: () => { } })
 
 const _PORT = 9876
@@ -258,14 +257,14 @@ describe("Wretch", function () {
     const FormData = wretch()._config.polyfill(
       "FormData",
       false
-    );
+    )
 
-    let formData: any = new FormData()
+    const formData: any = new FormData()
     formData.append("hello", "world")
     formData.append("duck", "Muscovy")
     formData.append("duckImage", fs.createReadStream(duckImagePath))
 
-    let decoded = await wretch(`${_URL}/formData/decode`)
+    const decoded = await wretch(`${_URL}/formData/decode`)
       .post(formData)
       .json()
     expect(decoded).toMatchObject({
@@ -562,7 +561,7 @@ describe("Wretch", function () {
     await wretch(`${_URL}/json500raw`)
       .get()
       .internalError(error => {
-        expect(error.text).toEqual(`{"error":500,"message":"ok"}`)
+        expect(error.text).toEqual("{\"error\":500,\"message\":\"ok\"}")
         expect(error.json).toBeUndefined()
       })
       .res(_ => fail("I should never be called because an error was thrown"))
@@ -571,7 +570,7 @@ describe("Wretch", function () {
     await wretch(`${_URL}/json500`)
       .get()
       .internalError(error => {
-        expect(error.text).toEqual(`{"error":500,"message":"ok"}`)
+        expect(error.text).toEqual("{\"error\":500,\"message\":\"ok\"}")
         expect(error.json).toEqual({ error: 500, message: "ok" })
       })
       .res(_ => fail("I should never be called because an error was thrown"))
@@ -688,7 +687,7 @@ describe("Wretch", function () {
   })
 
   it("should use middlewares", async function () {
-    const shortCircuit = () => next => (url, opts) => Promise.resolve({
+    const shortCircuit = () => _next => (url, opts) => Promise.resolve({
       ok: true,
       text: () => Promise.resolve(opts.method + "@" + url)
     } as any)

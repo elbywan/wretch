@@ -72,7 +72,7 @@ export const dedupe: DedupeMiddleware = ({ skip = defaultSkip, key = defaultKey,
         })
         .catch(error => {
           // Reject pending promises on error
-          inflight.get(_key).forEach(([resolve, reject]) => reject(error))
+          inflight.get(_key).forEach(([, reject]) => reject(error))
           inflight.delete(_key)
           throw error
         })
