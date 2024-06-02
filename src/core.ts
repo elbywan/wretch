@@ -73,6 +73,7 @@ export const core: Wretch = {
   catcherFallback(catcher) {
     return this.catcher(CATCHER_FALLBACK, catcher)
   },
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   resolve<R = unknown>(resolver, clear: boolean = false) {
     return { ...this, _resolvers: clear ? [resolver] : [...this._resolvers, resolver] }
   },

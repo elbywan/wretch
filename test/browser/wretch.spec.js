@@ -1,5 +1,7 @@
+/* global wretch, expect, describe, it, beforeAll, fail */
+
 const _PORT = 9876
-const _URL = 'http://localhost:' + _PORT
+const _URL = "http://localhost:" + _PORT
 
 const allRoutes = (obj, type, action, body) => Promise.all([
   obj.get("")[type](_ => _).then(action),
@@ -10,8 +12,8 @@ const allRoutes = (obj, type, action, body) => Promise.all([
 ])
 
 const isSafari =
-  navigator.userAgent.indexOf('Safari') >= 0 &&
-  navigator.userAgent.indexOf('Chrome') < 0
+  navigator.userAgent.indexOf("Safari") >= 0 &&
+  navigator.userAgent.indexOf("Chrome") < 0
 
 describe("Wretch", function () {
 
@@ -83,10 +85,12 @@ describe("Wretch", function () {
     try {
       await wretch(`${_URL}/json/roundTrip`).content("bad/content").post(jsonObject).json()
       fail("should have thrown")
-    } catch (e) { }
+    } catch (e) {
+      // ignore
+    }
     // Ensure that the charset is preserved.
     const headerWithCharset = "application/json; charset=utf-16"
-    expect(wretch().content(headerWithCharset).json({})._options.headers['Content-Type']).toBe(headerWithCharset)
+    expect(wretch().content(headerWithCharset).json({})._options.headers["Content-Type"]).toBe(headerWithCharset)
   })
 
   it("should perform an url encoded form data round trip", async function () {
@@ -103,7 +107,9 @@ describe("Wretch", function () {
     try {
       await wretch(`${_URL}/json/roundTrip`).content("bad/content").post(jsonObject).json()
       fail("should have thrown")
-    } catch (e) { }
+    } catch (e) {
+      // ignore
+    }
   })
 
   it("should send a FormData object", async function () {
@@ -138,13 +144,13 @@ describe("Wretch", function () {
     const FormData = wretch()._config.polyfill(
       "FormData",
       false
-    );
+    )
 
-    let formData = new FormData()
+    const formData = new FormData()
     formData.append("hello", "world")
     formData.append("duck", "Muscovy")
 
-    let decoded = await wretch(`${_URL}/formData/decode`)
+    const decoded = await wretch(`${_URL}/formData/decode`)
       .post(formData)
       .json()
     expect(decoded).toEqual({
@@ -225,11 +231,11 @@ describe("Wretch", function () {
   it("should set and catch errors with global catchers", async function () {
     let check = 0
     const w = wretch(_URL)
-      .catcher(404, err => check++)
-      .catcher(500, err => check++)
-      .catcher(400, err => check++)
-      .catcher(401, err => check--)
-      .catcher("SyntaxError", err => check++)
+      .catcher(404, () => check++)
+      .catcher(500, () => check++)
+      .catcher(400, () => check++)
+      .catcher(401, () => check--)
+      .catcher("SyntaxError", () => check++)
 
     // +1 : 1
     await w.url("/text").get().res(_ => check++)
@@ -359,7 +365,7 @@ describe("Wretch", function () {
         .basicAuth("wretch", "röcks")
         .get()
         .text()
-  
+
       expect(res).toBe("ok")
     })
 
@@ -371,7 +377,7 @@ describe("Wretch", function () {
       const res = await wretch(url.toString())
         .get()
         .text()
-  
+
       expect(res).toBe("ok")
     })
   })
@@ -379,7 +385,7 @@ describe("Wretch", function () {
   it("should change the parsing used in the default error handler", async function () {
     await wretch(`${_URL}/json500raw`)
       .get()
-      .internalError(error => { expect(error.text).toEqual(`{"error":500,"message":"ok"}`) })
+      .internalError(error => { expect(error.text).toEqual("{\"error\":500,\"message\":\"ok\"}") })
       .res(_ => fail("I should never be called because an error was thrown"))
       .then(_ => expect(_).toBe(undefined))
     wretch.errorType("json")
@@ -472,7 +478,7 @@ describe("Wretch", function () {
   })
 
   it("should use middlewares", async function () {
-    const shortCircuit = () => next => (url, opts) => Promise.resolve({
+    const shortCircuit = () => _next => (url, opts) => Promise.resolve({
       ok: true,
       text: () => Promise.resolve(opts.method + "@" + url)
     })

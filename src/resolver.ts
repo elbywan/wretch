@@ -22,7 +22,7 @@ export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
     addon.beforeRequest &&
     addon.beforeRequest(w, wretch._options, sharedState)
     || w,
-    wretch)
+  wretch)
 
   const {
     _url: url,
@@ -75,7 +75,7 @@ export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
   // Wraps the Promise in order to dispatch the error to a matching catcher
   const catchersWrapper = <T>(promise: Promise<T>): Promise<void | T> => {
     return promise.catch(err => {
-      const fetchErrorFlag = err.hasOwnProperty(FETCH_ERROR)
+      const fetchErrorFlag = Object.prototype.hasOwnProperty.call(err, FETCH_ERROR)
       const error = fetchErrorFlag ? err[FETCH_ERROR] : err
 
       const catcher =

@@ -130,7 +130,7 @@ const perfs: () => WretchAddon<unknown, PerfsAddon> = () => {
     resolver: {
       perfs(cb) {
         this._fetchReq
-          .then(res =>
+          .then(() =>
             monitor(this._wretchReq._url, cb, this._wretchReq._config)
           )
           .catch(() => {/* swallow */ })

@@ -62,12 +62,12 @@ export type ThrottlingCacheMiddleware = (options?: ThrottlingCacheOptions) => Co
 
 /* Defaults */
 
-const defaultSkip = (url, opts) => (
+const defaultSkip = (_url, opts) => (
   opts.skipCache || opts.method !== "GET"
 )
 const defaultKey = (url, opts) => opts.method + "@" + url
-const defaultClear = (url, opts) => false
-const defaultInvalidate = (url, opts) => null
+const defaultClear = () => false
+const defaultInvalidate = () => null
 const defaultCondition = response => response.ok
 
 export const throttlingCache: ThrottlingCacheMiddleware = ({
@@ -162,7 +162,7 @@ export const throttlingCache: ThrottlingCacheMiddleware = ({
       })
       .catch(error => {
         // Reject pending promises on error
-        inflight.get(_key).forEach(([resolve, reject]) => reject(error))
+        inflight.get(_key).forEach(([, reject]) => reject(error))
         inflight.delete(_key)
         throw error
       })
