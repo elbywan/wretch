@@ -83,7 +83,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined> {
    * @category Helpers
    * @param method - The method to call on the Fetch response to read the body and use it as the Error message
    */
-  errorType(this: Self & Wretch<Self, Chain, Resolver>, method: string): this
+  errorType(this: Self & Wretch<Self, Chain, Resolver>, method: ErrorType): this
 
   /**
    * Sets non-global polyfills - for instance in browserless environments.
@@ -733,12 +733,14 @@ export interface WretchResponseChain<T, Self = unknown, R = undefined> {
   fetchError: (this: Self & WretchResponseChain<T, Self, R>, cb: WretchErrorCallback<T, Self, R>) => this,
 }
 
+export type ErrorType = "text" | "json" | "blob" | "formData" | "arrayBuffer" | undefined | null
+
 /**
  * Configuration object.
  */
 export type Config = {
   options: object;
-  errorType: string;
+  errorType: ErrorType;
   polyfills: object;
   polyfill(p: "fetch", doThrow?: boolean): typeof fetch;
   polyfill(p: "FormData", doThrow: boolean, instance: true, ...args: ConstructorParameters<typeof FormData>): FormData;

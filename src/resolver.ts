@@ -56,17 +56,29 @@ export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
         err["cause"] = referenceError
         err.stack = err.stack + "\nCAUSE: " + referenceError.stack
         err.response = response
+        err.status = response.status
         err.url = finalUrl
+
         if (response.type === "opaque") {
           throw err
         }
-        return response.text().then((body: string) => {
-          err.message = body
-          if (config.errorType === "json" || response.headers.get("Content-Type")?.split(";")[0] === "application/json") {
-            try { err.json = JSON.parse(body) } catch (e) { /* ignore */ }
+
+        const jsonErrorType = config.errorType === "json" || response.headers.get("Content-Type")?.split(";")[0] === "application/json"
+        const bodyPromise =
+          !config.errorType ? Promise.resolve(response.body) :
+            jsonErrorType ? response.text() :
+              response[config.errorType]()
+
+        return bodyPromise.then((body: unknown) => {
+          err.message = typeof body === "string" ? body : response.statusText
+          if(body) {
+            if(jsonErrorType && typeof body === "string") {
+              err.text = body
+              err.json = JSON.parse(body)
+            } else {
+              err[config.errorType] = body
+            }
           }
-          err.text = body
-          err["status"] = response.status
           throw err
         })
       }

@@ -575,6 +575,16 @@ describe("Wretch", function () {
       })
       .res(_ => fail("I should never be called because an error was thrown"))
       .then(_ => expect(_).toBe(undefined))
+    // Disabled
+    await wretch(`${_URL}/json500raw`)
+      .errorType(null)
+      .get()
+      .internalError(error => {
+        expect(error.json).toEqual(undefined)
+        expect(error.text).toEqual(undefined)
+      })
+      .res(_ => fail("I should never be called because an error was thrown"))
+      .then(_ => expect(_).toBe(undefined))
     // Global
     wretch.errorType("json")
     await wretch(`${_URL}/json500raw`)

@@ -1,5 +1,5 @@
 import { mix } from "./utils.js"
-import type { Config } from "./types.js"
+import type { Config, ErrorType } from "./types.js"
 
 declare const global
 
@@ -94,7 +94,7 @@ export function setPolyfills(polyfills: object, replace = false) {
  *
  * If null, defaults to "text".
  */
-export function setErrorType(errorType: string) {
+export function setErrorType(errorType: ErrorType) {
   config.errorType = errorType
 }
 

@@ -2,7 +2,7 @@ import { mix, extractContentType, isLikelyJsonMime } from "./utils.js"
 import { JSON_MIME, CONTENT_TYPE_HEADER, CATCHER_FALLBACK } from "./constants.js"
 import { resolver } from "./resolver.js"
 import config from "./config.js"
-import type { Wretch } from "./types.js"
+import type { Wretch, ErrorType } from "./types.js"
 
 export const core: Wretch = {
   _url: "",
@@ -16,7 +16,7 @@ export const core: Wretch = {
   addon(addon) {
     return { ...this, _addons: [...this._addons, addon], ...addon.wretch }
   },
-  errorType(errorType: string) {
+  errorType(errorType: ErrorType) {
     return {
       ...this,
       _config: {
