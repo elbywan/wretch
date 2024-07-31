@@ -461,9 +461,9 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined> {
    * @param url - Some url to append
    * @param body - Set the body. Behaviour varies depending on the argument type, an object is considered as json.
    */
-  fetch(this: Self & Wretch<Self, Chain, Resolver>, method?: string, url?: string, body?: any):
+  fetch<Data>(this: Self & Wretch<Self, Chain, Resolver>, method?: string, url?: string, body?: any):
     Resolver extends undefined ?
-    Chain & WretchResponseChain<Self, Chain, Resolver> :
+    Chain & WretchResponseChain<Self, Chain, Resolver, Data> :
     Resolver
   /**
    * Performs a [GET](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET) request.
@@ -474,9 +474,9 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined> {
    *
    * @category HTTP
    */
-  get(this: Self & Wretch<Self, Chain, Resolver>, url?: string):
+  get<Data>(this: Self & Wretch<Self, Chain, Resolver>, url?: string):
     Resolver extends undefined ?
-    Chain & WretchResponseChain<Self, Chain, Resolver> :
+    Chain & WretchResponseChain<Self, Chain, Resolver, Data> :
     Resolver
   /**
    * Performs a [DELETE](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE) request.
@@ -487,9 +487,9 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined> {
    *
    * @category HTTP
    */
-  delete(this: Self & Wretch<Self, Chain, Resolver>, url?: string):
+  delete<Data>(this: Self & Wretch<Self, Chain, Resolver>, url?: string):
     Resolver extends undefined ?
-    Chain & WretchResponseChain<Self, Chain, Resolver> :
+    Chain & WretchResponseChain<Self, Chain, Resolver, Data> :
     Resolver
   /**
    * Performs a [PUT](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PUT) request.
@@ -500,9 +500,9 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined> {
    *
    * @category HTTP
    */
-  put(this: Self & Wretch<Self, Chain, Resolver>, body?: any, url?: string):
+  put<Data>(this: Self & Wretch<Self, Chain, Resolver>, body?: any, url?: string):
     Resolver extends undefined ?
-    Chain & WretchResponseChain<Self, Chain, Resolver> :
+    Chain & WretchResponseChain<Self, Chain, Resolver, Data> :
     Resolver
   /**
    * Performs a [POST](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST) request.
@@ -513,9 +513,9 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined> {
    *
    * @category HTTP
    */
-  post(this: Self & Wretch<Self, Chain, Resolver>, body?: any, url?: string):
+  post<Data>(this: Self & Wretch<Self, Chain, Resolver>, body?: any, url?: string):
     Resolver extends undefined ?
-    Chain & WretchResponseChain<Self, Chain, Resolver> :
+    Chain & WretchResponseChain<Self, Chain, Resolver, Data> :
     Resolver
   /**
    * Performs a [PATCH](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PATCH) request.
@@ -526,9 +526,9 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined> {
    *
    * @category HTTP
    */
-  patch(this: Self & Wretch<Self, Chain, Resolver>, body?: any, url?: string):
+  patch<Data>(this: Self & Wretch<Self, Chain, Resolver>, body?: any, url?: string):
     Resolver extends undefined ?
-    Chain & WretchResponseChain<Self, Chain, Resolver> :
+    Chain & WretchResponseChain<Self, Chain, Resolver, Data> :
     Resolver
   /**
    * Performs a [HEAD](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/HEAD) request.
@@ -563,7 +563,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined> {
  * Ultimately returns a Promise.
  *
  */
-export interface WretchResponseChain<T, Self = unknown, R = undefined> {
+export interface WretchResponseChain<T, Self = unknown, R = undefined, D = unknown> {
   /**
    * @private @internal
    */
@@ -598,7 +598,7 @@ export interface WretchResponseChain<T, Self = unknown, R = undefined> {
    *
    * @category Response Type
    */
-  json: <Result = unknown>(cb?: (type: any) => Promise<Result> | Result) => Promise<Awaited<Result>>,
+  json: <Result = D>(cb?: (type: any) => Promise<Result> | Result) => Promise<Awaited<Result>>,
   /**
    * Read the payload and deserialize it as a Blob.
    *
