@@ -21,7 +21,8 @@ export interface BasicAuthAddon {
    * wretch(`https://${user}:${pass}@...`).addon(BasicAuthAddon).get()
    * ```
    *
-   * @param input - The credentials to use for the basic auth.
+   * @param username - Username to use for basic auth
+   * @param password - Password to use for basic auth
    */
   basicAuth<T extends BasicAuthAddon, C, R>(
     this: T & Wretch<T, C, R>,
