@@ -33,7 +33,12 @@ export interface BasicAuthAddon {
 
 const makeBasicAuthMiddleware: (config: Config) => ConfiguredMiddleware = config => next => (url, opts) => {
   const _URL = config.polyfill("URL")
-  const parsedUrl = _URL.canParse(url) ? new _URL(url) : null
+  let parsedUrl: URL | null
+  try {
+    parsedUrl = new _URL(url)
+  } catch {
+    parsedUrl = null
+  }
 
   if (parsedUrl?.username || parsedUrl?.password) {
     const basicAuthBase64 = utf8ToBase64(
