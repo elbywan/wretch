@@ -1,6 +1,6 @@
 {
   "name": "wretch",
-  "version": "2.9.0",
+  "version": "2.9.1",
   "type": "module",
   "description": "A tiny wrapper built around fetch with an intuitive syntax.",
   "keywords": [
@@ -133,6 +133,7 @@
     "rollup": "^4.5.0",
     "ts-jest": "^29.1.1",
     "tslib": "^2.6.2",
+    "typedoc": "^0.26.6",
     "typescript": "^5.4.5",
     "typescript-eslint": "^7.11.0",
     "wait-on": "^7.2.0",
