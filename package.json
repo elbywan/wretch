@@ -35,32 +35,64 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "require": "./dist/bundle/wretch.min.cjs",
-      "import": "./dist/index.js"
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.cjs"
+      },
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
     },
     "./all": {
-      "types": "./dist/index.all.d.ts",
-      "require": "./dist/bundle/wretch.all.min.cjs",
-      "import": "./dist/index.all.js"
+      "require": {
+        "types": "./dist/cjs/index.all.d.ts",
+        "default": "./dist/cjs/index.all.js"
+      },
+      "import": {
+        "types": "./dist/index.all.d.ts",
+        "default:": "./dist/index.all.js"
+      }
     },
     "./addons": {
-      "types": "./dist/addons/index.d.ts",
-      "import": "./dist/addons/index.js"
+      "require": {
+        "types": "./dist/cjs/addons/index.d.ts",
+        "default": "./dist/cjs/addons/index.js"
+      },
+      "import": {
+        "types": "./dist/addons/index.d.ts",
+        "default": "./dist/addons/index.js"
+      }
     },
     "./addons/*": {
-      "types": "./dist/addons/*.d.ts",
-      "require": "./dist/bundle/addons/*.min.cjs",
-      "import": "./dist/addons/*.js"
+      "require": {
+        "types": "./dist/cjs/addons/*.d.ts",
+        "default": "./dist/cjs/addons/*.js"
+      },
+      "import": {
+        "types": "./dist/addons/*.d.ts",
+        "default": "./dist/addons/*.js"
+      }
     },
     "./middlewares": {
-      "types": "./dist/middlewares/index.d.ts",
-      "import": "./dist/middlewares/index.js"
+      "require": {
+        "types": "./dist/cjs/middlewares/index.d.ts",
+        "default": "./dist/cjs/middlewares/index.js"
+      },
+      "import": {
+        "types": "./dist/middlewares/index.d.ts",
+        "default": "./dist/middlewares/index.js"
+      }
     },
     "./middlewares/*": {
-      "types": "./dist/middlewares/*.d.ts",
-      "require": "./dist/bundle/middlewares/*.min.cjs",
-      "import": "./dist/middlewares/*.js"
+      "require": {
+        "types": "./dist/cjs/middlewares/*.d.ts",
+        "default": "./dist/cjs/middlewares/*.js"
+      },
+      "import": {
+        "types": "./dist/middlewares/*.d.ts",
+        "default": "./dist/middlewares/*.js"
+      }
     },
     "./package.json": "./package.json",
     "./*.mjs": {
@@ -82,7 +114,7 @@
     "lint": "eslint '{src,test}/**/*.{js,ts}'",
     "lint:fix": "eslint '{src,test}/**/*.{js,ts}' --fix",
     "prebuild": "rimraf dist && rimraf coverage && npm run lint",
-    "build": "tsc -p . && rollup -c",
+    "build": "tsc && tsc --project tsconfig.cjs.json && echo '{\"type\": \"commonjs\"}' > ./dist/cjs/package.json && rollup -c",
     "mock": "node scripts/mockServer.js",
     "mock:wait": "wait-on -t 10000 http://localhost:9876/ping",
     "test": "concurrently --success first -k 'npm run mock:wait && jest' 'npm run mock'",

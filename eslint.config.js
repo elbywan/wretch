@@ -29,6 +29,6 @@ export default tseslint.config(
         "AudioWorkletGlobalScope": false
       }
     },
-    ignores: ["node_modules", "dist"],
+    ignores: [ "dist/"],
   }
 )

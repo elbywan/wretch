@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2018",
-    "lib": [
-      "es2020",
-      "dom",
-      "dom.iterable"
-    ],
+    "lib": ["es2020", "dom", "dom.iterable"],
     "module": "es2015",
     "outDir": "dist",
     "declaration": true,
@@ -16,7 +12,6 @@
     "moduleResolution": "node",
     "isolatedModules": true
   },
-  "include": [
-    "src/**/*"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["src/**/index.cts"]
 }
