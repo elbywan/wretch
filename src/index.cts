@@ -1,3 +1,3 @@
-import factory from "./index.js";
+import factory from "./index.js"
 
-module.exports = factory.default;
+module.exports = factory.default

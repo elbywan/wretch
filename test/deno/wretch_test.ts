@@ -1,12 +1,12 @@
 import {
   assertEquals,
   fail
-} from "https://deno.land/std@0.147.0/testing/asserts.ts"
+} from "jsr:@std/assert"
 import {
   beforeAll,
   describe,
   it,
-} from "https://deno.land/std@0.147.0/testing/bdd.ts"
+} from "jsr:@std/testing/bdd"
 
 import wretchFn from "../../dist/bundle/wretch.min.mjs"
 import BasicAuthAddon from "../../dist/bundle/addons/basicAuth.min.mjs"
@@ -117,7 +117,7 @@ describe("Wretch", function () {
     }
     // Ensure that the charset is preserved.
     const headerWithCharset = "application/json; charset=utf-16"
-    assertEquals((wretch()).content(headerWithCharset).json({})._options.headers["Content-Type"], headerWithCharset)
+    assertEquals((wretch()).content(headerWithCharset).json({})._options.headers?.["Content-Type" as keyof HeadersInit], headerWithCharset)
   })
 
   it("should perform an url encoded form data round trip", async function () {
@@ -395,7 +395,7 @@ describe("Wretch", function () {
         await wretch(_URL + "/basicauth")
           .get()
           .res(_ => fail("Authenticated route should not respond without credentials."))
-      } catch (e) {
+      } catch (e: any) {
         assertEquals(e.status, 401)
       }
     })

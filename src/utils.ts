@@ -1,7 +1,8 @@
 import { CONTENT_TYPE_HEADER } from "./constants.js"
 
-export function extractContentType(headers: Record<string, string> = {}): string | undefined {
-  return Object.entries(headers).find(([k]) =>
+export function extractContentType(headers: HeadersInit = {}): string | undefined {
+  const normalizedHeaders = headers instanceof Array ? Object.fromEntries(headers) : headers
+  return Object.entries(normalizedHeaders).find(([k]) =>
     k.toLowerCase() === CONTENT_TYPE_HEADER.toLowerCase()
   )?.[1]
 }

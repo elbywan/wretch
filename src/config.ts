@@ -1,5 +1,5 @@
 import { mix } from "./utils.js"
-import type { Config, ErrorType } from "./types.js"
+import type { Config, ErrorType, WretchOptions } from "./types.js"
 
 declare const global
 
@@ -42,7 +42,7 @@ const config: Config = {
  * @param options Default options
  * @param replace If true, completely replaces the existing options instead of mixing in
  */
-export function setOptions(options: object, replace = false) {
+export function setOptions(options: WretchOptions, replace = false) {
   config.options = replace ? options : mix(config.options, options)
 }
 

@@ -761,7 +761,7 @@ export type Config = {
 /**
  * Fetch Request options with additional properties.
  */
-export type WretchOptions = Record<string, any>
+export type WretchOptions = Record<string, any> & RequestInit
 /**
  * An Error enhanced with status, text and body.
  */

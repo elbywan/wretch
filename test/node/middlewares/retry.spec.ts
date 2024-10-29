@@ -99,7 +99,7 @@ export default describe("Retry Middleware", () => {
         true
       )
       .options({ a: 1 })
-    await expect(w.get("/retry").res()).rejects.toThrowError(
+    await expect(w.get("/retry").res()).rejects.toThrow(
       "Number of attempts exceeded."
     )
     expect(counter).toEqual(10)
@@ -114,17 +114,17 @@ export default describe("Retry Middleware", () => {
           delayTimer: 1,
           onRetry() {
             counter++
-            return { url: `/${counter}`, options: { method: counter } }
+            return { url: `/${counter}`, options: { method: `${counter}` } }
           },
         }),
       ],
       true
     )
-    await expect(w.options({ a: 0 }).get("/0").res()).rejects.toThrowError(
+    await expect(w.options({ a: 0 }).get("/0").res()).rejects.toThrow(
       "Number of attempts exceeded."
     )
     logs.forEach((log, index) => {
-      expect(log).toMatchObject([`/${index}`, index === 0 ? "GET" : index])
+      expect(log).toMatchObject([`/${index}`, index === 0 ? "GET" : `${index}`])
     })
   })
 
@@ -161,10 +161,10 @@ export default describe("Retry Middleware", () => {
         true
       )
 
-    await expect(wThrow.get("/retry").res()).rejects.toThrowError(
+    await expect(wThrow.get("/retry").res()).rejects.toThrow(
       "Network Error"
     )
-    await expect(wRetry.get("/retry").res()).rejects.toThrowError(
+    await expect(wRetry.get("/retry").res()).rejects.toThrow(
       "Network Error"
     )
     expect(counter).toBe(10)

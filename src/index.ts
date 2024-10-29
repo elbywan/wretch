@@ -1,7 +1,7 @@
 import { setOptions, setErrorType, setPolyfills } from "./config.js"
 import { core } from "./core.js"
 import { WretchError } from "./resolver.js"
-import type { Wretch } from "./types.js"
+import type { Wretch, WretchOptions } from "./types.js"
 
 export type {
   Wretch,
@@ -33,16 +33,13 @@ export type {
  * @param _options The base fetch options
  * @returns A fresh wretch instance
  */
-function factory(_url = "", _options = {}): Wretch {
+function factory(_url = "", _options: WretchOptions = {}): Wretch {
   return { ...core, _url, _options }
 }
 
 factory["default"] = factory
-/** {@inheritDoc setOptions} */
 factory.options = setOptions
-/** {@inheritDoc setErrorType} */
 factory.errorType = setErrorType
-/** {@inheritDoc setPolyfills} */
 factory.polyfills = setPolyfills
 factory.WretchError = WretchError
 
