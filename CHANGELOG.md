@@ -1,3 +1,18 @@
+<a name="2.11.0"></a>
+# [2.11.0](https://github.com/elbywan/wretch/compare/2.10.0...2.11.0) (2024-10-29)
+
+
+### :arrow_up: Version update(s)
+
+* Bump body-parser from 1.20.0 to 1.20.3 ([598ce94](https://github.com/elbywan/wretch/commit/598ce94))
+* Bump rollup from 4.5.0 to 4.22.4 ([75f9db7](https://github.com/elbywan/wretch/commit/75f9db7))
+
+### :factory: New feature(s)
+
+* Add partial typing for the wretch options ([e778f88](https://github.com/elbywan/wretch/commit/e778f88)), closes [#253](https://github.com/elbywan/wretch/issues/253) [#251](https://github.com/elbywan/wretch/issues/251)
+
+
+
 <a name="2.10.0"></a>
 # [2.10.0](https://github.com/elbywan/wretch/compare/2.9.1...2.10.0) (2024-09-13)
 
