@@ -677,7 +677,7 @@ const w = wretch().middlewares([retry(), dedupe()])
 >
 > ```js
 > // Replace the default condition with a custom one to avoid retrying on 4xx errors:
-> until: (response, error) => response && (response.ok || (response.status >= 400 && response.status < 500))
+> until: (response, error) => !!response && (response.ok || (response.status >= 400 && response.status < 500))
 > ```
 
 ```js
@@ -690,20 +690,20 @@ wretch().middlewares([
     delayTimer: 500,
     delayRamp: (delay, nbOfAttempts) => delay * nbOfAttempts,
     maxAttempts: 10,
-    until: (response, error) => response && response.ok,
-    onRetry: null,
+    until: (response, error) => !!response && response.ok,
+    onRetry: undefined,
     retryOnNetworkError: false,
     resolveWithLatestResponse: false
   })
-])./* ... */
+])
 
 // You can also return a Promise, which is useful if you want to inspect the body:
 wretch().middlewares([
   retry({
     until: response =>
-      response.clone().json().then(body =>
+      response?.clone().json().then(body =>
         body.field === 'something'
-      )
+      ) || false
   })
 ])
 ```
@@ -723,7 +723,7 @@ wretch().middlewares([
     key: (url, opts) => opts.method + '@' + url,
     resolver: response => response.clone()
   })
-])./* ... */
+])
 ```
 
 ### [Throttling Cache 🔗](https://elbywan.github.io/wretch/api/types/middlewares_throttlingCache.ThrottlingCacheMiddleware)
@@ -745,7 +745,7 @@ wretch().middlewares([
     condition: response => response.ok,
     flagResponseOnCacheHit: '__cached'
   })
-])./* ... */
+])
 ```
 
 ### [Delay 🔗](https://elbywan.github.io/wretch/api/types/middlewares_delay.DelayMiddleware)
@@ -758,7 +758,7 @@ import { delay } from 'wretch/middlewares'
 
 wretch().middlewares([
   delay(1000)
-])./* ... */
+])
 ```
 
 ## Writing a Middleware
