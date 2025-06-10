@@ -9,6 +9,7 @@ import { FETCH_ERROR, CATCHER_FALLBACK } from "./constants.js"
  */
 export class WretchError extends Error implements WretchErrorType {
   status: number
+  request: Request
   response: WretchResponse
   url: string
   text?: string
@@ -39,8 +40,10 @@ export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
 
   // The generated fetch request
   let finalUrl = url
+  let finalRequestInit = opts
   const _fetchReq = middlewareHelper(middlewares)((url, options) => {
     finalUrl = url
+    finalRequestInit = options
     return config.polyfill("fetch")(url, options)
   })(url, finalOptions)
   // Throws on an http error
@@ -56,6 +59,7 @@ export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
         err["cause"] = referenceError
         err.stack = err.stack + "\nCAUSE: " + referenceError.stack
         err.response = response
+        err.request = new Request(finalUrl, finalRequestInit)
         err.status = response.status
         err.url = finalUrl
 
