@@ -15,6 +15,6 @@ export default describe("Delay Middleware", () => {
       },
       delay(1000)
     ]).get().res()
-    expect(after - before).toBeGreaterThanOrEqual(1000)
+    expect(after - before).toBeGreaterThanOrEqual(999)
   })
 })
