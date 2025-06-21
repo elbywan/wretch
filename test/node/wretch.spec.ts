@@ -595,6 +595,15 @@ describe("Wretch", function () {
       })
       .res(_ => fail("I should never be called because an error was thrown"))
       .then(_ => expect(_).toBe(undefined))
+    // ensure that the error is still throw even if the json parsing failed
+    await wretch(`${_URL}/500`)
+      .get()
+      .internalError(error => {
+        expect(error.json).toBe(undefined)
+        expect(error.text).toEqual("error code : 500")
+      })
+      .res(_ => fail("I should never be called because an error was thrown"))
+      .then(_ => expect(_).toBe(undefined))
   })
 
   it("should retrieve performance timings associated with a fetch request", function (done) {
