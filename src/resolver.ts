@@ -74,7 +74,8 @@ export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
           if(body) {
             if(jsonErrorType && typeof body === "string") {
               err.text = body
-              err.json = JSON.parse(body)
+              try { err.json = JSON.parse(body) }
+              catch { /* ignore */ }
             } else {
               err[config.errorType] = body
             }
