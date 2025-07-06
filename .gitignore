@@ -60,9 +60,6 @@ typings/
 # IDE
 .vscode
 
-# Rollup typescript cache
-.rpt2_cache
-
 # Distribution files
 /dist
 /test/browser/src
