@@ -4,7 +4,7 @@ import { AbortController, abortableFetch } from "abortcontroller-polyfill/dist/c
 import * as fs from "fs"
 import { URLSearchParams } from "url"
 import * as path from "path"
-import wretch from "../../src"
+import wretch, { WretchError } from "../../src"
 import { mix } from "../../src/utils"
 import { URL as URLPolyfill } from "whatwg-url"
 
@@ -782,6 +782,19 @@ describe("Wretch", function () {
     expect(w.query({ a: undefined, b: 1 })._url).toBe(_URL + "?a=&b=1")
     expect(w.query({ a: undefined, b: 1, c: null }, false, true)._url).toBe(_URL + "?b=1")
     expect(w.query({ array: ["a", "b", undefined, "c"] })._url).toBe(_URL + "?array=a&array=b&array=&array=c")
+  })
+
+  it("should expose original request on the WretchError object", async () => {
+    try {
+      await wretch(_URL + "/basicauth")
+        .get()
+        .res(_ => fail("Authenticated route should not respond without credentials."))
+    } catch (e) {
+      expect(e).toBeInstanceOf(wretch.WretchError)
+      expect((e as WretchError).request).toBeInstanceOf(Request)
+      expect((e as WretchError).request.url).toBe(_URL + "/basicauth")
+      expect((e as WretchError).request.method).toBe("GET")
+    }
   })
 })
 
