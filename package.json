@@ -158,6 +158,7 @@
     "wait-on": "^7.2.0"
   },
   "jest": {
+    "setupFilesAfterEnv": ["<rootDir>/test/setup.js"],
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/test/browser/"
