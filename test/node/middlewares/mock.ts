@@ -1,8 +1,8 @@
-import nodeFetch from "node-fetch"
-
-export const mock = (cb, fetch = nodeFetch) => {
+export const mock = (cb, fetch = globalThis.fetch) => {
   return (url, options) => {
     cb(url, options)
     return fetch(url, options)
   }
 }
+
+export const fetchPolyfill = (): () => Promise<any> => (): Promise<any> => Promise.resolve({ ok: true })

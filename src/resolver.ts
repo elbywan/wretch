@@ -13,6 +13,7 @@ export class WretchError extends Error implements WretchErrorType {
   url: string
   text?: string
   json?: any
+  request?: Request
 }
 
 export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
@@ -39,8 +40,15 @@ export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
 
   // The generated fetch request
   let finalUrl = url
+  let finalRequest: Request | undefined
   const _fetchReq = middlewareHelper(middlewares)((url, options) => {
     finalUrl = url
+    try {
+      finalRequest = new Request(url, options)
+    } catch {
+      // Request creation failed (likely relative URL), we'll store basic info later
+      finalRequest = undefined
+    }
     return config.polyfill("fetch")(url, options)
   })(url, finalOptions)
   // Throws on an http error
@@ -58,6 +66,9 @@ export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
         err.response = response
         err.status = response.status
         err.url = finalUrl
+        if (finalRequest) {
+          err.request = finalRequest
+        }
 
         if (response.type === "opaque") {
           throw err
@@ -74,12 +85,23 @@ export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
           if(body) {
             if(jsonErrorType && typeof body === "string") {
               err.text = body
-              try { err.json = JSON.parse(body) }
-              catch { /* ignore */ }
+              try { 
+                err.json = JSON.parse(body) 
+              } catch (parseError) { 
+                // JSON parsing failed, but we still want to throw the WretchError
+                // The original text is preserved in err.text
+              }
             } else {
               err[config.errorType] = body
             }
           }
+          throw err
+        }).catch(bodyError => {
+          // If body parsing fails entirely, still throw the WretchError with basic info
+          if (bodyError instanceof WretchError) {
+            throw bodyError
+          }
+          err.message = response.statusText || "HTTP Error"
           throw err
         })
       }

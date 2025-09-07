@@ -1,28 +1,14 @@
-import typescript from '@rollup/plugin-typescript';
-import terser from '@rollup/plugin-terser';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
+import { defineConfig } from 'rolldown'
 
 const addons = ["abort", "basicAuth", "formData", "formUrl", "perfs", "queryString", "progress"]
 const middlewares = ["dedupe", "delay", "retry", "throttlingCache"]
 
 const common = {
-  plugins: [
-    typescript({
-      importHelpers: true
-    }),
-    nodeResolve(),
-    terser({
-      ecma: 2018,
-      output: {
-        comments: false,
-      },
-      compress: {
-        booleans_as_integers: true,
-        passes: 2
-      }
-    })
-  ],
-  external: ["url"]
+  external: ["url"],
+  output: {
+    minify: true,
+    sourcemap: true,
+  }
 }
 
 const formats = ["umd", "cjs", "esm"]
@@ -35,7 +21,7 @@ const outputs = output => formats.map(format => ({
         output.file
 }))
 
-export default [
+export default defineConfig([
   {
     input: "./src/index.ts",
     output: outputs({
@@ -49,15 +35,13 @@ export default [
   },
   {
     input: "./src/index.all.ts",
-    output: [
-      ...outputs({
-        file: "dist/bundle/wretch.all.min.js",
-        format: "umd",
-        name: "wretch",
-        exports: "default",
-        sourcemap: true
-      })
-    ],
+    output: outputs({
+      file: "dist/bundle/wretch.all.min.js",
+      format: "umd",
+      name: "wretch",
+      exports: "default",
+      sourcemap: true
+    }),
     ...common
   },
   ...addons.map(addon => ({
@@ -82,4 +66,4 @@ export default [
     }),
     ...common
   }))
-]
+])

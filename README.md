@@ -31,7 +31,7 @@
 - 💡 **Intuitive** - lean API, handles errors, headers and (de)serialization
 - 🧊 **Immutable** - every call creates a cloned instance that can then be reused safely
 - 🔌 **Modular** - plug addons to add new features, and middlewares to intercept requests
-- 🧩 **Isomorphic** - compatible with modern browsers, Node.js 14+ and Deno
+- 🧩 **Isomorphic** - compatible with modern browsers and Node.js 20+
 - 🦺 **Type safe** - strongly typed, written in TypeScript
 - ✅ **Proven** - fully covered by unit tests and widely used
 - 💓 **Maintained** - alive and well for many years
@@ -214,57 +214,8 @@ The package contains multiple bundles depending on the format and feature set lo
 
 ## Node.js
 
-Wretch is compatible with and tested in _Node.js >= 14_. Older versions of node may work
-but it is not guaranteed.
+Wretch requires _Node.js >= 20_ and uses native fetch support which is stable in modern Node.js versions. No polyfills are required.
 
-### Polyfills (Node.js < 18)
-
-**Starting from Node.js 18, [node includes experimental fetch support](https://nodejs.org/en/blog/announcements/v18-release-announce/). Wretch will work without installing any polyfill.**
-
-For older versions, the Node.js standard library does not provide a native implementation of fetch (and other Browsers-only APIs) and polyfilling is mandatory.
-
-_The non-global way (preferred):_
-
-```javascript
-import fetch, { FormData } from "node-fetch"
-
-// w is a reusable wretch instance
-const w = wretch().polyfills({
-  fetch,
-  FormData,
-});
-```
-
-_Globally:_
-
-```javascript
-import fetch, { FormData } from "node-fetch";
-
-// Either mutate the global object…
-global.fetch = fetch;
-global.FormData = FormData;
-
-// …or use the static wretch.polyfills method to impact every wretch instance created afterwards.
-wretch.polyfills({
-  fetch,
-  FormData,
-});
-```
-
-## Deno
-
-Works with [Deno](https://deno.land/) >=
-[0.41.0](https://github.com/denoland/deno/releases/tag/v0.41.0) out of the box.
-
-Types should be imported from `/dist/types.d.ts`.
-
-```ts
-// You can import wretch from any CDN that serve ESModules.
-import wretch from "https://cdn.skypack.dev/wretch";
-
-const text = await wretch("https://httpstat.us").get("/200").text();
-console.log(text); // -> 200 OK
-```
 
 # Usage
 
@@ -1025,7 +976,7 @@ Wretch has been **completely rewritten** with the following goals in mind:
 ## Compatibility
 
 `wretch@1` was transpiled to es5, `wretch@2` is now transpiled to es2018.
-Any "modern" browser and Node.js versions >= 14 should parse the library without issues.
+Any "modern" browser and Node.js versions >= 20 should parse the library without issues.
 
 If you need compatibility with older browsers/nodejs versions then either stick with v1, use poyfills
 or configure `@babel` to make it transpile wretch.

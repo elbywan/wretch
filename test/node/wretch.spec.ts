@@ -1,12 +1,8 @@
-import nodeFetch from "node-fetch"
-import * as FormData from "form-data"
-import { AbortController, abortableFetch } from "abortcontroller-polyfill/dist/cjs-ponyfill"
 import * as fs from "fs"
 import { URLSearchParams } from "url"
 import * as path from "path"
 import wretch from "../../src"
 import { mix } from "../../src/utils"
-import { URL as URLPolyfill } from "whatwg-url"
 
 import AbortAddon from "../../src/addons/abort"
 import BasicAuthAddon from "../../src/addons/basicAuth"
@@ -36,8 +32,7 @@ const allRoutes = (obj, type, action, body?) => Promise.all([
 const fetchPolyfill = (timeout: number | null = null) =>
   function (url, opts) {
     performance.mark(url + " - begin")
-    const { fetch } = abortableFetch(nodeFetch) as any
-    return fetch(url, opts).then(res => {
+    return globalThis.fetch(url, opts).then(res => {
       performance.mark(url + " - end")
       const measure = () => performance.measure(res.url, url + " - begin", url + " - end")
       if (timeout)
@@ -519,7 +514,7 @@ describe("Wretch", function () {
     it("should set the Authorization header using the BasicAuth addon's .basicAuth() method", async function () {
       const res = await wretch(_URL + "/basicauth")
         .polyfills({
-          URL: URLPolyfill
+          URL
         })
         .addon(BasicAuthAddon)
         .basicAuth("wretch", "röcks")
@@ -536,7 +531,7 @@ describe("Wretch", function () {
       url.pathname = "/basicauth"
       const res = await wretch(url.toString())
         .polyfills({
-          URL: URLPolyfill
+          URL
         })
         .addon(BasicAuthAddon)
         .get()
