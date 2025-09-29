@@ -41,7 +41,8 @@ export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
   let finalUrl = url
   const _fetchReq = middlewareHelper(middlewares)((url, options) => {
     finalUrl = url
-    return config.polyfill("fetch")(url, options)
+    const fetchImpl = config.fetch || fetch
+    return fetchImpl(url, options)
   })(url, finalOptions)
   // Throws on an http error
   const referenceError = new Error()

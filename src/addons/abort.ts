@@ -75,12 +75,6 @@ export interface AbortResolver {
 /**
  * Adds the ability to abort requests using AbortController and signals under the hood.
  *
- *
- * _Only compatible with browsers that support
- * [AbortControllers](https://developer.mozilla.org/en-US/docs/Web/API/AbortController).
- * Otherwise, you could use a (partial)
- * [polyfill](https://www.npmjs.com/package/abortcontroller-polyfill)._
- *
  * ```js
  * import AbortAddon from "wretch/addons/abort"
  *
@@ -110,8 +104,8 @@ export interface AbortResolver {
 const abort: () => WretchAddon<AbortWretch, AbortResolver> = () => {
   return {
     beforeRequest(wretch, options, state) {
-      const fetchController = wretch._config.polyfill("AbortController", false, true)
-      if (!options["signal"] && fetchController) {
+      const fetchController = new AbortController()
+      if (!options["signal"]) {
         options["signal"] = fetchController.signal
       }
       const timeout = {

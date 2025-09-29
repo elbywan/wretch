@@ -1,12 +1,7 @@
-import nodeFetch from "node-fetch"
-import * as FormData from "form-data"
-import { AbortController, abortableFetch } from "abortcontroller-polyfill/dist/cjs-ponyfill"
 import * as fs from "fs"
-import { URLSearchParams } from "url"
 import * as path from "path"
 import wretch from "../../src"
 import { mix } from "../../src/utils"
-import { URL as URLPolyfill } from "whatwg-url"
 
 import AbortAddon from "../../src/addons/abort"
 import BasicAuthAddon from "../../src/addons/basicAuth"
@@ -15,9 +10,7 @@ import FormUrlAddon from "../../src/addons/formUrl"
 import PerfsAddon from "../../src/addons/perfs"
 import QueryStringAddon from "../../src/addons/queryString"
 
-declare const global
-
-import { performance, PerformanceObserver } from "perf_hooks"
+import { performance } from "perf_hooks"
 // clearResourceTimings is read-only since node 18. Use `defineProperty` to force override it
 // See https://github.com/facebook/jest/issues/2227#issuecomment-265005782
 Object.defineProperty(performance, "clearResourceTimings", { value: () => { } })
@@ -33,21 +26,6 @@ const allRoutes = (obj, type, action, body?) => Promise.all([
   obj.delete("")[type](action),
 ])
 
-const fetchPolyfill = (timeout: number | null = null) =>
-  function (url, opts) {
-    performance.mark(url + " - begin")
-    const { fetch } = abortableFetch(nodeFetch) as any
-    return fetch(url, opts).then(res => {
-      performance.mark(url + " - end")
-      const measure = () => performance.measure(res.url, url + " - begin", url + " - end")
-      if (timeout)
-        setTimeout(measure, timeout)
-      else
-        measure()
-      return res
-    })
-  }
-
 const duckImagePath = path.resolve(__dirname, "..", "assets", "duck.jpg")
 const duckImage = fs.readFileSync(duckImagePath)
 
@@ -56,33 +34,43 @@ describe("Wretch", function () {
   beforeEach(() => {
     wretch.options({}, true)
     wretch.errorType("text")
+    wretch.fetchPolyfill(undefined)
   })
 
-  it("should set and use non global polyfills", async function () {
-    global["FormData"] = null
-    global["URLSearchParams"] = null
-    global["fetch"] = null
+  it("should allow setting a custom fetch implementation", async function () {
+    let fetchCalled = false
+    const customFetch = (url, opts) => {
+      fetchCalled = true
+      return fetch(url, opts)
+    }
 
-    expect(() => wretch("...").addon(QueryStringAddon).query({ a: 1, b: 2 })).toThrow("URLSearchParams is not defined")
-    expect(() => wretch("...").addon(FormDataAddon).formData({ a: 1, b: 2 })).toThrow("FormData is not defined")
-    expect(() => wretch("...").get()).toThrow("fetch is not defined")
+    const result = await wretch(`${_URL}/text`)
+      .fetchPolyfill(customFetch)
+      .get()
+      .text()
 
-    wretch.polyfills({
-      fetch: fetchPolyfill(),
-      FormData,
-      URLSearchParams
-    })
+    expect(result).toBe("A text string")
+    expect(fetchCalled).toBe(true)
+  })
 
-    await wretch(`${_URL}/text`).addon(PerfsAddon()).get().perfs(_ => fail("should never be called")).res()
+  it("should allow setting a global fetch implementation", async function () {
+    let fetchCalled = false
+    const customFetch = (url, opts) => {
+      fetchCalled = true
+      return fetch(url, opts)
+    }
 
-    wretch.polyfills({
-      fetch: fetchPolyfill(),
-      FormData,
-      URLSearchParams,
-      performance,
-      PerformanceObserver,
-      AbortController
-    }, true)
+    wretch.fetchPolyfill(customFetch)
+
+    const result = await wretch(`${_URL}/text`)
+      .get()
+      .text()
+
+    expect(result).toBe("A text string")
+    expect(fetchCalled).toBe(true)
+
+    // Reset
+    wretch.fetchPolyfill(undefined)
   })
 
   it("should perform crud requests and parse a text response", async function () {
@@ -113,7 +101,7 @@ describe("Wretch", function () {
         headers: { "content-type": "application/xxx-octet-stream" }
       })
         .post(duckImage)
-        .res(res => res["buffer"]() as Buffer))
+        .arrayBuffer(buf => Buffer.from(buf)))
       .compare(duckImage)
     ).toBe(0)
 
@@ -122,7 +110,7 @@ describe("Wretch", function () {
       await wretch(`${_URL}/blob/roundTrip`)
         .headers({ "content-type": "application/xxx-octet-stream" })
         .post(duckImage)
-        .res(res => res["buffer"]() as Buffer)
+        .arrayBuffer(buf => Buffer.from(buf))
     ).compare(duckImage)
     ).toBe(0)
   })
@@ -164,7 +152,7 @@ describe("Wretch", function () {
     try {
       await wretch(`${_URL}/json/roundTrip`).content("bad/content").post(jsonObject).json()
       fail("should have thrown")
-    } catch (e) { /* ignore */ }
+    } catch { /* ignore */ }
     // Ensure that the charset is preserved.
     const headerWithCharset = "application/json; charset=utf-16"
     expect(wretch().content(headerWithCharset).json({})._options.headers["Content-Type"]).toBe(headerWithCharset)
@@ -184,7 +172,7 @@ describe("Wretch", function () {
     let form: any = {
       hello: "world",
       duck: "Muscovy",
-      duckImage: fs.createReadStream(duckImagePath),
+      duckImage: await fs.openAsBlob(duckImagePath),
       duckProperties: {
         beak: {
           color: "yellow"
@@ -193,11 +181,13 @@ describe("Wretch", function () {
         nullProp: null
       }
     }
+
     let decoded = await wretch(`${_URL}/formData/decode`)
       .addon(FormDataAddon)
       .formData(form, ["duckImage"])
       .post()
       .json()
+
     expect(decoded).toMatchObject({
       hello: "world",
       duck: "Muscovy",
@@ -254,15 +244,13 @@ describe("Wretch", function () {
   })
 
   it("should not Jasonify a FormData instance", async function () {
-    const FormData = wretch()._config.polyfill(
-      "FormData",
-      false
-    )
-
-    const formData: any = new FormData()
+    // Using native FormData in Node.js 22+
+    const formData = new FormData()
     formData.append("hello", "world")
     formData.append("duck", "Muscovy")
-    formData.append("duckImage", fs.createReadStream(duckImagePath))
+    // Native FormData in Node.js supports File/Blob objects
+    const fileBlob = new Blob([duckImage], { type: "image/jpeg" })
+    formData.append("duckImage", fileBlob, "duck.jpg")
 
     const decoded = await wretch(`${_URL}/formData/decode`)
       .post(formData)
@@ -270,10 +258,7 @@ describe("Wretch", function () {
     expect(decoded).toMatchObject({
       hello: "world",
       duck: "Muscovy",
-      duckImage: {
-        data: duckImage,
-        type: "Buffer"
-      }
+      duckImage: { data: duckImage, type: "Buffer" }
     })
   })
 
@@ -343,9 +328,7 @@ describe("Wretch", function () {
 
     check = 0
     await wretch(`${_URL}/444`)
-      .polyfills({
-        fetch: () => Promise.reject("Error")
-      })
+      .options({ signal: AbortSignal.abort() })
       .get()
       .notFound(_ => check++)
       .error(444, _ => check++)
@@ -358,19 +341,16 @@ describe("Wretch", function () {
   it("should set and catch errors with global catchers", async function () {
     let check = 0
     const w = wretch(_URL)
-      .polyfills({
-        fetch: fetchPolyfill()
-      })
       .catcher(404, _ => check++)
       .catcher(500, _ => check++)
       .catcher(400, _ => check++)
       .catcher(401, _ => check--)
-      .catcher("FetchError", _ => check++)
+      .catcherFallback(_ => check++)
 
     // +1 : 1
     await w.url("/text").get().res(_ => check++)
-    // +0 : 1
-    await w.url("/text").get().json(_ => check--)
+    // +0 : 1 (JSON parsing fails, callback not called, fallback overridden to not increment)
+    await w.url("/text").catcherFallback(_ => {}).get().json(_ => check--)
     // +1 : 2
     await w.url("/400").get().res(_ => check--)
     // +1 : 3
@@ -393,15 +373,12 @@ describe("Wretch", function () {
     let fallback = 0
 
     const w = wretch(_URL)
-      .polyfills({
-        fetch: fetchPolyfill()
-      })
       .catcher(404, _ => _404++)
       .catcherFallback(_ => fallback++)
 
     await w.url("/404").get().res(_ => fallback--)
     await w
-      .polyfills({ fetch: () => Promise.reject() })
+      .options({ signal: AbortSignal.abort() })
       .get()
       .fetchError(_ => fetchError++)
       .res(_ => fallback--)
@@ -518,9 +495,6 @@ describe("Wretch", function () {
 
     it("should set the Authorization header using the BasicAuth addon's .basicAuth() method", async function () {
       const res = await wretch(_URL + "/basicauth")
-        .polyfills({
-          URL: URLPolyfill
-        })
         .addon(BasicAuthAddon)
         .basicAuth("wretch", "röcks")
         .get()
@@ -535,9 +509,6 @@ describe("Wretch", function () {
       url.password = "röcks"
       url.pathname = "/basicauth"
       const res = await wretch(url.toString())
-        .polyfills({
-          URL: URLPolyfill
-        })
         .addon(BasicAuthAddon)
         .get()
         .text()
@@ -609,30 +580,13 @@ describe("Wretch", function () {
   it("should retrieve performance timings associated with a fetch request", function (done) {
     const w = wretch()
       .addon(PerfsAddon())
-      .polyfills({
-        fetch: fetchPolyfill(1)
-      })
     // Test empty perfs()
     w.url(`${_URL}/text`).get().perfs().res(_ => expect(_.ok).toBeTruthy()).then(_ => {
-      // Racing condition : observer triggered before response
+      // Test perfs callback
       w.url(`${_URL}/bla`).get().perfs(timings => {
         expect(timings.name).toBe(`${_URL}/bla`)
         expect(typeof timings.startTime).toBe("number")
-
-        // Racing condition : response triggered before observer
-        w
-          .polyfills({
-            fetch: fetchPolyfill(1000)
-          })
-          .url(`${_URL}/fakeurl`)
-          .get()
-          .perfs(timings => {
-            expect(timings.name).toBe(`${_URL}/fakeurl`)
-            expect(typeof timings.startTime).toBe("number")
-            done()
-          })
-          .res()
-          .catch(() => "ignore")
+        done()
       }).res().catch(_ => "ignore")
     })
     // Test multiple requests concurrency and proper timings dispatching
@@ -685,9 +639,6 @@ describe("Wretch", function () {
     let check = 0
     const w = wretch()
       .addon(PerfsAddon())
-      .polyfills({
-        fetch: fetchPolyfill(1)
-      })
       .url(_URL)
       .resolve(resolver => resolver
         .unauthorized(_ => check--))

@@ -1,8 +1,6 @@
-import nodeFetch from "node-fetch"
-
-export const mock = (cb, fetch = nodeFetch) => {
+export const mock = (cb, fetchFn = fetch) => {
   return (url, options) => {
     cb(url, options)
-    return fetch(url, options)
+    return fetchFn(url, options)
   }
 }

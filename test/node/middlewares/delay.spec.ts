@@ -5,7 +5,7 @@ export default describe("Delay Middleware", () => {
   it("should delay requests", async () => {
     let before = 0
     let after = 0
-    await wretch("").polyfills({ fetch: () => Promise.resolve({ ok: true }) }).middlewares([
+    await wretch("").fetchPolyfill(() => Promise.resolve({ ok: true } as any)).middlewares([
       next => (url, options) => {
         before = new Date().getTime()
         return next(url, options).then(response => {

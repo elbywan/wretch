@@ -86,28 +86,30 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined> {
   errorType(this: Self & Wretch<Self, Chain, Resolver>, method: ErrorType): this
 
   /**
-   * Sets non-global polyfills - for instance in browserless environments.
+   * Sets a custom fetch implementation to use for requests.
    *
-   * Needed for libraries like [fetch-ponyfill](https://github.com/qubyte/fetch-ponyfill).
+   * This is useful for:
+   * - Adding custom middleware to fetch
+   * - Using alternative fetch implementations
+   * - Mocking fetch in tests
+   * - Adding performance monitoring
    *
-   * ```javascript
-   * const fetch = require("node-fetch");
-   * const FormData = require("form-data");
+   * ```js
+   * // Add performance monitoring to fetch
+   * const customFetch = (url, opts) => {
+   *   console.time(url)
+   *   return fetch(url, opts).finally(() => console.timeEnd(url))
+   * }
    *
    * wretch("http://domain.com")
-   *   .polyfills({
-   *     fetch: fetch,
-   *     FormData: FormData,
-   *     URLSearchParams: require("url").URLSearchParams,
-   *   })
+   *   .fetchPolyfill(customFetch)
    *   .get()
    * ```
    *
    * @category Helpers
-   * @param polyfills - An object containing the polyfills
-   * @param replace - If true, replaces the current polyfills instead of mixing in
+   * @param fetch - A custom fetch implementation
    */
-  polyfills(this: Self & Wretch<Self, Chain, Resolver>, polyfills: Partial<Config["polyfills"]>, replace?: boolean): this
+  fetchPolyfill(this: Self & Wretch<Self, Chain, Resolver>, fetch: (url: string, opts: WretchOptions) => Promise<Response>): this
 
   /**
    * Appends or replaces the url.
@@ -741,21 +743,7 @@ export type ErrorType = "text" | "json" | "blob" | "formData" | "arrayBuffer" | 
 export type Config = {
   options: object;
   errorType: ErrorType;
-  polyfills: object;
-  polyfill(p: "fetch", doThrow?: boolean): typeof fetch;
-  polyfill(p: "FormData", doThrow: boolean, instance: true, ...args: ConstructorParameters<typeof FormData>): FormData;
-  polyfill(p: "FormData", doThrow?: boolean, instance?: false): typeof FormData;
-  polyfill(p: "URL", doThrow: boolean, instance: true, ...args: ConstructorParameters<typeof URL>): URL;
-  polyfill(p: "URL", doThrow?: boolean, instance?: false): typeof URL;
-  polyfill(p: "URLSearchParams", doThrow: boolean, instance: true, ...args: ConstructorParameters<typeof URLSearchParams>): URLSearchParams;
-  polyfill(p: "URLSearchParams", doThrow?: boolean, instance?: false): typeof URLSearchParams;
-  polyfill(p: "AbortController", doThrow: boolean, instance: true, ...args: ConstructorParameters<typeof AbortController>): AbortController;
-  polyfill(p: "AbortController", doThrow?: boolean, instance?: false): typeof AbortController;
-  polyfill(p: "performance", doThrow: boolean): typeof performance;
-  // not implemented in deno yet, thus type isn't available
-  // polyfill(p: "PerformanceObserver", doThrow: boolean, instance: true, ...args: ConstructorParameters<typeof PerformanceObserver>): PerformanceObserver;
-  // polyfill(p: "PerformanceObserver", doThrow?: boolean, instance?: false): typeof PerformanceObserver;
-  polyfill(p: string, doThrow?: boolean, instance?: boolean, ...args: any[]): any;
+  fetch?: FetchLike | ((url: string, opts: WretchOptions) => Promise<Response>);
 }
 
 /**
@@ -774,6 +762,12 @@ export type WretchErrorCallback<T, C, R> = (error: WretchError, originalRequest:
  * Fetch Response object with additional properties.
  */
 export type WretchResponse = Response & { [key: string]: any }
+
+/**
+ * Any function having the same shape as fetch().
+ */
+export type FetchLike = (url: string, opts: WretchOptions) => Promise<WretchResponse>
+
 /**
  * Callback provided to the defer function allowing to chain deferred actions that will be stored and applied just before the request is sent.
  */
@@ -790,10 +784,6 @@ export type Middleware = (options?: { [key: string]: any }) => ConfiguredMiddlew
  * Output is a promise.
  */
 export type ConfiguredMiddleware = (next: FetchLike) => FetchLike
-/**
- * Any function having the same shape as fetch().
- */
-export type FetchLike = (url: string, opts: WretchOptions) => Promise<WretchResponse>
 
 /**
  * An addon enhancing either the request or response chain (or both).

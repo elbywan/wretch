@@ -25,12 +25,12 @@ export const core: Wretch = {
       }
     }
   },
-  polyfills(polyfills, replace = false) {
+  fetchPolyfill(fetchImpl) {
     return {
       ...this,
       _config: {
         ...this._config,
-        polyfills: replace ? polyfills : mix(this._config.polyfills, polyfills)
+        fetch: fetchImpl
       }
     }
   },
@@ -93,10 +93,9 @@ export const core: Wretch = {
     let base = this.url(url).options({ method })
     // "Jsonify" the body if it is an object and if it is likely that the content type targets json.
     const contentType = extractContentType(base._options.headers)
-    const formDataClass = this._config.polyfill("FormData", false)
     const jsonify =
       typeof body === "object" &&
-      !(formDataClass && body instanceof formDataClass) &&
+      !(body instanceof FormData) &&
       (!base._options.headers || !contentType || isLikelyJsonMime(contentType))
     base =
       !body ? base :

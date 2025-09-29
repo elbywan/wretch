@@ -4,7 +4,7 @@ function convertFormData(
   formObject: object,
   recursive: string[] | boolean = false,
   config: Config,
-  formData = config.polyfill("FormData", true, true),
+  formData = new FormData(),
   ancestors = [] as string[],
 ) {
   Object.entries(formObject).forEach(([key, value]) => {

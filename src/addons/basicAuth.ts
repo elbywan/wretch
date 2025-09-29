@@ -31,11 +31,10 @@ export interface BasicAuthAddon {
   ): this
 }
 
-const makeBasicAuthMiddleware: (config: Config) => ConfiguredMiddleware = config => next => (url, opts) => {
-  const _URL = config.polyfill("URL")
+const makeBasicAuthMiddleware: (config: Config) => ConfiguredMiddleware = _config => next => (url, opts) => {
   let parsedUrl: URL | null
   try {
-    parsedUrl = new _URL(url)
+    parsedUrl = new URL(url)
   } catch {
     parsedUrl = null
   }

@@ -16,7 +16,7 @@ export default describe("Throttling Cache Middleware", () => {
     const { address, port } = (server as any).address()
     return "http://" + address + ":" + port
   }
-  const base = () => wretch(baseAddress()).polyfills({ fetch: mock(log) })
+  const base = () => wretch(baseAddress()).fetchPolyfill(mock(log))
 
   beforeAll(done => {
     server = http.createServer((req, res) => {

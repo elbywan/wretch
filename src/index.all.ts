@@ -1,4 +1,4 @@
-import { setOptions, setErrorType, setPolyfills } from "./config.js"
+import { setOptions, setErrorType, setFetchPolyfill } from "./config.js"
 import { core } from "./core.js"
 import * as Addons from "./addons/index.js"
 import { WretchError } from "./resolver.js"
@@ -17,7 +17,7 @@ function factory(_url = "", _options = {}) {
 factory["default"] = factory
 factory.options = setOptions
 factory.errorType = setErrorType
-factory.polyfills = setPolyfills
+factory.fetchPolyfill = setFetchPolyfill
 factory.WretchError = WretchError
 
 export default factory

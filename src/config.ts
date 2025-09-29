@@ -1,30 +1,11 @@
 import { mix } from "./utils.js"
 import type { Config, ErrorType, WretchOptions } from "./types.js"
 
-declare const global
-
 const config: Config = {
   // Default options
   options: {},
   // Error type
   errorType: "text",
-  // Polyfills
-  polyfills: {
-    // fetch: null,
-    // FormData: null,
-    // URL: null,
-    // URLSearchParams: null,
-    // performance: null,
-    // PerformanceObserver: null,
-    // AbortController: null,
-  },
-  polyfill(p: string, doThrow: boolean = true, instance: boolean = false, ...args: any[]) {
-    const res = this.polyfills[p] ||
-      (typeof self !== "undefined" ? self[p] : null) ||
-      (typeof global !== "undefined" ? global[p] : null)
-    if (doThrow && !res) throw new Error(p + " is not defined")
-    return instance && res ? new res(...args) : res
-  }
 }
 
 /**
@@ -47,29 +28,31 @@ export function setOptions(options: WretchOptions, replace = false) {
 }
 
 /**
- * Sets the default polyfills that will be stored internally when instantiating wretch objects.
- * Useful for browserless environments like `node.js`.
+ * Sets a custom fetch implementation globally.
+ * This will affect all wretch instances created after this call.
  *
- * Needed for libraries like [fetch-ponyfill](https://github.com/qubyte/fetch-ponyfill).
+ * Useful for:
+ * - Using a custom fetch polyfill
+ * - Adding global middleware to all requests
+ * - Mocking fetch globally in tests
  *
  * ```js
  * import wretch from "wretch"
  *
- * wretch.polyfills({
- *   fetch: require("node-fetch"),
- *   FormData: require("form-data"),
- *   URLSearchParams: require("url").URLSearchParams,
- * });
+ * // Set a custom fetch implementation globally
+ * wretch.fetchPolyfill((url, opts) => {
+ *   console.log('Fetching:', url)
+ *   return fetch(url, opts)
+ * })
  *
- * // Uses the above polyfills.
- * wretch("...").get().res();
+ * // All subsequent requests will use the custom fetch
+ * wretch("...").get().res()
  * ```
  *
- * @param polyfills An object containing the polyfills
- * @param replace If true, replaces the current polyfills instead of mixing in
+ * @param fetchImpl - A custom fetch implementation
  */
-export function setPolyfills(polyfills: object, replace = false) {
-  config.polyfills = replace ? polyfills : mix(config.polyfills, polyfills)
+export function setFetchPolyfill(fetchImpl: (url: string, opts: WretchOptions) => Promise<Response>) {
+  config.fetch = fetchImpl
 }
 
 /**

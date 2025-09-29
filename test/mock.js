@@ -5,8 +5,7 @@ import { readFileSync } from "fs"
 import { dirname, resolve } from "path"
 import { fileURLToPath } from "url"
 import { promisify } from "util"
-import { values } from "lodash-es"
-import * as qs from "querystring"
+import { stringify } from "node:querystring"
 import Fastify from "fastify"
 import multipartPlugin from "@fastify/multipart"
 import formBodyPlugin from "@fastify/formbody"
@@ -114,7 +113,7 @@ export function launch(port) {
 
   server.post("/urlencoded/roundTrip", async (request, reply) => {
     if (request.headers["content-type"] === "application/x-www-form-urlencoded") {
-      return qs.stringify(request.body)
+      return stringify(request.body)
     }
 
     reply.code(400)
@@ -142,13 +141,14 @@ export function launch(port) {
       return reply
     }
 
-    const promises = values(request.body).map(async item => {
+    const promises = Object.values(request.body).map(async item => {
       if (Array.isArray(item)) {
         return [
           item[0].fieldname,
           item.flatMap(inner => inner.value)
         ]
       }
+
       if (!item.file) {
         return [item.fieldname, item.value]
       }

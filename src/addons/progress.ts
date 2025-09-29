@@ -64,7 +64,7 @@ const progress: () => WretchAddon<unknown, ProgressResolver> = () => {
             }
           })
           return new Response(response.body.pipeThrough(transform), response)
-        } catch (e) {
+        } catch {
           return response
         }
       })

@@ -35,27 +35,6 @@ export interface PerfsAddon {
  *   .res();
  *
  * ```
- *
- * For node.js, there is a little extra work to do :
- *
- * ```js
- * // Node.js only
- * const { performance, PerformanceObserver } = require("perf_hooks");
- *
- * wretch.polyfills({
- *   fetch: function (url, opts) {
- *     performance.mark(url + " - begin");
- *     return fetch(url, opts).then(res => {
- *       performance.mark(url + " - end");
- *       setTimeout(() => performance.measure(res.url, url + " - begin", url + " - end"), 0);
- *       return res;
- *     });
- *   },
- *   // other polyfills…
- *   performance: performance,
- *   PerformanceObserver: PerformanceObserver,
- * });
- * ```
  */
 const perfs: () => WretchAddon<unknown, PerfsAddon> = () => {
   const callbacks = new Map<string, PerfCallback>()
@@ -108,15 +87,12 @@ const perfs: () => WretchAddon<unknown, PerfsAddon> = () => {
   const monitor = (
     name: string | null | undefined,
     callback: PerfCallback | null | undefined,
-    config: Config
+    _config: Config
   ) => {
     if (!name || !callback)
       return
 
-    const performance = config.polyfill("performance", false)
-    const performanceObserver = config.polyfill("PerformanceObserver", false)
-
-    if (!initObserver(performance, performanceObserver))
+    if (!initObserver(performance, PerformanceObserver))
       return
 
     if (!onMatch(performance, name, callback, performance)) {

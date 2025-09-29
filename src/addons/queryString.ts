@@ -4,13 +4,13 @@ function stringify(value?: string | null): string | null {
   return typeof value !== "undefined" ? value : ""
 }
 
-const appendQueryParams = (url: string, qp: object | string, replace: boolean, omitUndefinedOrNullValues: boolean, config: Config) => {
+const appendQueryParams = (url: string, qp: object | string, replace: boolean, omitUndefinedOrNullValues: boolean, _config: Config) => {
   let queryString: string
 
   if (typeof qp === "string") {
     queryString = qp
   } else {
-    const usp = config.polyfill("URLSearchParams", true, true)
+    const usp = new URLSearchParams()
     for (const key in qp) {
       const value = qp[key]
       if (omitUndefinedOrNullValues && (value === null || value === undefined)) continue

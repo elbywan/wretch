@@ -5,7 +5,7 @@ export default describe("Retry Middleware", () => {
   let logs: any[] = []
   const mock = (max = 5) => {
     const ref = { counter: 1 }
-    return (url: string, options: WretchOptions) => {
+    return (url: string, options: WretchOptions): Promise<any> => {
       logs.push([url, options.method])
       return Promise.resolve({
         ok: ref.counter++ >= max,
@@ -18,7 +18,7 @@ export default describe("Retry Middleware", () => {
   }
   const base = () =>
     wretch()
-      .polyfills({ fetch: mock(Infinity) })
+      .fetchPolyfill(mock(Infinity))
       .middlewares([
         retry({
           delayTimer: 1,
@@ -39,7 +39,7 @@ export default describe("Retry Middleware", () => {
     logs = []
 
     // should retry 5 times
-    const five = base().polyfills({ fetch: mock(5) })
+    const five = base().fetchPolyfill(mock(5))
     await expect(five.get("/retry").res()).resolves.toBeTruthy()
     expect(logs.length).toEqual(5)
   })
@@ -131,7 +131,7 @@ export default describe("Retry Middleware", () => {
   it("should retry on network error", async () => {
     const throwPolyfill = () => Promise.reject(new Error("Network Error"))
     const wThrow = wretch()
-      .polyfills({ fetch: throwPolyfill })
+      .fetchPolyfill(throwPolyfill)
       .middlewares(
         [
           retry({
@@ -146,7 +146,7 @@ export default describe("Retry Middleware", () => {
       )
     let counter = 0
     const wRetry = wretch()
-      .polyfills({ fetch: throwPolyfill })
+      .fetchPolyfill(throwPolyfill)
       .middlewares(
         [
           retry({

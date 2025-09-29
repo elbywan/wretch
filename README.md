@@ -31,7 +31,7 @@
 - 💡 **Intuitive** - lean API, handles errors, headers and (de)serialization
 - 🧊 **Immutable** - every call creates a cloned instance that can then be reused safely
 - 🔌 **Modular** - plug addons to add new features, and middlewares to intercept requests
-- 🧩 **Isomorphic** - compatible with modern browsers, Node.js 14+ and Deno
+- 🧩 **Isomorphic** - compatible with modern browsers, Node.js 22+ and Deno
 - 🦺 **Type safe** - strongly typed, written in TypeScript
 - ✅ **Proven** - fully covered by unit tests and widely used
 - 💓 **Maintained** - alive and well for many years
@@ -214,42 +214,9 @@ The package contains multiple bundles depending on the format and feature set lo
 
 ## Node.js
 
-Wretch is compatible with and tested in _Node.js >= 14_. Older versions of node may work
-but it is not guaranteed.
+Wretch is compatible with and tested in _Node.js >= 22_.
 
-### Polyfills (Node.js < 18)
-
-**Starting from Node.js 18, [node includes experimental fetch support](https://nodejs.org/en/blog/announcements/v18-release-announce/). Wretch will work without installing any polyfill.**
-
-For older versions, the Node.js standard library does not provide a native implementation of fetch (and other Browsers-only APIs) and polyfilling is mandatory.
-
-_The non-global way (preferred):_
-
-```javascript
-import fetch, { FormData } from "node-fetch"
-
-// w is a reusable wretch instance
-const w = wretch().polyfills({
-  fetch,
-  FormData,
-});
-```
-
-_Globally:_
-
-```javascript
-import fetch, { FormData } from "node-fetch";
-
-// Either mutate the global object…
-global.fetch = fetch;
-global.FormData = FormData;
-
-// …or use the static wretch.polyfills method to impact every wretch instance created afterwards.
-wretch.polyfills({
-  fetch,
-  FormData,
-});
-```
+Node.js 22+ includes native fetch support and all required Web APIs (FormData, URLSearchParams, AbortController, etc.) out of the box, so no polyfills are needed.
 
 ## Deno
 
@@ -316,6 +283,35 @@ try {
       : error.response.statusText
   console.error(`${error.status}: ${message}`)
 }
+```
+
+## Custom Fetch Implementation
+
+You can provide a custom fetch implementation using the `.fetchPolyfill()` method. This is useful for:
+
+- Adding custom middleware or instrumentation to all requests
+- Using alternative fetch implementations
+- Mocking fetch in tests
+- Adding performance monitoring
+
+```js
+import wretch from "wretch"
+
+// Per-instance custom fetch
+const api = wretch("https://api.example.com")
+  .fetchPolyfill((url, opts) => {
+    console.log('Fetching:', url)
+    return fetch(url, opts)
+  })
+
+// Or set globally for all wretch instances
+wretch.fetchPolyfill((url, opts) => {
+  console.time(url)
+  return fetch(url, opts).finally(() => console.timeEnd(url))
+})
+
+// Now all requests will use the custom fetch
+await wretch("https://api.example.com/data").get().json()
 ```
 
 ## Chaining
@@ -568,11 +564,6 @@ Adds the ability to abort requests and set timeouts using AbortController and si
 ```js
 import AbortAddon from "wretch/addons/abort"
 ```
-
-_Only compatible with browsers that support
-[AbortControllers](https://developer.mozilla.org/en-US/docs/Web/API/AbortController).
-Otherwise, you could use a (partial)
-[polyfill](https://www.npmjs.com/package/abortcontroller-polyfill)._
 
 Use cases :
 

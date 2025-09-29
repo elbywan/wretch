@@ -85,7 +85,7 @@ describe("Wretch", function () {
     try {
       await wretch(`${_URL}/json/roundTrip`).content("bad/content").post(jsonObject).json()
       fail("should have thrown")
-    } catch (e) {
+    } catch {
       // ignore
     }
     // Ensure that the charset is preserved.
@@ -107,7 +107,7 @@ describe("Wretch", function () {
     try {
       await wretch(`${_URL}/json/roundTrip`).content("bad/content").post(jsonObject).json()
       fail("should have thrown")
-    } catch (e) {
+    } catch {
       // ignore
     }
   })

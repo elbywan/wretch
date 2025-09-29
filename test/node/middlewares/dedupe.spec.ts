@@ -39,7 +39,7 @@ export default describe("Dedupe Middleware", () => {
   })
 
   it("should prevent sending multiple requests", async () => {
-    const w = wretch(baseAddress()).polyfills({ fetch: mock(log) }).middlewares([dedupe()])
+    const w = wretch(baseAddress()).fetchPolyfill(mock(log)).middlewares([dedupe()])
     const results = await Promise.all([
       w.get("/one").res(),
       w.get("/one").res(),
@@ -69,7 +69,7 @@ export default describe("Dedupe Middleware", () => {
   })
 
   it("should skip some requests", async () => {
-    const w = wretch(baseAddress()).polyfills({ fetch: mock(log) }).middlewares([dedupe({
+    const w = wretch(baseAddress()).fetchPolyfill(mock(log)).middlewares([dedupe({
       skip: (url, options) => { return options.skip || url.endsWith("/toto") }
     })])
     await Promise.all([
@@ -90,7 +90,7 @@ export default describe("Dedupe Middleware", () => {
   })
 
   it("should key requests", async () => {
-    const w = wretch(baseAddress()).polyfills({ fetch: mock(log) }).middlewares([dedupe({
+    const w = wretch(baseAddress()).fetchPolyfill(mock(log)).middlewares([dedupe({
       key: () => { return "/same-key" }
     })])
 
@@ -114,7 +114,7 @@ export default describe("Dedupe Middleware", () => {
   })
 
   it("should allow custom resolvers", async () => {
-    const w = wretch(baseAddress()).polyfills({ fetch: mock(log) }).middlewares([dedupe({
+    const w = wretch(baseAddress()).fetchPolyfill(mock(log)).middlewares([dedupe({
       resolver: res => res
     })])
 
