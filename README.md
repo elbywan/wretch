@@ -31,7 +31,7 @@
 - 💡 **Intuitive** - lean API, handles errors, headers and (de)serialization
 - 🧊 **Immutable** - every call creates a cloned instance that can then be reused safely
 - 🔌 **Modular** - plug addons to add new features, and middlewares to intercept requests
-- 🧩 **Isomorphic** - compatible with modern browsers, Node.js 22+ and Deno
+- 🧩 **Isomorphic** - compatible with modern browsers and Node.js 22+
 - 🦺 **Type safe** - strongly typed, written in TypeScript
 - ✅ **Proven** - fully covered by unit tests and widely used
 - 💓 **Maintained** - alive and well for many years

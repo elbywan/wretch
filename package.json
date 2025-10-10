@@ -120,7 +120,6 @@
     "test": "concurrently --success first -k 'npm run mock:wait && c8 node --import tsx --test \"test/node/**/*.spec.ts\"' 'npm run mock'",
     "test:karma": "concurrently --success first -k 'npm run mock:wait && karma start --single-run --browsers ChromeHeadless,FirefoxHeadless,SafariNative karma.conf.cjs' 'npm run mock'",
     "test:karma:watch": "concurrently --success first -k 'npm run mock:wait && karma start --auto-watch --browsers ChromeHeadless karma.conf.cjs' 'npm run mock'",
-    "test:deno": "concurrently --success first -k 'npm run mock:wait && deno test --allow-net ./test/deno/wretch_test.ts' 'npm run mock'",
     "changelog": "conventional-changelog -p wretch -i CHANGELOG.md -s -r 0",
     "doc": "typedoc --out docs/api --readme none --excludeInternal src/index.ts 'src/addons/*.ts' 'src/middlewares/*.ts'",
     "prepare": "npm run build",
