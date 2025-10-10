@@ -187,6 +187,11 @@ export function launch(port) {
     })
   })
 
+  server.get("/json400", async (request, reply) => {
+    reply.status(400)
+    return { error: 400, message: "bad request" }
+  })
+
   server.get("/json500", async (request, reply) => {
     reply.status(500)
     return { error: 500, message: "ok" }
@@ -199,6 +204,10 @@ export function launch(port) {
 
   server.get("/longResult", async () => {
     await delay(1000)
+    return "ok"
+  })
+
+  server.get("/middlewares", async () => {
     return "ok"
   })
 

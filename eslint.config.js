@@ -30,5 +30,20 @@ export default tseslint.config(
       }
     },
     ignores: [ "dist/"],
+  },
+  {
+    files: ["test/browser/**/*.js"],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.mocha,
+        wretch: "readonly",
+        expect: "readonly"
+      }
+    },
+    rules: {
+      "@typescript-eslint/no-unused-expressions": "off",
+      "no-empty": "off"
+    }
   }
 )
