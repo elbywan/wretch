@@ -2,7 +2,7 @@ import { playwrightLauncher } from "@web/test-runner-playwright"
 import { esbuildPlugin } from "@web/dev-server-esbuild"
 
 export default {
-  files: "test/browser/**/*.spec.js",
+  files: "test/browser/**/*.spec.ts",
   nodeResolve: true,
   concurrency: 1,
   browsers: [
@@ -17,7 +17,7 @@ export default {
   },
   plugins: [
     esbuildPlugin({
-      ts: false,
+      ts: true,
       target: "auto"
     })
   ],

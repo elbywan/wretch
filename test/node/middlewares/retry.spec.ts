@@ -191,7 +191,7 @@ export default describe("Retry Middleware", () => {
     }
   })
 
-  it.only("should skip flagged requests", async () => {
+  it("should skip flagged requests", async () => {
     const withSkip = base().middlewares(
       [retry({
         delayTimer: 1,
