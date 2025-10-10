@@ -1,5 +1,7 @@
+import { describe, it } from "node:test"
 import wretch from "../../../src"
 import { delay } from "../../../src/middlewares"
+import { expect } from "../helpers"
 
 export default describe("Delay Middleware", () => {
   it("should delay requests", async () => {

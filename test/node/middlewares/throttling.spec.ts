@@ -1,7 +1,9 @@
 import * as http from "http"
+import { describe, it, before, after, beforeEach } from "node:test"
 import wretch, { WretchOptions } from "../../../src"
 import { throttlingCache } from "../../../src/middlewares"
 import { mock } from "./mock"
+import { expect } from "../helpers"
 
 export default describe("Throttling Cache Middleware", () => {
   const PORT = 5001
@@ -18,20 +20,22 @@ export default describe("Throttling Cache Middleware", () => {
   }
   const base = () => wretch(baseAddress()).fetchPolyfill(mock(log))
 
-  beforeAll(done => {
-    server = http.createServer((req, res) => {
-      req.pipe(res)
-    })
-    server.listen(PORT, "127.0.0.1")
-    server.once("listening", () => {
-      done()
-    })
-    server.once("error", () => {
-      done()
+  before(async () => {
+    await new Promise<void>((resolve, reject) => {
+      server = http.createServer((req, res) => {
+        req.pipe(res)
+      })
+      server.listen(PORT, "127.0.0.1")
+      server.once("listening", () => {
+        resolve()
+      })
+      server.once("error", err => {
+        reject(err)
+      })
     })
   })
 
-  afterAll(() => {
+  after(() => {
     server?.close()
   })
 

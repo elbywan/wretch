@@ -1,5 +1,8 @@
+import { describe, it, beforeEach } from "node:test"
+import * as assert from "node:assert"
 import wretch, { WretchOptions } from "../../../src"
 import { retry } from "../../../src/middlewares"
+import { expect } from "../helpers"
 
 export default describe("Retry Middleware", () => {
   let logs: any[] = []
@@ -9,6 +12,7 @@ export default describe("Retry Middleware", () => {
       logs.push([url, options.method])
       return Promise.resolve({
         ok: ref.counter++ >= max,
+        headers: new Headers(),
         text() {
           return Promise.resolve("")
         },
@@ -30,17 +34,16 @@ export default describe("Retry Middleware", () => {
   })
 
   it("should retry requests", async () => {
-    // default - 10 times
-    await expect(base().get("/retry").res()).rejects.toThrowError(
-      "Number of attempts exceeded."
+    await assert.rejects(
+      () => base().get("/retry").res(),
+      /Number of attempts exceeded\./
     )
     expect(logs.length).toEqual(11)
 
     logs = []
 
-    // should retry 5 times
     const five = base().fetchPolyfill(mock(5))
-    await expect(five.get("/retry").res()).resolves.toBeTruthy()
+    await five.get("/retry").res()
     expect(logs.length).toEqual(5)
   })
 
@@ -54,8 +57,9 @@ export default describe("Retry Middleware", () => {
       ],
       true
     )
-    await expect(w.get("/retry").res()).rejects.toThrowError(
-      "Number of attempts exceeded."
+    await assert.rejects(
+      () => w.get("/retry").res(),
+      /Number of attempts exceeded\./
     )
     expect(logs.length).toEqual(4)
   })
@@ -91,7 +95,7 @@ export default describe("Retry Middleware", () => {
             onRetry({ url, options, error }) {
               expect(url).toBe("/retry")
               expect(options).toMatchObject({ a: 1 })
-              expect(error).toBeUndefined()
+              assert.strictEqual(error, undefined)
               counter++
             },
           }),
@@ -99,8 +103,9 @@ export default describe("Retry Middleware", () => {
         true
       )
       .options({ a: 1 })
-    await expect(w.get("/retry").res()).rejects.toThrow(
-      "Number of attempts exceeded."
+    await assert.rejects(
+      () => w.get("/retry").res(),
+      /Number of attempts exceeded\./
     )
     expect(counter).toEqual(10)
     expect(logs.length).toEqual(11)
@@ -120,8 +125,9 @@ export default describe("Retry Middleware", () => {
       ],
       true
     )
-    await expect(w.options({ a: 0 }).get("/0").res()).rejects.toThrow(
-      "Number of attempts exceeded."
+    await assert.rejects(
+      () => w.options({ a: 0 }).get("/0").res(),
+      /Number of attempts exceeded\./
     )
     logs.forEach((log, index) => {
       expect(log).toMatchObject([`/${index}`, index === 0 ? "GET" : `${index}`])
@@ -138,7 +144,7 @@ export default describe("Retry Middleware", () => {
             delayTimer: 1,
             retryOnNetworkError: false,
             onRetry() {
-              fail("Should never be called")
+              throw new Error("Should never be called")
             },
           }),
         ],
@@ -161,11 +167,13 @@ export default describe("Retry Middleware", () => {
         true
       )
 
-    await expect(wThrow.get("/retry").res()).rejects.toThrow(
-      "Network Error"
+    await assert.rejects(
+      () => wThrow.get("/retry").res(),
+      /Network Error/
     )
-    await expect(wRetry.get("/retry").res()).rejects.toThrow(
-      "Network Error"
+    await assert.rejects(
+      () => wRetry.get("/retry").res(),
+      /Network Error/
     )
     expect(counter).toBe(10)
   })
@@ -175,10 +183,12 @@ export default describe("Retry Middleware", () => {
       [retry({ delayTimer: 1, resolveWithLatestResponse: true })],
       true
     )
-    // WretchError
-    await expect(w.get("/retry").res()).rejects.toMatchObject({
-      response: { ok: false, counter: 12 },
-    })
+    try {
+      await w.get("/retry").res()
+      assert.fail("Expected to reject")
+    } catch (err: any) {
+      expect(err.response).toMatchObject({ ok: false, counter: 12 })
+    }
   })
 
   it.only("should skip flagged requests", async () => {
@@ -192,18 +202,17 @@ export default describe("Retry Middleware", () => {
       true
     )
 
-    // default - 10 times
-    await expect(withSkip.get("/retry").res()).rejects.toThrowError(
-      "Number of attempts exceeded."
+    await assert.rejects(
+      () => withSkip.get("/retry").res(),
+      /Number of attempts exceeded\./
     )
     expect(logs.length).toEqual(11)
 
     logs = []
 
-    // should not retry this time
-    await expect(
-      withSkip.options({ skipRetry: true }).get("/retry").res()
-    ).rejects.toThrow()
+    await assert.rejects(
+      () => withSkip.options({ skipRetry: true }).get("/retry").res()
+    )
     expect(logs.length).toEqual(1)
   })
 })

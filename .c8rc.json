@@ -1,0 +1,6 @@
+{
+  "all": true,
+  "include": ["src/**/*.ts", "src/**/*.js"],
+  "exclude": ["src/types.ts", "src/index.all.ts", "src/addons/index.ts"],
+  "reporter": ["lcov", "text", "html"]
+}

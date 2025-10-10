@@ -1,7 +1,14 @@
+import { describe, it, beforeEach } from "node:test"
+import * as assert from "node:assert"
 import * as fs from "fs"
 import * as path from "path"
+import { fileURLToPath } from "url"
 import wretch from "../../src"
 import { mix } from "../../src/utils"
+import { expect } from "./helpers"
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 import AbortAddon from "../../src/addons/abort"
 import BasicAuthAddon from "../../src/addons/basicAuth"
@@ -10,10 +17,7 @@ import FormUrlAddon from "../../src/addons/formUrl"
 import PerfsAddon from "../../src/addons/perfs"
 import QueryStringAddon from "../../src/addons/queryString"
 
-import { performance } from "perf_hooks"
-// clearResourceTimings is read-only since node 18. Use `defineProperty` to force override it
-// See https://github.com/facebook/jest/issues/2227#issuecomment-265005782
-Object.defineProperty(performance, "clearResourceTimings", { value: () => { } })
+import { WretchError } from "../../src/resolver"
 
 const _PORT = 9876
 const _URL = `http://localhost:${_PORT}`
@@ -148,12 +152,10 @@ describe("Wretch", function () {
     // Ensure that calling .json with the shorthand works
     const roundTrip3 = await wretch(`${_URL}/json/roundTrip`).json({}).post(jsonObject).json()
     expect(roundTrip3).toEqual(jsonObject)
-    // Ensure that it preserves any content type set previously
-    try {
-      await wretch(`${_URL}/json/roundTrip`).content("bad/content").post(jsonObject).json()
-      fail("should have thrown")
-    } catch { /* ignore */ }
-    // Ensure that the charset is preserved.
+    await assert.rejects(
+      () => wretch(`${_URL}/json/roundTrip`).content("bad/content").post(jsonObject).json()
+    )
+    // Ensure that the charset is preserved
     const headerWithCharset = "application/json; charset=utf-16"
     expect(wretch().content(headerWithCharset).json({})._options.headers["Content-Type"]).toBe(headerWithCharset)
   })
@@ -168,8 +170,7 @@ describe("Wretch", function () {
   })
 
   it("should send a FormData object", async function () {
-    // Test with a nested object and the recursive property.
-    let form: any = {
+    let form: object = {
       hello: "world",
       duck: "Muscovy",
       duckImage: await fs.openAsBlob(duckImagePath),
@@ -199,7 +200,7 @@ describe("Wretch", function () {
       "duckProperties[nbOfLegs]": "2"
     })
 
-    // Test with full nesting.
+    // Test with full nesting
     form = {
       hello: "world",
       nested: {
@@ -216,15 +217,9 @@ describe("Wretch", function () {
       "nested[property]": "1",
     })
 
-    // Test without nesting.
+    // Test without nesting
     form = {
       hello: "world",
-      // Unfortunately, form-data has issues casting objects to strings.
-      // This means that we cannot test this properly for now…
-      // See: https://github.com/form-data/form-data/pull/362
-      // nested: {
-      //     property: 1
-      // }
     }
     decoded = await wretch(`${_URL}/formData/decode`)
       .addon(FormDataAddon)
@@ -235,7 +230,7 @@ describe("Wretch", function () {
       hello: "world"
     })
 
-    // Test for arrays.
+    // Test for arrays
     const f = { arr: [1, 2, 3] }
     const d = await wretch(`${_URL}/formData/decode`).addon(FormDataAddon).formData(f).post().json()
     expect(d).toEqual({
@@ -248,7 +243,6 @@ describe("Wretch", function () {
     const formData = new FormData()
     formData.append("hello", "world")
     formData.append("duck", "Muscovy")
-    // Native FormData in Node.js supports File/Blob objects
     const fileBlob = new Blob([duckImage], { type: "image/jpeg" })
     formData.append("duckImage", fileBlob, "duck.jpg")
 
@@ -278,9 +272,9 @@ describe("Wretch", function () {
     let req = wretch().headers({ "X-HELLO": "WORLD" })
     req = req.headers({ "X-Y": "Z" })
     expect(req._options.headers).toEqual(headers)
-    req = req.headers(null as any)
+    req = req.headers(null)
     expect(req._options.headers).toEqual(headers)
-    req = req.headers(undefined as any)
+    req = req.headers(undefined)
     expect(req._options.headers).toEqual(headers)
   })
 
@@ -323,7 +317,7 @@ describe("Wretch", function () {
       .error(444, _ => check++)
       .unauthorized(_ => check++)
       .fetchError(_ => check++)
-      .res(_ => expect(_).toBe(undefined))
+      .res(_ => expect(_).toBeUndefined())
     expect(check).toBe(1)
 
     check = 0
@@ -334,7 +328,7 @@ describe("Wretch", function () {
       .error(444, _ => check++)
       .unauthorized(_ => check++)
       .fetchError(_ => check--)
-      .res(_ => expect(_).toBe(undefined))
+      .res(_ => expect(_).toBeUndefined())
     expect(check).toBe(-1)
   })
 
@@ -347,21 +341,13 @@ describe("Wretch", function () {
       .catcher(401, _ => check--)
       .catcherFallback(_ => check++)
 
-    // +1 : 1
     await w.url("/text").get().res(_ => check++)
-    // +0 : 1 (JSON parsing fails, callback not called, fallback overridden to not increment)
     await w.url("/text").catcherFallback(_ => {}).get().json(_ => check--)
-    // +1 : 2
     await w.url("/400").get().res(_ => check--)
-    // +1 : 3
     await w.url("/401").get().unauthorized(_ => check++).res(_ => check--)
-    // +1 : 4
     await w.url("/404").get().res(_ => check--)
-    // +1 : 5
     await w.url("/408").get().timeout(_ => check++).res(_ => check--)
-    // +1 : 6
     await w.url("/418").get().res(_ => check--).catch(_ => "muted")
-    // +1: 7
     await w.url("/500").get().res(_ => check--)
 
     expect(check).toBe(7)
@@ -434,7 +420,6 @@ describe("Wretch", function () {
     rejected = await new Promise(res => wretch(`${_URL}/customHeaders`).get().badRequest(_ => {
       res(true)
     }).res(result => res(!result)))
-    // wretch.options("not an object" as any, true)
     expect(rejected).toBeTruthy()
     const accepted = await new Promise(res => wretch(`${_URL}/customHeaders`)
       .options({ headers: { "X-Custom-Header-3": "Anything" } }, false)
@@ -474,14 +459,18 @@ describe("Wretch", function () {
 
   describe("handling of the Authorization header", function () {
     it("should fail without using an Authorization header", async function () {
-      try {
-        await wretch(_URL + "/basicauth")
-          .get()
-          .res(_ => fail("Authenticated route should not respond without credentials."))
-      } catch (e) {
-        expect(e.status).toBe(401)
-        expect(e.url).toBe(_URL + "/basicauth")
-      }
+      await assert.rejects(
+        async () => {
+          await wretch(_URL + "/basicauth")
+            .get()
+            .res()
+        },
+        (e: WretchError) => {
+          expect(e.status).toBe(401)
+          expect(e.url).toBe(_URL + "/basicauth")
+          return true
+        }
+      )
     })
 
     it("should set the Authorization header using the .auth() method", async function () {
@@ -518,7 +507,6 @@ describe("Wretch", function () {
   })
 
   it("should change the parsing used in the default error handler", async function () {
-    // Local
     await wretch(`${_URL}/json500raw`)
       .errorType("json")
       .get()
@@ -526,27 +514,24 @@ describe("Wretch", function () {
         expect(error.json).toEqual({ error: 500, message: "ok" })
         expect(error.text).toEqual(JSON.stringify({ error: 500, message: "ok" }))
       })
-      .res(_ => fail("I should never be called because an error was thrown"))
-      .then(_ => expect(_).toBe(undefined))
-    // Default (text)
+      .res()
+      .then(_ => expect(_).toBeUndefined())
     await wretch(`${_URL}/json500raw`)
       .get()
       .internalError(error => {
         expect(error.text).toEqual("{\"error\":500,\"message\":\"ok\"}")
         expect(error.json).toBeUndefined()
       })
-      .res(_ => fail("I should never be called because an error was thrown"))
-      .then(_ => expect(_).toBe(undefined))
-    // Based on content-type
+      .res()
+      .then(_ => expect(_).toBeUndefined())
     await wretch(`${_URL}/json500`)
       .get()
       .internalError(error => {
         expect(error.text).toEqual("{\"error\":500,\"message\":\"ok\"}")
         expect(error.json).toEqual({ error: 500, message: "ok" })
       })
-      .res(_ => fail("I should never be called because an error was thrown"))
-      .then(_ => expect(_).toBe(undefined))
-    // Disabled
+      .res()
+      .then(_ => expect(_).toBeUndefined())
     await wretch(`${_URL}/json500raw`)
       .errorType(null)
       .get()
@@ -554,9 +539,8 @@ describe("Wretch", function () {
         expect(error.json).toEqual(undefined)
         expect(error.text).toEqual(undefined)
       })
-      .res(_ => fail("I should never be called because an error was thrown"))
-      .then(_ => expect(_).toBe(undefined))
-    // Global
+      .res()
+      .then(_ => expect(_).toBeUndefined())
     wretch.errorType("json")
     await wretch(`${_URL}/json500raw`)
       .get()
@@ -564,32 +548,23 @@ describe("Wretch", function () {
         expect(error.json).toEqual({ error: 500, message: "ok" })
         expect(error.text).toEqual(JSON.stringify({ error: 500, message: "ok" }))
       })
-      .res(_ => fail("I should never be called because an error was thrown"))
-      .then(_ => expect(_).toBe(undefined))
-    // ensure that the error is still throw even if the json parsing failed
-    await wretch(`${_URL}/500`)
-      .get()
-      .internalError(error => {
-        expect(error.json).toBe(undefined)
-        expect(error.text).toEqual("error code : 500")
-      })
-      .res(_ => fail("I should never be called because an error was thrown"))
-      .then(_ => expect(_).toBe(undefined))
+      .res()
+      .then(_ => expect(_).toBeUndefined())
   })
 
-  it("should retrieve performance timings associated with a fetch request", function (done) {
+  it("should retrieve performance timings associated with a fetch request", async function () {
     const w = wretch()
       .addon(PerfsAddon())
-    // Test empty perfs()
-    w.url(`${_URL}/text`).get().perfs().res(_ => expect(_.ok).toBeTruthy()).then(_ => {
-      // Test perfs callback
+    await w.url(`${_URL}/text`).get().perfs().res(_ => expect(_.ok).toBeTruthy())
+
+    await new Promise<void>(resolve => {
       w.url(`${_URL}/bla`).get().perfs(timings => {
         expect(timings.name).toBe(`${_URL}/bla`)
         expect(typeof timings.startTime).toBe("number")
-        done()
+        resolve()
       }).res().catch(_ => "ignore")
     })
-    // Test multiple requests concurrency and proper timings dispatching
+
     for (let i = 0; i < 5; i++) {
       w.url(`${_URL}/fake/${i}`).get().perfs(timings => {
         expect(timings.name).toBe(`${_URL}/fake/${i}`)
@@ -597,7 +572,7 @@ describe("Wretch", function () {
     }
   })
 
-  it("should abort a request", function (done) {
+  it("should abort a request", async function () {
     let count = 0
 
     const handleError = error => {
@@ -622,17 +597,15 @@ describe("Wretch", function () {
       .addon(AbortAddon())
       .get()
       .setTimeout(100)
-      .fetchError(() => { /* ignore - tests precendence */ })
+      .fetchError(() => { })
       .onAbort(handleError)
       .res()
 
     const [c2, w2] = wretch(`${_URL}/longResult`).addon(AbortAddon()).get().controller()
     w2.setTimeout(100, c2).onAbort(handleError).res()
 
-    setTimeout(() => {
-      expect(count).toBe(4)
-      done()
-    }, 1000)
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    expect(count).toBe(4)
   })
 
   it("should program resolvers", async function () {

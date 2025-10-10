@@ -1,7 +1,9 @@
+import { describe, it, before, beforeEach, after } from "node:test"
 import * as http from "http"
 import wretch, { WretchOptions } from "../../../src"
 import { dedupe } from "../../../src/middlewares"
 import { mock } from "./mock"
+import { expect } from "../helpers"
 
 export default describe("Dedupe Middleware", () => {
   const PORT = 0
@@ -17,20 +19,22 @@ export default describe("Dedupe Middleware", () => {
     return "http://" + address + ":" + port
   }
 
-  beforeAll(done => {
-    server = http.createServer((req, res) => {
-      req.pipe(res)
-    })
-    server.listen(PORT, "127.0.0.1")
-    server.once("listening", () => {
-      done()
-    })
-    server.once("error", () => {
-      done()
+  before(async () => {
+    await new Promise<void>((resolve, reject) => {
+      server = http.createServer((req, res) => {
+        req.pipe(res)
+      })
+      server.listen(PORT, "127.0.0.1")
+      server.once("listening", () => {
+        resolve()
+      })
+      server.once("error", () => {
+        reject()
+      })
     })
   })
 
-  afterAll(() => {
+  after(() => {
     server?.close()
   })
 
