@@ -1,4 +1,3 @@
-import { setOptions, setFetchPolyfill } from "./config.js"
 import { core } from "./core.js"
 import { WretchError } from "./resolver.js"
 import type { Wretch, WretchOptions } from "./types.js"
@@ -38,8 +37,6 @@ function factory(_url = "", _options: WretchOptions = {}): Wretch {
 }
 
 factory["default"] = factory
-factory.options = setOptions
-factory.fetchPolyfill = setFetchPolyfill
 factory.WretchError = WretchError
 
 export default factory

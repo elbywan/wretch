@@ -72,16 +72,9 @@ interface TestContext {
 }
 
 export function createWretchTests(ctx: TestContext): void {
-  const { describe, it, beforeEach, before, assert, expect, fs, duckImage, duckImagePath } = ctx
+  const { describe, it, before, assert, expect, fs, duckImage, duckImagePath } = ctx
 
   describe("Wretch", function () {
-
-    if (beforeEach) {
-      beforeEach(() => {
-        wretch.options({}, true)
-        wretch.fetchPolyfill(undefined)
-      })
-    }
 
     if (before) {
       before(async function () {
@@ -106,24 +99,7 @@ export function createWretchTests(ctx: TestContext): void {
       expect(fetchCalled).toBe(true)
     })
 
-    it("should allow setting a global fetch implementation", async function () {
-      let fetchCalled = false
-      const customFetch = (url: string, opts: RequestInit) => {
-        fetchCalled = true
-        return fetch(url, opts)
-      }
 
-      wretch.fetchPolyfill(customFetch)
-
-      const result = await wretch(`${_URL}/text`)
-        .get()
-        .text()
-
-      expect(result).toBe("A text string")
-      expect(fetchCalled).toBe(true)
-
-      wretch.fetchPolyfill(undefined)
-    })
 
     it("should perform crud requests and parse a text response", async function () {
       const init = wretch(`${_URL}/text`)
@@ -458,33 +434,7 @@ export function createWretchTests(ctx: TestContext): void {
       expect(check).toBe(3)
     })
 
-    it("should set global default fetch options", async function () {
-      let rejected = await new Promise(res => wretch(`${_URL}/customHeaders`).get().badRequest(_ => {
-        res(true)
-      }).res(result => res(!result)))
-      expect(rejected).toBeTruthy()
-      wretch.options({
-        headers: { "X-Custom-Header": "Anything" }
-      }, true)
-      rejected = await new Promise(res => wretch(`${_URL}/customHeaders`).get().badRequest(_ => {
-        res(true)
-      }).res(result => res(!result)))
-      expect(rejected).toBeTruthy()
-      wretch.options({
-        headers: { "X-Custom-Header-2": "Anything" }
-      })
-      rejected = await new Promise(res => wretch(`${_URL}/customHeaders`).get().badRequest(_ => {
-        res(true)
-      }).res(result => res(!result)))
-      expect(rejected).toBeTruthy()
-      const accepted = await new Promise(res => wretch(`${_URL}/customHeaders`)
-        .options({ headers: { "X-Custom-Header-3": "Anything" } }, false)
-        .options({ headers: { "X-Custom-Header-4": "Anything" } })
-        .get()
-        .badRequest(_ => { res(false) })
-        .res(result => res(!!result)))
-      expect(accepted).toBeTruthy()
-    })
+
 
     it("should allow url, query parameters & options modifications and return a fresh new Wretch object containing the change", async function () {
       const obj1 = wretch("...")

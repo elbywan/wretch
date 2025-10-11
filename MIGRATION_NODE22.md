@@ -25,20 +25,21 @@ Wretch now requires Node.js 22+ which includes native support for all required W
    wretch().fetchPolyfill(customFetch)
    ```
 
-2. **`wretch.polyfills()` static method removed** - Use `wretch.fetchPolyfill()` instead
+2. **`wretch.polyfills()` static method removed** - Global configuration has been removed to reduce bundle size. Use per-instance configuration instead.
    ```js
    // OLD (removed)
    wretch.polyfills({ fetch: customFetch })
    
-   // NEW
-   wretch.fetchPolyfill(customFetch)
+   // NEW - Use per-instance configuration
+   const api = wretch("https://api.example.com")
+     .fetchPolyfill(customFetch)
    ```
 
 3. **Internal polyfill system removed** - All Web APIs are now used directly from Node.js
 
 ### Updated APIs
 
-**New `.fetchPolyfill()` method** - Allows custom fetch implementation
+**New `.fetchPolyfill()` method** - Allows custom fetch implementation per-instance
 
 ```js
 // Set custom fetch per-instance
@@ -47,12 +48,6 @@ const api = wretch("https://api.example.com")
     console.log('Fetching:', url)
     return fetch(url, opts)
   })
-
-// Or set globally
-wretch.fetchPolyfill((url, opts) => {
-  console.time(url)
-  return fetch(url, opts).finally(() => console.timeEnd(url))
-})
 ```
 
 ## Migration Steps
