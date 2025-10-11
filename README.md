@@ -42,6 +42,7 @@
 - [**Installation**](#installation)
 - [**Compatibility**](#compatibility)
 - [**Usage**](#usage)
+- [**Recipes**](#recipes)
 - [**Api**](#api-)
 - [**Addons**](#addons)
 - [**Middlewares**](#middlewares)
@@ -350,6 +351,18 @@ _From this point on, wretch returns a standard Promise._
   .then(…)
   .catch(…)
 ```
+
+# Recipes
+
+Looking for common patterns and solutions? Check out the **[Recipes Guide](RECIPES.md)** for practical examples covering:
+
+- **Framework Integration** - SvelteKit, Next.js
+- **Error Handling** - Parsing error response bodies, custom error types, global handlers
+- **TypeScript Patterns** - Typing precomposed instances, reusable catchers
+- **File Uploads** - Progress tracking, FormData handling
+- **Query Strings** - Filtering undefined values
+- **Request Control** - Combining timeouts with AbortControllers, aborting on errors
+- **Advanced Patterns** - Token refresh & replay, schema validation, async polling
 
 # [API 🔗](https://elbywan.github.io/wretch/api)
 
