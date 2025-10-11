@@ -6,6 +6,7 @@ import BasicAuthAddon from "../../src/addons/basicAuth"
 import FormDataAddon from "../../src/addons/formData"
 import FormUrlAddon from "../../src/addons/formUrl"
 import PerfsAddon from "../../src/addons/perfs"
+import ProgressAddon from "../../src/addons/progress"
 import QueryStringAddon from "../../src/addons/queryString"
 
 import { WretchError } from "../../src/resolver"
@@ -18,6 +19,7 @@ const isSafari =
   globalThis.navigator &&
   navigator.userAgent.indexOf("Safari") >= 0 &&
   navigator.userAgent.indexOf("Chrome") < 0
+const isBrowser = typeof window !== "undefined" && typeof window.document !== "undefined"
 
 const allRoutes = <T>(
   obj: Wretch,
@@ -568,6 +570,181 @@ export function createWretchTests(ctx: TestContext): void {
           expect(timings.name).toBe(`${_URL}/fake/${i}`)
         }).res().catch(() => "ignore")
       }
+    })
+
+    it("should monitor download progress", async function () {
+      const w = wretch()
+        .addon(ProgressAddon())
+
+      await new Promise<void>(resolve => {
+        let progressCalled = false
+        w.url(`${_URL}/blob`).get().progress((loaded, total) => {
+          progressCalled = true
+          expect(typeof loaded).toBe("number")
+          expect(typeof total).toBe("number")
+          expect(loaded).toBe(total)
+          expect(loaded).toBe(duckImage.length || 58921)
+        }).blob(() => {
+          expect(progressCalled).toBe(true)
+          resolve()
+        })
+      })
+    })
+
+    it("should monitor upload progress with string body", async function () {
+      if(isBrowser)
+        return
+
+      const testString = "hello world"
+      const expectedSize = new Blob([testString]).size
+
+      await new Promise<void>((resolve, reject) => {
+        let progressCalled = false
+        wretch(`${_URL}/text/roundTrip`)
+          .addon(ProgressAddon())
+          .content("text/plain")
+          .onUpload((loaded, total) => {
+            progressCalled = true
+            expect(typeof loaded).toBe("number")
+            expect(typeof total).toBe("number")
+            expect(loaded).toBe(total)
+            expect(total).toBe(expectedSize)
+          })
+          .post(testString)
+          .text(() => {
+            expect(progressCalled).toBe(true)
+            resolve()
+          })
+          .catch(reject)
+      })
+    })
+
+    it("should monitor upload progress with Blob body", async function () {
+      if(isBrowser)
+        return
+
+      const blob = new Blob([duckImage.buffer as ArrayBuffer], { type: "image/jpeg" })
+
+      await new Promise<void>(resolve => {
+        let progressCalled = false
+        wretch(`${_URL}/blob/roundTrip`)
+          .addon(ProgressAddon())
+          .content("application/xxx-octet-stream")
+          .onUpload((loaded, total) => {
+            progressCalled = true
+            expect(typeof loaded).toBe("number")
+            expect(typeof total).toBe("number")
+            expect(loaded).toBe(total)
+            expect(total).toBe(blob.size)
+          })
+          .post(blob)
+          .res(() => {
+            expect(progressCalled).toBe(true)
+            resolve()
+          })
+      })
+    })
+
+    it("should monitor upload progress with ArrayBuffer body", async function () {
+      if(isBrowser)
+        return
+
+      const buffer = duckImage.buffer as ArrayBuffer
+
+      await new Promise<void>(resolve => {
+        let progressCalled = false
+        wretch(`${_URL}/blob/roundTrip`)
+          .addon(ProgressAddon())
+          .content("application/xxx-octet-stream")
+          .onUpload((loaded, total) => {
+            progressCalled = true
+            expect(typeof loaded).toBe("number")
+            expect(typeof total).toBe("number")
+            expect(loaded).toBe(total)
+            expect(total).toBe(buffer.byteLength)
+          })
+          .post(buffer)
+          .res(() => {
+            expect(progressCalled).toBe(true)
+            resolve()
+          })
+      })
+    })
+
+    it("should monitor upload progress with FormData body", async function () {
+      if(isBrowser)
+        return
+
+      const formData = new FormData()
+      formData.append("hello", "world")
+      formData.append("duck", "Muscovy")
+
+      await new Promise<void>(resolve => {
+        let progressCalled = false
+        wretch(`${_URL}/formData/decode`)
+          .addon(ProgressAddon())
+          .onUpload((loaded, total) => {
+            progressCalled = true
+            expect(typeof loaded).toBe("number")
+            expect(typeof total).toBe("number")
+            expect(loaded).toBe(total)
+            expect(total > 0).toBe(true)
+          })
+          .post(formData)
+          .json(() => {
+            expect(progressCalled).toBe(true)
+            resolve()
+          })
+      })
+    })
+
+    it("should not call upload progress callback when no body is sent", async function () {
+      if(isBrowser)
+        return
+
+      let progressCalled = false
+      await wretch(`${_URL}/text`)
+        .addon(ProgressAddon())
+        .onUpload(() => {
+          progressCalled = true
+        })
+        .get()
+        .text()
+
+      expect(progressCalled).toBe(false)
+    })
+
+    it("should monitor both upload and download progress", async function () {
+      if(isBrowser)
+        return
+
+      const blob = new Blob([duckImage.buffer as ArrayBuffer], { type: "image/jpeg" })
+
+      await new Promise<void>(resolve => {
+        let uploadCalled = false
+        let downloadCalled = false
+        wretch(`${_URL}/blob/roundTrip`)
+          .addon(ProgressAddon())
+          .onUpload((loaded, total) => {
+            uploadCalled = true
+            expect(typeof loaded).toBe("number")
+            expect(typeof total).toBe("number")
+            expect(loaded).toBe(total)
+            expect(total).toBe(blob.size)
+          })
+          .onDownload((loaded, total) => {
+            downloadCalled = true
+            expect(typeof loaded).toBe("number")
+            expect(typeof total).toBe("number")
+          })
+          .content("application/xxx-octet-stream")
+          .post(blob)
+          .blob(() => {
+            expect(uploadCalled).toBe(true)
+            expect(downloadCalled).toBe(true)
+            resolve()
+          })
+      })
     })
 
     it("should abort a request", async function () {
