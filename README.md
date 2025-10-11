@@ -45,7 +45,7 @@
 - [**Api**](#api-)
 - [**Addons**](#addons)
 - [**Middlewares**](#middlewares)
-- [**Migration from v1**](#migration-from-v1)
+- [**Migration Guides**](#migration-guides)
 - [**License**](#license)
 
 # Motivation
@@ -1001,89 +1001,12 @@ wretch().middlewares([
 ])
 ```
 
-# Migration from v1
+# Migration Guides
 
-## Philosophy
+Comprehensive migration guides are available for upgrading between major versions:
 
-Wretch has been **completely rewritten** with the following goals in mind:
-
-- reduce its size by making it modular
-- preserve the typescript type coverage
-- improve the API by removing several awkward choices
-
-## Compatibility
-
-`wretch@1` was transpiled to es5, `wretch@2` is now transpiled to es2018.
-Any "modern" browser and Node.js versions >= 14 should parse the library without issues.
-
-If you need compatibility with older browsers/nodejs versions then either stick with v1, use poyfills
-or configure `@babel` to make it transpile wretch.
-
-## Addons
-
-Some features that were part of `wretch` v1 are now split apart and must be imported through addons.
-It is now needed to pass the Addon to the [`.addon`](#addonaddon-wretchaddon) method to register it.
-
-Please refer to the [Addons](#addons) documentation.
-
- ```js
-/* Previously (wretch@1) */
-import wretch from "wretch"
-
-wretch.formData({ hello: "world" }).query({ check: true })
-
-/* Now (wretch@2) */
-import FormDataAddon from "wretch/addons/formData"
-import QueryStringAddon from "wretch/addons/queryString"
-import baseWretch from "wretch"
-
-// Add both addons
-const wretch = baseWretch().addon(FormDataAddon).addon(QueryStringAddon)
-
-// Additional features are now available
-wretch.formData({ hello: "world" }).query({ check: true })
-```
-
-## Typescript
-
-Types have been renamed and refactored, please update your imports accordingly and refer to the [typescript api documentation](https://elbywan.github.io/wretch/api).
-
-## API Changes
-
-### Replace / Mixin arguments
-
-Some functions used to have a `mixin = true` argument that could be used to merge the value, others a `replace = false` argument performing the opposite.
-In v2 there are only `replace = false` arguments but the default behaviour should be preserved.
-
-```js
-/* Previously (wretch@1) */
-wretch.options({ credentials: "same-origin" }, false) // false: do not merge the value
-
-/* Now (wretch@2+) */
-// Global options have been removed to reduce bundle size
-// Use per-instance configuration instead:
-const api = wretch("https://api.example.com", { credentials: "same-origin" })
-```
-
-### HTTP methods extra argument
-
-In v1 it was possible to set fetch options while calling the http methods to end the request chain.
-
-```js
-/* Previously (wretch@1) */
-wretch("...").get({ my: "option" })
-```
-
-This was a rarely used feature and the extra argument now appends a string to the base url.
-
-```js
-/* Now (wretch@2) */
-wretch("https://base.com").get("/resource/1")
-```
-
-### Replay function
-
-The `.replay` function has been renamed to [`.fetch`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#fetch).
+- **[Migration Guide: v2 to v3](MIGRATION_V2_V3.md)**
+- **[Migration Guide: v1 to v2](MIGRATION_V1_V2.md)**
 
 # License
 
