@@ -39,7 +39,7 @@ export type RetryOptions = {
   /**
    * The request will be retried until that condition is satisfied.
    *
-   * _Default: `response && response.ok`_
+   * _Default: `response && (response.ok || (response.status >= 400 && response.status < 500))`_
    */
   until?: UntilFunction
   /**
@@ -80,11 +80,11 @@ export type RetryOptions = {
  *
  * #### Retries a request multiple times in case of an error (or until a custom condition is true).
  *
- * > **💡 By default, the request will be retried if the response status is not in the 2xx range.**
+ * > **💡 By default, the request will be retried only for server errors (5xx) and other non-successful responses, but not for client errors (4xx).**
  * >
  * > ```js
- * > // Replace the default condition with a custom one to avoid retrying on 4xx errors:
- * > until: (response, error) => response && (response.ok || (response.status >= 400 && response.status < 500))
+ * > // To retry on all non-2xx responses (including 4xx):
+ * > until: (response, error) => response && response.ok
  * > ```
  *
  * ```ts
@@ -97,7 +97,7 @@ export type RetryOptions = {
  *     delayTimer: 500,
  *     delayRamp: (delay, nbOfAttempts) => delay * nbOfAttempts,
  *     maxAttempts: 10,
- *     until: (response, error) => response && response.ok,
+ *     until: (response, error) => response && (response.ok || (response.status >= 400 && response.status < 500)),
  *     onRetry: null,
  *     retryOnNetworkError: false,
  *     resolveWithLatestResponse: false,
@@ -122,7 +122,8 @@ export type RetryMiddleware = (options?: RetryOptions) => ConfiguredMiddleware
 
 const defaultDelayRamp: DelayRampFunction = (delay, nbOfAttempts) =>
   delay * nbOfAttempts
-const defaultUntil: UntilFunction = response => response && response.ok
+const defaultUntil: UntilFunction = response =>
+  response && (response.ok || (response.status >= 400 && response.status < 500))
 
 export const retry: RetryMiddleware = ({
   delayTimer = 500,

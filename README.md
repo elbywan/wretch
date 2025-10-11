@@ -662,11 +662,11 @@ const w = wretch().middlewares([retry(), dedupe()])
 
 **Retries a request multiple times in case of an error (or until a custom condition is true).**
 
-> **💡 By default, the request will be retried if the response status is not in the 2xx range.**
+> **💡 By default, the request will be retried only for server errors (5xx) and other non-successful responses, but not for client errors (4xx).**
 >
 > ```js
-> // Replace the default condition with a custom one to avoid retrying on 4xx errors:
-> until: (response, error) => !!response && (response.ok || (response.status >= 400 && response.status < 500))
+> // To retry on all non-2xx responses (including 4xx):
+> until: (response, error) => !!response && response.ok
 > ```
 
 ```js
@@ -679,7 +679,7 @@ wretch().middlewares([
     delayTimer: 500,
     delayRamp: (delay, nbOfAttempts) => delay * nbOfAttempts,
     maxAttempts: 10,
-    until: (response, error) => !!response && response.ok,
+    until: (response, error) => !!response && (response.ok || (response.status >= 400 && response.status < 500)),
     onRetry: undefined,
     retryOnNetworkError: false,
     resolveWithLatestResponse: false

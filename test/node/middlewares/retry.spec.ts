@@ -215,4 +215,51 @@ export default describe("Retry Middleware", () => {
     )
     expect(logs.length).toEqual(1)
   })
+
+  it("should not retry on 4xx errors by default", async () => {
+    const mock4xx = (): Promise<any> => {
+      logs.push("4xx")
+      return Promise.resolve({
+        ok: false,
+        status: 400,
+        headers: new Headers(),
+        text() {
+          return Promise.resolve("")
+        },
+      })
+    }
+
+    const w = wretch()
+      .fetchPolyfill(mock4xx)
+      .middlewares([retry({ delayTimer: 1 })])
+
+    await assert.rejects(
+      () => w.get("/retry").res()
+    )
+    expect(logs.length).toEqual(1)
+
+    logs = []
+
+    const mock5xx = (): Promise<any> => {
+      logs.push("5xx")
+      return Promise.resolve({
+        ok: false,
+        status: 500,
+        headers: new Headers(),
+        text() {
+          return Promise.resolve("")
+        },
+      })
+    }
+
+    const w2 = wretch()
+      .fetchPolyfill(mock5xx)
+      .middlewares([retry({ delayTimer: 1 })])
+
+    await assert.rejects(
+      () => w2.get("/retry").res(),
+      /Number of attempts exceeded\./
+    )
+    expect(logs.length).toEqual(11)
+  })
 })
