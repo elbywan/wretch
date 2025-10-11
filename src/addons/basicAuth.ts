@@ -31,7 +31,7 @@ export interface BasicAuthAddon {
   ): this
 }
 
-const makeBasicAuthMiddleware: (config: Config) => ConfiguredMiddleware = _config => next => (url, opts) => {
+const makeBasicAuthMiddleware: (config: Config<any>) => ConfiguredMiddleware = _config => next => (url, opts) => {
   let parsedUrl: URL | null
   try {
     parsedUrl = new URL(url)

@@ -254,7 +254,13 @@ import wretch from "wretch"
 // Instantiate and configure wretch
 const api =
   wretch("https://jsonplaceholder.typicode.com", { mode: "cors" })
-    .errorType("json")
+    .customError(async (error, response) => {
+      // The API may return detailed error messages in the response body as JSON…
+      const body = await response.json();
+      // …or an empty object - in which case the status text is logged instead.
+      return new Error(`${response.status}: ${Object.keys(body).length > 0 ? body : response.statusText}`,
+        { cause: error })
+    })
     .resolve(r => r.json())
 
 try {
@@ -276,12 +282,7 @@ try {
   // Fetch it
   await api.get("/posts/" + newPost.id)
 } catch (error) {
-  // The API could return an empty object - in which case the status text is logged instead.
-  const message =
-    typeof error.message === "object" && Object.keys(error.message).length > 0
-      ? JSON.stringify(error.message)
-      : error.response.statusText
-  console.error(`${error.status}: ${message}`)
+  console.error(error.message)
 }
 ```
 
@@ -432,10 +433,13 @@ The error passed to catchers is enhanced with additional properties.
 type WretchError = Error & {
   status: number;
   response: WretchResponse;
-  text?: string;
-  json?: Object;
+  url: string;
 };
 ```
+
+By default, `error.message` is set to the response body text (or `statusText` if body parsing fails).
+
+#### Request Replay
 
 The original request is passed along the error and can be used in order to
 perform an additional request.

@@ -19,7 +19,6 @@ createWretchTests({
   assert,
   expect,
   fs,
-  __dirname,
   duckImage,
   duckImagePath,
 })
@@ -30,7 +29,6 @@ createMixTests({
   assert,
   expect,
   fs,
-  __dirname,
   duckImage,
   duckImagePath,
 })

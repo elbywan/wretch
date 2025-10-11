@@ -11,8 +11,6 @@ export class WretchError extends Error implements WretchErrorType {
   status: number
   response: WretchResponse
   url: string
-  text?: string
-  json?: any
 }
 
 export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
@@ -36,6 +34,7 @@ export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
 
   const catchers = new Map(_catchers)
   const finalOptions = mix(config.options, opts)
+  const errorTransformer = config.errorTransformer || null
 
   // The generated fetch request
   let finalUrl = url
@@ -50,10 +49,9 @@ export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
     .catch(error => {
       throw { [FETCH_ERROR]: error }
     })
-    .then(response => {
+    .then(async response => {
       if (!response.ok) {
         const err = new WretchError()
-        // Enhance the error object
         err["cause"] = referenceError
         err.stack = err.stack + "\nCAUSE: " + referenceError.stack
         err.response = response
@@ -61,28 +59,21 @@ export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
         err.url = finalUrl
 
         if (response.type === "opaque") {
+          err.message = response.statusText
           throw err
         }
 
-        const jsonErrorType = config.errorType === "json" || response.headers.get("Content-Type")?.split(";")[0] === "application/json"
-        const bodyPromise =
-          !config.errorType ? Promise.resolve(response.body) :
-            jsonErrorType ? response.text() :
-              response[config.errorType]()
+        if (errorTransformer) {
+          throw await errorTransformer(err, response)
+        }
 
-        return bodyPromise.then((body: unknown) => {
-          err.message = typeof body === "string" ? body : response.statusText
-          if(body) {
-            if(jsonErrorType && typeof body === "string") {
-              err.text = body
-              try { err.json = JSON.parse(body) }
-              catch { /* ignore */ }
-            } else {
-              err[config.errorType] = body
-            }
-          }
-          throw err
-        })
+        try {
+          err.message = await response.text()
+        } catch {
+          err.message = response.statusText
+        }
+
+        throw err
       }
       return response
     })

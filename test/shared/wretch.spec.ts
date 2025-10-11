@@ -79,7 +79,6 @@ export function createWretchTests(ctx: TestContext): void {
     if (beforeEach) {
       beforeEach(() => {
         wretch.options({}, true)
-        wretch.errorType("text")
         wretch.fetchPolyfill(undefined)
       })
     }
@@ -563,47 +562,36 @@ export function createWretchTests(ctx: TestContext): void {
       })
     })
 
-    it("should change the parsing used in the default error handler", async function () {
+    it("should allow transforming errors with fully typed error bodies", async function () {
       await wretch(`${_URL}/json500raw`)
-        .errorType("json")
+        .customError(async (error, response) => {
+          return { ...error, message: response.statusText, json: await response.json() }
+        })
         .get()
         .internalError(error => {
           expect(error.json).toEqual({ error: 500, message: "ok" })
-          expect(error.text).toEqual(JSON.stringify({ error: 500, message: "ok" }))
+          expect(error.message).toEqual("Internal Server Error")
         })
         .res()
         .then(_ => expect(_).toBeUndefined())
+
       await wretch(`${_URL}/json500raw`)
         .get()
         .internalError(error => {
-          expect(error.text).toEqual("{\"error\":500,\"message\":\"ok\"}")
-          expect(error.json).toBeUndefined()
+          expect(error.message).toEqual("{\"error\":500,\"message\":\"ok\"}")
         })
         .res()
         .then(_ => expect(_).toBeUndefined())
-      await wretch(`${_URL}/json500`)
-        .get()
-        .internalError(error => {
-          expect(error.text).toEqual("{\"error\":500,\"message\":\"ok\"}")
-          expect(error.json).toEqual({ error: 500, message: "ok" })
-        })
-        .res()
-        .then(_ => expect(_).toBeUndefined())
+
       await wretch(`${_URL}/json500raw`)
-        .errorType(null)
-        .get()
-        .internalError(error => {
-          expect(error.json).toEqual(undefined)
-          expect(error.text).toEqual(undefined)
+        .customError(async (error, response) => {
+          const json = await response.json()
+          return { ...error, json, message: json.message }
         })
-        .res()
-        .then(_ => expect(_).toBeUndefined())
-      wretch.errorType("json")
-      await wretch(`${_URL}/json500raw`)
         .get()
         .internalError(error => {
-          expect(error.json).toEqual({ error: 500, message: "ok" })
-          expect(error.text).toEqual(JSON.stringify({ error: 500, message: "ok" }))
+          expect(error.json).toEqual({ "error":500, "message": "ok" })
+          expect(error.message).toEqual("ok")
         })
         .res()
         .then(_ => expect(_).toBeUndefined())

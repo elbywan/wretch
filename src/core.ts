@@ -2,7 +2,7 @@ import { mix, extractContentType, isLikelyJsonMime } from "./utils.js"
 import { JSON_MIME, CONTENT_TYPE_HEADER, CATCHER_FALLBACK } from "./constants.js"
 import { resolver } from "./resolver.js"
 import config from "./config.js"
-import type { Wretch, ErrorType } from "./types.js"
+import type { Wretch } from "./types.js"
 
 export const core: Wretch = {
   _url: "",
@@ -15,15 +15,6 @@ export const core: Wretch = {
   _addons: [],
   addon(addon) {
     return { ...this, _addons: [...this._addons, addon], ...addon.wretch }
-  },
-  errorType(errorType: ErrorType) {
-    return {
-      ...this,
-      _config: {
-        ...this._config,
-        errorType
-      }
-    }
   },
   fetchPolyfill(fetchImpl) {
     return {
@@ -72,6 +63,15 @@ export const core: Wretch = {
   },
   catcherFallback(catcher) {
     return this.catcher(CATCHER_FALLBACK, catcher)
+  },
+  customError(transformer) {
+    return {
+      ...this,
+      _config: {
+        ...this._config,
+        errorTransformer: transformer
+      }
+    } as any // TS can't infer the type here
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   resolve<R = unknown>(resolver, clear: boolean = false) {

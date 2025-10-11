@@ -1,11 +1,8 @@
 import { mix } from "./utils.js"
-import type { Config, ErrorType, WretchOptions } from "./types.js"
+import type { Config, WretchOptions } from "./types.js"
 
 const config: Config = {
-  // Default options
   options: {},
-  // Error type
-  errorType: "text",
 }
 
 /**
@@ -55,30 +52,6 @@ export function setFetchPolyfill(fetchImpl: (url: string, opts: WretchOptions) =
   config.fetch = fetchImpl
 }
 
-/**
- * Sets the default method (text, json, …) used to parse the data contained in the response body in case of an HTTP error.
- * As with other static methods, it will affect wretch instances created after calling this function.
- *
- * _Note: if the response Content-Type header is set to "application/json", the body will be parsed as json regardless of the errorType._
- *
- * ```js
- * import wretch from "wretch"
- *
- * wretch.errorType("json")
- *
- * wretch("http://server/which/returns/an/error/with/a/json/body")
- *   .get()
- *   .res()
- *   .catch(error => {
- *     // error[errorType] (here, json) contains the parsed body
- *     console.log(error.json)
- *   })
- * ```
- *
- * If null, defaults to "text".
- */
-export function setErrorType(errorType: ErrorType) {
-  config.errorType = errorType
-}
+
 
 export default config
