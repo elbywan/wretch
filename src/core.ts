@@ -71,7 +71,7 @@ export const core: Wretch = {
         ...this._config,
         errorTransformer: transformer
       }
-    } as any // TS can't infer the type here
+    } as any // TS cannot infer the type change here
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   resolve<R = unknown>(resolver, clear: boolean = false) {

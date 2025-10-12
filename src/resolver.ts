@@ -13,7 +13,7 @@ export class WretchError extends Error implements WretchErrorType {
   url: string
 }
 
-export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
+export const resolver = <T, Chain, R, E>(wretch: T & Wretch<T, Chain, R, E>) => {
   const sharedState = Object.create(null)
 
   wretch = wretch._addons.reduce((w, addon) =>
@@ -107,7 +107,7 @@ export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
     // No body parsing method - return the response
     catchersWrapper(throwingPromise.then(_ => cb ? cb(_ as any) : _))
 
-  const responseChain: WretchResponseChain<T, Chain, R> = {
+  const responseChain: WretchResponseChain<T, Chain, R, E> = {
     _wretchReq: wretch,
     _fetchReq,
     _sharedState: sharedState,
@@ -132,7 +132,7 @@ export const resolver = <T, Chain, R>(wretch: T & Wretch<T, Chain, R>) => {
 
   const enhancedResponseChain: R extends undefined ? Chain & WretchResponseChain<T, Chain, undefined> : R = addons.reduce((chain, addon) => ({
     ...chain,
-    ...(typeof addon.resolver === "function" ? (addon.resolver as (_: WretchResponseChain<T, Chain, R>) => any)(chain) : addon.resolver)
+    ...(typeof addon.resolver === "function" ? (addon.resolver as (_: WretchResponseChain<T, Chain, R, E>) => any)(chain) : addon.resolver)
   }), responseChain)
 
   return resolvers.reduce((chain, r) => r(chain, wretch), enhancedResponseChain)

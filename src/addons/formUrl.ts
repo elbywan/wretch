@@ -38,7 +38,7 @@ export interface FormUrlAddon {
    *
    * @param input - An object to convert into an url encoded string or an already encoded string
    */
-  formUrl<T extends FormUrlAddon, C, R>(this: T & Wretch<T, C, R>, input: (object | string)): this
+  formUrl<T extends FormUrlAddon, C, R, E>(this: T & Wretch<T, C, R, E>, input: (object | string)): this
 }
 
 /**

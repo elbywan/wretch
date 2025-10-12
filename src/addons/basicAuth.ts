@@ -24,14 +24,14 @@ export interface BasicAuthAddon {
    * @param username - Username to use for basic auth
    * @param password - Password to use for basic auth
    */
-  basicAuth<T extends BasicAuthAddon, C, R>(
-    this: T & Wretch<T, C, R>,
+  basicAuth<T extends BasicAuthAddon, C, R, E>(
+    this: T & Wretch<T, C, R, E>,
     username: string,
     password: string
   ): this
 }
 
-const makeBasicAuthMiddleware: (config: Config<any>) => ConfiguredMiddleware = _config => next => (url, opts) => {
+const makeBasicAuthMiddleware: (config: Config) => ConfiguredMiddleware = _config => next => (url, opts) => {
   let parsedUrl: URL | null
   try {
     parsedUrl = new URL(url)

@@ -86,7 +86,7 @@ export interface QueryStringAddon {
    *
    * @param qp - An object which will be converted, or a string which will be used verbatim.
    */
-  query<T extends QueryStringAddon, C, R>(this: T & Wretch<T, C, R>, qp: object | string, replace?: boolean, omitUndefinedOrNullValues?: boolean): this
+  query<T extends QueryStringAddon, C, R, E>(this: T & Wretch<T, C, R, E>, qp: object | string, replace?: boolean, omitUndefinedOrNullValues?: boolean): this
 }
 
 /**

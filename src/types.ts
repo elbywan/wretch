@@ -10,7 +10,7 @@
  *
  * Immutability : almost every method of this class return a fresh Wretch object.
  */
-export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, ErrorType = WretchError> {
+export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, ErrorType = undefined> {
   /**
    * @private @internal
    */
@@ -22,11 +22,11 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
   /**
    * @private @internal
    */
-  _config: Config<ErrorType>,
+  _config: Config,
   /**
    * @private @internal
    */
-  _catchers: Map<number | string | symbol, (error: WretchError, originalRequest: Wretch<Self, Chain, Resolver, ErrorType>) => void>
+  _catchers: Map<number | string | symbol, (error: ErrorType extends undefined ? WretchError : ErrorType, originalRequest: Wretch<Self, Chain, Resolver, ErrorType>) => void>
   /**
    * @private @internal
    */
@@ -34,7 +34,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
   /**
    * @private @internal
    */
-  _deferred: WretchDeferredCallback<Self, Chain, Resolver>[]
+  _deferred: WretchDeferredCallback<Self, Chain, Resolver, ErrorType>[]
   /**
    * @private @internal
    */
@@ -263,7 +263,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    * @param errorId - Error code or name
    * @param catcher - The catcher method
    */
-  catcher(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, errorId: number | string | symbol, catcher: (error: ErrorType, originalRequest: this) => any): this
+  catcher(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, errorId: number | string | symbol, catcher: (error: ErrorType extends undefined ? WretchError : ErrorType, originalRequest: this) => any): Wretch<Self, Chain, Resolver, ErrorType extends undefined ? WretchError : ErrorType>
 
   /**
    * A fallback catcher that will be called for any error thrown - if uncaught by other means.
@@ -283,17 +283,13 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    * @see {@link Wretch.catcher} for more details.
    * @param catcher - The catcher method
    */
-  catcherFallback(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, catcher: (error: ErrorType, originalRequest: this) => any): this
+  catcherFallback(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, catcher: (error: ErrorType extends undefined ? WretchError : ErrorType, originalRequest: this) => any): Wretch<Self, Chain, Resolver, ErrorType extends undefined ? WretchError : ErrorType>
 
   /**
    * Configures custom error parsing for all error responses.
    *
    * Allows you to transform errors and add custom properties that will be fully typed
    * across all error handlers (.error(), .badRequest(), .unauthorized(), etc.).
-   *
-   * ⚠️ **Warning:** Error handlers that were set before calling `.customError()` will not be type-checked
-   * against the new error type. Always call `.customError()` before setting error handlers with
-   * `.catcher()`, `.catcherFallback()`, or `.resolve()` to ensure proper typing.
    *
    * ```js
    * interface ApiError {
@@ -319,7 +315,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    * @category Helpers
    * @param transformer - A function that receives the error and response, and returns the transformed error with custom properties
    */
-  customError<T>(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, transformer: (error: WretchError, response: WretchResponse) => Promise<T> | T): Self & Wretch<Self, Chain, Resolver, T>
+  customError<T extends (ErrorType extends undefined ? any : ErrorType)>(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, transformer: (error: WretchError, response: WretchResponse) => Promise<T> | T): Self & Wretch<Self, Chain, Resolver, T>
 
   /**
    * Defer one or multiple request chain methods that will get called just before the request is sent.
@@ -353,7 +349,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    */
   defer<Clear extends boolean = false>(
     this: Self & Wretch<Self, Chain, Resolver, ErrorType>,
-    callback: WretchDeferredCallback<Self, Chain, Resolver>,
+    callback: WretchDeferredCallback<Self, Chain, Resolver, ErrorType>,
     clear?: Clear
   ): this
 
@@ -581,7 +577,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
  * Ultimately returns a Promise.
  *
  */
-export interface WretchResponseChain<T, Self = unknown, R = undefined, ErrorType = WretchError> {
+export interface WretchResponseChain<T, Self = unknown, R = undefined, ErrorType = undefined> {
   /**
    * @private @internal
    */
@@ -754,10 +750,10 @@ export interface WretchResponseChain<T, Self = unknown, R = undefined, ErrorType
 /**
  * Configuration object.
  */
-export type Config<ErrorType = WretchError> = {
+export type Config = {
   options: object;
   fetch?: FetchLike | ((url: string, opts: WretchOptions) => Promise<Response>);
-  errorTransformer?: (error: WretchError, response: WretchResponse) => Promise<ErrorType> | ErrorType;
+  errorTransformer?: <T>(error: WretchError, response: WretchResponse) => Promise<T> | T;
 }
 
 /**
@@ -767,11 +763,11 @@ export type WretchOptions = Record<string, any> & RequestInit
 /**
  * An Error enhanced with status, text and body.
  */
-export type WretchError = Error & { status: number, response: WretchResponse, url: string, text?: string, json?: any }
+export type WretchError = Error & { status: number, response: WretchResponse, url: string }
 /**
  * Callback provided to catchers on error. Contains the original wretch instance used to perform the request.
  */
-export type WretchErrorCallback<T, C, R, E = WretchError> = (error: E, originalRequest: T & Wretch<T, C, R, E>) => any
+export type WretchErrorCallback<T, C, R, E> = (error: E extends undefined ? WretchError : E, originalRequest: T & Wretch<T, C, R, E>) => any
 /**
  * Fetch Response object with additional properties.
  */
@@ -785,7 +781,7 @@ export type FetchLike = (url: string, opts: WretchOptions) => Promise<WretchResp
 /**
  * Callback provided to the defer function allowing to chain deferred actions that will be stored and applied just before the request is sent.
  */
-export type WretchDeferredCallback<T, C, R, E = WretchError> = (wretch: T & Wretch<T, C, R, E>, url: string, options: WretchOptions) => Wretch<T, C, any, E>
+export type WretchDeferredCallback<T, C, R, E> = (wretch: T & Wretch<T, C, R, E>, url: string, options: WretchOptions) => Wretch<T, C, any, E>
 
 /**
  * Shape of a typical middleware.

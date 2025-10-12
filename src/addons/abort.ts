@@ -28,7 +28,7 @@ export interface AbortWretch {
    *
    * @param controller - An instance of AbortController
    */
-  signal: <T extends AbortWretch, C, R>(this: T & Wretch<T, C, R>, controller: AbortController) => this
+  signal: <T extends AbortWretch, C, R, E>(this: T & Wretch<T, C, R, E>, controller: AbortController) => this
 }
 
 export interface AbortResolver {
@@ -47,7 +47,7 @@ export interface AbortResolver {
    * @param time - Time in milliseconds
    * @param controller - An instance of AbortController
    */
-  setTimeout: <T, C extends AbortResolver, R>(this: C & WretchResponseChain<T, C, R>, time: number, controller?: AbortController) => this
+  setTimeout: <T, C extends AbortResolver, R, E>(this: C & WretchResponseChain<T, C, R, E>, time: number, controller?: AbortController) => this
   /**
    * Returns the provided or generated AbortController plus the wretch response chain as a pair.
    *
@@ -65,11 +65,11 @@ export interface AbortResolver {
    * c.abort()
    * ```
    */
-  controller: <T, C extends AbortResolver, R>(this: C & WretchResponseChain<T, C, R>) => [any, this]
+  controller: <T, C extends AbortResolver, R, E>(this: C & WretchResponseChain<T, C, R, E>) => [any, this]
   /**
    * Catches an AbortError and performs a callback.
    */
-  onAbort: <T, C extends AbortResolver, R>(this: C & WretchResponseChain<T, C, R>, cb: WretchErrorCallback<T, C, R>) => this
+  onAbort: <T, C extends AbortResolver, R, E>(this: C & WretchResponseChain<T, C, R, E>, cb: WretchErrorCallback<T, C, R, E>) => this
 }
 
 /**

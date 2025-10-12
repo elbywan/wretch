@@ -50,7 +50,7 @@ export interface ProgressAddon {
    *
    * @param onUpload - A callback that will be called one or multiple times with the number of bytes uploaded and the total number of bytes to upload.
    */
-  onUpload<T extends ProgressAddon, C, R>(this: T & Wretch<T, C, R>, onUpload: (loaded: number, total: number) => void): this
+  onUpload<T extends ProgressAddon, C, R, E>(this: T & Wretch<T, C, R, E>, onUpload: (loaded: number, total: number) => void): this
 
   /**
    * Provides a way to register a callback to be invoked one or multiple times during the download.
@@ -70,7 +70,7 @@ export interface ProgressAddon {
    *
    * @param onDownload - A callback that will be called one or multiple times with the number of bytes downloaded and the total number of bytes to download.
    */
-  onDownload<T extends ProgressAddon, C, R>(this: T & Wretch<T, C, R>, onDownload: (loaded: number, total: number) => void): this
+  onDownload<T extends ProgressAddon, C, R, E>(this: T & Wretch<T, C, R, E>, onDownload: (loaded: number, total: number) => void): this
 }
 
 function toStream<T extends Request | Response>(requestOrResponse: T, callback: ProgressCallback | undefined): T {

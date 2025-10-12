@@ -119,8 +119,6 @@ api.get("/error")
 - More flexible - transform errors however you need
 - Works consistently across all error handlers
 
-**Important:** Always call `.customError()` **before** setting error handlers (`.catcher()`, `.catcherFallback()`, `.resolve()`) to ensure proper typing.
-
 ### 5. Changed: Retry Middleware Default Behavior
 
 The retry middleware now **skips retrying 4xx client errors by default**.
