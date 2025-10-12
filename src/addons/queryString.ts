@@ -4,6 +4,20 @@ function stringify(value?: string | null): string | null {
   return typeof value !== "undefined" ? value : ""
 }
 
+/**
+ * Options for the query method.
+ */
+export type QueryStringOptions = {
+  /**
+   * Replace existing query parameters instead of appending to them.
+   */
+  replace?: boolean
+  /**
+   * Completely omit key=value pairs for undefined or null values.
+   */
+  omitUndefinedOrNullValues?: boolean
+}
+
 const appendQueryParams = (url: string, qp: object | string, replace: boolean, omitUndefinedOrNullValues: boolean, _config: Config) => {
   let queryString: string
 
@@ -40,8 +54,8 @@ export interface QueryStringAddon {
    * Converts a javascript object to query parameters, then appends this query string
    * to the current url. String values are used as the query string verbatim.
    *
-   * Pass `true` as the second argument to replace existing query parameters.
-   * Pass `true` as the third argument to completely omit the key=value pair for undefined or null values.
+   * Set `replace` to `true` in the options to replace existing query parameters.
+   * Set `omitUndefinedOrNullValues` to `true` in the options to completely omit the key=value pair for undefined or null values.
    *
    * ```
    * import QueryAddon from "wretch/addons/queryString"
@@ -54,7 +68,7 @@ export interface QueryStringAddon {
    * // url is now http://example.com?a=1&b=2c=3&d=4&d=5
    * w = w.query("five&six&seven=eight");
    * // url is now http://example.com?a=1&b=2c=3&d=4&d=5&five&six&seven=eight
-   * w = w.query({ reset: true }, true);
+   * w = w.query({ reset: true }, { replace: true });
    * // url is now  http://example.com?reset=true
    * ```
    *
@@ -85,8 +99,9 @@ export interface QueryStringAddon {
    * ```
    *
    * @param qp - An object which will be converted, or a string which will be used verbatim.
+   * @param options - Optional configuration object
    */
-  query<T extends QueryStringAddon, C, R, E>(this: T & Wretch<T, C, R, E>, qp: object | string, replace?: boolean, omitUndefinedOrNullValues?: boolean): this
+  query<T extends QueryStringAddon, C, R, E>(this: T & Wretch<T, C, R, E>, qp: object | string, options?: QueryStringOptions): this
 }
 
 /**
@@ -100,8 +115,8 @@ export interface QueryStringAddon {
  */
 const queryString: WretchAddon<QueryStringAddon> = {
   wretch: {
-    query(qp, replace = false, omitUndefinedOrNullValues = false) {
-      return { ...this, _url: appendQueryParams(this._url, qp, replace, omitUndefinedOrNullValues, this._config) }
+    query(qp, options = {}) {
+      return { ...this, _url: appendQueryParams(this._url, qp, options.replace ?? false, options.omitUndefinedOrNullValues ?? false, this._config) }
     }
   }
 }

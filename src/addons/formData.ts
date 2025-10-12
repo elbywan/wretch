@@ -1,5 +1,17 @@
 import type { Wretch, Config, WretchAddon } from "../types.js"
 
+/**
+ * Options for the formData method.
+ */
+export type FormDataOptions = {
+  /**
+   * Enable recursion through nested objects to produce `object[key]` keys.
+   * When set to `true`, all nested objects will be recursively converted.
+   * When set to an array of strings, the specified keys will be excluded from recursion.
+   */
+  recursive?: string[] | boolean
+}
+
 function convertFormData(
   formObject: object,
   recursive: string[] | boolean = false,
@@ -47,7 +59,7 @@ export interface FormDataAddon {
    * wretch("...").addons(FormDataAddon).formData(form).post();
    * ```
    *
-   * The `recursive` argument when set to `true` will enable recursion through all
+   * The `recursive` option when set to `true` will enable recursion through all
    * nested objects and produce `object[key]` keys. It can be set to an array of
    * string to exclude specific keys.
    *
@@ -71,7 +83,7 @@ export interface FormDataAddon {
    *
    * // Will append the following keys to the FormData payload:
    * // "duck", "duckProperties[beak][color]", "duckProperties[legs]"
-   * wretch("...").addons(FormDataAddon).formData(form, ["ignored"]).post();
+   * wretch("...").addons(FormDataAddon).formData(form, { recursive: ["ignored"] }).post();
    * ```
    *
    * > Note: This addon does not support specifying a custom `filename`.
@@ -84,9 +96,9 @@ export interface FormDataAddon {
    * > See: https://developer.mozilla.org/en-US/docs/Web/API/FormData/append#example
    *
    * @param formObject - An object which will be converted to a FormData
-   * @param recursive - If `true`, will recurse through all nested objects. Can be set as an array of string to exclude specific keys.
+   * @param options - Optional configuration object
    */
-  formData<T extends FormDataAddon, C, R, E>(this: T & Wretch<T, C, R, E>, formObject: object, recursive?: string[] | boolean): this
+  formData<T extends FormDataAddon, C, R, E>(this: T & Wretch<T, C, R, E>, formObject: object, options?: FormDataOptions): this
 }
 
 /**
@@ -100,8 +112,8 @@ export interface FormDataAddon {
  */
 const formData: WretchAddon<FormDataAddon> = {
   wretch: {
-    formData(formObject, recursive = false) {
-      return this.body(convertFormData(formObject, recursive, this._config))
+    formData(formObject, options = {}) {
+      return this.body(convertFormData(formObject, options.recursive ?? false, this._config))
     }
   }
 }

@@ -215,7 +215,7 @@ export function createWretchTests(ctx: TestContext): void {
 
       let decoded = await wretch(`${_URL}/formData/decode`)
         .addon(FormDataAddon)
-        .formData(form, ["duckImage"])
+        .formData(form, { recursive: ["duckImage"] })
         .post()
         .json()
 
@@ -240,7 +240,7 @@ export function createWretchTests(ctx: TestContext): void {
       }
       decoded = await wretch(`${_URL}/formData/decode`)
         .addon(FormDataAddon)
-        .formData(form, true)
+        .formData(form, { recursive: true })
         .post()
         .json()
       if (expect(decoded).toMatchObject) {
@@ -452,7 +452,7 @@ export function createWretchTests(ctx: TestContext): void {
       const obj5 = obj4.query({ c: 6, d: [7, 8] })
       expect(obj4["_url"]).toBe(`${_URL}?a=1%21&b=2`)
       expect(obj5["_url"]).toBe(`${_URL}?a=1%21&b=2&c=6&d=7&d=8`)
-      const obj6 = obj5.query("Literal[]=Query&String", true)
+      const obj6 = obj5.query("Literal[]=Query&String", { replace: true })
       expect(obj5["_url"]).toBe(`${_URL}?a=1%21&b=2&c=6&d=7&d=8`)
       expect(obj6["_url"]).toBe(`${_URL}?Literal[]=Query&String`)
       const obj7 = obj5.query("Literal[]=Query&String").url("/test")
@@ -777,7 +777,7 @@ export function createWretchTests(ctx: TestContext): void {
         .res()
 
       const [c2, w2] = wretch(`${_URL}/longResult`).addon(AbortAddon()).get().controller()
-      w2.setTimeout(100, c2).onAbort(handleError).res()
+      w2.setTimeout(100, { controller: c2 }).onAbort(handleError).res()
 
       await new Promise(resolve => setTimeout(resolve, 1000))
       expect(count).toBe(4)
@@ -881,17 +881,17 @@ export function createWretchTests(ctx: TestContext): void {
     it("should not append an extra character (&/?) when trying to append or replace empty query params", function () {
       const w = wretch(_URL).addon(QueryStringAddon)
       expect(w.query("")._url).toBe(_URL)
-      expect(w.query("", true)._url).toBe(_URL)
-      expect(w.query("a=1").query("", true)._url).toBe(_URL)
+      expect(w.query("", { replace: true })._url).toBe(_URL)
+      expect(w.query("a=1").query("", { replace: true })._url).toBe(_URL)
       expect(w.query({})._url).toBe(_URL)
-      expect(w.query({}, true)._url).toBe(_URL)
-      expect(w.query({ a: 1 }).query({}, true)._url).toBe(_URL)
+      expect(w.query({}, { replace: true })._url).toBe(_URL)
+      expect(w.query({ a: 1 }).query({}, { replace: true })._url).toBe(_URL)
     })
 
     it("should strip or omit undefined/null values", function () {
       const w = wretch(_URL).addon(QueryStringAddon)
       expect(w.query({ a: undefined, b: 1 })._url).toBe(_URL + "?a=&b=1")
-      expect(w.query({ a: undefined, b: 1, c: null }, false, true)._url).toBe(_URL + "?b=1")
+      expect(w.query({ a: undefined, b: 1, c: null }, { omitUndefinedOrNullValues: true })._url).toBe(_URL + "?b=1")
       expect(w.query({ array: ["a", "b", undefined, "c"] })._url).toBe(_URL + "?array=a&array=b&array=&array=c")
     })
   })

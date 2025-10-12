@@ -31,23 +31,37 @@ export interface AbortWretch {
   signal: <T extends AbortWretch, C, R, E>(this: T & Wretch<T, C, R, E>, controller: AbortController) => this
 }
 
+/**
+ * Options for the setTimeout method.
+ */
+export type SetTimeoutOptions = {
+  /**
+   * A custom AbortController to use for aborting the request.
+   * If not provided, the controller associated with the request will be used.
+   */
+  controller?: AbortController
+}
+
 export interface AbortResolver {
   /**
    * Aborts the request after a fixed time.
    *
-   * If you use a custom AbortController associated with the request, pass it as the second argument.
+   * If you use a custom AbortController associated with the request, pass it in the options object.
    *
    * ```js
    * // 1 second timeout
    * wretch("...").addon(AbortAddon()).get().setTimeout(1000).json(_ =>
    *   // will not be called if the request timeouts
    * )
+   *
+   * // With custom controller
+   * wretch("...").addon(AbortAddon()).get().setTimeout(1000, { controller }).json()
    * ```
    *
    * @param time - Time in milliseconds
-   * @param controller - An instance of AbortController
+   * @param options - Optional configuration object
    */
-  setTimeout: <T, C extends AbortResolver, R, E>(this: C & WretchResponseChain<T, C, R, E>, time: number, controller?: AbortController) => this
+  setTimeout: <T, C extends AbortResolver, R, E>(this: C & WretchResponseChain<T, C, R, E>, time: number, options?: SetTimeoutOptions) => this
   /**
    * Returns the provided or generated AbortController plus the wretch response chain as a pair.
    *
@@ -129,7 +143,8 @@ const abort: () => WretchAddon<AbortWretch, AbortResolver> = () => {
       },
     },
     resolver: {
-      setTimeout(time, controller = this._sharedState.abort.fetchController) {
+      setTimeout(time, options = {}) {
+        const controller = options.controller ?? this._sharedState.abort.fetchController
         const { timeout } = this._sharedState.abort
         timeout.clear()
         timeout.ref = setTimeout(() => controller.abort(), time)

@@ -541,7 +541,7 @@ const searchUsers = async (params: {
 }) => {
   return api
     .url('/users')
-    .query(params, false, true) // third parameter omits undefined/null values
+    .query(params, { omitUndefinedOrNullValues: true })
     .get()
     .json();
 };

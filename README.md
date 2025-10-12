@@ -524,7 +524,7 @@ w = w.query({ c: 3, d: [4, 5] });
 // url is now http://example.com?a=1&b=2c=3&d=4&d=5
 w = w.query("five&six&seven=eight");
 // url is now http://example.com?a=1&b=2c=3&d=4&d=5&five&six&seven=eight
-w = w.query({ reset: true }, true);
+w = w.query({ reset: true }, { replace: true });
 // url is now  http://example.com?reset=true
 ```
 
@@ -550,7 +550,7 @@ const form = {
 
 // Will append the following keys to the FormData payload:
 // "duck", "duckProperties[beak][color]", "duckProperties[legs]"
-wretch("...").addon(FormDataAddon).formData(form, ["ignored"]).post();
+wretch("...").addon(FormDataAddon).formData(form, { recursive: ["ignored"] }).post();
 ```
 
 ### [FormUrl 🔗](https://elbywan.github.io/wretch/api/interfaces/addons_formUrl.FormUrlAddon)

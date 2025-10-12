@@ -1,17 +1,34 @@
-# Migration Guide: Wretch v2 to v3
+# :memo: Migration Guide: Wretch v2 to v3
 
 This guide outlines the breaking changes and migration steps required when upgrading from Wretch v2 to v3.
 
-## Summary
+## 👍 Benefits of v3
 
-Wretch v3 introduces several breaking changes focused on:
-- Dropping Node.js <22 support and removing polyfill system
-- Replacing `.errorType()` with `.customError()` for better type safety
-- Removing global static configuration methods
-- Changing retry middleware default behavior
-- Adding upload progress monitoring support
+- **Smaller bundle size** - No polyfill code included
+- **Better performance** - Native APIs are optimized
+- **Improved type safety** - `.customError()` provides full typing
+- **Simpler codebase** - Less abstraction, fewer edge cases
+- **Modern defaults** - Better retry behavior out of the box
+- **New features** - Upload progress monitoring
 
-## Breaking Changes
+## 📋 Complete Migration Checklist
+
+- [ ] Update to Node.js 22 or higher
+- [ ] Remove polyfill dependencies (`node-fetch`, `form-data`, etc.)
+- [ ] Replace `.polyfills()` calls with `.fetchPolyfill()` (if using custom fetch)
+- [ ] Remove `wretch.polyfills()` static method calls
+- [ ] Remove `wretch.options()` static method calls - use per-instance config
+- [ ] Replace `.errorType()` with `.customError()` for error parsing
+- [ ] Remove `wretch.errorType()` static method calls
+- [ ] Review retry middleware behavior (now skips 4xx by default)
+- [ ] Update error handlers to use `.customError()` for typed error properties
+- [ ] Update addon method calls to use options objects:
+  - [ ] `.query(qp, replace, omitUndefinedOrNullValues)` → `.query(qp, { replace, omitUndefinedOrNullValues })`
+  - [ ] `.formData(obj, recursive)` → `.formData(obj, { recursive })`
+  - [ ] `.setTimeout(time, controller)` → `.setTimeout(time, { controller })`
+- [ ] Test your application thoroughly
+
+## :fire: Breaking Changes
 
 ### 1. Node.js Version Requirement
 
@@ -190,27 +207,63 @@ wretch.errorType("json")
 // Use per-instance .customError() instead (see section 4)
 ```
 
-## Complete Migration Checklist
+### 8. Changed: Addon Optional Parameters Consolidated into Options Objects
 
-- [ ] Update to Node.js 22 or higher
-- [ ] Remove polyfill dependencies (`node-fetch`, `form-data`, etc.)
-- [ ] Replace `.polyfills()` calls with `.fetchPolyfill()` (if using custom fetch)
-- [ ] Remove `wretch.polyfills()` static method calls
-- [ ] Remove `wretch.options()` static method calls - use per-instance config
-- [ ] Replace `.errorType()` with `.customError()` for error parsing
-- [ ] Remove `wretch.errorType()` static method calls
-- [ ] Review retry middleware behavior (now skips 4xx by default)
-- [ ] Update error handlers to use `.customError()` for typed error properties
-- [ ] Test your application thoroughly
+Three addon methods now use options objects instead of positional parameters for better long-term API stability.
 
-## Benefits of v3
+#### QueryString Addon
 
-- **Smaller bundle size** - No polyfill code included
-- **Better performance** - Native APIs are optimized
-- **Improved type safety** - `.customError()` provides full typing
-- **Simpler codebase** - Less abstraction, fewer edge cases
-- **Modern defaults** - Better retry behavior out of the box
-- **New features** - Upload progress monitoring
+```js
+// ❌ Before (v2)
+wretch("https://api.example.com")
+  .addon(QueryStringAddon)
+  .query({ a: 1 }, true) // replace parameter
+  .query({ b: undefined, c: 2 }, false, true) // omitUndefinedOrNullValues parameter
+
+// ✅ After (v3)
+wretch("https://api.example.com")
+  .addon(QueryStringAddon)
+  .query({ a: 1 }, { replace: true })
+  .query({ b: undefined, c: 2 }, { omitUndefinedOrNullValues: true })
+```
+
+#### FormData Addon
+
+```js
+// ❌ Before (v2)
+wretch("https://api.example.com")
+  .addon(FormDataAddon)
+  .formData(formObject, true) // recursive parameter
+  .formData(formObject, ["excludedKey"]) // exclude specific keys
+
+// ✅ After (v3)
+wretch("https://api.example.com")
+  .addon(FormDataAddon)
+  .formData(formObject, { recursive: true })
+  .formData(formObject, { recursive: ["excludedKey"] })
+```
+
+#### Abort Addon
+
+```js
+// ❌ Before (v2)
+const controller = new AbortController()
+wretch("https://api.example.com")
+  .addon(AbortAddon())
+  .get()
+  .setTimeout(1000, controller) // controller as second parameter
+
+// ✅ After (v3)
+const controller = new AbortController()
+wretch("https://api.example.com")
+  .addon(AbortAddon())
+  .get()
+  .setTimeout(1000, { controller })
+```
+
+**Why this change?**
+
+Using options objects prevents the need for breaking changes when adding new optional parameters in the future, improving long-term API stability and developer experience.
 
 ## Need Help?
 
