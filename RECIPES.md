@@ -43,6 +43,8 @@
 
 **Problem:** APIs return structured error information in response bodies that you need to access.
 
+> 💡 **See also:** [#236](https://github.com/elbywan/wretch/issues/236) · [#171](https://github.com/elbywan/wretch/issues/171)
+
 ```ts
 import wretch from 'wretch';
 
@@ -69,6 +71,8 @@ try {
 ### Handling Non-JSON Error Responses
 
 **Problem:** Your API sometimes returns HTML error pages or plain text instead of JSON errors.
+
+> 💡 **See also:** [#266](https://github.com/elbywan/wretch/issues/266)
 
 ```ts
 import wretch from 'wretch';
@@ -136,6 +140,8 @@ await api.get('/bearer/token-1').json();
 
 **Problem:** Distinguish between network failures (connection issues, DNS failures) and HTTP errors (4xx, 5xx).
 
+> 💡 **See also:** [#243](https://github.com/elbywan/wretch/issues/243) · [#241](https://github.com/elbywan/wretch/issues/241) · [#207](https://github.com/elbywan/wretch/issues/207) · [#164](https://github.com/elbywan/wretch/issues/164)
+
 ```ts
 import wretch from 'wretch';
 
@@ -170,6 +176,8 @@ await api.get('/posts/1').json();
 
 **Problem:** Show upload progress to users for better UX.
 
+> 💡 **See also:** [#199](https://github.com/elbywan/wretch/issues/199) · [#225](https://github.com/elbywan/wretch/issues/225) · [#154](https://github.com/elbywan/wretch/issues/154)
+
 ```ts
 import wretch from 'wretch';
 import FormDataAddon from 'wretch/addons/formData';
@@ -194,6 +202,8 @@ async function uploadFile(file: File) {
 ### Multipart FormData with Files
 
 **Problem:** Send files along with structured data in a single request.
+
+> 💡 **See also:** [#231](https://github.com/elbywan/wretch/issues/231) · [#220](https://github.com/elbywan/wretch/issues/220) · [#201](https://github.com/elbywan/wretch/issues/201) · [#197](https://github.com/elbywan/wretch/issues/197)
 
 ```ts
 import wretch from 'wretch';
@@ -224,6 +234,8 @@ await api
 
 **Problem:** Optional search parameters should be omitted from the URL, not sent as empty strings.
 
+> 💡 **See also:** [#261](https://github.com/elbywan/wretch/issues/261) · [#229](https://github.com/elbywan/wretch/issues/229) · [#148](https://github.com/elbywan/wretch/issues/148) · [#33](https://github.com/elbywan/wretch/issues/33)
+
 ```ts
 import wretch from 'wretch';
 import QueryStringAddon from 'wretch/addons/queryString';
@@ -248,6 +260,8 @@ await searchUsers({ userId: 1, id: undefined, title: undefined });
 ### Building Complex Query Strings
 
 **Problem:** Construct URLs with arrays and nested parameters.
+
+> 💡 **See also:** [#169](https://github.com/elbywan/wretch/issues/169)
 
 ```ts
 import wretch from 'wretch';
@@ -279,6 +293,8 @@ await api
 
 **Problem:** Set a default timeout for all requests to prevent hanging.
 
+> 💡 **See also:** [#259](https://github.com/elbywan/wretch/issues/259) · [#256](https://github.com/elbywan/wretch/issues/256) · [#196](https://github.com/elbywan/wretch/issues/196)
+
 ```ts
 import wretch from 'wretch';
 import AbortAddon from 'wretch/addons/abort';
@@ -299,6 +315,8 @@ const longerRequest = await api
 
 **Problem:** Prevent multiple identical requests from being sent simultaneously.
 
+> 💡 **See also:** [#250](https://github.com/elbywan/wretch/issues/250)
+
 ```ts
 import wretch from 'wretch';
 import { dedupe } from 'wretch/middlewares';
@@ -317,6 +335,8 @@ const [data1, data2, data3] = await Promise.all([
 ### Retry with Exponential Backoff
 
 **Problem:** Automatically retry failed requests with increasing delays.
+
+> 💡 **See also:** [#255](https://github.com/elbywan/wretch/issues/255) · [#217](https://github.com/elbywan/wretch/issues/217) · [#216](https://github.com/elbywan/wretch/issues/216) · [#176](https://github.com/elbywan/wretch/issues/176) · [#145](https://github.com/elbywan/wretch/issues/145) · [#141](https://github.com/elbywan/wretch/issues/141)
 
 ```ts
 import wretch from 'wretch';
@@ -348,6 +368,8 @@ await api.get('/posts/1').json();
 ### Request/Response Transformation
 
 **Problem:** Convert data between `snake_case` and `camelCase` for all requests.
+
+> 💡 **See also:** [#206](https://github.com/elbywan/wretch/issues/206)
 
 ```ts
 import wretch from 'wretch';
@@ -395,6 +417,8 @@ console.log(await api.get('/users/1'));
 
 **Problem:** Detect and handle HTTP redirects manually.
 
+> 💡 **See also:** [#240](https://github.com/elbywan/wretch/issues/240) · [#215](https://github.com/elbywan/wretch/issues/215)
+
 ```ts
 import wretch from 'wretch';
 
@@ -419,6 +443,8 @@ const api = wretch('https://api.example.com')
 ### Custom Status Code Handling
 
 **Problem:** Handle non-standard HTTP status codes like 202 Accepted.
+
+> 💡 **See also:** [#228](https://github.com/elbywan/wretch/issues/228) · [#198](https://github.com/elbywan/wretch/issues/198)
 
 ```ts
 import wretch from 'wretch';
@@ -459,6 +485,8 @@ const result = await api.url('/posts').json({ title: 'test', body: 'test', userI
 ### Running Code on Every Request
 
 **Problem:** Execute logging, analytics, or UI updates for all requests.
+
+> 💡 **See also:** [#212](https://github.com/elbywan/wretch/issues/212) · [#165](https://github.com/elbywan/wretch/issues/165)
 
 ```ts
 import wretch from 'wretch';
@@ -518,6 +546,8 @@ await api.get('/posts/1').json();
 
 **Problem:** Validate API responses at runtime to ensure type safety.
 
+> 💡 **See also:** [#260](https://github.com/elbywan/wretch/issues/260) · [#186](https://github.com/elbywan/wretch/issues/186)
+
 <!-- snippet:skip -->
 ```ts
 import wretch from 'wretch';
@@ -546,6 +576,8 @@ const users = await api
 ### Replaying Failed Requests
 
 **Problem:** Retry a failed request with the same resolver method (json, blob, etc).
+
+> 💡 **See also:** [#226](https://github.com/elbywan/wretch/issues/226) · [#219](https://github.com/elbywan/wretch/issues/219) · [#139](https://github.com/elbywan/wretch/issues/139)
 
 ```ts
 import wretch from 'wretch';
