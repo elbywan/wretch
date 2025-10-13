@@ -52,7 +52,7 @@ export const resolver = <T, Chain, R, E>(wretch: T & Wretch<T, Chain, R, E>) => 
       if (!response.ok) {
         const err = new WretchError()
         err["cause"] = referenceError
-        err.stack = err.stack + "\nCAUSE: " + referenceError.stack
+        err.stack += "\nCAUSE: " + referenceError.stack
         err.response = response
         err.status = response.status
         err.url = finalUrl
@@ -77,34 +77,35 @@ export const resolver = <T, Chain, R, E>(wretch: T & Wretch<T, Chain, R, E>) => 
       return response
     })
   // Wraps the Promise in order to dispatch the error to a matching catcher
-  const catchersWrapper = <T>(promise: Promise<T>): Promise<void | T> => {
-    return promise.catch(err => {
-      const fetchErrorFlag = Object.prototype.hasOwnProperty.call(err, FETCH_ERROR)
+  const catchersWrapper = <T>(promise: Promise<T>): Promise<void | T> =>
+    promise.catch(err => {
+      const fetchErrorFlag = FETCH_ERROR in err
       const error = fetchErrorFlag ? err[FETCH_ERROR] : err
 
       const catcher =
         (error?.status && catchers.get(error.status)) ||
-        catchers.get(error?.name) || (
-          fetchErrorFlag && catchers.has(FETCH_ERROR) && catchers.get(FETCH_ERROR)
-        )
+        catchers.get(error?.name) ||
+        (fetchErrorFlag && catchers.get(FETCH_ERROR)) ||
+        catchers.get(CATCHER_FALLBACK)
 
       if (catcher)
         return catcher(error, wretch)
 
-      const catcherFallback = catchers.get(CATCHER_FALLBACK)
-      if (catcherFallback)
-        return catcherFallback(error, wretch)
-
       throw error
     })
-  }
   // Enforces the proper promise type when a body parsing method is called.
-  type BodyParser = <Type>(funName: "json" | "blob" | "formData" | "arrayBuffer" | "text" | null) => <Result = void>(cb?: (type: Type) => Result) => Promise<Awaited<Result>>
-  const bodyParser: BodyParser = funName => cb => funName ?
+  type BodyParser =
+    <Type>(funName: "json" | "blob" | "formData" | "arrayBuffer" | "text" | null)
+    => <Result = void>(cb?: (type: Type) => Result)
+    => Promise<Awaited<Result>>
+  const bodyParser: BodyParser = funName => cb => {
+    const promise = funName ?
     // If a callback is provided, then callback with the body result otherwise return the parsed body itself.
-    catchersWrapper(throwingPromise.then(_ => _ && _[funName]()).then(_ => cb ? cb(_) : _)) :
+      throwingPromise.then(_ => _?.[funName]()) :
     // No body parsing method - return the response
-    catchersWrapper(throwingPromise.then(_ => cb ? cb(_ as any) : _))
+      throwingPromise
+    return catchersWrapper(cb ? promise.then(cb) : promise)
+  }
 
   const responseChain: WretchResponseChain<T, Chain, R, E> = {
     _wretchReq: wretch,

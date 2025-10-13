@@ -1,5 +1,5 @@
 import { mix, extractContentType, isLikelyJsonMime } from "./utils.js"
-import { JSON_MIME, CONTENT_TYPE_HEADER, CATCHER_FALLBACK } from "./constants.js"
+import { JSON_MIME, CATCHER_FALLBACK } from "./constants.js"
 import { resolver } from "./resolver.js"
 import type { Wretch } from "./types.js"
 
@@ -20,11 +20,11 @@ export const core: Wretch = {
   url(_url, replace = false) {
     if (replace)
       return { ...this, _url }
-    const split = this._url.split("?")
+    const idx = this._url.indexOf("?")
     return {
       ...this,
-      _url: split.length > 1 ?
-        split[0] + _url + "?" + split[1] :
+      _url: idx > -1 ?
+        this._url.slice(0, idx) + _url + this._url.slice(idx) :
         this._url + _url
     }
   },
@@ -43,7 +43,7 @@ export const core: Wretch = {
     return this.headers({ Accept: headerValue })
   },
   content(headerValue) {
-    return this.headers({ [CONTENT_TYPE_HEADER]: headerValue })
+    return this.headers({ "Content-Type": headerValue })
   },
   auth(headerValue) {
     return this.headers({ Authorization: headerValue })

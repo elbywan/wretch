@@ -31,9 +31,8 @@ export type {
  * @param _options The base fetch options
  * @returns A fresh wretch instance
  */
-function factory(_url = "", _options: WretchOptions = {}): Wretch {
-  return { ...core, _url, _options }
-}
+const factory = (_url = "", _options: WretchOptions = {}): Wretch =>
+  ({ ...core, _url, _options })
 
 factory["default"] = factory
 factory.WretchError = WretchError

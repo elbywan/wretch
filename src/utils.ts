@@ -1,27 +1,25 @@
-import { CONTENT_TYPE_HEADER } from "./constants.js"
-
 export function extractContentType(headers: HeadersInit = {}): string | undefined {
   const normalizedHeaders = headers instanceof Array ? Object.fromEntries(headers) : headers
-  return Object.entries(normalizedHeaders).find(([k]) =>
-    k.toLowerCase() === CONTENT_TYPE_HEADER.toLowerCase()
-  )?.[1]
+  for (const k in normalizedHeaders) {
+    if (k.toLowerCase() === "content-type") return normalizedHeaders[k]
+  }
 }
 
 export function isLikelyJsonMime(value: string): boolean {
-  return /^application\/.*json.*/.test(value)
+  return /^application\/.*json/.test(value)
 }
 
-export const mix = function (one: object, two: object, mergeArrays: boolean = false) {
-  return Object.entries(two).reduce((acc, [key, newValue]) => {
+export const mix = (one: object, two: object, mergeArrays = false) => {
+  const acc = { ...one }
+  for (const key in two) {
+    if (!Object.prototype.hasOwnProperty.call(two, key)) continue
     const value = one[key]
-    if (Array.isArray(value) && Array.isArray(newValue)) {
-      acc[key] = mergeArrays ? [...value, ...newValue] : newValue
-    } else if (typeof value === "object" && typeof newValue === "object") {
-      acc[key] = mix(value, newValue, mergeArrays)
-    } else {
-      acc[key] = newValue
-    }
-
-    return acc
-  }, { ...one })
+    const newValue = two[key]
+    acc[key] = Array.isArray(value) && Array.isArray(newValue) ?
+      mergeArrays ? [...value, ...newValue] : newValue :
+      typeof value === "object" && typeof newValue === "object" ?
+        mix(value, newValue, mergeArrays) :
+        newValue
+  }
+  return acc
 }

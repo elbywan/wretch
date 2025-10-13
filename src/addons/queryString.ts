@@ -1,9 +1,5 @@
 import type { Wretch, WretchAddon } from "../types.js"
 
-function stringify(value?: string | null): string | null {
-  return typeof value !== "undefined" ? value : ""
-}
-
 /**
  * Options for the query method.
  */
@@ -28,11 +24,11 @@ const appendQueryParams = (url: string, qp: object | string, replace: boolean, o
     for (const key in qp) {
       const value = qp[key]
       if (omitUndefinedOrNullValues && (value === null || value === undefined)) continue
-      if (qp[key] instanceof Array) {
+      if (Array.isArray(value)) {
         for (const val of value)
-          usp.append(key, stringify(val))
+          usp.append(key, val ?? "")
       } else {
-        usp.append(key, stringify(value))
+        usp.append(key, value ?? "")
       }
     }
     queryString = usp.toString()

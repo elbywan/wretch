@@ -87,9 +87,7 @@ function toStream<T extends Request | Response>(requestOrResponse: T, callback: 
         if (total < loaded) {
           total = loaded
         }
-        if (callback) {
-          callback?.(loaded, total)
-        }
+        callback?.(loaded, total)
         controller.enqueue(chunk)
       }
     })
