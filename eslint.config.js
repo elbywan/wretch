@@ -4,8 +4,6 @@ import eslint from "@eslint/js"
 import tseslint from "typescript-eslint"
 import globals from "globals"
 
-delete globals.browser["AudioWorkletGlobalScope "]
-
 export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
@@ -25,8 +23,7 @@ export default tseslint.config(
     },
     languageOptions: {
       globals: {
-        ...globals.browser,
-        "AudioWorkletGlobalScope": false
+        ...globals.browser
       }
     },
     ignores: [ "dist/"],

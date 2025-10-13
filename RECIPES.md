@@ -7,107 +7,33 @@
 
 ## 📋 Table of Contents
 
-- [🔌 Framework Integration](#-framework-integration)
-  - [SvelteKit](#sveltekit)
-  - [Next.js](#nextjs)
+- [📋 Table of Contents](#-table-of-contents)
 - [⚠️ Error Handling](#️-error-handling)
   - [Parsing Error Response Bodies](#parsing-error-response-bodies)
-  - [Custom Error Types](#custom-error-types)
-  - [Global Error Handlers](#global-error-handlers)
-- [📘 TypeScript Patterns](#-typescript-patterns)
-  - [Typing Precomposed Wretch Objects](#typing-precomposed-wretch-objects)
-  - [Reusable Catcher Functions](#reusable-catcher-functions)
-- [📤 File Uploads & FormData](#-file-uploads--formdata)
+  - [Handling Non-JSON Error Responses](#handling-non-json-error-responses)
+  - [Token Refresh on 401](#token-refresh-on-401)
+  - [Detecting Network Errors](#detecting-network-errors)
+- [📤 File Uploads \& FormData](#-file-uploads--formdata)
   - [Upload Progress Tracking](#upload-progress-tracking)
   - [Multipart FormData with Files](#multipart-formdata-with-files)
-- [🔍 Query Strings](#-query-strings)
-  - [Filtering Undefined Values](#filtering-undefined-values)
+- [🔍 Query Strings \& URLs](#-query-strings--urls)
+  - [Filtering Undefined/Null Values](#filtering-undefinednull-values)
+  - [Building Complex Query Strings](#building-complex-query-strings)
 - [🎛️ Request Control](#️-request-control)
-  - [Combining Timeouts with Custom AbortControllers](#combining-timeouts-with-custom-abortcontrollers)
-  - [Aborting on Global Errors](#aborting-on-global-errors)
+  - [Setting Global Timeouts](#setting-global-timeouts)
+  - [Request Deduplication](#request-deduplication)
+  - [Retry with Exponential Backoff](#retry-with-exponential-backoff)
+- [🔄 Middleware Patterns](#-middleware-patterns)
+  - [Request/Response Transformation](#requestresponse-transformation)
+  - [Handling Redirects](#handling-redirects)
+  - [Custom Status Code Handling](#custom-status-code-handling)
+- [🎯 Hooks \& Lifecycle](#-hooks--lifecycle)
+  - [Running Code on Every Request](#running-code-on-every-request)
+  - [Deferred Request Modifications](#deferred-request-modifications)
 - [🚀 Advanced Patterns](#-advanced-patterns)
-  - [Token Refresh & Request Replay](#token-refresh--request-replay)
-  - [Schema Validation](#schema-validation)
-  - [Handling 202 Accepted Responses](#handling-202-accepted-responses)
-- [🤝 Contributing](#-contributing)
-
-<br>
-
-## 🔌 Framework Integration
-
-### SvelteKit
-
-> 💡 **Related issues:** [#242](https://github.com/elbywan/wretch/issues/242)
-
-SvelteKit provides a custom `fetch` function in server-side contexts that enables automatic cookie forwarding and other framework features. Use `.fetchPolyfill()` to integrate it with Wretch:
-
-```ts
-// src/routes/+page.server.ts
-import wretch from 'wretch';
-import type { PageServerLoad } from './$types';
-
-export const load: PageServerLoad = async ({ fetch }) => {
-  const api = wretch('https://api.example.com')
-    .fetchPolyfill(fetch);
-
-  const data = await api.get('/data').json();
-
-  return { data };
-};
-```
-
-<details>
-<summary><b>Why this works</b></summary>
-
-- SvelteKit's `fetch` preserves cookies and headers from the original request
-- Wretch uses it instead of the global `fetch`
-- Works in both SSR and server-side load functions
-
-</details>
-
-### Next.js
-
-> 💡 **Related issues:** [#227](https://github.com/elbywan/wretch/issues/227), [#252](https://github.com/elbywan/wretch/issues/252)
-
-Next.js App Router provides an enhanced `fetch` with automatic request deduplication and caching. Use it with Wretch:
-
-```ts
-// app/page.tsx
-import wretch from 'wretch';
-
-export default async function Page() {
-  const api = wretch('https://api.example.com')
-    .fetchPolyfill(fetch);
-
-  const data = await api.get('/data').json();
-
-  return <div>{JSON.stringify(data)}</div>;
-}
-```
-
-For Pages Router with `getServerSideProps`:
-
-```ts
-import wretch from 'wretch';
-import type { GetServerSideProps } from 'next';
-
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const api = wretch('https://api.example.com')
-    .options({
-      headers: {
-        cookie: req.headers.cookie || '',
-      },
-    });
-
-  const data = await api.get('/data').json();
-
-  return { props: { data } };
-};
-```
-
-<br>
-
----
+  - [Schema Validation with Zod](#schema-validation-with-zod)
+  - [Replaying Failed Requests](#replaying-failed-requests)
+- [Contributing](#contributing)
 
 <br>
 
@@ -115,259 +41,122 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
 ### Parsing Error Response Bodies
 
-> 💡 **Related issues:** [#236](https://github.com/elbywan/wretch/issues/236)
-
-APIs often return structured error information in the response body. Use `.customError()` to parse and expose it:
+**Problem:** APIs return structured error information in response bodies that you need to access.
 
 ```ts
 import wretch from 'wretch';
 
-const api = wretch('https://api.example.com')
-  .customError(async (error, response) => {
-    let errorMessage = response.statusText;
+interface ApiError {
+  code: string;
+  message: string;
+  details?: any;
+}
 
-    try {
-      const body = await response.json();
-      if (body.message) {
-        errorMessage = body.message;
-      } else if (body.error) {
-        errorMessage = body.error;
-      }
-    } catch {
-      const text = await response.text();
-      if (text) errorMessage = text;
+const api = wretch('https://jsonplaceholder.typicode.com')
+  .customError(async (error, response) => {
+    const body = await response.json().catch(() => ({ message: 'Unknown error' }));
+    return { ...error, apiError: body as ApiError };
+  });
+
+try {
+  await api.get('/posts/999').json();
+} catch (error: any) {
+  console.error('Error code:', error.apiError?.code);
+  console.error('Error message:', error.apiError?.message);
+}
+```
+
+### Handling Non-JSON Error Responses
+
+**Problem:** Your API sometimes returns HTML error pages or plain text instead of JSON errors.
+
+```ts
+import wretch from 'wretch';
+
+const api = wretch('https://jsonplaceholder.typicode.com')
+  .customError(async (error, response) => {
+    const contentType = response.headers.get('content-type') || '';
+    let errorBody;
+
+    if (contentType.includes('application/json')) {
+      errorBody = await response.json();
+      console.error('JSON error:', errorBody);
+    } else if (contentType.includes('text/html')) {
+      errorBody = await response.text();
+      console.error('HTML error page received');
+    } else {
+      errorBody = await response.text();
+      console.error('Text error:', errorBody);
     }
 
-    return new Error(errorMessage, { cause: error });
+    return { ...error, body: errorBody };
   });
 
 try {
-  await api.get('/users/999').json();
-} catch (error) {
-  console.error(error.message);
+  await api.get('/posts/999').json();
+} catch (error: any) {
+  console.log('Handled error with body:', error.body);
 }
 ```
 
-<details>
-<summary><b>Advanced: Structured Error Objects</b></summary>
+### Token Refresh on 401
 
-```ts
-class ApiError extends Error {
-  constructor(
-    message: string,
-    public statusCode: number,
-    public errorCode?: string,
-    public details?: unknown
-  ) {
-    super(message);
-    this.name = 'ApiError';
-  }
-}
-
-const api = wretch('https://api.example.com')
-  .customError(async (error, response) => {
-    const body = await response.json().catch(() => ({}));
-
-    return new ApiError(
-      body.message || response.statusText,
-      response.status,
-      body.code,
-      body.details
-    );
-  });
-
-try {
-  await api.post('/users').json({ email: 'invalid' });
-} catch (error) {
-  if (error instanceof ApiError) {
-    console.log('Status:', error.statusCode);
-    console.log('Error code:', error.errorCode);
-    console.log('Details:', error.details);
-  }
-}
-```
-
-</details>
-
-### Custom Error Types
-
-> 💡 **Related issues:** [#241](https://github.com/elbywan/wretch/issues/241)
-
-Replace the default `WretchError` with a custom error class:
+**Problem:** Automatically refresh authentication tokens when they expire and retry the original request.
 
 ```ts
 import wretch from 'wretch';
 
-class HttpError extends Error {
-  constructor(
-    public status: number,
-    public url: string,
-    public response: Response,
-    message?: string
-  ) {
-    super(message || `HTTP ${status} error at ${url}`);
-    this.name = 'HttpError';
-  }
-}
+let authToken = null;
+let refreshCount = 0;
 
-const api = wretch('https://api.example.com')
-  .customError((error, response) => {
-    return new HttpError(
-      response.status,
-      response.url,
-      response,
-      error.message
-    );
-  });
+const refreshToken = async () => {
+  refreshCount++;
+  authToken = `token-${refreshCount}`;
+  return authToken;
+};
 
-try {
-  await api.get('/protected').json();
-} catch (error) {
-  if (error instanceof HttpError) {
-    console.log('Failed request URL:', error.url);
-    console.log('Response headers:', error.response.headers);
-  }
-}
-```
-
-### Global Error Handlers
-
-> 💡 **Related issues:** [#250](https://github.com/elbywan/wretch/issues/250)
-
-Set up consistent error handling across all requests:
-
-```ts
-import wretch from 'wretch';
-
-const api = wretch('https://api.example.com')
-  .resolve(chain => chain
-    .unauthorized(async (error, req) => {
-      console.log('Token expired, refreshing...');
-      const newToken = await refreshToken();
-      return req.auth(`Bearer ${newToken}`).fetch().json();
+const api = wretch('https://httpbun.com')
+  // add the auth header to every request
+  .defer((w) => authToken ? w.auth(`Bearer ${authToken}`) : w)
+  .resolve(chain =>
+    chain.unauthorized(async (error, request) => {
+      authToken = await refreshToken();
+      return request
+         // clear unauthorized catcher to avoid infinite loop
+        .resolve(chain => chain, true)
+        // replay the original request
+        .fetch().json();
     })
-    .forbidden(error => {
-      console.error('Access denied');
+  );
+
+await api.get('/bearer/token-1').json();
+```
+
+### Detecting Network Errors
+
+**Problem:** Distinguish between network failures (connection issues, DNS failures) and HTTP errors (4xx, 5xx).
+
+```ts
+import wretch from 'wretch';
+
+const api = wretch('https://jsonplaceholder.typicode.com').resolve(chain =>
+  chain
+    .fetchError(error => {
+      console.error('Network error - connection failed:', error.message);
+      throw error;
+    })
+    .badRequest(error => {
+      console.error('Client error 400 - bad request');
       throw error;
     })
     .internalError(error => {
-      console.error('Server error:', error.message);
+      console.error('Server error 500 - internal server error');
       throw error;
     })
-    .fetchError(error => {
-      console.error('Network error:', error.message);
-      throw error;
-    })
-  );
+);
 
-await api.get('/data').json();
+await api.get('/posts/1').json();
 ```
-
-<br>
-
----
-
-<br>
-
-## 📘 TypeScript Patterns
-
-### Typing Precomposed Wretch Objects
-
-> 💡 **Related issues:** [#239](https://github.com/elbywan/wretch/issues/239)
-
-When creating a reusable Wretch instance, preserve proper types:
-
-```ts
-import wretch, { Wretch } from 'wretch';
-import QueryStringAddon, { QueryStringAddon as QueryStringAddonType } from 'wretch/addons/queryString';
-import FormDataAddon, { FormDataAddon as FormDataAddonType } from 'wretch/addons/formData';
-
-type ApiClient = Wretch<
-  unknown,
-  unknown,
-  undefined
-> & QueryStringAddonType & FormDataAddonType;
-
-const createApiClient = (baseUrl: string, token?: string): ApiClient => {
-  let client = wretch(baseUrl)
-    .addon(QueryStringAddon)
-    .addon(FormDataAddon)
-    .options({ credentials: 'include' });
-
-  if (token) {
-    client = client.auth(`Bearer ${token}`);
-  }
-
-  return client as ApiClient;
-};
-
-const api = createApiClient('https://api.example.com', 'token');
-api.query({ limit: 10 }).get('/users').json();
-```
-
-### Reusable Catcher Functions
-
-> 💡 **Related issues:** [#226](https://github.com/elbywan/wretch/issues/226)
-
-Extract common error handling into reusable functions:
-
-```ts
-import type { WretchError, WretchResponseChain } from 'wretch';
-
-type CatcherFunction = <T, S, E>(
-  chain: WretchResponseChain<T, S, E>
-) => WretchResponseChain<T, S, E>;
-
-const withAuthRetry = (refreshToken: () => Promise<string>): CatcherFunction => {
-  return (chain) => chain.unauthorized(async (error, req) => {
-    const newToken = await refreshToken();
-    localStorage.setItem('token', newToken);
-    return req.auth(`Bearer ${newToken}`).fetch().json();
-  });
-};
-
-const withNotFoundDefault = <T>(defaultValue: T): CatcherFunction => {
-  return (chain) => chain.notFound(() => defaultValue);
-};
-
-const withLogging: CatcherFunction = (chain) => {
-  return chain.fetchError(error => {
-    console.error('Request failed:', error.message);
-    throw error;
-  });
-};
-
-const api = wretch('https://api.example.com')
-  .resolve(chain =>
-    withAuthRetry(refreshUserToken)(
-      withNotFoundDefault(null)(
-        withLogging(chain)
-      )
-    )
-  );
-
-const user = await api.get('/users/123').json();
-```
-
-<details>
-<summary><b>Composing Multiple Catchers</b></summary>
-
-```ts
-const composeCatchers = (...catchers: CatcherFunction[]): CatcherFunction => {
-  return (chain) => catchers.reduce((acc, catcher) => catcher(acc), chain);
-};
-
-const api = wretch('https://api.example.com')
-  .resolve(
-    composeCatchers(
-      withAuthRetry(refreshUserToken),
-      withNotFoundDefault(null),
-      withLogging
-    )
-  );
-```
-
-</details>
 
 <br>
 
@@ -379,138 +168,49 @@ const api = wretch('https://api.example.com')
 
 ### Upload Progress Tracking
 
-> 💡 **Related issues:** [#225](https://github.com/elbywan/wretch/issues/225)
-
-Monitor upload progress using `XMLHttpRequest` with a custom fetch polyfill:
+**Problem:** Show upload progress to users for better UX.
 
 ```ts
 import wretch from 'wretch';
+import FormDataAddon from 'wretch/addons/formData';
+import ProgressAddon from 'wretch/addons/progress';
 
-const uploadWithProgress = (
-  url: string,
-  file: File,
-  onProgress: (percent: number) => void
-): Promise<any> => {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-
-    xhr.upload.addEventListener('progress', (e) => {
-      if (e.lengthComputable) {
-        const percentComplete = (e.loaded / e.total) * 100;
-        onProgress(percentComplete);
-      }
-    });
-
-    xhr.addEventListener('load', () => {
-      if (xhr.status >= 200 && xhr.status < 300) {
-        try {
-          resolve(JSON.parse(xhr.responseText));
-        } catch {
-          resolve(xhr.responseText);
-        }
-      } else {
-        reject(new Error(`Upload failed: ${xhr.status}`));
-      }
-    });
-
-    xhr.addEventListener('error', () => reject(new Error('Upload failed')));
-
-    xhr.open('POST', url);
-
-    const formData = new FormData();
-    formData.append('file', file);
-
-    xhr.send(formData);
-  });
-};
-
-async function handleUpload(file: File) {
-  const result = await uploadWithProgress(
-    'https://api.example.com/upload',
-    file,
-    (percent) => {
-      console.log(`Upload progress: ${percent.toFixed(0)}%`);
-    }
-  );
-
-  console.log('Upload complete:', result);
+async function uploadFile(file: File) {
+  return wretch('https://api.example.com/upload')
+    .addon(FormDataAddon)
+    .addon(ProgressAddon())
+    .formData({ file })
+    .onUpload((loaded, total) => {
+      const percent = Math.round((loaded / total) * 100);
+      console.log(`Uploading: ${percent}%`);
+    })
+    .post()
+    .json();
 }
 ```
 
-<details>
-<summary><b>Alternative: Using Progress Addon for Downloads</b></summary>
-
-```ts
-import wretch from 'wretch';
-import ProgressAddon from 'wretch/addons/progress';
-
-const downloadWithProgress = async (url: string) => {
-  const data = await wretch(url)
-    .addon(ProgressAddon())
-    .get()
-    .progress((loaded, total) => {
-      const percent = (loaded / total) * 100;
-      console.log(`Downloaded: ${percent.toFixed(0)}%`);
-    })
-    .blob();
-
-  return data;
-};
-```
-
-</details>
+> **Note:** Upload progress requires HTTP/2 (HTTPS) in browsers and doesn't work in Firefox due to streaming limitations.
 
 ### Multipart FormData with Files
 
-> 💡 **Related issues:** [#231](https://github.com/elbywan/wretch/issues/231), [#220](https://github.com/elbywan/wretch/issues/220)
-
-Send files and structured data together:
+**Problem:** Send files along with structured data in a single request.
 
 ```ts
 import wretch from 'wretch';
 import FormDataAddon from 'wretch/addons/formData';
 
-const api = wretch('https://api.example.com').addon(FormDataAddon);
+const api = wretch('https://httpbun.org/any').addon(FormDataAddon);
 
-const uploadUserProfile = async (
-  userId: string,
-  profileData: { name: string; bio: string },
-  avatar: File
-) => {
-  const data = {
-    userId,
-    name: profileData.name,
-    bio: profileData.bio,
-    avatar,
-  };
-
-  return api.url('/users/profile').formData(data).post().json();
-};
-
-const result = await uploadUserProfile(
-  '123',
-  { name: 'John Doe', bio: 'Software developer' },
-  avatarFile
-);
-```
-
-<details>
-<summary><b>Manual FormData Construction</b></summary>
-
-```ts
-const formData = new FormData();
-formData.append('userId', '123');
-formData.append('name', 'John Doe');
-formData.append('bio', 'Software developer');
-formData.append('avatar', avatarFile);
-
-const result = await wretch('https://api.example.com/users/profile')
-  .body(formData)
+await api
+  .url('/users/profile')
+  .formData({
+    userId: '123',
+    metadata: { role: 'admin', verified: true },
+    avatar: file,
+  })
   .post()
   .json();
 ```
-
-</details>
 
 <br>
 
@@ -518,91 +218,54 @@ const result = await wretch('https://api.example.com/users/profile')
 
 <br>
 
-## 🔍 Query Strings
+## 🔍 Query Strings & URLs
 
-### Filtering Undefined Values
+### Filtering Undefined/Null Values
 
-> 💡 **Related issues:** [#229](https://github.com/elbywan/wretch/issues/229), [#261](https://github.com/elbywan/wretch/issues/261)
-
-Remove undefined query parameters before sending requests.
-
-**Using the built-in parameter:**
+**Problem:** Optional search parameters should be omitted from the URL, not sent as empty strings.
 
 ```ts
 import wretch from 'wretch';
 import QueryStringAddon from 'wretch/addons/queryString';
 
-const api = wretch('https://api.example.com').addon(QueryStringAddon);
+const api = wretch('https://jsonplaceholder.typicode.com').addon(QueryStringAddon);
 
-const searchUsers = async (params: {
-  name?: string;
-  email?: string;
-  role?: string;
+const searchUsers = (filters: {
+  userId?: number;
+  id?: number;
+  title?: string;
 }) => {
   return api
-    .url('/users')
-    .query(params, { omitUndefinedOrNullValues: true })
+    .url('/posts')
+    .query(filters, { omitUndefinedOrNullValues: true })
     .get()
     .json();
 };
 
-await searchUsers({ name: 'John', email: undefined, role: 'admin' });
-// URL will be: /users?name=John&role=admin
+await searchUsers({ userId: 1, id: undefined, title: undefined });
 ```
 
-**Alternative - manual filtering:**
+### Building Complex Query Strings
 
-```ts
-const filterUndefined = <T extends Record<string, any>>(obj: T): Partial<T> => {
-  return Object.fromEntries(
-    Object.entries(obj).filter(([_, value]) => value !== undefined)
-  ) as Partial<T>;
-};
-
-const api = wretch('https://api.example.com').addon(QueryStringAddon);
-
-const searchUsers = async (params: {
-  name?: string;
-  email?: string;
-  role?: string;
-}) => {
-  return api
-    .url('/users')
-    .query(filterUndefined(params))
-    .get()
-    .json();
-};
-
-await searchUsers({ name: 'John', email: undefined, role: 'admin' });
-```
-
-<details>
-<summary><b>Alternative: Middleware Approach</b></summary>
+**Problem:** Construct URLs with arrays and nested parameters.
 
 ```ts
 import wretch from 'wretch';
-import type { Middleware } from 'wretch';
+import QueryStringAddon from 'wretch/addons/queryString';
 
-const filterQueryParams: Middleware = () => (next) => (url, opts) => {
-  const urlObj = new URL(url);
-  const params = new URLSearchParams(urlObj.search);
+const api = wretch('https://jsonplaceholder.typicode.com').addon(QueryStringAddon);
 
-  for (const [key, value] of Array.from(params.entries())) {
-    if (value === 'undefined' || value === 'null') {
-      params.delete(key);
-    }
-  }
-
-  urlObj.search = params.toString();
-  return next(urlObj.toString(), opts);
-};
-
-const api = wretch('https://api.example.com').middlewares([
-  filterQueryParams()
-]);
+// GET https://jsonplaceholder.typicode.com/posts?userId=1&userId=2&_limit=5&_sort=id
+await api
+  .url('/posts')
+  .query({
+    userId: [1, 2],
+    _limit: 5,
+    _sort: 'id'
+  })
+  .get()
+  .json();
 ```
-
-</details>
 
 <br>
 
@@ -612,112 +275,235 @@ const api = wretch('https://api.example.com').middlewares([
 
 ## 🎛️ Request Control
 
-### Combining Timeouts with Custom AbortControllers
+### Setting Global Timeouts
 
-> 💡 **Related issues:** [#256](https://github.com/elbywan/wretch/issues/256), [#259](https://github.com/elbywan/wretch/issues/259)
-
-Use both timeout functionality and manual abort control:
+**Problem:** Set a default timeout for all requests to prevent hanging.
 
 ```ts
 import wretch from 'wretch';
 import AbortAddon from 'wretch/addons/abort';
 
-const controller = new AbortController();
+const api = wretch('https://jsonplaceholder.typicode.com')
+  .addon(AbortAddon())
+  .resolve(chain => chain.setTimeout(5000));
 
-const searchWithTimeout = async (query: string) => {
-  const [c, request] = wretch('https://api.example.com/search')
-    .addon(AbortAddon())
-    .signal(controller)
-    .query({ q: query })
-    .get()
-    .setTimeout(5000)
-    .onAbort(() => console.log('Request aborted'))
-    .controller();
+await api.get('/posts/1').json();
 
-  return request.json();
+const longerRequest = await api
+  .get('/posts/2')
+  .setTimeout(30000)
+  .json();
+```
+
+### Request Deduplication
+
+**Problem:** Prevent multiple identical requests from being sent simultaneously.
+
+```ts
+import wretch from 'wretch';
+import { dedupe } from 'wretch/middlewares';
+
+const api = wretch('https://jsonplaceholder.typicode.com').middlewares([
+  dedupe()
+]);
+
+const [data1, data2, data3] = await Promise.all([
+  api.get('/posts/1').json(),
+  api.get('/posts/1').json(),
+  api.get('/posts/1').json(),
+]);
+```
+
+### Retry with Exponential Backoff
+
+**Problem:** Automatically retry failed requests with increasing delays.
+
+```ts
+import wretch from 'wretch';
+import { retry } from 'wretch/middlewares';
+
+const api = wretch('https://jsonplaceholder.typicode.com').middlewares([
+  retry({
+    delayTimer: 100,
+    delayRamp: (delay, attempts) => delay * 2,
+    maxAttempts: 3,
+    until: (response) => response?.ok,
+    onRetry: ({ attempt, error, url }) => {
+      console.log(`Retry ${attempt} for ${url}:`, error?.message);
+    }
+  })
+]);
+
+await api.get('/posts/1').json();
+```
+
+<br>
+
+---
+
+<br>
+
+## 🔄 Middleware Patterns
+
+### Request/Response Transformation
+
+**Problem:** Convert data between `snake_case` and `camelCase` for all requests.
+
+```ts
+import wretch from 'wretch';
+
+const snakeToCamel = (obj: any): any => {
+  if (Array.isArray(obj)) return obj.map(snakeToCamel);
+  if (obj !== null && typeof obj === 'object') {
+    return Object.keys(obj).reduce((acc, key) => {
+      const camelKey = key.replace(/_([a-z])/g, (_, char) => char.toUpperCase());
+      acc[camelKey] = snakeToCamel(obj[key]);
+      return acc;
+    }, {} as any);
+  }
+  return obj;
 };
 
-setTimeout(() => {
-  console.log('Manually aborting request');
-  controller.abort();
-}, 2000);
+const camelToSnake = (obj: any): any => {
+  if (Array.isArray(obj)) return obj.map(camelToSnake);
+  if (obj !== null && typeof obj === 'object') {
+    return Object.keys(obj).reduce((acc, key) => {
+      const snakeKey = key.replace(/[A-Z]/g, char => `_${char.toLowerCase()}`);
+      acc[snakeKey] = camelToSnake(obj[key]);
+      return acc;
+    }, {} as any);
+  }
+  return obj;
+};
 
-try {
-  const results = await searchWithTimeout('test query');
-} catch (error) {
-  console.error('Request failed or was aborted');
-}
+const api = wretch('https://jsonplaceholder.typicode.com')
+  .defer((w, _url, opts) => {
+    if (opts.body && typeof opts.body === 'string') {
+      try {
+        const parsed = JSON.parse(opts.body);
+        return w.body(JSON.stringify(snakeToCamel(parsed)));
+      } catch {}
+    }
+    return w;
+  })
+  .resolve(chain => chain.json(json => camelToSnake(json)));
+
+console.log(await api.get('/users/1'));
 ```
 
-<details>
-<summary><b>Abort All Pending Requests</b></summary>
+### Handling Redirects
+
+**Problem:** Detect and handle HTTP redirects manually.
 
 ```ts
 import wretch from 'wretch';
-import AbortAddon from 'wretch/addons/abort';
 
-class RequestManager {
-  private controllers = new Set<AbortController>();
+const api = wretch('https://api.example.com')
+  .options({ redirect: 'manual' })
+  .middlewares([
+    next => async (url, opts) => {
+      const response = await next(url, opts);
 
-  createRequest(url: string) {
-    const controller = new AbortController();
-    this.controllers.add(controller);
+      if (response.status === 302 || response.status === 301) {
+        const location = response.headers.get('location');
+        console.log(`Redirect detected to: ${location}`);
+        window.location.href = location;
+        throw new Error('Redirected');
+      }
 
-    return wretch(url)
-      .addon(AbortAddon())
-      .signal(controller)
-      .resolve(chain => chain.onAbort(() => {
-        this.controllers.delete(controller);
-      }));
-  }
-
-  abortAll() {
-    this.controllers.forEach(c => c.abort());
-    this.controllers.clear();
-  }
-}
-
-const manager = new RequestManager();
-
-const req1 = manager.createRequest('https://api.example.com/data1').get().json();
-const req2 = manager.createRequest('https://api.example.com/data2').get().json();
-
-manager.abortAll();
+      return response;
+    }
+  ]);
 ```
 
-</details>
+### Custom Status Code Handling
 
-### Aborting on Global Errors
-
-> 💡 **Related issues:** [#250](https://github.com/elbywan/wretch/issues/250)
-
-Automatically abort all pending requests when a critical error occurs:
+**Problem:** Handle non-standard HTTP status codes like 202 Accepted.
 
 ```ts
 import wretch from 'wretch';
-import AbortAddon from 'wretch/addons/abort';
 
-class ApiClient {
-  private globalController = new AbortController();
-
-  private api = wretch('https://api.example.com')
-    .addon(AbortAddon())
-    .signal(this.globalController)
-    .resolve(chain => chain
-      .unauthorized(() => {
-        this.globalController.abort();
-        window.location.href = '/login';
-      })
-    );
-
-  request<T>(url: string): Promise<T> {
-    return this.api.url(url).get().json();
-  }
-
-  reset() {
-    this.globalController = new AbortController();
+class AcceptedError extends Error {
+  name = 'AcceptedError';
+  constructor(public response: Response) {
+    super('Request accepted for processing');
   }
 }
+
+const api = wretch('https://jsonplaceholder.typicode.com')
+  .middlewares([
+    next => async (url, opts) => {
+      const response = await next(url, opts);
+      if (response.status === 202) {
+        throw new AcceptedError(response);
+      }
+      return response;
+    }
+  ])
+  .catcher('AcceptedError', (error: AcceptedError) => {
+    console.log('Request is being processed asynchronously');
+    return { status: 'processing' };
+  });
+
+const result = await api.url('/posts').json({ title: 'test', body: 'test', userId: 1 }).post().json();
+```
+
+<br>
+
+---
+
+<br>
+
+## 🎯 Hooks & Lifecycle
+
+### Running Code on Every Request
+
+**Problem:** Execute logging, analytics, or UI updates for all requests.
+
+```ts
+import wretch from 'wretch';
+
+const loggingMiddleware = next => async (url, opts) => {
+  console.log(`→ ${opts.method || 'GET'} ${url}`);
+
+  try {
+    const response = await next(url, opts);
+    console.log(`✓ ${response.status} ${url}`);
+    return response;
+  } catch (error) {
+    console.error(`✗ Request failed: ${url}`, error);
+    throw error;
+  }
+};
+
+const api = wretch('https://jsonplaceholder.typicode.com').middlewares([
+  loggingMiddleware
+]);
+
+await api.get('/posts/1').json();
+```
+
+### Deferred Request Modifications
+
+**Problem:** Add headers or modify requests just before they're sent, based on runtime state.
+
+```ts
+import wretch from 'wretch';
+
+let currentLocale = 'en-US';
+let requestCounter = 0;
+
+const api = wretch('https://jsonplaceholder.typicode.com')
+  .defer((w, url, opts) => {
+    return w.headers({
+      'Accept-Language': currentLocale,
+      'X-Request-ID': `req-${++requestCounter}`,
+      'X-Timestamp': new Date().toISOString()
+    });
+  });
+
+currentLocale = 'fr-FR';
+await api.get('/posts/1').json();
 ```
 
 <br>
@@ -728,265 +514,58 @@ class ApiClient {
 
 ## 🚀 Advanced Patterns
 
-### Token Refresh & Request Replay
+### Schema Validation with Zod
 
-> 💡 **Related issues:** [#226](https://github.com/elbywan/wretch/issues/226)
+**Problem:** Validate API responses at runtime to ensure type safety.
 
-Automatically refresh expired tokens and retry failed requests:
-
-```ts
-import wretch from 'wretch';
-
-let isRefreshing = false;
-let refreshPromise: Promise<string> | null = null;
-
-const getToken = () => localStorage.getItem('token');
-const setToken = (token: string) => localStorage.setItem('token', token);
-
-const refreshAccessToken = async (): Promise<string> => {
-  if (isRefreshing && refreshPromise) {
-    return refreshPromise;
-  }
-
-  isRefreshing = true;
-  refreshPromise = wretch('https://api.example.com/auth/refresh')
-    .post({ refreshToken: localStorage.getItem('refreshToken') })
-    .json<{ accessToken: string }>()
-    .then(data => {
-      setToken(data.accessToken);
-      isRefreshing = false;
-      refreshPromise = null;
-      return data.accessToken;
-    })
-    .catch(error => {
-      isRefreshing = false;
-      refreshPromise = null;
-      throw error;
-    });
-
-  return refreshPromise;
-};
-
-const api = wretch('https://api.example.com')
-  .auth(`Bearer ${getToken()}`)
-  .resolve(chain => chain.unauthorized(async (error, req) => {
-    try {
-      const newToken = await refreshAccessToken();
-      return req.auth(`Bearer ${newToken}`).fetch().json();
-    } catch (refreshError) {
-      console.error('Token refresh failed, redirecting to login');
-      window.location.href = '/login';
-      throw refreshError;
-    }
-  }));
-
-const data = await api.get('/protected/data').json();
-```
-
-**With Retry Count Limit:**
-
-```ts
-const MAX_RETRIES = 1;
-
-const api = wretch('https://api.example.com')
-  .auth(`Bearer ${getToken()}`)
-  .resolve(chain => chain.unauthorized(async (error, req) => {
-    const retryCount = (req._options as any).__retryCount || 0;
-
-    if (retryCount >= MAX_RETRIES) {
-      console.error('Max retries exceeded');
-      throw error;
-    }
-
-    try {
-      const newToken = await refreshAccessToken();
-      return req
-        .auth(`Bearer ${newToken}`)
-        .options({ __retryCount: retryCount + 1 } as any)
-        .fetch()
-        .json();
-    } catch (refreshError) {
-      window.location.href = '/login';
-      throw refreshError;
-    }
-  }));
-```
-
-### Schema Validation
-
-Validate response data at runtime using Zod or other schema libraries:
-
+<!-- snippet:skip -->
 ```ts
 import wretch from 'wretch';
 import { z } from 'zod';
 
 const UserSchema = z.object({
-  id: z.string(),
+  id: z.number(),
   name: z.string(),
   email: z.string().email(),
-  role: z.enum(['admin', 'user', 'guest']),
+  createdAt: z.string().datetime()
 });
 
 type User = z.infer<typeof UserSchema>;
 
-const validateResponse = <T>(schema: z.Schema<T>) => {
-  return async (data: unknown): Promise<T> => {
-    return schema.parse(data);
-  };
-};
-
 const api = wretch('https://api.example.com');
 
-const getUser = async (id: string): Promise<User> => {
-  return api
-    .url(`/users/${id}`)
-    .get()
-    .json(validateResponse(UserSchema));
-};
+const user = await api
+  .get('/users/123')
+  .json<User>(UserSchema.parse);
 
-try {
-  const user = await getUser('123');
-  console.log(user.name);
-} catch (error) {
-  if (error instanceof z.ZodError) {
-    console.error('Invalid response format:', error.errors);
-  }
-}
+const users = await api
+  .get('/users')
+  .json<User[]>(data => z.array(UserSchema).parse(data));
 ```
 
-**As a Middleware:**
+### Replaying Failed Requests
 
-```ts
-import wretch, { type Middleware } from 'wretch';
-import { z } from 'zod';
-
-const validationMiddleware = <T>(
-  schema: z.Schema<T>
-): Middleware => () => next => async (url, opts) => {
-  const response = await next(url, opts);
-
-  if (response.ok) {
-    const cloned = response.clone();
-    const data = await cloned.json();
-
-    try {
-      schema.parse(data);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        console.error('Schema validation failed:', error.errors);
-      }
-    }
-  }
-
-  return response;
-};
-
-const UserListSchema = z.array(UserSchema);
-
-const api = wretch('https://api.example.com')
-  .middlewares([validationMiddleware(UserListSchema)]);
-
-const users = await api.get('/users').json<User[]>();
-```
-
-### Handling 202 Accepted Responses
-
-Poll for results when dealing with asynchronous processing:
+**Problem:** Retry a failed request with the same resolver method (json, blob, etc).
 
 ```ts
 import wretch from 'wretch';
 
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+let tokenRefreshCount = 0;
+const refreshAuthToken = async () => `new-token-${++tokenRefreshCount}`;
 
-interface AsyncJobResponse {
-  status: 'pending' | 'completed' | 'failed';
-  result?: any;
-  error?: string;
-}
+const api = wretch('https://jsonplaceholder.typicode.com')
+  .catcher(401, async (error, request) => {
+    const newToken = await refreshAuthToken();
+    return request
+      .auth(`Bearer ${newToken}`)
+      .fetch()
+      .unauthorized(err => { throw err })
+      .json();
+  });
 
-const pollForResult = async (
-  jobUrl: string,
-  options = {
-    maxAttempts: 10,
-    interval: 1000,
-  }
-): Promise<any> => {
-  const api = wretch('https://api.example.com');
-
-  for (let attempt = 0; attempt < options.maxAttempts; attempt++) {
-    const response = await api.url(jobUrl).get().json<AsyncJobResponse>();
-
-    if (response.status === 'completed') {
-      return response.result;
-    }
-
-    if (response.status === 'failed') {
-      throw new Error(response.error || 'Job failed');
-    }
-
-    await delay(options.interval);
-  }
-
-  throw new Error('Polling timeout: job did not complete in time');
-};
-
-const submitAsyncJob = async (data: any) => {
-  const api = wretch('https://api.example.com');
-
-  const response = await api
-    .url('/jobs')
-    .post(data)
-    .res();
-
-  if (response.status === 202) {
-    const location = response.headers.get('Location');
-    if (!location) {
-      throw new Error('No location header in 202 response');
-    }
-
-    console.log('Job submitted, polling for result...');
-    return pollForResult(location);
-  }
-
-  return response.json();
-};
-
-const result = await submitAsyncJob({ task: 'process-data' });
-console.log('Job completed:', result);
-```
-
-**With Exponential Backoff:**
-
-```ts
-const pollWithBackoff = async (
-  jobUrl: string,
-  options = {
-    maxAttempts: 10,
-    initialInterval: 1000,
-    backoffMultiplier: 1.5,
-  }
-): Promise<any> => {
-  const api = wretch('https://api.example.com');
-  let interval = options.initialInterval;
-
-  for (let attempt = 0; attempt < options.maxAttempts; attempt++) {
-    const response = await api.url(jobUrl).get().json<AsyncJobResponse>();
-
-    if (response.status === 'completed') {
-      return response.result;
-    }
-
-    if (response.status === 'failed') {
-      throw new Error(response.error || 'Job failed');
-    }
-
-    console.log(`Attempt ${attempt + 1}: Job still pending, waiting ${interval}ms`);
-    await delay(interval);
-    interval *= options.backoffMultiplier;
-  }
-
-  throw new Error('Polling timeout');
-};
+const data = await api
+  .get('/posts/1')
+  .json();
 ```
 
 ---

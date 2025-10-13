@@ -110,6 +110,7 @@ wretch("http://server/error")
 #### New Approach (v3)
 
 Use `.customError()` to parse and transform errors with full type safety:
+<!-- snippet:skip Needs fixing -->
 
 ```js
 // ✅ v3 approach
@@ -142,12 +143,16 @@ The retry middleware now **skips retrying 4xx client errors by default**.
 
 #### Old Behavior (v2)
 ```js
+import { retry } from "wretch/middlewares"
+
 // Retried ALL non-2xx responses (including 4xx)
 wretch().middlewares([retry()])
 ```
 
 #### New Behavior (v3)
 ```js
+import { retry } from "wretch/middlewares"
+
 // Only retries 5xx server errors and network errors
 // Does NOT retry 4xx client errors
 wretch().middlewares([retry()])
@@ -157,12 +162,16 @@ wretch().middlewares([retry()])
 
 **Option 1:** Keep the new default (recommended)
 ```js
+import { retry } from "wretch/middlewares"
+
 // Accept the new behavior - only retry server errors
 wretch().middlewares([retry()])
 ```
 
 **Option 2:** Restore v2 behavior
 ```js
+import { retry } from "wretch/middlewares"
+
 // Retry ALL non-2xx responses (including 4xx)
 wretch().middlewares([
   retry({
@@ -181,14 +190,16 @@ v3 adds upload progress monitoring support through the Progress addon.
 
 ```js
 import ProgressAddon from "wretch/addons/progress"
+import FormDataAddon from "wretch/addons/formData"
 
-wretch("https://api.example.com/upload")
+await wretch("https://httpbun.org/post")
   .addon(ProgressAddon())
-  .formData({ file: fileBlob })
-  .post()
+  .addon(FormDataAddon)
+  .formData({ file })
   .onUpload((loaded, total) => {
     console.log(`Upload: ${(loaded / total * 100).toFixed(0)}%`)
   })
+  .post()
   .json()
 ```
 

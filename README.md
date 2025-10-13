@@ -56,7 +56,7 @@
 Fetch needs a second callback to process the response body.
 
 ```javascript
-fetch("examples/example.json")
+fetch("https://jsonplaceholder.typicode.com/posts/1")
   .then(response => response.json())
   .then(json => {
     //Do stuff with the parsed json
@@ -66,8 +66,8 @@ fetch("examples/example.json")
 Wretch does it for you.
 
 ```javascript
-// Use .res for the raw response, .text for raw text, .json for json, .blob for a blob ...
-wretch("examples/example.json")
+// Use .res for the raw response, .text for raw text, .json for json, .blob for a blob …
+wretch("https://jsonplaceholder.typicode.com/posts/1")
   .get()
   .json(json => {
     // Do stuff with the parsed json
@@ -79,7 +79,7 @@ wretch("examples/example.json")
 Fetch won’t reject on HTTP error status.
 
 ```javascript
-fetch("anything")
+fetch("https://jsonplaceholder.typicode.com/posts/1")
   .then(response => {
     if(!response.ok) {
       if(response.status === 404) throw new Error("Not found")
@@ -87,21 +87,21 @@ fetch("anything")
       else if(response.status === 418) throw new Error("I'm a teapot !")
       else throw new Error("Other error")
     }
-    else // ...
+    else {/* … */}
   })
-  .then(data => /* ... */)
-  .catch(error => { /* ... */ })
+  .then(data => {/* … */})
+  .catch(error => { /* … */ })
 ```
 
 Wretch throws when the response is not successful and contains helper methods to handle common codes.
 
 ```javascript
-wretch("anything")
+wretch("https://jsonplaceholder.typicode.com/posts/1")
   .get()
-  .notFound(error => { /* ... */ })
-  .unauthorized(error => { /* ... */ })
-  .error(418, error => { /* ... */ })
-  .res(response => /* ... */)
+  .notFound(error => { /* … */ })
+  .unauthorized(error => { /* … */ })
+  .error(418, error => { /* … */ })
+  .res(response => {/* … */ })
   .catch(error => { /* uncaught errors */ })
 ```
 
@@ -110,20 +110,20 @@ wretch("anything")
 With fetch you have to set the header, the method and the body manually.
 
 ```javascript
-fetch("endpoint", {
+fetch("https://jsonplaceholder.typicode.com/posts", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({ "hello": "world" })
-}).then(response => /* ... */)
+}).then(response => {/* … */})
 // Omitting the data retrieval and error management parts…
 ```
 
 With wretch, you have shorthands at your disposal.
 
 ```javascript
-wretch("endpoint")
+wretch("https://jsonplaceholder.typicode.com/posts")
   .post({ "hello": "world" })
-  .res(response => /* ... */)
+  .res(response => { /* … */ })
 ```
 
 #### Because configuration should not rhyme with repetition.
@@ -131,27 +131,29 @@ wretch("endpoint")
 A Wretch object is immutable which means that you can reuse previous instances safely.
 
 ```javascript
+const token = "MY_SECRET_TOKEN"
+
 // Cross origin authenticated requests on an external API
-const externalApi = wretch("http://external.api") // Base url
+const externalApi = wretch("https://jsonplaceholder.typicode.com") // Base url
   // Authorization header
   .auth(`Bearer ${token}`)
   // Cors fetch options
   .options({ credentials: "include", mode: "cors" })
   // Handle 403 errors
-  .resolve((_) => _.forbidden(handle403));
+  .resolve((w) => w.forbidden(error => { /* Handle all 403 errors */ }));
 
 // Fetch a resource
 const resource = await externalApi
   // Add a custom header for this request
   .headers({ "If-Unmodified-Since": "Wed, 21 Oct 2015 07:28:00 GMT" })
-  .get("/resource/1")
-  .json(handleResource);
+  .get("/posts/1")
+  .json(() => {/* do something with the resource */});
 
 // Post a resource
 externalApi
-  .url("/resource")
+  .url("/posts")
   .post({ "Shiny new": "resource object" })
-  .json(handleNewResourceResult);
+  .json(() => {/* do something with the created resource */});
 ```
 
 # Installation
@@ -203,7 +205,7 @@ The package contains multiple bundles depending on the format and feature set lo
 <script type="module">
   import wretch from 'https://cdn.skypack.dev/wretch/dist/bundle/wretch.all.min.mjs'
 
-  // ... //
+  // … //
 </script>
 ```
 
@@ -226,6 +228,7 @@ Works with [Deno](https://deno.land/) >=
 
 Types should be imported from `/dist/types.d.ts`.
 
+<!-- snippet:skip Deno specific-code -->
 ```ts
 // You can import wretch from any CDN that serve ESModules.
 import wretch from "https://cdn.skypack.dev/wretch";
@@ -238,6 +241,7 @@ console.log(text); // -> 200 OK
 
 ## Import
 
+<!-- snippet:skip Browser specific code -->
 ```typescript
 // ECMAScript modules
 import wretch from "wretch"
@@ -300,7 +304,7 @@ You can provide a custom fetch implementation using the `.fetchPolyfill()` metho
 import wretch from "wretch"
 
 // Per-instance custom fetch
-const api = wretch("https://api.example.com")
+const api = wretch("https://jsonplaceholder.typicode.com")
   .fetchPolyfill((url, opts) => {
     console.log('Fetching:', url)
     console.time(url)
@@ -309,13 +313,14 @@ const api = wretch("https://api.example.com")
     })
   })
 
-await api.get("/data").json()
+await api.get("/posts").json()
 ```
 
 ## Chaining
 
 **A high level overview of the successive steps that can be chained to perform a request and parse the result.**
 
+<!-- snippet:skip -->
 ```ts
 // First, instantiate wretch
 wretch(baseUrl, baseOptions)
@@ -323,6 +328,7 @@ wretch(baseUrl, baseOptions)
 
 _The "request" chain starts here._
 
+<!-- snippet:skip -->
 ```ts
   // Optional - A set of helper methods to set the default options, set accept header, change the current url…
   .<helper method(s)>()
@@ -337,6 +343,7 @@ _The "response" chain starts here._
 _Fetch is called after the request chain ends and before the response chain starts._<br>
 _The request is on the fly and now it is time to chain catchers and finally call a response type handler._
 
+<!-- snippet:skip -->
 ```ts
   // Optional - You can chain error handlers here
   .<catcher(s)>()
@@ -347,6 +354,7 @@ _The request is on the fly and now it is time to chain catchers and finally call
 
 _From this point on, wretch returns a standard Promise._
 
+<!-- snippet:skip -->
 ```ts
   .then(…)
   .catch(…)
@@ -375,7 +383,7 @@ The default export is a factory function used to instantiate wretch.
 ```js
 import wretch from "wretch"
 
-let w = wretch("http://domain.com/", { cache: "default" })
+const api = wretch("http://domain.com/", { cache: "default" })
 ```
 
 ### [Helper Methods 🔗](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#accept)
@@ -383,9 +391,11 @@ let w = wretch("http://domain.com/", { cache: "default" })
 Helper Methods are used to configure the request and program actions.
 
 ```js
-w = w
-  .url("/resource/1")
-  .headers({ "Cache-Control": no-cache })
+let api = wretch("http://domain.com/")
+
+api = api
+  .url("/posts/1")
+  .headers({ "Cache-Control": "no-cache" })
   .content("text/html")
 ```
 
@@ -394,7 +404,9 @@ w = w
 Specify a body type if uploading data. Can also be added through the HTTP Method argument.
 
 ```js
-w = w.body("<html><body><div/></body></html>")
+let api = wretch("http://domain.com/")
+
+api = api.body("<html><body><div/></body></html>")
 ```
 
 ### [HTTP Methods 🔗](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#delete)
@@ -405,12 +417,14 @@ Calling an HTTP method ends the request chain and returns a response chain.
 You can pass optional url and body arguments to these methods.
 
 ```js
+const api = wretch("http://jsonplaceholder.typicode.com")
+
 // These shorthands:
-wretch().get("/url");
-wretch().post({ json: "body" }, "/url");
+api.get("/posts");
+api.post({ json: "body" }, "/posts");
 // Are equivalent to:
-wretch().url("/url").get();
-wretch().json({ json: "body" }).url("/url").post();
+api.url("/posts").get();
+api.json({ json: "body" }).url("/posts").post();
 ```
 
 **NOTE:** if the body argument is an `Object` it is assumed that it is a JSON payload and it will have the same behaviour as calling `.json(body)` unless the `Content-Type` header has been set to something else beforehand.
@@ -421,7 +435,7 @@ wretch().json({ json: "body" }).url("/url").post();
 Catchers are optional, but if none are provided an error will still be thrown for http error codes and it will be up to you to catch it.
 
 ```js
-wretch("...")
+wretch("http://domain.com/resource")
   .get()
   .badRequest((err) => console.log(err.status))
   .unauthorized((err) => console.log(err.status))
@@ -436,6 +450,7 @@ wretch("...")
 
 The error passed to catchers is enhanced with additional properties.
 
+<!-- snippet:skip -->
 ```ts
 type WretchError = Error & {
   status: number;
@@ -452,14 +467,13 @@ The original request is passed along the error and can be used in order to
 perform an additional request.
 
 ```js
-wretch("/resource")
+wretch("https://httpbin.org/bearer")
   .get()
   .unauthorized(async (error, req) => {
     // Renew credentials
-    const token = await wretch("/renewtoken").get().text();
-    storeToken(token);
+    const token = await wretch("https://httpbin.org/uuid").get().json(({ uuid }) => uuid);
     // Replay the original request with new credentials
-    return req.auth(token).get().unauthorized((err) => {
+    return req.auth("Bearer " + token).fetch().unauthorized((err) => {
       throw err;
     }).json();
   })
@@ -467,7 +481,7 @@ wretch("/resource")
   // The promise chain is preserved as expected
   // ".then" will be performed on the result of the original request
   // or the replayed one (if a 401 error was thrown)
-  .then(callback);
+  .then(() => { /* … */ });
 ```
 
 ### [Response Types 🔗](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#arrayBuffer)
@@ -480,11 +494,16 @@ type.
 
 ```js
 // Without a callback
-wretch("...").get().json().then(json => /* json is the parsed json of the response body */)
+wretch("https://httpbin.org/json")
+  .get()
+  .json()
+  .then(json => {
+    /* the json argument is the parsed json of the response body */
+  })
 // Without a callback using await
-const json = await wretch("...").get().json()
+const json = await wretch("https://httpbin.org/json").get().json()
 // With a callback the value returned is passed to the Promise
-wretch("...").get().json(json => "Hello world!").then(console.log) // => Hello world!
+wretch("https://httpbin.org/json").get().json(json => "Hello world!").then(console.log) // => Hello world!
 ```
 
 _If an error is caught by catchers, the response type handler will not be
@@ -550,7 +569,7 @@ const form = {
 
 // Will append the following keys to the FormData payload:
 // "duck", "duckProperties[beak][color]", "duckProperties[legs]"
-wretch("...").addon(FormDataAddon).formData(form, { recursive: ["ignored"] }).post();
+wretch("https://httpbun.org/post").addon(FormDataAddon).formData(form, { recursive: ["ignored"] }).post();
 ```
 
 ### [FormUrl 🔗](https://elbywan.github.io/wretch/api/interfaces/addons_formUrl.FormUrlAddon)
@@ -564,8 +583,8 @@ const form = { a: 1, b: { c: 2 } };
 const alreadyEncodedForm = "a=1&b=%7B%22c%22%3A2%7D";
 
 // Automatically sets the content-type header to "application/x-www-form-urlencoded"
-wretch("...").addon(FormUrlAddon).formUrl(form).post();
-wretch("...").addon(FormUrlAddon).formUrl(alreadyEncodedForm).post();
+wretch("https://httpbun.org/post").addon(FormUrlAddon).formUrl(form).post();
+wretch("https://httpbun.org/post").addon(FormUrlAddon).formUrl(alreadyEncodedForm).post();
 ```
 
 ### [Abort 🔗](https://elbywan.github.io/wretch/api/functions/addons_abort.default)
@@ -579,7 +598,7 @@ import AbortAddon from "wretch/addons/abort"
 Use cases :
 
 ```js
-const [c, w] = wretch("...")
+const [c, w] = wretch("https://httpbun.org/get")
   .addon(AbortAddon())
   .get()
   .onAbort((_) => console.log("Aborted !"))
@@ -592,7 +611,7 @@ c.abort();
 
 const controller = new AbortController();
 
-wretch("...")
+wretch("https://httpbun.org/get")
   .addon(AbortAddon())
   .signal(controller)
   .get()
@@ -603,10 +622,17 @@ controller.abort();
 ```
 
 ```js
-// 1 second timeout
-wretch("...").addon(AbortAddon()).get().setTimeout(1000).json(_ =>
-  // will not be called if the request timeouts
-)
+wretch("https://httpbun.org/delay/2")
+  .addon(AbortAddon())
+  .get()
+   // 1 second timeout
+  .setTimeout(1000)
+  .onAbort(_ => {
+    console.log("Request timed out")
+  })
+  .json(_ => {
+    console.log("Response received in time")
+  })
 ```
 
 ### [BasicAuth 🔗](https://elbywan.github.io/wretch/api/interfaces/addons_basicAuth.BasicAuthAddon)
@@ -622,10 +648,15 @@ const user = "user"
 const pass = "pass"
 
 // Automatically sets the Authorization header to "Basic " + <base64 encoded credentials>
-wretch("...").addon(BasicAuthAddon).basicAuth(user, pass).get()
+wretch("https://httpbun.org/get")
+  .addon(BasicAuthAddon)
+  .basicAuth(user, pass)
+  .get()
 
 // Allows using URLs with credentials in them
-wretch(`https://${user}:${pass}@...`).addon(BasicAuthAddon).get()
+wretch(`https://${user}:${pass}@httpbun.org/basic-auth/${user}/${pass}`)
+  .addon(BasicAuthAddon)
+  .get()
 ```
 
 ### [Progress 🔗](https://elbywan.github.io/wretch/api/interfaces/addons_progress.ProgressResolver)
@@ -634,18 +665,17 @@ Adds the ability to monitor progress when downloading a response.
 
 _Compatible with all platforms implementing the [TransformStream WebAPI](https://developer.mozilla.org/en-US/docs/Web/API/TransformStream#browser_compatibility)._
 
-
 ```js
 import ProgressAddon from "wretch/addons/progress"
 
-wretch("some_url")
+wretch("https://httpbun.org/bytes/5000000")
   .addon(ProgressAddon())
   .get()
   // Called with the number of bytes loaded and the total number of bytes to load
   .progress((loaded, total) => {
     console.log(`${(loaded / total * 100).toFixed(0)}%`)
   })
-  .text()
+  .blob()
 ```
 
 ### [Performance 🔗](https://elbywan.github.io/wretch/api/functions/addons_perfs.default)
@@ -767,6 +797,7 @@ wretch().middlewares([
 
 Basically a Middleware is a function having the following signature :
 
+<!-- snippet:skip-->
 ```ts
 // A middleware accepts options and returns a configured version
 type Middleware = (options?: { [key: string]: any }) => ConfiguredMiddleware;
@@ -800,7 +831,7 @@ const contextMiddleware = (next) =>
 
 // Provide the reference to a "context" object
 const context = {};
-const res = await wretch("...")
+const res = await wretch("https://httpbun.org/get")
   // Pass "context" by reference as an option
   .options({ context })
   .middlewares([contextMiddleware])
@@ -825,9 +856,7 @@ const delayMiddleware = delay => next => (url, opts) => {
 /* Returns the url and method without performing an actual request. */
 const shortCircuitMiddleware = () => next => (url, opts) => {
   // We create a new Response object to comply because wretch expects that from fetch.
-  const response = new Response()
-  response.text = () => Promise.resolve(opts.method + "@" + url)
-  response.json = () => Promise.resolve({ url, method: opts.method })
+  const response = new Response(url)
   // Instead of calling next(), returning a Response Promise bypasses the rest of the chain.
   return Promise.resolve(response)
 }
@@ -876,7 +905,7 @@ const cacheMiddleware = (throttle = 0) => {
         // Add a cloned response to the cache
         cache.set(key, _.clone())
         // Resolve pending promises
-        inflight.get(key).forEach((([resolve, reject]) => resolve(_.clone()))
+        inflight.get(key)?.forEach((([resolve, reject]) => resolve(_.clone())))
         // Remove the inflight pending promises
         inflight.delete(key)
         // Return the original response
@@ -884,7 +913,7 @@ const cacheMiddleware = (throttle = 0) => {
       })
       .catch(_ => {
         // Reject pending promises on error
-        inflight.get(key).forEach(([resolve, reject]) => reject(_))
+        inflight.get(key)?.forEach(([resolve, reject]) => reject(_))
         inflight.delete(key)
         throw _
       })
@@ -893,27 +922,35 @@ const cacheMiddleware = (throttle = 0) => {
 
 // To call a single middleware
 const cache = cacheMiddleware(1000)
-wretch("...").middlewares([cache]).get()
+wretch("https://httpbun.org/get").middlewares([cache]).get()
 
 // To chain middlewares
-wretch("...").middlewares([
+wretch("https://httpbun.org/get").middlewares([
   logMiddleware(),
   delayMiddleware(1000),
   shortCircuitMiddleware()
-}).get().text(_ => console.log(text))
+]).get().text(text => console.log(text))
 
 // To test the cache middleware more thoroughly
-const wretchCache = wretch().middlewares([cacheMiddleware(1000)])
-const printResource = (url, timeout = 0) =>
-  setTimeout(_ => wretchCache.url(url).get().notFound(console.error).text(console.log), timeout)
-// The resource url, change it to an invalid route to check the error handling
-const resourceUrl = "/"
-// Only two actual requests are made here even though there are 30 calls
-for(let i = 0; i < 10; i++) {
-  printResource(resourceUrl)
-  printResource(resourceUrl, 500)
-  printResource(resourceUrl, 1500)
+const wretchCache = wretch("https://httpbin.org").middlewares([cacheMiddleware(500)])
+const printResource = (url, timeout = 0) => {
+  return new Promise(resolve => setTimeout(async () => {
+    wretchCache.url(url).get().notFound(console.error).text(resource => {
+      console.log(resource)
+      resolve(resource)
+    })
+  }, timeout))
 }
+// The resource url, change it to an invalid route to check the error handling
+const resourceUrl = "/uuid"
+// Only two actual requests are made here even though there are 30 calls
+await Promise.all(Array.from({ length: 10 }).flatMap(() =>
+  [
+    printResource(resourceUrl),
+    printResource(resourceUrl, 200),
+    printResource(resourceUrl, 700)
+  ]
+))
 ```
 
 </details>
@@ -962,7 +999,7 @@ headers.forEach((value, key) => console.log(key, value));
 When using `wretch`, please be mindful of this limitation and avoid setting the same header multiple times with a different case:
 
 ```js
-wretch(url)
+wretch("https://httpbun.org/post")
   .headers({ "content-type": "application/json" })
   // .json is a shortcut for .headers("Content-Type": "application/json").post().json()
   .json({ foo: "bar" })
