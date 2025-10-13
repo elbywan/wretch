@@ -22,7 +22,11 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
   /**
    * @private @internal
    */
-  _config: Config,
+  _fetch?: FetchLike | ((url: string, opts: WretchOptions) => Promise<Response>),
+  /**
+   * @private @internal
+   */
+  _errorTransformer?: <T>(error: WretchError, response: WretchResponse) => Promise<T> | T,
   /**
    * @private @internal
    */
@@ -747,14 +751,7 @@ export interface WretchResponseChain<T, Self = unknown, R = undefined, ErrorType
   fetchError: (this: Self & WretchResponseChain<T, Self, R, ErrorType>, cb: WretchErrorCallback<T, Self, R, ErrorType>) => this,
 }
 
-/**
- * Configuration object.
- */
-export type Config = {
-  options: object;
-  fetch?: FetchLike | ((url: string, opts: WretchOptions) => Promise<Response>);
-  errorTransformer?: <T>(error: WretchError, response: WretchResponse) => Promise<T> | T;
-}
+
 
 /**
  * Fetch Request options with additional properties.

@@ -1,4 +1,4 @@
-import type { Config, ConfiguredMiddleware, Wretch, WretchAddon } from "../types.js"
+import type { ConfiguredMiddleware, Wretch, WretchAddon } from "../types.js"
 
 function utf8ToBase64(input: string) {
   const utf8Bytes = new TextEncoder().encode(input)
@@ -31,7 +31,7 @@ export interface BasicAuthAddon {
   ): this
 }
 
-const makeBasicAuthMiddleware: (config: Config) => ConfiguredMiddleware = _config => next => (url, opts) => {
+const makeBasicAuthMiddleware: () => ConfiguredMiddleware = () => next => (url, opts) => {
   let parsedUrl: URL | null
   try {
     parsedUrl = new URL(url)
@@ -67,7 +67,7 @@ const makeBasicAuthMiddleware: (config: Config) => ConfiguredMiddleware = _confi
  */
 const basicAuth: WretchAddon<BasicAuthAddon> = {
   beforeRequest(wretch) {
-    return wretch.middlewares([makeBasicAuthMiddleware(wretch._config)])
+    return wretch.middlewares([makeBasicAuthMiddleware()])
   },
   wretch: {
     basicAuth(username, password) {

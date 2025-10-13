@@ -1,5 +1,4 @@
 import { middlewareHelper } from "./middleware.js"
-import { mix } from "./utils.js"
 import type { Wretch, WretchResponse, WretchResponseChain, WretchError as WretchErrorType } from "./types.js"
 import { FETCH_ERROR, CATCHER_FALLBACK } from "./constants.js"
 
@@ -25,7 +24,8 @@ export const resolver = <T, Chain, R, E>(wretch: T & Wretch<T, Chain, R, E>) => 
   const {
     _url: url,
     _options: opts,
-    _config: config,
+    _fetch: customFetch,
+    _errorTransformer: errorTransformer,
     _catchers: _catchers,
     _resolvers: resolvers,
     _middlewares: middlewares,
@@ -33,14 +33,13 @@ export const resolver = <T, Chain, R, E>(wretch: T & Wretch<T, Chain, R, E>) => 
   } = wretch
 
   const catchers = new Map(_catchers)
-  const finalOptions = mix(config.options, opts)
-  const errorTransformer = config.errorTransformer || null
+  const finalOptions = opts
 
   // The generated fetch request
   let finalUrl = url
   const _fetchReq = middlewareHelper(middlewares)((url, options) => {
     finalUrl = url
-    const fetchImpl = config.fetch || fetch
+    const fetchImpl = customFetch || fetch
     return fetchImpl(url, options)
   })(url, finalOptions)
   // Throws on an http error

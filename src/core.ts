@@ -1,13 +1,11 @@
 import { mix, extractContentType, isLikelyJsonMime } from "./utils.js"
 import { JSON_MIME, CONTENT_TYPE_HEADER, CATCHER_FALLBACK } from "./constants.js"
 import { resolver } from "./resolver.js"
-import config from "./config.js"
 import type { Wretch } from "./types.js"
 
 export const core: Wretch = {
   _url: "",
   _options: {},
-  _config: config,
   _catchers: new Map(),
   _resolvers: [],
   _deferred: [],
@@ -17,13 +15,7 @@ export const core: Wretch = {
     return { ...this, _addons: [...this._addons, addon], ...addon.wretch }
   },
   fetchPolyfill(fetchImpl) {
-    return {
-      ...this,
-      _config: {
-        ...this._config,
-        fetch: fetchImpl
-      }
-    }
+    return { ...this, _fetch: fetchImpl }
   },
   url(_url, replace = false) {
     if (replace)
@@ -65,13 +57,7 @@ export const core: Wretch = {
     return this.catcher(CATCHER_FALLBACK, catcher)
   },
   customError(transformer) {
-    return {
-      ...this,
-      _config: {
-        ...this._config,
-        errorTransformer: transformer
-      }
-    } as any // TS cannot infer the type change here
+    return { ...this, _errorTransformer: transformer } as any
   },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   resolve<R = unknown>(resolver, clear: boolean = false) {

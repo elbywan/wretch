@@ -1,4 +1,4 @@
-import type { WretchResponseChain, WretchAddon, Config } from "../types.js"
+import type { WretchResponseChain, WretchAddon } from "../types.js"
 
 export type PerfCallback = (timing: any) => void
 
@@ -87,7 +87,6 @@ const perfs: () => WretchAddon<unknown, PerfsAddon> = () => {
   const monitor = (
     name: string | null | undefined,
     callback: PerfCallback | null | undefined,
-    _config: Config
   ) => {
     if (!name || !callback)
       return
@@ -107,7 +106,7 @@ const perfs: () => WretchAddon<unknown, PerfsAddon> = () => {
       perfs(cb) {
         this._fetchReq
           .then(() =>
-            monitor(this._wretchReq._url, cb, this._wretchReq._config)
+            monitor(this._wretchReq._url, cb)
           )
           .catch(() => {/* swallow */ })
         return this

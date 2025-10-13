@@ -1,4 +1,4 @@
-import type { Wretch, Config, WretchAddon } from "../types.js"
+import type { Wretch, WretchAddon } from "../types.js"
 
 function stringify(value?: string | null): string | null {
   return typeof value !== "undefined" ? value : ""
@@ -18,7 +18,7 @@ export type QueryStringOptions = {
   omitUndefinedOrNullValues?: boolean
 }
 
-const appendQueryParams = (url: string, qp: object | string, replace: boolean, omitUndefinedOrNullValues: boolean, _config: Config) => {
+const appendQueryParams = (url: string, qp: object | string, replace: boolean, omitUndefinedOrNullValues: boolean) => {
   let queryString: string
 
   if (typeof qp === "string") {
@@ -116,7 +116,7 @@ export interface QueryStringAddon {
 const queryString: WretchAddon<QueryStringAddon> = {
   wretch: {
     query(qp, options = {}) {
-      return { ...this, _url: appendQueryParams(this._url, qp, options.replace ?? false, options.omitUndefinedOrNullValues ?? false, this._config) }
+      return { ...this, _url: appendQueryParams(this._url, qp, options.replace ?? false, options.omitUndefinedOrNullValues ?? false) }
     }
   }
 }

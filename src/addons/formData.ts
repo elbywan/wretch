@@ -1,4 +1,4 @@
-import type { Wretch, Config, WretchAddon } from "../types.js"
+import type { Wretch, WretchAddon } from "../types.js"
 
 /**
  * Options for the formData method.
@@ -15,7 +15,6 @@ export type FormDataOptions = {
 function convertFormData(
   formObject: object,
   recursive: string[] | boolean = false,
-  config: Config,
   formData = new FormData(),
   ancestors = [] as string[],
 ) {
@@ -36,7 +35,7 @@ function convertFormData(
       )
     ) {
       if (value !== null) {
-        convertFormData(value, recursive, config, formData, [...ancestors, key])
+        convertFormData(value, recursive, formData, [...ancestors, key])
       }
     } else {
       formData.append(formKey, value)
@@ -113,7 +112,7 @@ export interface FormDataAddon {
 const formData: WretchAddon<FormDataAddon> = {
   wretch: {
     formData(formObject, options = {}) {
-      return this.body(convertFormData(formObject, options.recursive ?? false, this._config))
+      return this.body(convertFormData(formObject, options.recursive ?? false))
     }
   }
 }

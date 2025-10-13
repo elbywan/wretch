@@ -4,7 +4,6 @@ import type { Wretch, WretchOptions } from "./types.js"
 
 export type {
   Wretch,
-  Config,
   ConfiguredMiddleware,
   FetchLike,
   Middleware,
