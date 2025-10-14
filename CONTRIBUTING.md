@@ -13,15 +13,33 @@ git clone https://github.com/elbywan/wretch
 cd wretch
 ```
 
-### 2 - Install dependencies
+### 2 - Setup toolchain
+
+This project uses [proto](https://moonrepo.dev/proto) to manage tool versions (Node.js, npm, Deno). Install proto:
+
+```bash
+# macOS/Linux
+curl -fsSL https://moonrepo.dev/install/proto.sh | bash
+
+# Windows
+irm https://moonrepo.dev/install/proto.ps1 | iex
+```
+
+Then install the required tools:
+
+```bash
+proto use
+```
+
+### 3 - Install dependencies
 
 ```bash
 npm install
 ```
 
-### 3 - Change the code as you see fit
+### 4 - Change the code as you see fit
 
-### 4 - Lint, Build and Test
+### 5 - Lint, Build and Test
 
 ```bash
 npm start
@@ -36,7 +54,7 @@ If you add a new functionality, please write some tests!
 
 If a linter rule which is not already set in the `.eslintrc.js` file is bothering you, feel free to propose a change.
 
-### 5 - Commit & Pull request
+### 6 - Commit & Pull request
 
 If the modification is related to an existing issue, please mention the number in the commit message. (for instance: `closes #10`)
 
