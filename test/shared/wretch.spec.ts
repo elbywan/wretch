@@ -20,6 +20,7 @@ const isSafari =
   navigator.userAgent.indexOf("Safari") >= 0 &&
   navigator.userAgent.indexOf("Chrome") < 0
 const isBrowser = typeof window !== "undefined" && typeof window.document !== "undefined"
+const isDeno = typeof globalThis.Deno !== "undefined"
 
 const allRoutes = <T>(
   obj: Wretch,
@@ -81,7 +82,6 @@ export function createWretchTests(ctx: TestContext): void {
     if (before) {
       before(async function () {
         this.timeout(5000)
-        await new Promise(resolve => setTimeout(resolve, 2000))
       })
     }
 
@@ -550,7 +550,7 @@ export function createWretchTests(ctx: TestContext): void {
     })
 
     it("should retrieve performance timings associated with a fetch request", async function () {
-      if (isSafari)
+      if (isSafari || isDeno)
         return
 
       const w = wretch()
@@ -565,11 +565,14 @@ export function createWretchTests(ctx: TestContext): void {
         }).res().catch(_ => "ignore")
       })
 
-      for (let i = 0; i < 5; i++) {
-        w.url(`${_URL}/fake/${i}`).get().perfs(timings => {
-          expect(timings.name).toBe(`${_URL}/fake/${i}`)
-        }).res().catch(() => "ignore")
-      }
+      await Promise.all(new Array(5).fill(0).map((_, i) =>
+        new Promise<void>(resolve => {
+          w.url(`${_URL}/fake/${i}`).get().perfs(timings => {
+            expect(timings.name).toBe(`${_URL}/fake/${i}`)
+            resolve()
+          }).res().catch(() => "ignore")
+        })
+      ))
     })
 
     it("should monitor download progress", async function () {
@@ -784,7 +787,7 @@ export function createWretchTests(ctx: TestContext): void {
     })
 
     it("should program resolvers", async function () {
-      if(isSafari)
+      if(isSafari || isDeno)
         return
 
       let check = 0

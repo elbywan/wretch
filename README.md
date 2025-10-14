@@ -31,7 +31,7 @@
 - 💡 **Intuitive** - lean API, handles errors, headers and (de)serialization
 - 🧊 **Immutable** - every call creates a cloned instance that can then be reused safely
 - 🔌 **Modular** - plug addons to add new features, and middlewares to intercept requests
-- 🧩 **Isomorphic** - compatible with modern browsers and Node.js 22+
+- 🧩 **Isomorphic** - compatible with modern browsers, Node.js 22+ and Deno
 - 🦺 **Type safe** - strongly typed, written in TypeScript
 - ✅ **Proven** - fully covered by unit tests and widely used
 - 💓 **Maintained** - alive and well for many years
@@ -223,18 +223,17 @@ Node.js 22+ includes native fetch support and all required Web APIs (FormData, U
 
 ## Deno
 
-Works with [Deno](https://deno.land/) >=
-[0.41.0](https://github.com/denoland/deno/releases/tag/v0.41.0) out of the box.
+Works with [Deno](https://deno.land/) out of the box.
 
-Types should be imported from `/dist/types.d.ts`.
+```bash
+deno add npm:wretch
+```
 
-<!-- snippet:skip Deno specific-code -->
 ```ts
-// You can import wretch from any CDN that serve ESModules.
-import wretch from "https://cdn.skypack.dev/wretch";
+import wretch from "wretch";
 
-const text = await wretch("https://httpstat.us").get("/200").text();
-console.log(text); // -> 200 OK
+const text = await wretch("https://httpbun.org").get("/status/200").text();
+console.log(text); // -> { "code": 200, "description": "OK" }
 ```
 
 # Usage

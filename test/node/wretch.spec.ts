@@ -14,7 +14,7 @@ const duckImage = fs.readFileSync(duckImagePath)
 
 createWretchTests({
   describe,
-  it,
+  it: (name, fn) => it(name,{ timeout: 5000 }, fn),
   beforeEach,
   assert,
   expect,
