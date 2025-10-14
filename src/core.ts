@@ -12,7 +12,9 @@ export const core: Wretch = {
   _middlewares: [],
   _addons: [],
   addon(addon) {
-    return { ...this, _addons: [...this._addons, addon], ...addon.wretch }
+    const addons = Array.isArray(addon) ? addon : [addon]
+    const wretchProps = addons.reduce((acc, a) => ({ ...acc, ...a.wretch }), {})
+    return { ...this, _addons: [...this._addons, ...addons], ...wretchProps }
   },
   fetchPolyfill(fetchImpl) {
     return { ...this, _fetch: fetchImpl }

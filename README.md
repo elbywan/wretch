@@ -466,15 +466,17 @@ The original request is passed along the error and can be used in order to
 perform an additional request.
 
 ```js
-wretch("https://httpbin.org/bearer")
+await wretch("https://httpbun.org/bearer/aeacf2af-88e6-4f81-a0b0-77a121504ca8")
   .get()
   .unauthorized(async (error, req) => {
     // Renew credentials
-    const token = await wretch("https://httpbin.org/uuid").get().json(({ uuid }) => uuid);
+    const token = await wretch("https://httpbun.org/mix/s=200/b64=YWVhY2YyYWYtODhlNi00ZjgxLWEwYjAtNzdhMTIxNTA0Y2E4").get().text();
     // Replay the original request with new credentials
-    return req.auth("Bearer " + token).fetch().unauthorized((err) => {
-      throw err;
-    }).json();
+    return req
+      .auth("Bearer " + token)
+      .fetch()
+      .unauthorized((err) => { throw err })
+      .json();
   })
   .json()
   // The promise chain is preserved as expected
@@ -492,17 +494,19 @@ resolved with either the return value of the provided callback or the expected
 type.
 
 ```js
+const ENDPOINT = "https://jsonplaceholder.typicode.com/posts/1"
+
 // Without a callback
-wretch("https://httpbin.org/json")
+wretch(ENDPOINT)
   .get()
   .json()
   .then(json => {
     /* the json argument is the parsed json of the response body */
   })
 // Without a callback using await
-const json = await wretch("https://httpbin.org/json").get().json()
+const json = await wretch(ENDPOINT).get().json()
 // With a callback the value returned is passed to the Promise
-wretch("https://httpbin.org/json").get().json(json => "Hello world!").then(console.log) // => Hello world!
+wretch(ENDPOINT).get().json(json => "Hello world!").then(console.log) // => Hello world!
 ```
 
 _If an error is caught by catchers, the response type handler will not be
@@ -517,7 +521,7 @@ import FormDataAddon from "wretch/addons/formData"
 import QueryStringAddon from "wretch/addons/queryString"
 
 // Add both addons
-const w = wretch().addon(FormDataAddon).addon(QueryStringAddon)
+const w = wretch().addon([FormDataAddon, QueryStringAddon])
 
 // Additional features are now available
 w.formData({ hello: "world" }).query({ check: true })
@@ -931,7 +935,7 @@ wretch("https://httpbun.org/get").middlewares([
 ]).get().text(text => console.log(text))
 
 // To test the cache middleware more thoroughly
-const wretchCache = wretch("https://httpbin.org").middlewares([cacheMiddleware(500)])
+const wretchCache = wretch("https://httpbun.org").middlewares([cacheMiddleware(500)])
 const printResource = (url, timeout = 0) => {
   return new Promise(resolve => setTimeout(async () => {
     wretchCache.url(url).get().notFound(console.error).text(resource => {
@@ -941,7 +945,7 @@ const printResource = (url, timeout = 0) => {
   }, timeout))
 }
 // The resource url, change it to an invalid route to check the error handling
-const resourceUrl = "/uuid"
+const resourceUrl = "/mix/s=200/b64=YWVhY2YyYWYtODhlNi00ZjgxLWEwYjAtNzdhMTIxNTA0Y2E4"
 // Only two actual requests are made here even though there are 30 calls
 await Promise.all(Array.from({ length: 10 }).flatMap(() =>
   [

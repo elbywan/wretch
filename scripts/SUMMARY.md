@@ -212,7 +212,7 @@ if (code.includes("YOUR_SKIP_PATTERN")) {
 
 - **Test APIs Used:**
   - [JSONPlaceholder](https://jsonplaceholder.typicode.com) - Fake REST API
-  - [httpbin](https://httpbin.org) - HTTP testing service
+  - [httpbun](https://httpbun.org) - HTTP testing service
 
 - **Node.js Test Runner:**
   - [Node.js Test Runner Docs](https://nodejs.org/api/test.html)

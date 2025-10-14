@@ -21,7 +21,7 @@ The documentation (README.md, RECIPES.md, MIGRATION_*.md) contains many code exa
      - Separates imports from code
      - Wraps code in async IIFE exported as default
      - Links module imports (wretch, middlewares) via VM module linker
-     - Replaces example URLs with real test APIs (jsonplaceholder, httpbin)
+     - Replaces example URLs with real test APIs (jsonplaceholder, httpbun)
    - Generates individual test files in `test/generated/`
    - Skips snippets that can't be tested (pseudo-code, type definitions, etc.)
 
@@ -124,7 +124,7 @@ wretch("http://localhost:8080")
 
 The system uses free public APIs for testing:
 - **JSONPlaceholder** (https://jsonplaceholder.typicode.com) - REST API for testing
-- **httpbin** (https://httpbin.org) - HTTP testing service
+- **httpbun** (https://httpbun.org) - HTTP testing service
 
 These APIs provide:
 - GET/POST/PUT/DELETE endpoints

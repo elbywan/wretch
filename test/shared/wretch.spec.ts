@@ -460,6 +460,18 @@ export function createWretchTests(ctx: TestContext): void {
       expect(obj7["_url"]).toBe(`${_URL}/test?a=1%21&b=2&c=6&d=7&d=8&Literal[]=Query&String`)
     })
 
+    it("should accept multiple addons at once", async function () {
+      const w = wretch(`${_URL}/basicauth`)
+        .addon([BasicAuthAddon, QueryStringAddon])
+        .basicAuth("wretch", "röcks")
+        .query({ test: "value" })
+
+      expect(w["_url"]).toBe(`${_URL}/basicauth?test=value`)
+      expect(w._options.headers["Authorization"]).toBe("Basic d3JldGNoOnLDtmNrcw==")
+      const res = await w.get().text()
+      expect(res).toBe("ok")
+    })
+
     it("should set the Accept header", async function () {
       expect(await wretch(`${_URL}/accept`).get().text()).toBe("text")
       expect(await wretch(`${_URL}/accept`).accept("application/json").get().json()).toEqual({ json: "ok" })

@@ -234,7 +234,7 @@ function generateTestFile(testCases: TestCase[]): string {
       }
 
       return `
-  it("${testCase.name}", async () => {
+  it("${testCase.name}", { timeout: 5_000 }, async () => {
     await import("./${testCase.name}.js")
   })`
     })

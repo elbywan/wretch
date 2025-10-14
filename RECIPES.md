@@ -185,8 +185,7 @@ import ProgressAddon from 'wretch/addons/progress';
 
 async function uploadFile(file: File) {
   return wretch('https://api.example.com/upload')
-    .addon(FormDataAddon)
-    .addon(ProgressAddon())
+    .addon([FormDataAddon, ProgressAddon()])
     .formData({ file })
     .onUpload((loaded, total) => {
       const percent = Math.round((loaded / total) * 100);

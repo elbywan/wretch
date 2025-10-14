@@ -4,13 +4,15 @@ import { WretchError } from "./resolver.js"
 
 const factory = (_url = "", _options = {}) =>
   ({ ...core, _url, _options })
-    .addon(Addons.abortAddon())
-    .addon(Addons.basicAuthAddon)
-    .addon(Addons.formDataAddon)
-    .addon(Addons.formUrlAddon)
-    .addon(Addons.perfsAddon())
-    .addon(Addons.queryStringAddon)
-    .addon(Addons.progressAddon())
+    .addon([
+      Addons.abortAddon(),
+      Addons.basicAuthAddon,
+      Addons.formDataAddon,
+      Addons.formUrlAddon,
+      Addons.perfsAddon(),
+      Addons.queryStringAddon,
+      Addons.progressAddon()
+    ])
 
 factory["default"] = factory
 factory.WretchError = WretchError

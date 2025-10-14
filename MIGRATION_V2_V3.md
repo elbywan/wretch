@@ -193,8 +193,7 @@ import ProgressAddon from "wretch/addons/progress"
 import FormDataAddon from "wretch/addons/formData"
 
 await wretch("https://httpbun.org/post")
-  .addon(ProgressAddon())
-  .addon(FormDataAddon)
+  .addon([ProgressAddon(), FormDataAddon])
   .formData({ file })
   .onUpload((loaded, total) => {
     console.log(`Upload: ${(loaded / total * 100).toFixed(0)}%`)

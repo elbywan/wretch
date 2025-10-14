@@ -55,19 +55,28 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    * import FormDataAddon from "wretch/addons/formData"
    * import QueryStringAddon from "wretch/addons/queryString"
    *
-   * // Add both addons
-   * const w = wretch().addon(FormDataAddon).addon(QueryStringAddon)
+   * // Add a single addon
+   * const w = wretch().addon(FormDataAddon)
+   *
+   * // Or add multiple addons at once
+   * const w2 = wretch().addon([FormDataAddon, QueryStringAddon])
    *
    * // Additional features are now available
    * w.formData({ hello: "world" }).query({ check: true })
    * ```
    *
    * @category Helpers
-   * @param addon - A Wretch addon to register
+   * @param addon - A Wretch addon or an array of addons to register
    */
   addon<W, R>(addon: WretchAddon<W, R>): W & Self & Wretch<Self & W, Chain & R, Resolver, ErrorType>
-
-
+  addon<W1, R1, W2, R2>(addon: [WretchAddon<W1, R1>, WretchAddon<W2, R2>]): W1 & W2 & Self & Wretch<Self & W1 & W2, Chain & R1 & R2, Resolver, ErrorType>
+  addon<W1, R1, W2, R2, W3, R3>(addon: [WretchAddon<W1, R1>, WretchAddon<W2, R2>, WretchAddon<W3, R3>]): W1 & W2 & W3 & Self & Wretch<Self & W1 & W2 & W3, Chain & R1 & R2 & R3, Resolver, ErrorType>
+  addon<W1, R1, W2, R2, W3, R3, W4, R4>(addon: [WretchAddon<W1, R1>, WretchAddon<W2, R2>, WretchAddon<W3, R3>, WretchAddon<W4, R4>]): W1 & W2 & W3 & W4 & Self & Wretch<Self & W1 & W2 & W3 & W4, Chain & R1 & R2 & R3 & R4, Resolver, ErrorType>
+  addon<W1, R1, W2, R2, W3, R3, W4, R4, W5, R5>(addon: [WretchAddon<W1, R1>, WretchAddon<W2, R2>, WretchAddon<W3, R3>, WretchAddon<W4, R4>, WretchAddon<W5, R5>]): W1 & W2 & W3 & W4 & W5 & Self & Wretch<Self & W1 & W2 & W3 & W4 & W5, Chain & R1 & R2 & R3 & R4 & R5, Resolver, ErrorType>
+  addon<W1, R1, W2, R2, W3, R3, W4, R4, W5, R5, W6, R6>(addon: [WretchAddon<W1, R1>, WretchAddon<W2, R2>, WretchAddon<W3, R3>, WretchAddon<W4, R4>, WretchAddon<W5, R5>, WretchAddon<W6, R6>]): W1 & W2 & W3 & W4 & W5 & W6 & Self & Wretch<Self & W1 & W2 & W3 & W4 & W5 & W6, Chain & R1 & R2 & R3 & R4 & R5 & R6, Resolver, ErrorType>
+  addon<W1, R1, W2, R2, W3, R3, W4, R4, W5, R5, W6, R6, W7, R7>(addon: [WretchAddon<W1, R1>, WretchAddon<W2, R2>, WretchAddon<W3, R3>, WretchAddon<W4, R4>, WretchAddon<W5, R5>, WretchAddon<W6, R6>, WretchAddon<W7, R7>]): W1 & W2 & W3 & W4 & W5 & W6 & W7 & Self & Wretch<Self & W1 & W2 & W3 & W4 & W5 & W6 & W7, Chain & R1 & R2 & R3 & R4 & R5 & R6 & R7, Resolver, ErrorType>
+  addon<W1, R1, W2, R2, W3, R3, W4, R4, W5, R5, W6, R6, W7, R7, W8, R8>(addon: [WretchAddon<W1, R1>, WretchAddon<W2, R2>, WretchAddon<W3, R3>, WretchAddon<W4, R4>, WretchAddon<W5, R5>, WretchAddon<W6, R6>, WretchAddon<W7, R7>, WretchAddon<W8, R8>]): W1 & W2 & W3 & W4 & W5 & W6 & W7 & W8 & Self & Wretch<Self & W1 & W2 & W3 & W4 & W5 & W6 & W7 & W8, Chain & R1 & R2 & R3 & R4 & R5 & R6 & R7 & R8, Resolver, ErrorType>
+  addon<W1, R1, W2, R2, W3, R3, W4, R4, W5, R5, W6, R6, W7, R7, W8, R8, W9, R9>(addon: [WretchAddon<W1, R1>, WretchAddon<W2, R2>, WretchAddon<W3, R3>, WretchAddon<W4, R4>, WretchAddon<W5, R5>, WretchAddon<W6, R6>, WretchAddon<W7, R7>, WretchAddon<W8, R8>, WretchAddon<W9, R9>]): W1 & W2 & W3 & W4 & W5 & W6 & W7 & W8 & W9 & Self & Wretch<Self & W1 & W2 & W3 & W4 & W5 & W6 & W7 & W8 & W9, Chain & R1 & R2 & R3 & R4 & R5 & R6 & R7 & R8 & R9, Resolver, ErrorType>
 
   /**
    * Sets a custom fetch implementation to use for requests.
