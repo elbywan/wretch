@@ -1,12 +1,17 @@
 // @ts-check
 
 import eslint from "@eslint/js"
+import { defineConfig, globalIgnores } from "eslint/config"
 import tseslint from "typescript-eslint"
 import globals from "globals"
 
-export default tseslint.config(
+export default defineConfig([
+  globalIgnores([
+    "./dist/*",
+    "./test/generated/*",
+  ]),
   eslint.configs.recommended,
-  ...tseslint.configs.recommended,
+  tseslint.configs.recommended,
   {
     rules: {
       indent: ["error", 2],
@@ -26,7 +31,6 @@ export default tseslint.config(
         ...globals.browser
       }
     },
-    ignores: [ "dist/"],
   },
   {
     files: ["test/browser/**/*.js"],
@@ -43,4 +47,4 @@ export default tseslint.config(
       "no-empty": "off"
     }
   }
-)
+])
