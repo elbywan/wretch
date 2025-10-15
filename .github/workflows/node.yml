@@ -28,7 +28,7 @@ jobs:
       - name: Build
         run: npm run build
       - name: Unit tests
-        run: npm run test
+        run: npm run test:node
       - name: Coveralls
         if: ${{ success() }}
         uses: coverallsapp/github-action@master

@@ -529,11 +529,13 @@ export function createWretchTests(ctx: TestContext): void {
 
     it("should allow transforming errors with fully typed error bodies", async function () {
       await wretch(`${_URL}/json500raw`)
-        .customError(async (error, response) => {
-          return { ...error, message: response.statusText, json: await response.json() }
+        .customError(async (_error, response) => {
+          const err = new Error(response.statusText)
+          err["json"] = await response.json()
+          return err
         })
         .get()
-        .internalError(error => {
+        .internalError((error: any) => {
           expect(error.json).toEqual({ error: 500, message: "ok" })
           expect(error.message).toEqual("Internal Server Error")
         })

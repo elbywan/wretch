@@ -1,6 +1,6 @@
 import { middlewareHelper } from "./middleware.js"
 import type { Wretch, WretchResponse, WretchResponseChain, WretchError as WretchErrorType } from "./types.js"
-import { FETCH_ERROR, CATCHER_FALLBACK } from "./constants.js"
+import { CATCHER_FALLBACK, FETCH_ERROR } from "./constants.js"
 
 /**
  * This class inheriting from Error is thrown when the fetch response is not "ok".
@@ -45,9 +45,6 @@ export const resolver = <T, Chain, R, E>(wretch: T & Wretch<T, Chain, R, E>) => 
   // Throws on an http error
   const referenceError = new Error()
   const throwingPromise: Promise<void | WretchResponse> = _fetchReq
-    .catch(error => {
-      throw { [FETCH_ERROR]: error }
-    })
     .then(async response => {
       if (!response.ok) {
         const err = new WretchError()
@@ -57,19 +54,14 @@ export const resolver = <T, Chain, R, E>(wretch: T & Wretch<T, Chain, R, E>) => 
         err.status = response.status
         err.url = finalUrl
 
-        if (response.type === "opaque") {
+        if (response.type === "opaque" || errorTransformer) {
           err.message = response.statusText
-          throw err
-        }
-
-        if (errorTransformer) {
-          throw await errorTransformer(err, response)
-        }
-
-        try {
-          err.message = await response.text()
-        } catch {
-          err.message = response.statusText
+        } else {
+          try {
+            err.message = await response.text()
+          } catch {
+            err.message = response.statusText
+          }
         }
 
         throw err
@@ -78,15 +70,17 @@ export const resolver = <T, Chain, R, E>(wretch: T & Wretch<T, Chain, R, E>) => 
     })
   // Wraps the Promise in order to dispatch the error to a matching catcher
   const catchersWrapper = <T>(promise: Promise<T>): Promise<void | T> =>
-    promise.catch(err => {
-      const fetchErrorFlag = FETCH_ERROR in err
-      const error = fetchErrorFlag ? err[FETCH_ERROR] : err
+    promise.catch(async error => {
 
       const catcher =
-        (error?.status && catchers.get(error.status)) ||
+        catchers.get(error?.status) ||
         catchers.get(error?.name) ||
-        (fetchErrorFlag && catchers.get(FETCH_ERROR)) ||
+        (!(error instanceof WretchError) && catchers.get(FETCH_ERROR)) ||
         catchers.get(CATCHER_FALLBACK)
+
+      if(error.response && errorTransformer) {
+        error = await errorTransformer(error, error.response)
+      }
 
       if (catcher)
         return catcher(error, wretch)
