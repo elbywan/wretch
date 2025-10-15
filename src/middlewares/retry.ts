@@ -14,6 +14,7 @@ export type OnRetryFunction = (args: {
   response?: Response
   error?: Error
   url: string
+  attempt: number
   options: WretchOptions
 }) => void | OnRetryFunctionResponse | Promise<OnRetryFunctionResponse>
 export type SkipFunction = (url: string, opts: WretchOptions) => boolean
@@ -44,6 +45,8 @@ export type RetryOptions = {
   until?: UntilFunction
   /**
    * Callback that will get executed before retrying the request. If this function returns an object having url and/or options properties, they will override existing values in the retried request.
+   *
+   * The callback receives an object with: `response`, `error`, `url`, `attempt` (current attempt number, starting at 1), and `options`.
    *
    * _Default: `undefined`_
    */
@@ -136,7 +139,7 @@ export const retry: RetryMiddleware = ({
   skip,
 } = {}) => {
   return next => (url, opts) => {
-    let numberOfAttemptsMade = 0
+    let attempts = 0
 
     if (skip && skip(url, opts)) {
       return next(url, opts)
@@ -146,12 +149,12 @@ export const retry: RetryMiddleware = ({
       return Promise.resolve(until(response, error)).then(done => {
         // If the response is not suitable
         if (!done) {
-          numberOfAttemptsMade++
+          attempts++
 
-          if (!maxAttempts || numberOfAttemptsMade <= maxAttempts) {
+          if (!maxAttempts || attempts <= maxAttempts) {
             // We need to recurse until we have a correct response and chain the checks
             return new Promise(resolve => {
-              const delay = delayRamp(delayTimer, numberOfAttemptsMade)
+              const delay = delayRamp(delayTimer, attempts)
               setTimeout(() => {
                 if (typeof onRetry === "function") {
                   Promise.resolve(
@@ -159,6 +162,7 @@ export const retry: RetryMiddleware = ({
                       response,
                       error,
                       url,
+                      attempt: attempts,
                       options: opts,
                     })
                   ).then((values = {}) => {
