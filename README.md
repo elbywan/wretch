@@ -31,7 +31,7 @@
 - 💡 **Intuitive** - lean API, handles errors, headers and (de)serialization
 - 🧊 **Immutable** - every call creates a cloned instance that can then be reused safely
 - 🔌 **Modular** - plug addons to add new features, and middlewares to intercept requests
-- 🧩 **Isomorphic** - compatible with modern browsers, Node.js 22+ and Deno
+- 🧩 **Isomorphic** - compatible with modern browsers, Node.js 22+, Deno and Bun
 - 🦺 **Type safe** - strongly typed, written in TypeScript
 - ✅ **Proven** - fully covered by unit tests and widely used
 - 💓 **Maintained** - alive and well for many years
@@ -227,6 +227,21 @@ Works with [Deno](https://deno.land/) out of the box.
 
 ```bash
 deno add npm:wretch
+```
+
+```ts
+import wretch from "wretch";
+
+const text = await wretch("https://httpbun.org").get("/status/200").text();
+console.log(text); // -> { "code": 200, "description": "OK" }
+```
+
+## Bun
+
+Works with [Bun](https://bun.sh/) out of the box.
+
+```bash
+bun add wretch
 ```
 
 ```ts

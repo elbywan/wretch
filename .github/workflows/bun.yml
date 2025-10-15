@@ -1,0 +1,24 @@
+name: Bun compatibility test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - dev
+  workflow_dispatch:
+
+jobs:
+  bun-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: moonrepo/setup-toolchain@v0
+        with:
+          auto-install: true
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Test Bun compatibility
+        run: npm run test:bun

@@ -121,6 +121,7 @@
     "test:browser": "concurrently --success first -k 'npm run mock:wait && web-test-runner' 'npm run mock'",
     "test:browser:watch": "concurrently --success first -k 'npm run mock:wait && web-test-runner --watch' 'npm run mock'",
     "test:deno": "concurrently --success first -k 'npm run mock:wait && deno test --allow-net --allow-read --no-check --sloppy-imports --config test/deno/deno.json test/deno/wretch.spec.ts' 'npm run mock'",
+    "test:bun": "concurrently --success first -k 'npm run mock:wait && bun test test/bun/wretch.spec.ts' 'npm run mock'",
     "test:snippets:generate": "node --import tsx scripts/generateSnippetTests.ts",
     "test:snippets": "npm run test:snippets:generate && node --experimental-vm-modules --import tsx --test test/generated/snippets.spec.ts",
     "test:snippets:skip-failing": "node --import tsx scripts/addSkipComments.ts",

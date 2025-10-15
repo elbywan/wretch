@@ -21,6 +21,7 @@ const isSafari =
   navigator.userAgent.indexOf("Chrome") < 0
 const isBrowser = typeof window !== "undefined" && typeof window.document !== "undefined"
 const isDeno = typeof globalThis.Deno !== "undefined"
+const isBun = typeof globalThis.Bun !== "undefined"
 
 const allRoutes = <T>(
   obj: Wretch,
@@ -562,7 +563,7 @@ export function createWretchTests(ctx: TestContext): void {
     })
 
     it("should retrieve performance timings associated with a fetch request", async function () {
-      if (isSafari || isDeno)
+      if (isSafari || isDeno || isBun)
         return
 
       const w = wretch()
@@ -799,7 +800,7 @@ export function createWretchTests(ctx: TestContext): void {
     })
 
     it("should program resolvers", async function () {
-      if(isSafari || isDeno)
+      if(isSafari || isDeno || isBun)
         return
 
       let check = 0

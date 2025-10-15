@@ -15,7 +15,7 @@ cd wretch
 
 ### 2 - Setup toolchain
 
-This project uses [proto](https://moonrepo.dev/proto) to manage tool versions (Node.js, npm, Deno). Install proto:
+This project uses [proto](https://moonrepo.dev/proto) to manage tool versions (Node.js, npm, Deno, Bun). Install proto:
 
 ```bash
 # macOS/Linux
