@@ -116,12 +116,11 @@
     "prebuild": "rimraf dist && rimraf coverage && npm run lint",
     "build": "tsc && tsc --project tsconfig.cjs.json && echo '{\"type\": \"commonjs\"}' > ./dist/cjs/package.json && rolldown -c ./rolldown.config.ts",
     "mock": "node scripts/mockServer.js",
-    "mock:wait": "wait-on -t 10000 http://localhost:9876/ping",
-    "test": "concurrently --success first -k 'npm run mock:wait && c8 node --import tsx --test \"test/node/**/*.spec.ts\"' 'npm run mock'",
-    "test:browser": "concurrently --success first -k 'npm run mock:wait && web-test-runner' 'npm run mock'",
-    "test:browser:watch": "concurrently --success first -k 'npm run mock:wait && web-test-runner --watch' 'npm run mock'",
-    "test:deno": "concurrently --success first -k 'npm run mock:wait && deno test --allow-net --allow-read --no-check --sloppy-imports --config test/deno/deno.json test/deno/wretch.spec.ts' 'npm run mock'",
-    "test:bun": "concurrently --success first -k 'npm run mock:wait && bun test test/bun/wretch.spec.ts' 'npm run mock'",
+    "test": "node scripts/runWithMockServer.js \"c8 node --import tsx --test test/node/*.spec.ts --test test/node/**/*.spec.ts\"",
+    "test:browser": "node scripts/runWithMockServer.js web-test-runner",
+    "test:browser:watch": "node scripts/runWithMockServer.js \"web-test-runner --watch\"",
+    "test:deno": "node scripts/runWithMockServer.js \"deno test --allow-net --allow-read --no-check --sloppy-imports --config test/deno/deno.json test/deno/wretch.spec.ts\"",
+    "test:bun": "node scripts/runWithMockServer.js \"bun test test/bun/wretch.spec.ts\"",
     "test:snippets:generate": "node --import tsx scripts/generateSnippetTests.ts",
     "test:snippets": "npm run test:snippets:generate && node --experimental-vm-modules --import tsx --test test/generated/snippets.spec.ts",
     "test:snippets:skip-failing": "node --import tsx scripts/addSkipComments.ts",
@@ -143,7 +142,6 @@
     "@web/test-runner": "^0.20.2",
     "@web/test-runner-playwright": "^0.11.1",
     "c8": "^10.1.3",
-    "concurrently": "^9.2.1",
     "conventional-changelog-cli": "^2.2.2",
     "conventional-changelog-wretch": "file:scripts/conventional-changelog-wretch",
     "eslint": "^9.37.0",
@@ -155,7 +153,6 @@
     "tsx": "^4.20.6",
     "typedoc": "^0.28.14",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.46.1",
-    "wait-on": "^9.0.1"
+    "typescript-eslint": "^8.46.1"
   }
 }
