@@ -44,8 +44,8 @@ npm install
 ```bash
 npm start
 # To run browser specs
-npm run test:karma # same as the ci
-npm run test:karma:watch # in watch mode
+npm run test:browser # same as the ci
+npm run test:browser:watch # in watch mode
 ```
 
 The code **must** pass the linter and specs.

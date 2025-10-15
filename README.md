@@ -11,7 +11,7 @@
   <a href="https://github.com/elbywan/wretch/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license-badge" height="20"></a>
 </h1>
 <h4 align="center">
-	A tiny (~2KB g-zipped) wrapper built around <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch">fetch</a> with an intuitive syntax.
+	A tiny (~1.8KB g-zipped) wrapper built around <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch">fetch</a> with an intuitive syntax.
 </h4>
 <h5 align="center">
     <i>f[ETCH] [WR]apper</i>
@@ -19,7 +19,7 @@
 
 <br>
 
-##### Wretch 2.11 is now live 🎉 ! Please have a look at the [releases](https://github.com/elbywan/wretch/releases) and the [changelog](https://github.com/elbywan/wretch/blob/master/CHANGELOG.md) after each update for new features and breaking changes. If you want to try out the hot stuff, please look into the [dev](https://github.com/elbywan/wretch/tree/dev) branch.
+##### Wretch 3.0 is now live 🎉 ! Check out the [Migration Guide](MIGRATION_V2_V3.md) for upgrading from v2, and please have a look at the [releases](https://github.com/elbywan/wretch/releases) and the [changelog](https://github.com/elbywan/wretch/blob/master/CHANGELOG.md) after each update for new features and breaking changes.
 
 ##### And if you like the library please consider becoming a [sponsor](https://github.com/sponsors/elbywan) ❤️.
 
@@ -27,7 +27,7 @@
 
 #### `wretch` is a small wrapper around [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) designed to simplify the way to perform network requests and handle responses.
 
-- 🪶 **Small** - core is less than 2KB g-zipped
+- 🪶 **Small** - core is less than 1.8KB g-zipped
 - 💡 **Intuitive** - lean API, handles errors, headers and (de)serialization
 - 🧊 **Immutable** - every call creates a cloned instance that can then be reused safely
 - 🔌 **Modular** - plug addons to add new features, and middlewares to intercept requests
@@ -38,6 +38,7 @@
 
 # Table of Contents
 
+- [**Quick Start**](#quick-start)
 - [**Motivation**](#motivation)
 - [**Installation**](#installation)
 - [**Compatibility**](#compatibility)
@@ -48,6 +49,41 @@
 - [**Middlewares**](#middlewares)
 - [**Migration Guides**](#migration-guides)
 - [**License**](#license)
+
+# Quick Start
+
+```bash
+# 1️⃣ Install
+npm i wretch
+```
+
+```javascript
+// 2️⃣ Import and create a reusable API client
+import wretch from "wretch"
+
+const api = wretch("https://jsonplaceholder.typicode.com")
+  .options({ mode: "cors" })
+
+// 3️⃣ Make requests with automatic JSON handling
+const post = await api.get("/posts/1").json()
+console.log(post.title)
+
+// 4️⃣ POST with automatic serialization
+const created = await api
+  .post({ title: "New Post", body: "Content", userId: 1 }, "/posts")
+  .json()
+
+// 5️⃣ Handle errors elegantly
+await api
+  .get("/posts/999")
+  .notFound(() => console.log("Post not found!"))
+  .json()
+
+// 6️⃣ Different response types
+const text = await api.get("/posts/1").text()      // Raw text
+const response = await api.get("/posts/1").res()   // Raw Response object
+const blob = await api.get("/photos/1").blob()     // Binary data
+```
 
 # Motivation
 
@@ -213,11 +249,13 @@ The package contains multiple bundles depending on the format and feature set lo
 
 ## Browsers
 
-`wretch@^2` is compatible with modern browsers only. For older browsers please use `wretch@^1`.
+`wretch@^3` is compatible with modern browsers only. For older browsers please use `wretch@^1`.
 
 ## Node.js
 
 Wretch is compatible with and tested in _Node.js >= 22_.
+
+For older Node.js versions, please use `wretch@^2`.
 
 Node.js 22+ includes native fetch support and all required Web APIs (FormData, URLSearchParams, AbortController, etc.) out of the box, so no polyfills are needed.
 
@@ -265,44 +303,62 @@ const wretch = require("wretch")
 window.wretch
 ```
 
-## Minimal Example
+## Common Use Cases
 
-```js
-import wretch from "wretch"
+```javascript
+// 🌐 REST API Client
+const api = wretch("https://jsonplaceholder.typicode.com")
+  .auth("Bearer token")
+  .resolve(r => r.json())
 
-// Instantiate and configure wretch
-const api =
-  wretch("https://jsonplaceholder.typicode.com", { mode: "cors" })
-    .customError(async (error, response) => {
-      // The API may return detailed error messages in the response body as JSON…
-      const body = await response.json();
-      // …or an empty object - in which case the status text is logged instead.
-      return new Error(`${response.status}: ${Object.keys(body).length > 0 ? body : response.statusText}`,
-        { cause: error })
+const users = await api.get("/users")
+const user = await api.post({ name: "John" }, "/users")
+```
+
+```javascript
+// 📤 File Upload with Progress
+import ProgressAddon from "wretch/addons/progress"
+import FormDataAddon from "wretch/addons/formData"
+
+await wretch("https://httpbun.org/post")
+  .addon([FormDataAddon, ProgressAddon()])
+  .formData({ file: file })
+  .post()
+  .progress((loaded, total) => console.log(`${(loaded/total*100).toFixed()}%`))
+  .json()
+```
+
+```javascript
+// 🔄 Auto-retry on Network Failure
+import { retry } from "wretch/middlewares"
+
+const resilientApi = wretch()
+  .middlewares([retry({ maxAttempts: 3, retryOnNetworkError: true })])
+```
+
+```typescript
+// 🎯 Type-safe TypeScript
+interface User { id: number; name: string; email: string }
+
+const user = await wretch("https://jsonplaceholder.typicode.com")
+  .get("/users/1")
+  .json<User>() // Fully typed!
+```
+
+```javascript
+// 🔐 Automatic Token Refresh
+const api = wretch("https://httpbun.org/bearer/token")
+  .resolve(w => w.unauthorized(async (error, req) => {
+    const newToken = await refreshToken()
+    return req
+    .auth(`Bearer ${newToken}`)
+    .unauthorized(e => {
+      console.log("Still unauthorized after token refresh");
+      throw e
     })
-    .resolve(r => r.json())
-
-try {
-  // Fetch users
-  const users = await api.get("/users")
-  // Find all posts from a given user
-  const user = users.find(({ name }) => name === "Nicholas Runolfsdottir V")
-  const postsByUser = await api.get(`/posts?userId=${user.id}`)
-  // Create a new post
-  const newPost = await api.url("/posts").post({
-    title: "New Post",
-    body: "My shiny new post"
-  })
-  // Patch it
-  await api.url("/posts/" + newPost.id).patch({
-    title: "Updated Post",
-    body: "Edited body"
-  })
-  // Fetch it
-  await api.get("/posts/" + newPost.id)
-} catch (error) {
-  console.error(error.message)
-}
+    .fetch()
+    .json()
+  }))
 ```
 
 ## Custom Fetch Implementation
@@ -333,6 +389,34 @@ await api.get("/posts").json()
 ## Chaining
 
 **A high level overview of the successive steps that can be chained to perform a request and parse the result.**
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        Request Chain                            │
+│                                                                 │
+│  wretch(url) ──> .helper() ──> .body() ──> .httpMethod()        │
+│                    ↓              ↓            ↓                │
+│                 .headers()     .json()      .get()              │
+│                 .auth()        .body()      .post()             │
+│                 .options()                  .put()              │
+│                                             .delete()           │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+                    [ fetch() is called ]
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│                       Response Chain                            │
+│                                                                 │
+│  .catcher() ──> .responseType() ──> Promise ──> .then()/.catch()│
+│      ↓              ↓                                           │
+│  .notFound()     .json()                                        │
+│  .unauthorized() .text()                                        │
+│  .error()        .blob()                                        │
+│                  .res()                                         │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Step-by-step breakdown:**
 
 <!-- snippet:skip -->
 ```ts
@@ -374,11 +458,26 @@ _From this point on, wretch returns a standard Promise._
   .catch(…)
 ```
 
+### Concrete Example
+
+Here's how the chaining works in practice:
+
+<!-- snippet:skip Example -->
+```js
+await wretch("https://api.example.com")        // Base URL
+  .headers({ "X-Api-Key": "secret" })          // Helper method
+  .query({ limit: 10 })                        // Helper method
+  .json({ name: "Alice", role: "admin" })      // Body type
+  .post("/users")                              // HTTP method (starts request)
+  .badRequest(err => console.log("Invalid"))   // Catcher
+  .unauthorized(err => console.log("No auth")) // Catcher
+  .json(user => console.log(user))             // Response type
+```
+
 # Recipes
 
 Looking for common patterns and solutions? Check out the **[Recipes Guide](RECIPES.md)** for practical examples covering:
 
-- **Framework Integration** - SvelteKit, Next.js
 - **Error Handling** - Parsing error response bodies, custom error types, global handlers
 - **TypeScript Patterns** - Typing precomposed instances, reusable catchers
 - **File Uploads** - Progress tracking, FormData handling
@@ -404,6 +503,8 @@ const api = wretch("http://domain.com/", { cache: "default" })
 
 Helper Methods are used to configure the request and program actions.
 
+**Available methods:** [`.url()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#url) · [`.options()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#options) · [`.headers()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#headers) · [`.auth()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#auth) · [`.accept()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#accept) · [`.content()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#content) · [`.signal()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#signal) · [`.fetchPolyfill()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#fetchPolyfill) · [`.catcher()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#catcher) · [`.catcherFallback()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#catcherFallback) · [`.customError()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#customError) · [`.defer()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#defer) · [`.resolve()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#resolve) · [`.middlewares()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#middlewares) · [`.addon()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#addon) · [`.polyfills()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#polyfills)
+
 ```js
 let api = wretch("http://domain.com/")
 
@@ -417,6 +518,8 @@ api = api
 
 Specify a body type if uploading data. Can also be added through the HTTP Method argument.
 
+**Available methods:** [`.body()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#body) · [`.json()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#json)
+
 ```js
 let api = wretch("http://domain.com/")
 
@@ -429,6 +532,8 @@ Sets the HTTP method and sends the request.
 
 Calling an HTTP method ends the request chain and returns a response chain.
 You can pass optional url and body arguments to these methods.
+
+**Available methods:** [`.get()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#get) · [`.post()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#post) · [`.put()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#put) · [`.patch()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#patch) · [`.delete()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#delete) · [`.head()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#head) · [`.opts()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#opts)
 
 ```js
 const api = wretch("http://jsonplaceholder.typicode.com")
@@ -447,6 +552,8 @@ api.json({ json: "body" }).url("/posts").post();
 ### [Catchers 🔗](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#badRequest)
 
 Catchers are optional, but if none are provided an error will still be thrown for http error codes and it will be up to you to catch it.
+
+**Available methods:** [`.badRequest()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#badRequest) · [`.unauthorized()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#unauthorized) · [`.forbidden()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#forbidden) · [`.notFound()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#notFound) · [`.timeout()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#timeout) · [`.internalError()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#internalError) · [`.error()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#error) · [`.fetchError()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#fetchError)
 
 ```js
 wretch("http://domain.com/resource")
@@ -507,6 +614,8 @@ Setting the final response body type ends the chain and returns a regular promis
 All these methods accept an optional callback, and will return a Promise
 resolved with either the return value of the provided callback or the expected
 type.
+
+**Available methods:** [`.res()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#res) · [`.json()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#json) · [`.text()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#text) · [`.blob()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#blob) · [`.arrayBuffer()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#arrayBuffer) · [`.formData()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#formData)
 
 ```js
 const ENDPOINT = "https://jsonplaceholder.typicode.com/posts/1"
@@ -679,22 +788,44 @@ wretch(`https://${user}:${pass}@httpbun.org/basic-auth/${user}/${pass}`)
 
 ### [Progress 🔗](https://elbywan.github.io/wretch/api/interfaces/addons_progress.ProgressResolver)
 
-Adds the ability to monitor progress when downloading a response.
+Adds the ability to monitor progress when downloading or uploading.
 
 _Compatible with all platforms implementing the [TransformStream WebAPI](https://developer.mozilla.org/en-US/docs/Web/API/TransformStream#browser_compatibility)._
+
+**Download progress:**
 
 ```js
 import ProgressAddon from "wretch/addons/progress"
 
-wretch("https://httpbun.org/bytes/5000000")
+await wretch("https://httpbun.org/bytes/5000000")
   .addon(ProgressAddon())
   .get()
   // Called with the number of bytes loaded and the total number of bytes to load
   .progress((loaded, total) => {
-    console.log(`${(loaded / total * 100).toFixed(0)}%`)
+    console.log(`Download: ${(loaded / total * 100).toFixed(0)}%`)
   })
   .blob()
 ```
+
+**Upload progress:**
+
+```js
+import ProgressAddon from "wretch/addons/progress"
+import FormDataAddon from "wretch/addons/formData"
+
+const formData = new FormData()
+formData.append('file', file)
+
+wretch("https://httpbun.org/post")
+  .addon([ProgressAddon(), FormDataAddon])
+  .onUpload((loaded, total) => {
+    console.log(`Upload: ${(loaded / total * 100).toFixed(0)}%`)
+  })
+  .post(formData)
+  .res()
+```
+
+> **Note for browsers:** Upload progress requires HTTPS (HTTP/2) in Chrome/Chromium and doesn't work in Firefox due to streaming limitations. Works fully in Node.js.
 
 ### [Performance 🔗](https://elbywan.github.io/wretch/api/functions/addons_perfs.default)
 

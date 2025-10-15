@@ -584,7 +584,7 @@ import wretch from 'wretch';
 let tokenRefreshCount = 0;
 const refreshAuthToken = async () => `new-token-${++tokenRefreshCount}`;
 
-const api = wretch('https://jsonplaceholder.typicode.com')
+const api = wretch('https://httpbun.com/bearer/token-1')
   .catcher(401, async (error, request) => {
     const newToken = await refreshAuthToken();
     return request
@@ -595,7 +595,7 @@ const api = wretch('https://jsonplaceholder.typicode.com')
   });
 
 const data = await api
-  .get('/posts/1')
+  .get()
   .json();
 ```
 
