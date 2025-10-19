@@ -363,12 +363,7 @@ const api = wretch("https://httpbun.org/bearer/token")
 
 ## Custom Fetch Implementation
 
-You can provide a custom fetch implementation using the `.fetchPolyfill()` method. This is useful for:
-
-- Adding custom middleware or instrumentation to all requests
-- Using alternative fetch implementations
-- Mocking fetch in tests
-- Adding performance monitoring
+You can provide a custom fetch implementation using the `.fetchPolyfill()` method. This is useful for for a variety of use cases including mocking, adding logging, timing, or other custom behavior to all requests made through a wretch instance.
 
 ```js
 import wretch from "wretch"
@@ -384,6 +379,30 @@ const api = wretch("https://jsonplaceholder.typicode.com")
   })
 
 await api.get("/posts").json()
+```
+
+### [toFetch() - Fetch Adapter 🔗](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#toFetch)
+
+Converts a wretch instance into a fetch-like function, preserving all configuration (middlewares, catchers, headers, etc.). Useful for integrating wretch with libraries that expect a fetch signature.
+
+```js
+const myFetch = wretch("https://jsonplaceholder.typicode.com")
+  .auth("Bearer token")
+  .catcher(401, (err) => console.log("Unauthorized"))
+  .toFetch()
+
+// Use like regular fetch
+const response = await myFetch("/users", { method: "GET" })
+```
+
+<!-- snippet:skip Example with external library -->
+```js
+// Pass to libraries expecting fetch
+import { createClient } from "@apollo/client"
+
+const client = createClient({
+  fetch: wretch().auth("Bearer token").toFetch()
+})
 ```
 
 ## Chaining
@@ -503,7 +522,7 @@ const api = wretch("http://domain.com/", { cache: "default" })
 
 Helper Methods are used to configure the request and program actions.
 
-**Available methods:** [`.url()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#url) · [`.options()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#options) · [`.headers()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#headers) · [`.auth()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#auth) · [`.accept()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#accept) · [`.content()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#content) · [`.signal()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#signal) · [`.fetchPolyfill()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#fetchPolyfill) · [`.catcher()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#catcher) · [`.catcherFallback()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#catcherFallback) · [`.customError()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#customError) · [`.defer()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#defer) · [`.resolve()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#resolve) · [`.middlewares()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#middlewares) · [`.addon()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#addon) · [`.polyfills()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#polyfills)
+**Available methods:** [`.url()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#url) · [`.options()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#options) · [`.headers()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#headers) · [`.auth()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#auth) · [`.accept()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#accept) · [`.content()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#content) · [`.signal()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#signal) · [`.toFetch()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#toFetch) · [`.fetchPolyfill()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#fetchPolyfill) · [`.catcher()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#catcher) · [`.catcherFallback()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#catcherFallback) · [`.customError()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#customError) · [`.defer()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#defer) · [`.resolve()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#resolve) · [`.middlewares()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#middlewares) · [`.addon()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#addon) · [`.polyfills()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#polyfills)
 
 ```js
 let api = wretch("http://domain.com/")
@@ -547,7 +566,6 @@ api.json({ json: "body" }).url("/posts").post();
 ```
 
 **NOTE:** if the body argument is an `Object` it is assumed that it is a JSON payload and it will have the same behaviour as calling `.json(body)` unless the `Content-Type` header has been set to something else beforehand.
-
 
 ### [Catchers 🔗](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#badRequest)
 

@@ -1,7 +1,7 @@
 import { mix, extractContentType, isLikelyJsonMime } from "./utils.js"
 import { JSON_MIME, CATCHER_FALLBACK } from "./constants.js"
 import { resolver } from "./resolver.js"
-import type { Wretch } from "./types.js"
+import type { Wretch, WretchOptions } from "./types.js"
 
 export const core: Wretch = {
   _url: "",
@@ -126,5 +126,15 @@ export const core: Wretch = {
       isLikelyJsonMime(currentContentType) && currentContentType ||
       JSON_MIME
     ).body(JSON.stringify(jsObject))
+  },
+  toFetch() {
+    return (fetchUrl, fetchOptions: WretchOptions = {}) => {
+      return this
+        .url(fetchUrl)
+        .options(fetchOptions)
+        .catcherFallback(error => error.response)
+        .fetch()
+        .res()
+    }
   }
 }

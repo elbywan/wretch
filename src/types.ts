@@ -583,6 +583,27 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
     Resolver extends undefined ?
     Chain & WretchResponseChain<Self, Chain, Resolver, ErrorType> :
     Resolver
+
+  /**
+   * Converts the wretch instance into a fetch-like function that preserves all
+   * accumulated configuration (middlewares, catchers, options, headers, etc.).
+   *
+   * Useful for integrating with libraries that expect a fetch function signature.
+   *
+   * ```js
+   * const myFetch = wretch("https://api.example.com")
+   *   .auth("Bearer token")
+   *   .catcher(401, handleAuth)
+   *   .middlewares([retry()])
+   *   .toFetch()
+   *
+   * // Use like regular fetch but with all the wretch configuration
+   * const response = await myFetch("/users", { method: "GET" })
+   * ```
+   *
+   * @category Helpers
+   */
+  toFetch(this: Self & Wretch<Self, Chain, Resolver, ErrorType>): (url: string, options?: WretchOptions) => Promise<Response>
 }
 
 /**
