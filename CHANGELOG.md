@@ -1,3 +1,30 @@
+<a name="2.11.1"></a>
+## [2.11.1](https://github.com/elbywan/wretch/compare/2.11.0...2.11.1) (2025-10-19)
+
+
+### :arrow_up: Version update(s)
+
+* Bump axios from 1.10.0 to 1.11.0 ([88e6554](https://github.com/elbywan/wretch/commit/88e6554))
+* Bump axios from 1.7.7 to 1.10.0 ([2ccb6fa](https://github.com/elbywan/wretch/commit/2ccb6fa))
+* Bump cookie, light-my-request and socket.io ([891b26e](https://github.com/elbywan/wretch/commit/891b26e))
+* Bump form-data from 4.0.0 to 4.0.4 ([1b1bdac](https://github.com/elbywan/wretch/commit/1b1bdac))
+* Bump serialize-javascript from 6.0.1 to 6.0.2 ([ae8918f](https://github.com/elbywan/wretch/commit/ae8918f))
+* Bump tmp from 0.2.1 to 0.2.4 ([9355826](https://github.com/elbywan/wretch/commit/9355826))
+
+### :bug: Bug fix(es)
+
+* Ignore parsing errors in errorType('json') ([974e8fa](https://github.com/elbywan/wretch/commit/974e8fa)), closes [#266](https://github.com/elbywan/wretch/issues/266)
+
+### :memo: Documentation update(s)
+
+* Better retry code snippets types ([6dbdedc](https://github.com/elbywan/wretch/commit/6dbdedc)), closes [#255](https://github.com/elbywan/wretch/issues/255)
+
+### :white_check_mark: Test improvement(s)
+
+* Fix node22 delay middleware test ([0e0b30f](https://github.com/elbywan/wretch/commit/0e0b30f))
+
+
+
 <a name="2.11.0"></a>
 # [2.11.0](https://github.com/elbywan/wretch/compare/2.10.0...2.11.0) (2024-10-29)
 
