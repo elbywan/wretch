@@ -1,0 +1,24 @@
+name: Publish tag to npm
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: moonrepo/setup-toolchain@v0
+        with:
+          auto-install: true
+      - name: Install dependencies
+        run: npm ci
+      - name: Build, Lint & Test
+        run: npm run start
+      - name: Publish to npm
+        run: npm publish
