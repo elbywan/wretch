@@ -79,7 +79,7 @@ export const resolver = <T, Chain, R, E>(wretch: T & Wretch<T, Chain, R, E>) => 
         catchers.get(CATCHER_FALLBACK)
 
       if(error.response && errorTransformer) {
-        error = await errorTransformer(error, error.response)
+        error = await errorTransformer(error, error.response, wretch)
       }
 
       if (catcher)

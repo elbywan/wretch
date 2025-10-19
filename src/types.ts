@@ -26,7 +26,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
   /**
    * @private @internal
    */
-  _errorTransformer?: <T>(error: WretchError, response: WretchResponse) => Promise<T> | T,
+  _errorTransformer?: <T>(error: WretchError, response: WretchResponse, request: Wretch<any, any, any, any>) => Promise<T> | T,
   /**
    * @private @internal
    */
@@ -311,7 +311,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    * }
    *
    * const api = wretch("https://api.example.com")
-   *   .customError<ApiError>(async (error, response) => {
+   *   .customError<ApiError>(async (error, response, request) => {
    *     const json = await response.json();
    *     return { ...error, ...json };
    *   });
@@ -326,9 +326,9 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    * ```
    *
    * @category Helpers
-   * @param transformer - A function that receives the error and response, and returns the transformed error with custom properties
+   * @param transformer - A function that receives the error, response, and request, and returns the transformed error with custom properties
    */
-  customError<T extends (ErrorType extends undefined ? any : ErrorType)>(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, transformer: (error: WretchError, response: WretchResponse) => Promise<T> | T): Self & Wretch<Self, Chain, Resolver, T>
+  customError<T extends (ErrorType extends undefined ? any : ErrorType)>(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, transformer: (error: WretchError, response: WretchResponse, request: Self & Wretch<Self, Chain, Resolver, ErrorType>) => Promise<T> | T): Self & Wretch<Self, Chain, Resolver, T>
 
   /**
    * Defer one or multiple request chain methods that will get called just before the request is sent.

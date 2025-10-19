@@ -121,7 +121,7 @@ interface ApiError {
 }
 
 const api = wretch("http://server")
-  .customError<ApiError>(async (error, response) => {
+  .customError<ApiError>(async (error, response, request) => {
     return { ...error, json: await response.json() }
   })
 

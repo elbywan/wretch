@@ -55,7 +55,7 @@ interface ApiError {
 }
 
 const api = wretch('https://jsonplaceholder.typicode.com')
-  .customError(async (error, response) => {
+  .customError(async (error, response, request) => {
     const body = await response.json().catch(() => ({ message: 'Unknown error' }));
     return { ...error, apiError: body as ApiError };
   });
@@ -78,7 +78,7 @@ try {
 import wretch from 'wretch';
 
 const api = wretch('https://jsonplaceholder.typicode.com')
-  .customError(async (error, response) => {
+  .customError(async (error, response, request) => {
     const contentType = response.headers.get('content-type') || '';
     let errorBody;
 
