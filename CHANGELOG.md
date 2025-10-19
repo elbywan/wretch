@@ -1,3 +1,70 @@
+<a name="3.0.0"></a>
+# [3.0.0](https://github.com/elbywan/wretch/compare/2.11.1...3.0.0) (2025-10-19)
+
+
+### :arrow_up: Version update(s)
+
+* Migrate to rolldown ([219f1ce](https://github.com/elbywan/wretch/commit/219f1ce))
+* Upgrade packages ([da968b2](https://github.com/elbywan/wretch/commit/da968b2))
+* Upgrade packages ([ae05a13](https://github.com/elbywan/wretch/commit/ae05a13))
+
+### :art: Code improvement(s)
+
+* Add automated npm publishing workflow ([745b8a0](https://github.com/elbywan/wretch/commit/745b8a0))
+* Golf bytes ([b0316f1](https://github.com/elbywan/wretch/commit/b0316f1))
+* Improve .customError typings ([6efdb24](https://github.com/elbywan/wretch/commit/6efdb24))
+* Remove deno related docuentation and tests ([1ceac88](https://github.com/elbywan/wretch/commit/1ceac88))
+* Remove global config and dead code ([bdb8134](https://github.com/elbywan/wretch/commit/bdb8134))
+* Use proto to manage tools ([23f22e4](https://github.com/elbywan/wretch/commit/23f22e4))
+
+### :bug: Bug fix(es)
+
+* Fix custom error conflicting with catchers ([0486e49](https://github.com/elbywan/wretch/commit/0486e49))
+
+### :checkered_flag: Performance update(s)
+
+* Add bun tests ([df0e075](https://github.com/elbywan/wretch/commit/df0e075))
+* Add deno tests ([c02f1e8](https://github.com/elbywan/wretch/commit/c02f1e8))
+* Add workflow to test code snippets ([f036a71](https://github.com/elbywan/wretch/commit/f036a71))
+* Improve mock server lifecycle ([68d1a0f](https://github.com/elbywan/wretch/commit/68d1a0f))
+* Improve snippet testing ([299bd90](https://github.com/elbywan/wretch/commit/299bd90))
+* Replace karma with web-test-runner ([5b4215c](https://github.com/elbywan/wretch/commit/5b4215c))
+* Test all the documentation snippets and rework recipes ([a8ae915](https://github.com/elbywan/wretch/commit/a8ae915))
+* Unify tests ([ab95d83](https://github.com/elbywan/wretch/commit/ab95d83))
+
+### :factory: New feature(s)
+
+* Accept multiple addons when calling .addon ([91c6024](https://github.com/elbywan/wretch/commit/91c6024))
+* Add attempt argument to the onRetry callback ([0cfb31c](https://github.com/elbywan/wretch/commit/0cfb31c))
+* Add request parameter to .customError transformer ([4347e4b](https://github.com/elbywan/wretch/commit/4347e4b))
+* Upload progress support ([012b233](https://github.com/elbywan/wretch/commit/012b233))
+
+### :feature: undefined
+
+* Add .toFetch method ([aa8ef0a](https://github.com/elbywan/wretch/commit/aa8ef0a))
+
+### :fire: Breaking change(s)
+
+* Consolidate addon optional parameters into options objects ([dfe5860](https://github.com/elbywan/wretch/commit/dfe5860))
+* Remove .errorType and introduce .customError ([fdf4371](https://github.com/elbywan/wretch/commit/fdf4371))
+* Remove node <22 compatibility ([304c7ff](https://github.com/elbywan/wretch/commit/304c7ff))
+* Remove static methods ([ff703f7](https://github.com/elbywan/wretch/commit/ff703f7))
+* Skip retrying 4xx errors by default in retry middleware ([a63e471](https://github.com/elbywan/wretch/commit/a63e471)), closes [#176](https://github.com/elbywan/wretch/issues/176)
+
+### :memo: Documentation update(s)
+
+* Add issue links to the recipes ([5aa7146](https://github.com/elbywan/wretch/commit/5aa7146))
+* Improve documentation ([7f69396](https://github.com/elbywan/wretch/commit/7f69396))
+* Init recipes ([37dccac](https://github.com/elbywan/wretch/commit/37dccac))
+* Migration guide ([5faaceb](https://github.com/elbywan/wretch/commit/5faaceb))
+* Niceify website ([64d7ade](https://github.com/elbywan/wretch/commit/64d7ade))
+
+### :white_check_mark: Test improvement(s)
+
+* Remove jest in favour of node:test ([bd0d3e1](https://github.com/elbywan/wretch/commit/bd0d3e1))
+
+
+
 <a name="2.11.1"></a>
 ## [2.11.1](https://github.com/elbywan/wretch/compare/2.11.0...2.11.1) (2025-10-19)
 

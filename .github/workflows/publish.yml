@@ -18,7 +18,9 @@ jobs:
           auto-install: true
       - name: Install dependencies
         run: npm ci
-      - name: Build, Lint & Test
-        run: npm run start
+      - name: Build
+        run: npm run build
+      - name: Smoke Test
+        run: npm run test:node
       - name: Publish to npm
         run: npm publish
