@@ -18,6 +18,8 @@ jobs:
           auto-install: true
       - name: Install dependencies
         run: npm ci
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
       - name: Build, Lint & Test
         run: npm run start
       - name: Publish to npm
