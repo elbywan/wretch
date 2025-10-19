@@ -815,7 +815,7 @@ _Compatible with all platforms implementing the [TransformStream WebAPI](https:/
 ```js
 import ProgressAddon from "wretch/addons/progress"
 
-await wretch("https://httpbun.org/bytes/5000000")
+await wretch("https://httpbun.org/bytes/5000")
   .addon(ProgressAddon())
   .get()
   // Called with the number of bytes loaded and the total number of bytes to load
