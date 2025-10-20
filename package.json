@@ -51,7 +51,7 @@
       },
       "import": {
         "types": "./dist/index.all.d.ts",
-        "default:": "./dist/index.all.js"
+        "default": "./dist/index.all.js"
       }
     },
     "./addons": {
