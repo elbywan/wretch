@@ -1,3 +1,17 @@
+<a name="3.0.1"></a>
+## [3.0.1](https://github.com/elbywan/wretch/compare/3.0.0...3.0.1) (2025-10-21)
+
+
+### :bug: Bug fix(es)
+
+* Fix malformed package.json key ([ddf3b4c](https://github.com/elbywan/wretch/commit/ddf3b4c))
+
+### :memo: Documentation update(s)
+
+* Fix typescript API links ([831598a](https://github.com/elbywan/wretch/commit/831598a))
+
+
+
 <a name="3.0.0"></a>
 # [3.0.0](https://github.com/elbywan/wretch/compare/2.11.1...3.0.0) (2025-10-19)
 
