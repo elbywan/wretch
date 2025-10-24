@@ -1024,6 +1024,16 @@ export function createWretchTests(ctx: TestContext): void {
       expect(response).toBeTruthy()
       expect(response.ok).toBe(true)
     })
+
+    it("should allow reusing the body after a WretchError has been thrown", async function () {
+      const w = wretch(_URL)
+      try {
+        await w.get("/418").res()
+      } catch (error) {
+        const text = await error.response.text()
+        expect(text).toBe("error code : 418")
+      }
+    })
   })
 }
 

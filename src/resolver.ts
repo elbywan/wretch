@@ -58,7 +58,7 @@ export const resolver = <T, Chain, R, E>(wretch: T & Wretch<T, Chain, R, E>) => 
           err.message = response.statusText
         } else {
           try {
-            err.message = await response.text()
+            err.message = await response.clone().text()
           } catch {
             err.message = response.statusText
           }
