@@ -1,3 +1,13 @@
+<a name="3.0.2"></a>
+## [3.0.2](https://github.com/elbywan/wretch/compare/3.0.1...3.0.2) (2025-10-24)
+
+
+### :bug: Bug fix(es)
+
+* Clone the body before assigning to WretchError message ([5379037](https://github.com/elbywan/wretch/commit/5379037)), closes [#277](https://github.com/elbywan/wretch/issues/277)
+
+
+
 <a name="3.0.1"></a>
 ## [3.0.1](https://github.com/elbywan/wretch/compare/3.0.0...3.0.1) (2025-10-21)
 
