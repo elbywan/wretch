@@ -270,7 +270,7 @@ deno add npm:wretch
 ```ts
 import wretch from "wretch";
 
-const text = await wretch("https://httpbun.org").get("/status/200").text();
+const text = await wretch("https://httpbingo.org").get("/status/200").text();
 console.log(text); // -> { "code": 200, "description": "OK" }
 ```
 
@@ -285,7 +285,7 @@ bun add wretch
 ```ts
 import wretch from "wretch";
 
-const text = await wretch("https://httpbun.org").get("/status/200").text();
+const text = await wretch("https://httpbingo.org").get("/status/200").text();
 console.log(text); // -> { "code": 200, "description": "OK" }
 ```
 
@@ -320,7 +320,7 @@ const user = await api.post({ name: "John" }, "/users")
 import ProgressAddon from "wretch/addons/progress"
 import FormDataAddon from "wretch/addons/formData"
 
-await wretch("https://httpbun.org/post")
+await wretch("https://httpbingo.org/post")
   .addon([FormDataAddon, ProgressAddon()])
   .formData({ file: file })
   .post()
@@ -347,11 +347,12 @@ const user = await wretch("https://jsonplaceholder.typicode.com")
 
 ```javascript
 // 🔐 Automatic Token Refresh
-const api = wretch("https://httpbun.org/bearer/token")
+const api = wretch("https://httpbingo.org/basic-auth/user/pass")
+  .addon(BasicAuthAddon)
   .resolve(w => w.unauthorized(async (error, req) => {
     const newToken = await refreshToken()
     return req
-    .auth(`Bearer ${newToken}`)
+    .basicAuth("user", "pass")
     .unauthorized(e => {
       console.log("Still unauthorized after token refresh");
       throw e
@@ -606,14 +607,16 @@ The original request is passed along the error and can be used in order to
 perform an additional request.
 
 ```js
-await wretch("https://httpbun.org/bearer/aeacf2af-88e6-4f81-a0b0-77a121504ca8")
+await wretch("https://httpbingo.org/basic-auth/user/pass")
+  .addon(BasicAuthAddon)
+  .basicAuth("user", "wrongpass")
   .get()
   .unauthorized(async (error, req) => {
     // Renew credentials
-    const token = await wretch("https://httpbun.org/mix/s=200/b64=YWVhY2YyYWYtODhlNi00ZjgxLWEwYjAtNzdhMTIxNTA0Y2E4").get().text();
+    const password = await wretch("https://httpbingo.org/base64/decode/cGFzcw==").get().text();
     // Replay the original request with new credentials
     return req
-      .auth("Bearer " + token)
+      .basicAuth("user", password)
       .fetch()
       .unauthorized((err) => { throw err })
       .json();
@@ -714,7 +717,7 @@ const form = {
 
 // Will append the following keys to the FormData payload:
 // "duck", "duckProperties[beak][color]", "duckProperties[legs]"
-wretch("https://httpbun.org/post").addon(FormDataAddon).formData(form, { recursive: ["ignored"] }).post();
+wretch("https://httpbingo.org/post").addon(FormDataAddon).formData(form, { recursive: ["ignored"] }).post();
 ```
 
 ### [FormUrl 🔗](https://elbywan.github.io/wretch/api/interfaces/addons_formUrl.FormUrlAddon)
@@ -728,8 +731,8 @@ const form = { a: 1, b: { c: 2 } };
 const alreadyEncodedForm = "a=1&b=%7B%22c%22%3A2%7D";
 
 // Automatically sets the content-type header to "application/x-www-form-urlencoded"
-wretch("https://httpbun.org/post").addon(FormUrlAddon).formUrl(form).post();
-wretch("https://httpbun.org/post").addon(FormUrlAddon).formUrl(alreadyEncodedForm).post();
+wretch("https://httpbingo.org/post").addon(FormUrlAddon).formUrl(form).post();
+wretch("https://httpbingo.org/post").addon(FormUrlAddon).formUrl(alreadyEncodedForm).post();
 ```
 
 ### [Abort 🔗](https://elbywan.github.io/wretch/api/variables/addons.abortAddon)
@@ -743,7 +746,7 @@ import AbortAddon from "wretch/addons/abort"
 Use cases :
 
 ```js
-const [c, w] = wretch("https://httpbun.org/get")
+const [c, w] = wretch("https://httpbingo.org/get")
   .addon(AbortAddon())
   .get()
   .onAbort((_) => console.log("Aborted !"))
@@ -756,7 +759,7 @@ c.abort();
 
 const controller = new AbortController();
 
-wretch("https://httpbun.org/get")
+wretch("https://httpbingo.org/get")
   .addon(AbortAddon())
   .signal(controller)
   .get()
@@ -767,7 +770,7 @@ controller.abort();
 ```
 
 ```js
-wretch("https://httpbun.org/delay/2")
+wretch("https://httpbingo.org/delay/2")
   .addon(AbortAddon())
   .get()
    // 1 second timeout
@@ -793,13 +796,13 @@ const user = "user"
 const pass = "pass"
 
 // Automatically sets the Authorization header to "Basic " + <base64 encoded credentials>
-wretch("https://httpbun.org/get")
+wretch("https://httpbingo.org/get")
   .addon(BasicAuthAddon)
   .basicAuth(user, pass)
   .get()
 
 // Allows using URLs with credentials in them
-wretch(`https://${user}:${pass}@httpbun.org/basic-auth/${user}/${pass}`)
+wretch(`https://${user}:${pass}@httpbingo.org/basic-auth/${user}/${pass}`)
   .addon(BasicAuthAddon)
   .get()
 ```
@@ -815,7 +818,7 @@ _Compatible with all platforms implementing the [TransformStream WebAPI](https:/
 ```js
 import ProgressAddon from "wretch/addons/progress"
 
-await wretch("https://httpbun.org/bytes/5000")
+await wretch("https://httpbingo.org/bytes/5000")
   .addon(ProgressAddon())
   .get()
   // Called with the number of bytes loaded and the total number of bytes to load
@@ -834,7 +837,7 @@ import FormDataAddon from "wretch/addons/formData"
 const formData = new FormData()
 formData.append('file', file)
 
-wretch("https://httpbun.org/post")
+wretch("https://httpbingo.org/post")
   .addon([ProgressAddon(), FormDataAddon])
   .onUpload((loaded, total) => {
     console.log(`Upload: ${(loaded / total * 100).toFixed(0)}%`)
@@ -998,7 +1001,7 @@ const contextMiddleware = (next) =>
 
 // Provide the reference to a "context" object
 const context = {};
-const res = await wretch("https://httpbun.org/get")
+const res = await wretch("https://httpbingo.org/get")
   // Pass "context" by reference as an option
   .options({ context })
   .middlewares([contextMiddleware])
@@ -1089,17 +1092,17 @@ const cacheMiddleware = (throttle = 0) => {
 
 // To call a single middleware
 const cache = cacheMiddleware(1000)
-wretch("https://httpbun.org/get").middlewares([cache]).get()
+wretch("https://httpbingo.org/get").middlewares([cache]).get()
 
 // To chain middlewares
-wretch("https://httpbun.org/get").middlewares([
+wretch("https://httpbingo.org/get").middlewares([
   logMiddleware(),
   delayMiddleware(1000),
   shortCircuitMiddleware()
 ]).get().text(text => console.log(text))
 
 // To test the cache middleware more thoroughly
-const wretchCache = wretch("https://httpbun.org").middlewares([cacheMiddleware(500)])
+const wretchCache = wretch("https://httpbingo.org").middlewares([cacheMiddleware(500)])
 const printResource = (url, timeout = 0) => {
   return new Promise(resolve => setTimeout(async () => {
     wretchCache.url(url).get().notFound(console.error).text(resource => {
@@ -1109,7 +1112,7 @@ const printResource = (url, timeout = 0) => {
   }, timeout))
 }
 // The resource url, change it to an invalid route to check the error handling
-const resourceUrl = "/mix/s=200/b64=YWVhY2YyYWYtODhlNi00ZjgxLWEwYjAtNzdhMTIxNTA0Y2E4"
+const resourceUrl = "/base64/decode/YWVhY2YyYWYtODhlNi00ZjgxLWEwYjAtNzdhMTIxNTA0Y2E4"
 // Only two actual requests are made here even though there are 30 calls
 await Promise.all(Array.from({ length: 10 }).flatMap(() =>
   [
@@ -1166,7 +1169,7 @@ headers.forEach((value, key) => console.log(key, value));
 When using `wretch`, please be mindful of this limitation and avoid setting the same header multiple times with a different case:
 
 ```js
-wretch("https://httpbun.org/post")
+wretch("https://httpbingo.org/post")
   .headers({ "content-type": "application/json" })
   // .json is a shortcut for .headers("Content-Type": "application/json").post().json()
   .json({ foo: "bar" })

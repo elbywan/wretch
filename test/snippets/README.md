@@ -45,4 +45,4 @@ Auto-skips: framework-specific code, type definitions, and deprecated examples.
 
 ## Test APIs
 
-Uses [JSONPlaceholder](https://jsonplaceholder.typicode.com) and [httpbun](https://httpbun.org) for testing.
+Uses [JSONPlaceholder](https://jsonplaceholder.typicode.com) and [httpbingo](https://httpbingo.org) for testing.

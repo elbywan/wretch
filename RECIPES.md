@@ -109,6 +109,7 @@ try {
 
 ```ts
 import wretch from 'wretch';
+import basicAuth from 'wretch/addons/basicAuth';
 
 let authToken = null;
 let refreshCount = 0;
@@ -119,9 +120,10 @@ const refreshToken = async () => {
   return authToken;
 };
 
-const api = wretch('https://httpbun.com')
+const api = wretch('https://httpbingo.org')
+  .addon(basicAuth)
   // add the auth header to every request
-  .defer((w) => authToken ? w.auth(`Bearer ${authToken}`) : w)
+  .defer((w) => authToken ? w.basicAuth("user", authToken) : w)
   .resolve(chain =>
     chain.unauthorized(async (error, request) => {
       authToken = await refreshToken();
@@ -133,7 +135,7 @@ const api = wretch('https://httpbun.com')
     })
   );
 
-await api.get('/bearer/token-1').json();
+await api.get('/basic-auth/user/token-1').json();
 ```
 
 ### Detecting Network Errors
@@ -208,7 +210,7 @@ async function uploadFile(file: File) {
 import wretch from 'wretch';
 import FormDataAddon from 'wretch/addons/formData';
 
-const api = wretch('https://httpbun.org/any').addon(FormDataAddon);
+const api = wretch('https://httpbingo.org/anything').addon(FormDataAddon);
 
 await api
   .url('/users/profile')
@@ -580,15 +582,17 @@ const users = await api
 
 ```ts
 import wretch from 'wretch';
+import basicAuth from 'wretch/addons/basicAuth';
 
 let tokenRefreshCount = 0;
 const refreshAuthToken = async () => `new-token-${++tokenRefreshCount}`;
 
-const api = wretch('https://httpbun.com/bearer/token-1')
+const api = wretch('https://httpbingo.org/basic-auth/user/new-token-1')
+  .addon(basicAuth)
   .catcher(401, async (error, request) => {
     const newToken = await refreshAuthToken();
     return request
-      .auth(`Bearer ${newToken}`)
+      .basicAuth("user", newToken)
       .fetch()
       .unauthorized(err => { throw err })
       .json();

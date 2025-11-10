@@ -192,7 +192,7 @@ v3 adds upload progress monitoring support through the Progress addon.
 import ProgressAddon from "wretch/addons/progress"
 import FormDataAddon from "wretch/addons/formData"
 
-await wretch("https://httpbun.org/post")
+await wretch("https://httpbingo.org/post")
   .addon([ProgressAddon(), FormDataAddon])
   .formData({ file })
   .onUpload((loaded, total) => {
