@@ -1,3 +1,17 @@
+<a name="3.0.3"></a>
+## [3.0.3](https://github.com/elbywan/wretch/compare/3.0.2...3.0.3) (2025-11-10)
+
+
+### :bug: Bug fix(es)
+
+* Use body size when available to compute upload total bytes ([27c0443](https://github.com/elbywan/wretch/commit/27c0443)), closes [#278](https://github.com/elbywan/wretch/issues/278)
+
+### :white_check_mark: Test improvement(s)
+
+* Migrate documentation examples from httpbun.org to htt ([df84f73](https://github.com/elbywan/wretch/commit/df84f73))
+
+
+
 <a name="3.0.2"></a>
 ## [3.0.2](https://github.com/elbywan/wretch/compare/3.0.1...3.0.2) (2025-10-24)
 
