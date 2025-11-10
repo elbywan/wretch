@@ -73,10 +73,10 @@ export interface ProgressAddon {
   onDownload<T extends ProgressAddon, C, R, E>(this: T & Wretch<T, C, R, E>, onDownload: (loaded: number, total: number) => void): this
 }
 
-function toStream<T extends Request | Response>(requestOrResponse: T, callback: ProgressCallback | undefined): T {
+function toStream<T extends Request | Response>(requestOrResponse: T, bodySize: number, callback: ProgressCallback | undefined): T {
   try {
     const contentLength = requestOrResponse.headers.get("content-length")
-    let total = contentLength ? +contentLength : 0
+    let total = bodySize || (contentLength ? +contentLength : 0)
     let loaded = 0
     const transform = new TransformStream({
       start() {
@@ -128,7 +128,7 @@ const progress: () => WretchAddon<ProgressAddon, ProgressResolver> = () => {
         if (!state.progress) {
           return response
         }
-        return toStream(response, state.progress)
+        return toStream(response, 0, state.progress)
       })
     }
   }
@@ -140,7 +140,8 @@ const progress: () => WretchAddon<ProgressAddon, ProgressResolver> = () => {
         return next(url, opts)
       }
 
-      const request = toStream(new Request(url, opts), state.upload)
+      const bodySize = typeof opts.body === "string" ? new Blob([opts.body]).size : "size" in opts.body ? +opts.body.size : 0
+      const request = toStream(new Request(url, opts), bodySize, state.upload)
       return next(request.url, request)
     }
   }
