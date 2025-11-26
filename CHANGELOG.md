@@ -1,3 +1,18 @@
+<a name="3.0.4"></a>
+## [3.0.4](https://github.com/elbywan/wretch/compare/3.0.3...3.0.4) (2025-11-26)
+
+
+### :arrow_up: Version update(s)
+
+* Bump glob ([49a5e53](https://github.com/elbywan/wretch/commit/49a5e53))
+* Bump js-yaml from 4.1.0 to 4.1.1 ([43882e1](https://github.com/elbywan/wretch/commit/43882e1))
+
+### :bug: Bug fix(es)
+
+* Improve body size computation when tracking upload progress ([bfae158](https://github.com/elbywan/wretch/commit/bfae158)), closes [#284](https://github.com/elbywan/wretch/issues/284)
+
+
+
 <a name="3.0.3"></a>
 ## [3.0.3](https://github.com/elbywan/wretch/compare/3.0.2...3.0.3) (2025-11-10)
 
