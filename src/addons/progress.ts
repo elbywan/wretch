@@ -136,11 +136,19 @@ const progress: () => WretchAddon<ProgressAddon, ProgressResolver> = () => {
   function uploadMiddleware(state: Record<any, any>): ConfiguredMiddleware {
     return next => async (url, opts) => {
       const body = opts.body
+
       if (!body || !state.upload) {
         return next(url, opts)
       }
 
-      const bodySize = typeof opts.body === "string" ? new Blob([opts.body]).size : "size" in opts.body ? +opts.body.size : 0
+      let bodySize: number = 0
+
+      try {
+        bodySize = (await new Request("a:", { method: "POST", body }).blob()).size
+      } catch {
+        // Unable to determine body size
+      }
+
       const request = toStream(new Request(url, opts), bodySize, state.upload)
       return next(request.url, request)
     }
