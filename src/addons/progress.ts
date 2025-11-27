@@ -1,4 +1,4 @@
-import type { ConfiguredMiddleware, Wretch, WretchAddon, WretchResponseChain } from "../types.js"
+import type { ConfiguredMiddleware, Wretch, WretchAddon, WretchOptions, WretchResponseChain } from "../types.js"
 
 export type ProgressCallback = (loaded: number, total: number) => void
 
@@ -105,6 +105,22 @@ function toStream<T extends Request | Response>(requestOrResponse: T, bodySize: 
   }
 }
 
+const defaultGetUploadTotal = async (url: string, opts: WretchOptions): Promise<number> => {
+  let total =
+          opts.body instanceof ArrayBuffer ? +opts.body.byteLength :
+            opts.body instanceof Blob ? +opts.body.size :
+              0
+  try {
+    // Try to determine body size by reading it as a blob
+    total ||= (await new Request(url, opts).blob()).size
+  } catch {
+    // Cannot determine body size
+  }
+
+  return total
+}
+
+
 /**
  * Adds the ability to monitor progress when downloading a response.
  *
@@ -121,7 +137,22 @@ function toStream<T extends Request | Response>(requestOrResponse: T, bodySize: 
  *   .progress((loaded, total) => console.log(`${(loaded / total * 100).toFixed(0)}%`))
  * ```
  */
-const progress: () => WretchAddon<ProgressAddon, ProgressResolver> = () => {
+const progress: (options?: {
+  /**
+   * Function used to determine the total upload size before streaming the request body.
+   * Receives the final request URL and options, returns the total byte size (sync or async). Defaults to trying the `byteLength` property
+   * for `ArrayBuffer` and the `.size` property for `Blob` (e.g., `FormData` or `File`), then falling back to `Request#blob()` when available.
+   *
+   * _Note_: The fallback of using `Request#blob()` is memory consuming as it loads the entire body into memory.
+   *
+   * @param url The request URL
+   * @param opts The request options
+   * @returns The total upload size in bytes
+   */
+  getUploadTotal?: (url: string, opts: WretchOptions) => number | Promise<number>
+}) => WretchAddon<ProgressAddon, ProgressResolver> = ({
+  getUploadTotal = defaultGetUploadTotal
+} = {}) => {
   function downloadMiddleware(state: Record<any, any>) : ConfiguredMiddleware {
     return next => (url, opts) => {
       return next(url, opts).then(response => {
@@ -141,16 +172,11 @@ const progress: () => WretchAddon<ProgressAddon, ProgressResolver> = () => {
         return next(url, opts)
       }
 
-      let bodySize: number = 0
-
-      try {
-        bodySize = (await new Request("a:", { method: "POST", body }).blob()).size
-      } catch {
-        // Unable to determine body size
-      }
-
-      const request = toStream(new Request(url, opts), bodySize, state.upload)
-      return next(request.url, request)
+      const streameableRequest = toStream(
+        new Request(url, opts),
+        await getUploadTotal(url, opts), state.upload
+      )
+      return next(url, streameableRequest)
     }
   }
 
