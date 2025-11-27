@@ -1,3 +1,13 @@
+<a name="3.0.5"></a>
+## [3.0.5](https://github.com/elbywan/wretch/compare/3.0.4...3.0.5) (2025-11-27)
+
+
+### :art: Code improvement(s)
+
+* Add progress option to customize the upload body size computation ([2cd547f](https://github.com/elbywan/wretch/commit/2cd547f))
+
+
+
 <a name="3.0.4"></a>
 ## [3.0.4](https://github.com/elbywan/wretch/compare/3.0.3...3.0.4) (2025-11-26)
 
