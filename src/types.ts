@@ -232,14 +232,18 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    * called on every subsequent request error.
    *
    * Very useful when you need to perform a repetitive action on a specific error
-   * code.
+   * code or multiple error codes.
    *
    * ```js
    * const w = wretch()
    *   .catcher(404, err => redirect("/routes/notfound", err.message))
    *   .catcher(500, err => flashMessage("internal.server.error"))
    *
-   * // No need to catch the 404 or 500 codes, they are already taken care of.
+   * // Catch multiple error codes with the same handler
+   * const w2 = wretch()
+   *   .catcher([401, 403], err => redirect("/login"))
+   *
+   * // No need to catch the 404, 500, 401, or 403 codes, they are already taken care of.
    * w.get("http://myapi.com/get/something").json()
    *
    * // Default catchers can be overridden if needed.
@@ -273,10 +277,10 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    * ```
    *
    * @category Helpers
-   * @param errorId - Error code or name
+   * @param errorId - Error code or name, or an array of error codes/names
    * @param catcher - The catcher method
    */
-  catcher(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, errorId: number | string | symbol, catcher: (error: ErrorType extends undefined ? WretchError : ErrorType, originalRequest: this) => any): Wretch<Self, Chain, Resolver, ErrorType extends undefined ? WretchError : ErrorType>
+  catcher(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, errorId: ErrorId | ErrorId[], catcher: (error: ErrorType extends undefined ? WretchError : ErrorType, originalRequest: this) => any): Wretch<Self, Chain, Resolver, ErrorType extends undefined ? WretchError : ErrorType>
 
   /**
    * A fallback catcher that will be called for any error thrown - if uncaught by other means.
@@ -831,3 +835,4 @@ export type WretchAddon<W, R = unknown> = {
   resolver?: R | (<T, C, E = unknown>(_: C & WretchResponseChain<T, C, R, E>) => R)
 }
 
+export type ErrorId = number | string | symbol

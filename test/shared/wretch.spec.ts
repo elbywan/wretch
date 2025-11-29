@@ -410,6 +410,65 @@ export function createWretchTests(ctx: TestContext): void {
       expect(fallback).toBe(1)
     })
 
+    it("should catch multiple error codes with a single catcher", async function () {
+      let authErrorCount = 0
+      let serverErrorCount = 0
+
+      const w = wretch(_URL)
+        // Test catching multiple auth-related errors with one handler
+        .catcher([401, 403], _ => authErrorCount++)
+        // Test catching multiple server errors with one handler
+        .catcher([500, 502], _ => serverErrorCount++)
+
+      // Trigger 401
+      await w.url("/401").get().res(_ => authErrorCount--)
+      // Trigger 403
+      await w.url("/403").get().res(_ => authErrorCount--)
+      // Trigger 500
+      await w.url("/500").get().res(_ => serverErrorCount--)
+
+      expect(authErrorCount).toBe(2)
+      expect(serverErrorCount).toBe(1)
+    })
+
+    it("should support mixing single and array error IDs", async function () {
+      let count = 0
+
+      const w = wretch(_URL)
+        .catcher(404, _ => count++)     // Single error ID
+        .catcher([400, 401], _ => count++) // Array of error IDs
+
+      await w.url("/404").get().res(_ => count--)
+      await w.url("/400").get().res(_ => count--)
+      await w.url("/401").get().res(_ => count--)
+
+      expect(count).toBe(3)
+    })
+
+    it("should handle empty array gracefully", async function () {
+      let count = 0
+
+      // Empty array should not throw, just be a no-op
+      const w = wretch(_URL)
+        .catcher([], _ => count++)
+        .catcher(404, _ => count++)
+
+      await w.url("/404").get().res(_ => count--)
+
+      expect(count).toBe(1) // Only the 404 catcher should trigger
+    })
+
+    it("should support array of mixed error ID types", async function () {
+      let count = 0
+
+      const w = wretch(_URL)
+        .catcher([404, "NetworkError"], _ => count++)
+
+      await w.url("/404").get().res(_ => count--)
+
+      expect(count).toBe(1)
+    })
+
     it("should capture the original request with resolvers/catchers", async function () {
       let check = 0
       const redirectedNotFound = await wretch(`${_URL}/404`)

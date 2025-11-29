@@ -50,9 +50,12 @@ export const core: Wretch = {
   auth(headerValue) {
     return this.headers({ Authorization: headerValue })
   },
-  catcher(errorId, catcher) {
+  catcher(ids, catcher) {
     const newMap = new Map(this._catchers)
-    newMap.set(errorId, catcher)
+    const errorIds = Array.isArray(ids) ? ids : [ids]
+    for (const errorId of errorIds) {
+      newMap.set(errorId, catcher)
+    }
     return { ...this, _catchers: newMap }
   },
   catcherFallback(catcher) {
