@@ -8,7 +8,7 @@ import globals from "globals"
 export default defineConfig([
   globalIgnores([
     "./dist/*",
-    "./test/generated/*",
+    "./docs/api/*",
   ]),
   eslint.configs.recommended,
   tseslint.configs.recommended,
@@ -25,12 +25,19 @@ export default defineConfig([
       "object-curly-spacing": ["error", "always"],
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+      "no-trailing-spaces": "error",
     },
     languageOptions: {
       globals: {
         ...globals.browser
       }
     },
+  },
+  {
+    files: ["test/**"],
+    rules: {
+      "no-console": "off"
+    }
   },
   {
     files: ["test/browser/**/*.js"],

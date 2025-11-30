@@ -39,7 +39,7 @@ function runCommand(command, args = []) {
     })
 
     child.on("error", reject)
-    child.on("exit", (code) => {
+    child.on("exit", code => {
       resolve(code ?? 0)
     })
   })

@@ -48,6 +48,8 @@ This allows Wretch to drop all polyfill code, resulting in a smaller bundle size
 
 The `.polyfills()` method has been **removed**. Use `.fetchPolyfill()` instead for custom fetch implementations.
 
+<!-- snippet:description Polyfills method migration from v2 to v3 -->
+<!-- snippet:skip Negative example (shows deprecated usage) -->
 ```js
 // ❌ Before (v2)
 wretch().polyfills({
@@ -67,6 +69,8 @@ All global static configuration methods have been **removed** to reduce bundle s
 
 #### `wretch.polyfills()` → Per-instance `.fetchPolyfill()`
 
+<!-- snippet:description Static polyfills migration to instance method -->
+<!-- snippet:skip Negative example (shows deprecated usage) -->
 ```js
 // ❌ Before (v2)
 wretch.polyfills({ fetch: customFetch })
@@ -78,6 +82,8 @@ const api = wretch("https://api.example.com")
 
 #### `wretch.options()` → Per-instance `.options()`
 
+<!-- snippet:description Static options migration to instance method -->
+<!-- snippet:skip Negative example (shows deprecated usage) -->
 ```js
 // ❌ Before (v2)
 wretch.options({ credentials: "same-origin" })
@@ -96,6 +102,8 @@ The `.errorType()` method has been **removed** and replaced with `.customError()
 
 #### Old Behavior (v2)
 
+<!-- snippet:description errorType method removed in v3 -->
+<!-- snippet:skip Negative example (shows deprecated usage) -->
 ```js
 // ❌ No longer available in v3
 wretch("http://server/error")
@@ -110,8 +118,9 @@ wretch("http://server/error")
 #### New Approach (v3)
 
 Use `.customError()` to parse and transform errors with full type safety:
-<!-- snippet:skip Needs fixing -->
 
+<!-- snippet:description Parsing error responses with customError -->
+<!-- snippet:skip Needs valid server endpoint -->
 ```js
 // ✅ v3 approach
 interface ApiError {
@@ -142,6 +151,8 @@ api.get("/error")
 The retry middleware now **skips retrying 4xx client errors by default**.
 
 #### Old Behavior (v2)
+
+<!-- snippet:description Retry middleware v2 behavior retried all errors -->
 ```js
 import { retry } from "wretch/middlewares"
 
@@ -150,6 +161,8 @@ wretch().middlewares([retry()])
 ```
 
 #### New Behavior (v3)
+
+<!-- snippet:description Retry middleware v3 only retries 5xx errors -->
 ```js
 import { retry } from "wretch/middlewares"
 
@@ -161,6 +174,7 @@ wretch().middlewares([retry()])
 #### Migration Options
 
 **Option 1:** Keep the new default (recommended)
+<!-- snippet:description Accept new retry behavior for 5xx only -->
 ```js
 import { retry } from "wretch/middlewares"
 
@@ -169,6 +183,7 @@ wretch().middlewares([retry()])
 ```
 
 **Option 2:** Restore v2 behavior
+<!-- snippet:description Restore v2 retry behavior with custom until function -->
 ```js
 import { retry } from "wretch/middlewares"
 
@@ -188,7 +203,10 @@ Client errors (4xx) usually indicate problems with the request itself (bad input
 
 v3 adds upload progress monitoring support through the Progress addon.
 
+<!-- snippet:description Upload progress monitoring with progress addon -->
+<!-- snippet:expect-output "Upload:" -->
 ```js
+import wretch from "wretch"
 import ProgressAddon from "wretch/addons/progress"
 import FormDataAddon from "wretch/addons/formData"
 
@@ -209,6 +227,8 @@ await wretch("https://httpbingo.org/post")
 
 ### 7. Removed: `wretch.errorType()` Static Method
 
+<!-- snippet:description Static errorType method removed in v3 -->
+<!-- snippet:skip Negative example (shows deprecated usage) -->
 ```js
 // ❌ Before (v2)
 wretch.errorType("json")
@@ -223,6 +243,8 @@ Three addon methods now use options objects instead of positional parameters for
 
 #### QueryString Addon
 
+<!-- snippet:description QueryString addon positional params to options object -->
+<!-- snippet:skip Negative example (shows deprecated usage) -->
 ```js
 // ❌ Before (v2)
 wretch("https://api.example.com")
@@ -239,6 +261,8 @@ wretch("https://api.example.com")
 
 #### FormData Addon
 
+<!-- snippet:description FormData addon positional params to options object -->
+<!-- snippet:skip Negative example (shows deprecated usage) -->
 ```js
 // ❌ Before (v2)
 wretch("https://api.example.com")
@@ -255,6 +279,8 @@ wretch("https://api.example.com")
 
 #### Abort Addon
 
+<!-- snippet:description Abort addon setTimeout controller param to options object -->
+<!-- snippet:skip Negative example (shows deprecated usage) -->
 ```js
 // ❌ Before (v2)
 const controller = new AbortController()

@@ -45,6 +45,7 @@
 
 > 💡 **See also:** [#236](https://github.com/elbywan/wretch/issues/236) · [#171](https://github.com/elbywan/wretch/issues/171)
 
+<!-- snippet:description Parsing error response bodies with custom error handler -->
 ```ts
 import wretch from 'wretch';
 
@@ -74,6 +75,7 @@ try {
 
 > 💡 **See also:** [#266](https://github.com/elbywan/wretch/issues/266)
 
+<!-- snippet:description Handling non-JSON error responses by content type -->
 ```ts
 import wretch from 'wretch';
 
@@ -107,6 +109,9 @@ try {
 
 **Problem:** Automatically refresh authentication tokens when they expire and retry the original request.
 
+<!-- snippet:description Token refresh on 401 with request replay
+     snippet:expect-return "authorized"
+     snippet:return-statement: result -->
 ```ts
 import wretch from 'wretch';
 import basicAuth from 'wretch/addons/basicAuth';
@@ -144,6 +149,7 @@ await api.get('/basic-auth/user/token-1').json();
 
 > 💡 **See also:** [#243](https://github.com/elbywan/wretch/issues/243) · [#241](https://github.com/elbywan/wretch/issues/241) · [#207](https://github.com/elbywan/wretch/issues/207) · [#164](https://github.com/elbywan/wretch/issues/164)
 
+<!-- snippet:description Detecting network errors vs HTTP errors -->
 ```ts
 import wretch from 'wretch';
 
@@ -180,6 +186,7 @@ await api.get('/posts/1').json();
 
 > 💡 **See also:** [#199](https://github.com/elbywan/wretch/issues/199) · [#225](https://github.com/elbywan/wretch/issues/225) · [#154](https://github.com/elbywan/wretch/issues/154)
 
+<!-- snippet:description Tracking upload progress with progress addon -->
 ```ts
 import wretch from 'wretch';
 import FormDataAddon from 'wretch/addons/formData';
@@ -206,6 +213,8 @@ async function uploadFile(file: File) {
 
 > 💡 **See also:** [#231](https://github.com/elbywan/wretch/issues/231) · [#220](https://github.com/elbywan/wretch/issues/220) · [#201](https://github.com/elbywan/wretch/issues/201) · [#197](https://github.com/elbywan/wretch/issues/197)
 
+<!-- snippet:description Sending files with FormData addon
+     snippet:expect-return "form" -->
 ```ts
 import wretch from 'wretch';
 import FormDataAddon from 'wretch/addons/formData';
@@ -237,6 +246,8 @@ await api
 
 > 💡 **See also:** [#261](https://github.com/elbywan/wretch/issues/261) · [#229](https://github.com/elbywan/wretch/issues/229) · [#148](https://github.com/elbywan/wretch/issues/148) · [#33](https://github.com/elbywan/wretch/issues/33)
 
+<!-- snippet:description Filtering undefined/null query parameters
+     snippet:expect-return "userId" -->
 ```ts
 import wretch from 'wretch';
 import QueryStringAddon from 'wretch/addons/queryString';
@@ -264,6 +275,8 @@ await searchUsers({ userId: 1, id: undefined, title: undefined });
 
 > 💡 **See also:** [#169](https://github.com/elbywan/wretch/issues/169)
 
+<!-- snippet:description Building query strings with arrays and nested parameters
+     snippet:expect-return "userId" -->
 ```ts
 import wretch from 'wretch';
 import QueryStringAddon from 'wretch/addons/queryString';
@@ -296,19 +309,22 @@ await api
 
 > 💡 **See also:** [#259](https://github.com/elbywan/wretch/issues/259) · [#256](https://github.com/elbywan/wretch/issues/256) · [#196](https://github.com/elbywan/wretch/issues/196)
 
+<!-- snippet:description Setting global timeouts with abort addon
+     snippet:expect-return "userId"
+     snippet:return-statement longerRequest -->
 ```ts
 import wretch from 'wretch';
 import AbortAddon from 'wretch/addons/abort';
 
 const api = wretch('https://jsonplaceholder.typicode.com')
   .addon(AbortAddon())
-  .resolve(chain => chain.setTimeout(5000));
+  .resolve(chain => chain.setTimeout(500)); // default timeout of 500ms
 
 await api.get('/posts/1').json();
 
 const longerRequest = await api
   .get('/posts/2')
-  .setTimeout(30000)
+  .setTimeout(1_000) // override timeout to 1000ms for this request
   .json();
 ```
 
@@ -318,6 +334,9 @@ const longerRequest = await api
 
 > 💡 **See also:** [#250](https://github.com/elbywan/wretch/issues/250)
 
+<!-- snippet:description Deduplicating simultaneous identical requests
+     snippet:expect-return "userId"
+     snippet:return-statement [data1, data2, data3] -->
 ```ts
 import wretch from 'wretch';
 import { dedupe } from 'wretch/middlewares';
@@ -339,6 +358,7 @@ const [data1, data2, data3] = await Promise.all([
 
 > 💡 **See also:** [#255](https://github.com/elbywan/wretch/issues/255) · [#217](https://github.com/elbywan/wretch/issues/217) · [#216](https://github.com/elbywan/wretch/issues/216) · [#176](https://github.com/elbywan/wretch/issues/176) · [#145](https://github.com/elbywan/wretch/issues/145) · [#141](https://github.com/elbywan/wretch/issues/141)
 
+<!-- snippet:description Retrying failed requests with exponential backoff -->
 ```ts
 import wretch from 'wretch';
 import { retry } from 'wretch/middlewares';
@@ -372,6 +392,7 @@ await api.get('/posts/1').json();
 
 > 💡 **See also:** [#206](https://github.com/elbywan/wretch/issues/206)
 
+<!-- snippet:description Transforming request/response data between snake_case and camelCase -->
 ```ts
 import wretch from 'wretch';
 
@@ -420,6 +441,7 @@ console.log(await api.get('/users/1'));
 
 > 💡 **See also:** [#240](https://github.com/elbywan/wretch/issues/240) · [#215](https://github.com/elbywan/wretch/issues/215)
 
+<!-- snippet:description Manually handling HTTP redirects -->
 ```ts
 import wretch from 'wretch';
 
@@ -447,6 +469,7 @@ const api = wretch('https://api.example.com')
 
 > 💡 **See also:** [#228](https://github.com/elbywan/wretch/issues/228) · [#198](https://github.com/elbywan/wretch/issues/198)
 
+<!-- snippet:description Handling custom HTTP status codes -->
 ```ts
 import wretch from 'wretch';
 
@@ -489,6 +512,9 @@ const result = await api.url('/posts').json({ title: 'test', body: 'test', userI
 
 > 💡 **See also:** [#212](https://github.com/elbywan/wretch/issues/212) · [#165](https://github.com/elbywan/wretch/issues/165)
 
+<!-- snippet:description Logging every request with middleware
+     snippet:expect-output "GET"
+     snippet:expect-output "200" -->
 ```ts
 import wretch from 'wretch';
 
@@ -516,6 +542,8 @@ await api.get('/posts/1').json();
 
 **Problem:** Add headers or modify requests just before they're sent, based on runtime state.
 
+<!-- snippet:description Adding headers dynamically before each request
+     snippet:expect-return "userId" -->
 ```ts
 import wretch from 'wretch';
 
@@ -549,7 +577,8 @@ await api.get('/posts/1').json();
 
 > 💡 **See also:** [#260](https://github.com/elbywan/wretch/issues/260) · [#186](https://github.com/elbywan/wretch/issues/186)
 
-<!-- snippet:skip -->
+<!-- snippet:description Validating API responses with Zod schema
+     snippet:skip Requires Zod library -->
 ```ts
 import wretch from 'wretch';
 import { z } from 'zod';
@@ -580,6 +609,9 @@ const users = await api
 
 > 💡 **See also:** [#226](https://github.com/elbywan/wretch/issues/226) · [#219](https://github.com/elbywan/wretch/issues/219) · [#139](https://github.com/elbywan/wretch/issues/139)
 
+<!-- snippet:description Replaying failed requests after authentication refresh
+     snippet:expect-return "authorized"
+     snippet:return-statement data -->
 ```ts
 import wretch from 'wretch';
 import basicAuth from 'wretch/addons/basicAuth';

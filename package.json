@@ -112,7 +112,7 @@
   "scripts": {
     "start": "npm run build && npm run test",
     "lint": "eslint '{src,test}/**/*.{js,ts}'",
-    "lint:fix": "eslint '{src,test}/**/*.{js,ts}' --fix",
+    "lint:fix": "eslint --fix '{src,test}/**/*.{js,ts}'",
     "prebuild": "rimraf dist && rimraf coverage && npm run lint",
     "build": "tsc && tsc --project tsconfig.cjs.json && echo '{\"type\": \"commonjs\"}' > ./dist/cjs/package.json && rolldown -c ./rolldown.config.ts",
     "mock": "node scripts/mockServer.js",

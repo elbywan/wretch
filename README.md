@@ -57,6 +57,8 @@
 npm i wretch
 ```
 
+<!-- snippet: Quick start example
+     snippet:description Quick start example showing basic wretch usage -->
 ```javascript
 // 2️⃣ Import and create a reusable API client
 import wretch from "wretch"
@@ -91,6 +93,7 @@ const blob = await api.get("/photos/1").blob()     // Binary data
 
 Fetch needs a second callback to process the response body.
 
+<!-- snippet:description Fetch requires two callbacks for JSON parsing -->
 ```javascript
 fetch("https://jsonplaceholder.typicode.com/posts/1")
   .then(response => response.json())
@@ -101,19 +104,23 @@ fetch("https://jsonplaceholder.typicode.com/posts/1")
 
 Wretch does it for you.
 
+<!-- snippet:description Fetch with two callbacks for JSON parsing
+     snippet:expect-return "userId" -->
 ```javascript
 // Use .res for the raw response, .text for raw text, .json for json, .blob for a blob …
 wretch("https://jsonplaceholder.typicode.com/posts/1")
   .get()
   .json(json => {
     // Do stuff with the parsed json
+    return json
   });
 ```
 
 #### Because manually checking and throwing every request error code is tedious.
 
-Fetch won’t reject on HTTP error status.
+Fetch won't reject on HTTP error status.
 
+<!-- snippet:description Fetch requires manual error code checking -->
 ```javascript
 fetch("https://jsonplaceholder.typicode.com/posts/1")
   .then(response => {
@@ -131,6 +138,7 @@ fetch("https://jsonplaceholder.typicode.com/posts/1")
 
 Wretch throws when the response is not successful and contains helper methods to handle common codes.
 
+<!-- snippet:description Shows error handling with wretch catchers -->
 ```javascript
 wretch("https://jsonplaceholder.typicode.com/posts/1")
   .get()
@@ -145,6 +153,7 @@ wretch("https://jsonplaceholder.typicode.com/posts/1")
 
 With fetch you have to set the header, the method and the body manually.
 
+<!-- snippet:description Manual JSON request setup with fetch -->
 ```javascript
 fetch("https://jsonplaceholder.typicode.com/posts", {
   method: "POST",
@@ -156,6 +165,7 @@ fetch("https://jsonplaceholder.typicode.com/posts", {
 
 With wretch, you have shorthands at your disposal.
 
+<!-- snippet:description Posting JSON data with automatic serialization -->
 ```javascript
 wretch("https://jsonplaceholder.typicode.com/posts")
   .post({ "hello": "world" })
@@ -166,6 +176,7 @@ wretch("https://jsonplaceholder.typicode.com/posts")
 
 A Wretch object is immutable which means that you can reuse previous instances safely.
 
+<!-- snippet:description Reusable wretch instances with base configuration -->
 ```javascript
 const token = "MY_SECRET_TOKEN"
 
@@ -267,6 +278,7 @@ Works with [Deno](https://deno.land/) out of the box.
 deno add npm:wretch
 ```
 
+<!-- snippet:description Basic Deno usage example -->
 ```ts
 import wretch from "wretch";
 
@@ -282,6 +294,7 @@ Works with [Bun](https://bun.sh/) out of the box.
 bun add wretch
 ```
 
+<!-- snippet:description Basic Bun usage example -->
 ```ts
 import wretch from "wretch";
 
@@ -293,7 +306,8 @@ console.log(text); // -> { "code": 200, "description": "OK" }
 
 ## Import
 
-<!-- snippet:skip Browser specific code -->
+<!-- snippet:description Browser module import examples
+     snippet:skip Browser specific code -->
 ```typescript
 // ECMAScript modules
 import wretch from "wretch"
@@ -305,6 +319,8 @@ window.wretch
 
 ## Common Use Cases
 
+<!-- snippet:description REST API client with base configuration and JSON resolution
+     snippet:expect-return "id" -->
 ```javascript
 // 🌐 REST API Client
 const api = wretch("https://jsonplaceholder.typicode.com")
@@ -313,8 +329,10 @@ const api = wretch("https://jsonplaceholder.typicode.com")
 
 const users = await api.get("/users")
 const user = await api.post({ name: "John" }, "/users")
+users
 ```
 
+<!-- snippet:description File upload with progress tracking using addons -->
 ```javascript
 // 📤 File Upload with Progress
 import ProgressAddon from "wretch/addons/progress"
@@ -328,6 +346,7 @@ await wretch("https://httpbingo.org/post")
   .json()
 ```
 
+<!-- snippet:description Auto-retry with network error handling -->
 ```javascript
 // 🔄 Auto-retry on Network Failure
 import { retry } from "wretch/middlewares"
@@ -336,6 +355,8 @@ const resilientApi = wretch()
   .middlewares([retry({ maxAttempts: 3, retryOnNetworkError: true })])
 ```
 
+<!-- snippet:description Type-safe TypeScript request with interface
+     snippet:expect-return "id" -->
 ```typescript
 // 🎯 Type-safe TypeScript
 interface User { id: number; name: string; email: string }
@@ -343,8 +364,11 @@ interface User { id: number; name: string; email: string }
 const user = await wretch("https://jsonplaceholder.typicode.com")
   .get("/users/1")
   .json<User>() // Fully typed!
+
+user
 ```
 
+<!-- snippet:description Automatic token refresh with request replay -->
 ```javascript
 // 🔐 Automatic Token Refresh
 const api = wretch("https://httpbingo.org/basic-auth/user/pass")
@@ -366,6 +390,11 @@ const api = wretch("https://httpbingo.org/basic-auth/user/pass")
 
 You can provide a custom fetch implementation using the `.fetchPolyfill()` method. This is useful for for a variety of use cases including mocking, adding logging, timing, or other custom behavior to all requests made through a wretch instance.
 
+<!--
+  snippet:description Custom fetch implementation with logging and timing
+  snippet:expect-output "Fetching:"
+  snippet:expect-return "userId"
+-->
 ```js
 import wretch from "wretch"
 
@@ -386,6 +415,7 @@ await api.get("/posts").json()
 
 Converts a wretch instance into a fetch-like function, preserving all configuration (middlewares, catchers, headers, etc.). Useful for integrating wretch with libraries that expect a fetch signature.
 
+<!-- snippet:description Converting wretch instance to fetch-like function -->
 ```js
 const myFetch = wretch("https://jsonplaceholder.typicode.com")
   .auth("Bearer token")
@@ -394,9 +424,13 @@ const myFetch = wretch("https://jsonplaceholder.typicode.com")
 
 // Use like regular fetch
 const response = await myFetch("/users", { method: "GET" })
+response
 ```
 
-<!-- snippet:skip Example with external library -->
+<!--
+  snippet:description Using wretch as fetch for third-party libraries
+  snippet:skip Example with external library
+-->
 ```js
 // Pass to libraries expecting fetch
 import { createClient } from "@apollo/client"
@@ -438,7 +472,10 @@ const client = createClient({
 
 **Step-by-step breakdown:**
 
-<!-- snippet:skip -->
+<!--
+  snippet:description Instantiating wretch with base URL and options
+  snippet:skip
+-->
 ```ts
 // First, instantiate wretch
 wretch(baseUrl, baseOptions)
@@ -446,7 +483,10 @@ wretch(baseUrl, baseOptions)
 
 _The "request" chain starts here._
 
-<!-- snippet:skip -->
+<!--
+  snippet:description Request chain helper and body methods syntax
+  snippet:skip
+-->
 ```ts
   // Optional - A set of helper methods to set the default options, set accept header, change the current url…
   .<helper method(s)>()
@@ -461,7 +501,10 @@ _The "response" chain starts here._
 _Fetch is called after the request chain ends and before the response chain starts._<br>
 _The request is on the fly and now it is time to chain catchers and finally call a response type handler._
 
-<!-- snippet:skip -->
+<!--
+  snippet:description Response chain catcher and type methods syntax
+  snippet:skip
+-->
 ```ts
   // Optional - You can chain error handlers here
   .<catcher(s)>()
@@ -472,7 +515,10 @@ _The request is on the fly and now it is time to chain catchers and finally call
 
 _From this point on, wretch returns a standard Promise._
 
-<!-- snippet:skip -->
+<!--
+  snippet:description Promise chain methods after response handler
+  snippet:skip
+-->
 ```ts
   .then(…)
   .catch(…)
@@ -482,7 +528,10 @@ _From this point on, wretch returns a standard Promise._
 
 Here's how the chaining works in practice:
 
-<!-- snippet:skip Example -->
+<!--
+  snippet:description Complete request/response chain example
+  snippet:skip Example
+-->
 ```js
 await wretch("https://api.example.com")        // Base URL
   .headers({ "X-Api-Key": "secret" })          // Helper method
@@ -513,6 +562,7 @@ Looking for common patterns and solutions? Check out the **[Recipes Guide](RECIP
 
 The default export is a factory function used to instantiate wretch.
 
+<!-- snippet:description Factory function instantiation example -->
 ```js
 import wretch from "wretch"
 
@@ -525,6 +575,7 @@ Helper Methods are used to configure the request and program actions.
 
 **Available methods:** [`.url()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#url) · [`.options()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#options) · [`.headers()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#headers) · [`.auth()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#auth) · [`.accept()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#accept) · [`.content()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#content) · [`.signal()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#signal) · [`.toFetch()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#tofetch) · [`.fetchPolyfill()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#fetchpolyfill) · [`.catcher()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#catcher) · [`.catcherFallback()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#catcherfallback) · [`.customError()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#customerror) · [`.defer()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#defer) · [`.resolve()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#resolve) · [`.middlewares()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#middlewares) · [`.addon()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#addon) · [`.polyfills()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#polyfills)
 
+<!-- snippet:description Chaining helper methods example -->
 ```js
 let api = wretch("http://domain.com/")
 
@@ -540,10 +591,15 @@ Specify a body type if uploading data. Can also be added through the HTTP Method
 
 **Available methods:** [`.body()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#body) · [`.json()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#json)
 
+<!--
+  snippet:description Helper methods configuration example
+  snippet:expect-return "html"
+-->
 ```js
 let api = wretch("http://domain.com/")
 
 api = api.body("<html><body><div/></body></html>")
+api
 ```
 
 ### [HTTP Methods 🔗](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#delete)
@@ -555,6 +611,7 @@ You can pass optional url and body arguments to these methods.
 
 **Available methods:** [`.get()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#get) · [`.post()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#post) · [`.put()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#put) · [`.patch()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#patch) · [`.delete()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#delete) · [`.head()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#head) · [`.opts()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#opts)
 
+<!-- snippet:description HTTP method shortcuts with url and body arguments -->
 ```js
 const api = wretch("http://jsonplaceholder.typicode.com")
 
@@ -574,6 +631,7 @@ Catchers are optional, but if none are provided an error will still be thrown fo
 
 **Available methods:** [`.badRequest()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#badrequest) · [`.unauthorized()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#unauthorized) · [`.forbidden()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#forbidden) · [`.notFound()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#notfound) · [`.timeout()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#timeout) · [`.internalError()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#internalerror) · [`.error()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#error) · [`.fetchError()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#fetcherror)
 
+<!-- snippet:description Error catchers for various HTTP status codes -->
 ```js
 wretch("http://domain.com/resource")
   .get()
@@ -590,7 +648,10 @@ wretch("http://domain.com/resource")
 
 The error passed to catchers is enhanced with additional properties.
 
-<!-- snippet:skip -->
+<!--
+  snippet:description WretchError type definition
+  snippet:skip
+-->
 ```ts
 type WretchError = Error & {
   status: number;
@@ -606,6 +667,7 @@ By default, `error.message` is set to the response body text (or `statusText` if
 The original request is passed along the error and can be used in order to
 perform an additional request.
 
+<!-- snippet:description Request replay with credential renewal -->
 ```js
 await wretch("https://httpbingo.org/basic-auth/user/pass")
   .addon(BasicAuthAddon)
@@ -638,6 +700,11 @@ type.
 
 **Available methods:** [`.res()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#res) · [`.json()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#json) · [`.text()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#text) · [`.blob()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#blob) · [`.arrayBuffer()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#arraybuffer) · [`.formData()`](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#formdata)
 
+<!-- snippet:description Factory method usage example
+  snippet:expect-output "Hello world!"
+  snippet:await
+  snippet:return-statement
+-->
 ```js
 const ENDPOINT = "https://jsonplaceholder.typicode.com/posts/1"
 
@@ -661,6 +728,7 @@ called._
 
 Addons are separate pieces of code that you can import and plug into `wretch` to add new features.
 
+<!-- snippet:description Adding multiple addons to wretch instance -->
 ```js
 import FormDataAddon from "wretch/addons/formData"
 import QueryStringAddon from "wretch/addons/queryString"
@@ -680,6 +748,11 @@ https://user-images.githubusercontent.com/3428394/182319457-504a0856-abdd-4c1d-b
 
 Used to construct and append the query string part of the URL from an object.
 
+<!--
+  snippet:description Query string construction from objects and strings
+  snippet:expect-return "reset"
+  snippet:return-statement: w
+-->
 ```js
 import QueryStringAddon from "wretch/addons/queryString"
 
@@ -699,6 +772,7 @@ w = w.query({ reset: true }, { replace: true });
 
 Adds a helper method to serialize a `multipart/form-data` body from an object.
 
+<!-- snippet:description FormData serialization from nested objects -->
 ```js
 import FormDataAddon from "wretch/addons/formData"
 
@@ -724,6 +798,7 @@ wretch("https://httpbingo.org/post").addon(FormDataAddon).formData(form, { recur
 
 Adds a method to serialize a `application/x-www-form-urlencoded` body from an object.
 
+<!-- snippet:description FormUrl serialization to x-www-form-urlencoded -->
 ```js
 import FormUrlAddon from "wretch/addons/formUrl"
 
@@ -739,12 +814,17 @@ wretch("https://httpbingo.org/post").addon(FormUrlAddon).formUrl(alreadyEncodedF
 
 Adds the ability to abort requests and set timeouts using AbortController and signals under the hood.
 
+<!-- snippet:description Importing the Abort addon -->
 ```js
 import AbortAddon from "wretch/addons/abort"
 ```
 
 Use cases :
 
+<!--
+  snippet:description Request abortion using controller method
+  snippet:expect-output "Aborted !"
+-->
 ```js
 const [c, w] = wretch("https://httpbingo.org/get")
   .addon(AbortAddon())
@@ -769,8 +849,12 @@ wretch("https://httpbingo.org/get")
 controller.abort();
 ```
 
+<!--
+  snippet:description Request timeout with abort addon
+  snippet:expect-output "Request timed out"
+-->
 ```js
-wretch("https://httpbingo.org/delay/2")
+await wretch("https://httpbingo.org/delay/2")
   .addon(AbortAddon())
   .get()
    // 1 second timeout
@@ -789,6 +873,11 @@ Adds the ability to set the `Authorization` header for the [basic authentication
 
 Also, allows using URLs with `wretch` that contain credentials, which would otherwise throw an error.
 
+<!--
+  snippet:description Basic authentication with credentials
+  snippet:expect-return "Authorization"
+  snippet:return-statement: wretch
+-->
 ```js
 import BasicAuthAddon from "wretch/addons/basicAuth"
 
@@ -815,6 +904,11 @@ _Compatible with all platforms implementing the [TransformStream WebAPI](https:/
 
 **Download progress:**
 
+<!--
+  snippet:description Download progress tracking
+  snippet:expect-output "Download:"
+  snippet:expect-output "100%"
+-->
 ```js
 import ProgressAddon from "wretch/addons/progress"
 
@@ -830,6 +924,10 @@ await wretch("https://httpbingo.org/bytes/5000")
 
 **Upload progress:**
 
+<!--
+  snippet:description Upload progress tracking with FormData
+  snippet:skip Browser specific code
+-->
 ```js
 import ProgressAddon from "wretch/addons/progress"
 import FormDataAddon from "wretch/addons/formData"
@@ -856,12 +954,14 @@ Uses the Performance API (browsers & Node.js) to expose timings related to the u
 
 > 💡 Make sure to follow the additional instructions in the documentation to setup Node.js if necessary.
 
+<!-- snippet:description Importing middleware functions -->
 # Middlewares
 
 Middlewares are functions that can intercept requests before being processed by
 Fetch. Wretch includes a helper to help replicate the
 [middleware](http://expressjs.com/en/guide/using-middleware.html) style.
 
+<!-- snippet:description Using multiple middlewares with wretch -->
 ```js
 import wretch from "wretch"
 import { retry, dedupe } from "wretch/middlewares"
@@ -882,6 +982,7 @@ const w = wretch().middlewares([retry(), dedupe()])
 > until: (response, error) => !!response && response.ok
 > ```
 
+<!-- snippet:description Retry middleware with custom options -->
 ```js
 import wretch from 'wretch'
 import { retry } from 'wretch/middlewares'
@@ -914,6 +1015,7 @@ wretch().middlewares([
 
 **Prevents having multiple identical requests on the fly at the same time.**
 
+<!-- snippet:description Dedupe middleware to prevent identical concurrent requests -->
 ```js
 import wretch from 'wretch'
 import { dedupe } from 'wretch/middlewares'
@@ -932,6 +1034,7 @@ wretch().middlewares([
 
 **A throttling cache which stores and serves server responses for a certain amount of time.**
 
+<!-- snippet:description Throttling cache middleware for response caching -->
 ```js
 import wretch from 'wretch'
 import { throttlingCache } from 'wretch/middlewares'
@@ -954,6 +1057,7 @@ wretch().middlewares([
 
 **Delays the request by a specific amount of time.**
 
+<!-- snippet:description Delay middleware to delay requests -->
 ```js
 import wretch from 'wretch'
 import { delay } from 'wretch/middlewares'
@@ -967,7 +1071,10 @@ wretch().middlewares([
 
 Basically a Middleware is a function having the following signature :
 
-<!-- snippet:skip-->
+<!--
+  snippet:description Middleware type signatures and definitions
+  snippet:skip
+-->
 ```ts
 // A middleware accepts options and returns a configured version
 type Middleware = (options?: { [key: string]: any }) => ConfiguredMiddleware;
@@ -989,6 +1096,7 @@ consumption, a solution could be to pass a named property to the wretch options
 Your middleware can then take advantage of that by mutating the object
 reference.
 
+<!-- snippet:description Context middleware for data exposure -->
 ```js
 const contextMiddleware = (next) =>
   (url, opts) => {
@@ -1017,6 +1125,7 @@ console.log(context.property); // prints "anything"
   <summary>&nbsp;<strong>👀 Show me the code</strong></summary>
   <br>
 
+<!-- snippet:description Advanced middleware examples -->
 ```javascript
 /* A simple delay middleware. */
 const delayMiddleware = delay => next => (url, opts) => {
@@ -1137,6 +1246,7 @@ It seems like using `wretch` in a Cloudflare Worker environment is not possible 
 
 The following middleware should fix the issue (thanks @jimmed 🙇):
 
+<!-- snippet:description Cloudflare Workers workaround for Response type -->
 ```js
 wretch().middlewares([
   (next) => async (url, opts) => {
@@ -1158,6 +1268,7 @@ wretch().middlewares([
 The [`Request`](https://developer.mozilla.org/en-US/docs/Web/API/Request) object from the Fetch API uses the [`Headers`](https://developer.mozilla.org/en-US/docs/Web/API/Headers) class to store headers under the hood.
 This class is case-insensitive, meaning that setting both will actually appends the value to the same key:
 
+<!-- snippet:description Header case sensitivity example -->
 ```js
 const headers = new Headers();
 headers.append("Accept", "application/json");
@@ -1168,6 +1279,7 @@ headers.forEach((value, key) => console.log(key, value));
 
 When using `wretch`, please be mindful of this limitation and avoid setting the same header multiple times with a different case:
 
+<!-- snippet:description Problematic duplicate header setting -->
 ```js
 wretch("https://httpbingo.org/post")
   .headers({ "content-type": "application/json" })
@@ -1185,6 +1297,7 @@ wretch("https://httpbingo.org/post")
 
 You can use the following middleware to deduplicate headers (thanks @jimmed 🙇):
 
+<!-- snippet:description Headers deduplication middleware -->
 ```js
 export const manipulateHeaders =
   callback => next => (url, { headers, ...opts }) => {
