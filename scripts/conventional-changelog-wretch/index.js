@@ -28,16 +28,16 @@ function presetOpts(cb) {
       if (!commit.emoji || typeof commit.emoji !== "string")
         return
 
-      const emojiText = emojiMatch[commit.emoji];
-      commit.emoji = commit.emoji.substring(0, 72);
-      const emojiLength = commit.emoji.length;
+      const emojiText = emojiMatch[commit.emoji]
+      commit.emoji = commit.emoji.substring(0, 72)
+      const emojiLength = commit.emoji.length
 
-      if (typeof commit.hash === 'string') {
-        commit.hash = commit.hash.substring(0, 7);
+      if (typeof commit.hash === "string") {
+        commit.hash = commit.hash.substring(0, 7)
       }
 
-      if (typeof commit.shortDesc === 'string') {
-        commit.shortDesc = commit.shortDesc.substring(0, 72 - emojiLength);
+      if (typeof commit.shortDesc === "string") {
+        commit.shortDesc = commit.shortDesc.substring(0, 72 - emojiLength)
       }
 
       commit.emoji = commit.emoji + " " + emojiText
