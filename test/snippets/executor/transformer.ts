@@ -81,7 +81,7 @@ export function transformCode(snippet: CodeSnippet): string {
     if (lastStatementIndex >= 0) {
       // Check if it already has a return statement
       if (!codeLines[lastStatementIndex].trim().startsWith("return ")) {
-        if(returnStatementArgs) {
+        if (returnStatementArgs) {
           codeLines.push(`return ${returnStatementArgs}`)
         } else {
           codeLines[lastStatementIndex] = "return " + codeLines[lastStatementIndex]
