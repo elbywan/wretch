@@ -276,7 +276,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    * @param errorId - Error code or name
    * @param catcher - The catcher method
    */
-  catcher(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, errorId: number | string | symbol, catcher: (error: ErrorType extends undefined ? WretchError : ErrorType, originalRequest: this) => any): Wretch<Self, Chain, Resolver, ErrorType extends undefined ? WretchError : ErrorType>
+  catcher(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, errorId: number | string | symbol, catcher: (error: ErrorType extends undefined ? WretchError : ErrorType, originalRequest: this) => any): Self & Wretch<Self, Chain, Resolver, ErrorType extends undefined ? WretchError : ErrorType>
 
   /**
    * A fallback catcher that will be called for any error thrown - if uncaught by other means.
@@ -296,7 +296,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    * @see {@link Wretch.catcher} for more details.
    * @param catcher - The catcher method
    */
-  catcherFallback(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, catcher: (error: ErrorType extends undefined ? WretchError : ErrorType, originalRequest: this) => any): Wretch<Self, Chain, Resolver, ErrorType extends undefined ? WretchError : ErrorType>
+  catcherFallback(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, catcher: (error: ErrorType extends undefined ? WretchError : ErrorType, originalRequest: this) => any): Self & Wretch<Self, Chain, Resolver, ErrorType extends undefined ? WretchError : ErrorType>
 
   /**
    * Configures custom error parsing for all error responses.
