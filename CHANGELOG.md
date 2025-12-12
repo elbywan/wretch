@@ -1,3 +1,22 @@
+<a name="3.0.6"></a>
+## [3.0.6](https://github.com/elbywan/wretch/compare/3.0.5...3.0.6) (2025-12-12)
+
+
+### :bug: Bug fix(es)
+
+* Add Self to return type ([e5582d6](https://github.com/elbywan/wretch/commit/e5582d6))
+* Widen catcherFallback error type ([d0a3fbe](https://github.com/elbywan/wretch/commit/d0a3fbe)), closes [#290](https://github.com/elbywan/wretch/issues/290)
+
+### :white_check_mark: Test improvement(s)
+
+* Add core snippet testing infrastructure ([fcea6f7](https://github.com/elbywan/wretch/commit/fcea6f7))
+* Add directive system for snippet test control ([106e0d6](https://github.com/elbywan/wretch/commit/106e0d6))
+* Add execution engine and test orchestration ([28f60a1](https://github.com/elbywan/wretch/commit/28f60a1))
+* Add extensible plugin system with examples ([262a40d](https://github.com/elbywan/wretch/commit/262a40d))
+* Integrate snippet testing framework and document usage ([9cdeb4c](https://github.com/elbywan/wretch/commit/9cdeb4c))
+
+
+
 <a name="3.0.5"></a>
 ## [3.0.5](https://github.com/elbywan/wretch/compare/3.0.4...3.0.5) (2025-11-27)
 
