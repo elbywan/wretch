@@ -1,6 +1,6 @@
 import { mix, extractContentType, isLikelyJsonMime } from "./utils.js"
 import { JSON_MIME, CATCHER_FALLBACK } from "./constants.js"
-import { resolver } from "./resolver.js"
+import { resolver, WretchError } from "./resolver.js"
 import type { Wretch, WretchOptions } from "./types.js"
 
 export const core: Wretch = {
@@ -132,7 +132,10 @@ export const core: Wretch = {
       return this
         .url(fetchUrl)
         .options(fetchOptions)
-        .catcherFallback(error => error.response)
+        .catcherFallback(error => {
+          if(error instanceof WretchError) { return error.response  }
+          else { throw error }
+        })
         .fetch()
         .res()
     }
