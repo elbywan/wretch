@@ -23,3 +23,18 @@ export const mix = (one: object, two: object, mergeArrays = false) => {
   }
   return acc
 }
+
+export function splitUrlQuery(url: string) {
+  const i = url.indexOf("?")
+  return i === -1
+    ? { path: url, query: "" }
+    : { path: url.slice(0, i), query: url.slice(i) }
+}
+
+export function joinUrl(base: string, next: string) {
+  if (!base) return next
+  if (!next) return base
+  return base.endsWith("/") && next.startsWith("/")
+    ? base + next.slice(1)
+    : base + next
+}

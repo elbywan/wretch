@@ -1,4 +1,4 @@
-import { mix, extractContentType, isLikelyJsonMime } from "./utils.js"
+import { mix, extractContentType, isLikelyJsonMime, joinUrl, splitUrlQuery } from "./utils.js"
 import { JSON_MIME, CATCHER_FALLBACK } from "./constants.js"
 import { resolver, WretchError } from "./resolver.js"
 import type { Wretch, WretchOptions } from "./types.js"
@@ -20,15 +20,10 @@ export const core: Wretch = {
     return { ...this, _fetch: fetchImpl }
   },
   url(_url, replace = false) {
-    if (replace)
-      return { ...this, _url }
-    const idx = this._url.indexOf("?")
-    return {
-      ...this,
-      _url: idx > -1 ?
-        this._url.slice(0, idx) + _url + this._url.slice(idx) :
-        this._url + _url
-    }
+    if (replace) return { ...this, _url }
+
+    const { path, query } = splitUrlQuery(this._url)
+    return { ...this, _url: joinUrl(path, _url) + query }
   },
   options(options, replace = false) {
     return { ...this, _options: replace ? options : mix(this._options, options) }

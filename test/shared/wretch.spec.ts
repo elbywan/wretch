@@ -461,6 +461,31 @@ export function createWretchTests(ctx: TestContext): void {
       expect(obj7["_url"]).toBe(`${_URL}/test?a=1%21&b=2&c=6&d=7&d=8&Literal[]=Query&String`)
     })
 
+    it("should not introduce a double slash when base url ends with '/' and request path starts with '/'", async function () {
+      const shortCircuit = () => (_next: FetchLike) => (url: string, opts: WretchOptions): Promise<WretchResponse> =>
+        Promise.resolve({
+          ok: true,
+          text: () => Promise.resolve(opts.method + "@" + url)
+        } as WretchResponse)
+
+      const base = `${_URL}/`
+      const result = await wretch()
+        .middlewares([shortCircuit()])
+        .url(base)
+        .get("/text")
+        .text()
+
+      expect(result).toBe(`GET@${_URL}/text`)
+    })
+
+    it("should keep the query string at the end when appending url segments", async function () {
+      const obj1 = wretch("...")
+      const obj2 = obj1.url(`${_URL}?a=1`, true)
+      const obj3 = obj2.url("/test")
+
+      expect(obj3["_url"]).toBe(`${_URL}/test?a=1`)
+    })
+
     it("should accept multiple addons at once", async function () {
       const w = wretch(`${_URL}/basicauth`)
         .addon([BasicAuthAddon, QueryStringAddon])
