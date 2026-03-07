@@ -1,3 +1,20 @@
+<a name="3.0.7"></a>
+## [3.0.7](https://github.com/elbywan/wretch/compare/3.0.6...3.0.7) (2026-03-07)
+
+
+### :arrow_up: Version update(s)
+
+* Bump fastify from 5.6.1 to 5.7.3 ([153cae9](https://github.com/elbywan/wretch/commit/153cae9))
+* Bump lodash from 4.17.21 to 4.17.23 ([2355d02](https://github.com/elbywan/wretch/commit/2355d02))
+* Bump qs from 6.14.0 to 6.14.2 ([02ca86e](https://github.com/elbywan/wretch/commit/02ca86e))
+* Upgrade dependencies ([f677f28](https://github.com/elbywan/wretch/commit/f677f28))
+
+### :factory: New feature(s)
+
+* Allow multiple error ids on catchers ([dc93190](https://github.com/elbywan/wretch/commit/dc93190))
+
+
+
 <a name="3.0.6"></a>
 ## [3.0.6](https://github.com/elbywan/wretch/compare/3.0.5...3.0.6) (2025-12-12)
 
