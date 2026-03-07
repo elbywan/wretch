@@ -694,20 +694,17 @@ await wretch("https://httpbingo.org/basic-auth/user/pass")
 
 You can catch multiple error codes with a single handler by passing an array:
 
+<!--
+  snippet:description Multiple error code catchers example
+-->
 ```js
 // Catch multiple codes at once
-const api = wretch("https://api.example.com")
-  .catcher([401, 403], err => {
-    console.log("Authentication/authorization error:", err.status)
-    redirect("/login")
-  })
-  .catcher([500, 502, 503], err => {
-    console.log("Server error:", err.status)
-    showErrorMessage("Service temporarily unavailable")
-  })
+const api = wretch("https://httpbingo.org").catcher([401, 403], err => {
+  console.log("Authentication/authorization error:", err.status)
+});
 
 // The catchers will handle all specified codes
-await api.get("/protected/resource").json()
+await api.get("/bearer").json()
 ```
 
 ### [Response Types 🔗](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#arrayBuffer)
