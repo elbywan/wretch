@@ -690,6 +690,23 @@ await wretch("https://httpbingo.org/basic-auth/user/pass")
   .then(() => { /* … */ });
 ```
 
+#### Multiple Error Codes
+
+You can catch multiple error codes with a single handler by passing an array:
+
+<!--
+  snippet:description Multiple error code catchers example
+-->
+```js
+// Catch multiple codes at once
+const api = wretch("https://httpbingo.org").catcher([401, 403], err => {
+  console.log("Authentication/authorization error:", err.status)
+});
+
+// The catchers will handle all specified codes
+await api.get("/bearer").json()
+```
+
 ### [Response Types 🔗](https://elbywan.github.io/wretch/api/interfaces/index.WretchResponseChain#arrayBuffer)
 
 Setting the final response body type ends the chain and returns a regular promise.
