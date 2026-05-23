@@ -10,7 +10,7 @@
  *
  * Immutability : almost every method of this class return a fresh Wretch object.
  */
-export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, ErrorType = undefined> {
+export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, ErrorType = undefined, CatcherResult = never> {
   /**
    * @private @internal
    */
@@ -26,19 +26,19 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
   /**
    * @private @internal
    */
-  _errorTransformer?: <T>(error: WretchError, response: WretchResponse, request: Wretch<any, any, any, any>) => Promise<T> | T,
+  _errorTransformer?: <T>(error: WretchError, response: WretchResponse, request: Wretch<any, any, any, any, any>) => Promise<T> | T,
   /**
    * @private @internal
    */
-  _catchers: Map<number | string | symbol, (error: ErrorType extends undefined ? WretchError : ErrorType, originalRequest: Wretch<Self, Chain, Resolver, ErrorType>) => void>
+  _catchers: Map<number | string | symbol, (error: ErrorType extends undefined ? WretchError : ErrorType, originalRequest: Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>) => unknown>
   /**
    * @private @internal
    */
-  _resolvers: ((resolver: Resolver extends undefined ? Chain & WretchResponseChain<Self, Chain> : Resolver, originalRequest: Wretch<Self, Chain, Resolver, ErrorType>) => any)[]
+  _resolvers: ((resolver: Resolver extends undefined ? Chain & WretchResponseChain<Self, Chain, undefined, ErrorType, CatcherResult> : Resolver, originalRequest: Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>) => any)[]
   /**
    * @private @internal
    */
-  _deferred: WretchDeferredCallback<Self, Chain, Resolver, ErrorType>[]
+  _deferred: WretchDeferredCallback<Self, Chain, Resolver, ErrorType, CatcherResult>[]
   /**
    * @private @internal
    */
@@ -68,15 +68,15 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    * @category Helpers
    * @param addon - A Wretch addon or an array of addons to register
    */
-  addon<W, R>(addon: WretchAddon<W, R>): W & Self & Wretch<Self & W, Chain & R, Resolver, ErrorType>
-  addon<W1, R1, W2, R2>(addon: [WretchAddon<W1, R1>, WretchAddon<W2, R2>]): W1 & W2 & Self & Wretch<Self & W1 & W2, Chain & R1 & R2, Resolver, ErrorType>
-  addon<W1, R1, W2, R2, W3, R3>(addon: [WretchAddon<W1, R1>, WretchAddon<W2, R2>, WretchAddon<W3, R3>]): W1 & W2 & W3 & Self & Wretch<Self & W1 & W2 & W3, Chain & R1 & R2 & R3, Resolver, ErrorType>
-  addon<W1, R1, W2, R2, W3, R3, W4, R4>(addon: [WretchAddon<W1, R1>, WretchAddon<W2, R2>, WretchAddon<W3, R3>, WretchAddon<W4, R4>]): W1 & W2 & W3 & W4 & Self & Wretch<Self & W1 & W2 & W3 & W4, Chain & R1 & R2 & R3 & R4, Resolver, ErrorType>
-  addon<W1, R1, W2, R2, W3, R3, W4, R4, W5, R5>(addon: [WretchAddon<W1, R1>, WretchAddon<W2, R2>, WretchAddon<W3, R3>, WretchAddon<W4, R4>, WretchAddon<W5, R5>]): W1 & W2 & W3 & W4 & W5 & Self & Wretch<Self & W1 & W2 & W3 & W4 & W5, Chain & R1 & R2 & R3 & R4 & R5, Resolver, ErrorType>
-  addon<W1, R1, W2, R2, W3, R3, W4, R4, W5, R5, W6, R6>(addon: [WretchAddon<W1, R1>, WretchAddon<W2, R2>, WretchAddon<W3, R3>, WretchAddon<W4, R4>, WretchAddon<W5, R5>, WretchAddon<W6, R6>]): W1 & W2 & W3 & W4 & W5 & W6 & Self & Wretch<Self & W1 & W2 & W3 & W4 & W5 & W6, Chain & R1 & R2 & R3 & R4 & R5 & R6, Resolver, ErrorType>
-  addon<W1, R1, W2, R2, W3, R3, W4, R4, W5, R5, W6, R6, W7, R7>(addon: [WretchAddon<W1, R1>, WretchAddon<W2, R2>, WretchAddon<W3, R3>, WretchAddon<W4, R4>, WretchAddon<W5, R5>, WretchAddon<W6, R6>, WretchAddon<W7, R7>]): W1 & W2 & W3 & W4 & W5 & W6 & W7 & Self & Wretch<Self & W1 & W2 & W3 & W4 & W5 & W6 & W7, Chain & R1 & R2 & R3 & R4 & R5 & R6 & R7, Resolver, ErrorType>
-  addon<W1, R1, W2, R2, W3, R3, W4, R4, W5, R5, W6, R6, W7, R7, W8, R8>(addon: [WretchAddon<W1, R1>, WretchAddon<W2, R2>, WretchAddon<W3, R3>, WretchAddon<W4, R4>, WretchAddon<W5, R5>, WretchAddon<W6, R6>, WretchAddon<W7, R7>, WretchAddon<W8, R8>]): W1 & W2 & W3 & W4 & W5 & W6 & W7 & W8 & Self & Wretch<Self & W1 & W2 & W3 & W4 & W5 & W6 & W7 & W8, Chain & R1 & R2 & R3 & R4 & R5 & R6 & R7 & R8, Resolver, ErrorType>
-  addon<W1, R1, W2, R2, W3, R3, W4, R4, W5, R5, W6, R6, W7, R7, W8, R8, W9, R9>(addon: [WretchAddon<W1, R1>, WretchAddon<W2, R2>, WretchAddon<W3, R3>, WretchAddon<W4, R4>, WretchAddon<W5, R5>, WretchAddon<W6, R6>, WretchAddon<W7, R7>, WretchAddon<W8, R8>, WretchAddon<W9, R9>]): W1 & W2 & W3 & W4 & W5 & W6 & W7 & W8 & W9 & Self & Wretch<Self & W1 & W2 & W3 & W4 & W5 & W6 & W7 & W8 & W9, Chain & R1 & R2 & R3 & R4 & R5 & R6 & R7 & R8 & R9, Resolver, ErrorType>
+  addon<W, R>(addon: WretchAddon<W, R>): W & Self & Wretch<Self & W, Chain & R, Resolver, ErrorType, CatcherResult>
+  addon<W1, R1, W2, R2>(addon: [WretchAddon<W1, R1>, WretchAddon<W2, R2>]): W1 & W2 & Self & Wretch<Self & W1 & W2, Chain & R1 & R2, Resolver, ErrorType, CatcherResult>
+  addon<W1, R1, W2, R2, W3, R3>(addon: [WretchAddon<W1, R1>, WretchAddon<W2, R2>, WretchAddon<W3, R3>]): W1 & W2 & W3 & Self & Wretch<Self & W1 & W2 & W3, Chain & R1 & R2 & R3, Resolver, ErrorType, CatcherResult>
+  addon<W1, R1, W2, R2, W3, R3, W4, R4>(addon: [WretchAddon<W1, R1>, WretchAddon<W2, R2>, WretchAddon<W3, R3>, WretchAddon<W4, R4>]): W1 & W2 & W3 & W4 & Self & Wretch<Self & W1 & W2 & W3 & W4, Chain & R1 & R2 & R3 & R4, Resolver, ErrorType, CatcherResult>
+  addon<W1, R1, W2, R2, W3, R3, W4, R4, W5, R5>(addon: [WretchAddon<W1, R1>, WretchAddon<W2, R2>, WretchAddon<W3, R3>, WretchAddon<W4, R4>, WretchAddon<W5, R5>]): W1 & W2 & W3 & W4 & W5 & Self & Wretch<Self & W1 & W2 & W3 & W4 & W5, Chain & R1 & R2 & R3 & R4 & R5, Resolver, ErrorType, CatcherResult>
+  addon<W1, R1, W2, R2, W3, R3, W4, R4, W5, R5, W6, R6>(addon: [WretchAddon<W1, R1>, WretchAddon<W2, R2>, WretchAddon<W3, R3>, WretchAddon<W4, R4>, WretchAddon<W5, R5>, WretchAddon<W6, R6>]): W1 & W2 & W3 & W4 & W5 & W6 & Self & Wretch<Self & W1 & W2 & W3 & W4 & W5 & W6, Chain & R1 & R2 & R3 & R4 & R5 & R6, Resolver, ErrorType, CatcherResult>
+  addon<W1, R1, W2, R2, W3, R3, W4, R4, W5, R5, W6, R6, W7, R7>(addon: [WretchAddon<W1, R1>, WretchAddon<W2, R2>, WretchAddon<W3, R3>, WretchAddon<W4, R4>, WretchAddon<W5, R5>, WretchAddon<W6, R6>, WretchAddon<W7, R7>]): W1 & W2 & W3 & W4 & W5 & W6 & W7 & Self & Wretch<Self & W1 & W2 & W3 & W4 & W5 & W6 & W7, Chain & R1 & R2 & R3 & R4 & R5 & R6 & R7, Resolver, ErrorType, CatcherResult>
+  addon<W1, R1, W2, R2, W3, R3, W4, R4, W5, R5, W6, R6, W7, R7, W8, R8>(addon: [WretchAddon<W1, R1>, WretchAddon<W2, R2>, WretchAddon<W3, R3>, WretchAddon<W4, R4>, WretchAddon<W5, R5>, WretchAddon<W6, R6>, WretchAddon<W7, R7>, WretchAddon<W8, R8>]): W1 & W2 & W3 & W4 & W5 & W6 & W7 & W8 & Self & Wretch<Self & W1 & W2 & W3 & W4 & W5 & W6 & W7 & W8, Chain & R1 & R2 & R3 & R4 & R5 & R6 & R7 & R8, Resolver, ErrorType, CatcherResult>
+  addon<W1, R1, W2, R2, W3, R3, W4, R4, W5, R5, W6, R6, W7, R7, W8, R8, W9, R9>(addon: [WretchAddon<W1, R1>, WretchAddon<W2, R2>, WretchAddon<W3, R3>, WretchAddon<W4, R4>, WretchAddon<W5, R5>, WretchAddon<W6, R6>, WretchAddon<W7, R7>, WretchAddon<W8, R8>, WretchAddon<W9, R9>]): W1 & W2 & W3 & W4 & W5 & W6 & W7 & W8 & W9 & Self & Wretch<Self & W1 & W2 & W3 & W4 & W5 & W6 & W7 & W8 & W9, Chain & R1 & R2 & R3 & R4 & R5 & R6 & R7 & R8 & R9, Resolver, ErrorType, CatcherResult>
 
   /**
    * Sets a custom fetch implementation to use for requests.
@@ -102,7 +102,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    * @category Helpers
    * @param fetch - A custom fetch implementation
    */
-  fetchPolyfill(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, fetch: (url: string, opts: WretchOptions) => Promise<Response>): this
+  fetchPolyfill(this: Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>, fetch: (url: string, opts: WretchOptions) => Promise<Response>): this
 
   /**
    * Appends or replaces the url.
@@ -130,7 +130,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    * @param url - Url segment
    * @param replace - If true, replaces the current url instead of appending
    */
-  url(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, url: string, replace?: boolean): this
+  url(this: Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>, url: string, replace?: boolean): this
 
   /**
    * Sets the fetch options.
@@ -174,7 +174,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    * @param options - New options
    * @param replace - If true, replaces the existing options
    */
-  options(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, options: WretchOptions, replace?: boolean): this
+  options(this: Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>, options: WretchOptions, replace?: boolean): this
 
   /**
    * Sets the request headers.
@@ -189,7 +189,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    * @category Helpers
    * @param headerValues - An object containing header keys and values
    */
-  headers(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, headerValues: HeadersInit): this
+  headers(this: Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>, headerValues: HeadersInit): this
 
   /**
    * Shortcut to set the "Accept" header.
@@ -201,7 +201,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    * @category Helpers
    * @param headerValue - Header value
    */
-  accept(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, headerValue: string): this
+  accept(this: Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>, headerValue: string): this
 
   /**
    * Shortcut to set the "Content-Type" header.
@@ -213,7 +213,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    * @category Helpers
    * @param headerValue - Header value
    */
-  content(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, headerValue: string): this
+  content(this: Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>, headerValue: string): this
 
   /**
    * Shortcut to set the "Authorization" header.
@@ -225,7 +225,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    * @category Helpers
    * @param headerValue - Header value
    */
-  auth(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, headerValue: string): this
+  auth(this: Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>, headerValue: string): this
 
   /**
    * Adds a [catcher](https://github.com/elbywan/wretch#catchers) which will be
@@ -280,7 +280,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    * @param errorId - Error code or name, or an array of error codes/names
    * @param catcher - The catcher method
    */
-  catcher(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, errorId: ErrorId | ErrorId[], catcher: (error: ErrorType extends undefined ? WretchError : ErrorType, originalRequest: this) => any): Self & Wretch<Self, Chain, Resolver, ErrorType extends undefined ? WretchError : ErrorType>
+  catcher<Result>(this: Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>, errorId: ErrorId | ErrorId[], catcher: (error: ErrorType extends undefined ? WretchError : ErrorType, originalRequest: this) => Result): Self & Wretch<Self, Chain, Resolver, ErrorType extends undefined ? WretchError : ErrorType, CatcherResult | WretchCatcherResult<Result>>
 
   /**
    * A fallback catcher that will be called for any error thrown - if uncaught by other means.
@@ -300,7 +300,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    * @see {@link Wretch.catcher} for more details.
    * @param catcher - The catcher method
    */
-  catcherFallback(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, catcher: (error: unknown, originalRequest: this) => any): Self & Wretch<Self, Chain, Resolver, ErrorType extends undefined ? WretchError : ErrorType>
+  catcherFallback<Result>(this: Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>, catcher: (error: unknown, originalRequest: this) => Result): Self & Wretch<Self, Chain, Resolver, ErrorType extends undefined ? WretchError : ErrorType, CatcherResult | WretchCatcherResult<Result>>
 
   /**
    * Configures custom error parsing for all error responses.
@@ -332,7 +332,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    * @category Helpers
    * @param transformer - A function that receives the error, response, and request, and returns the transformed error with custom properties
    */
-  customError<T extends (ErrorType extends undefined ? any : ErrorType)>(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, transformer: (error: WretchError, response: WretchResponse, request: Self & Wretch<Self, Chain, Resolver, ErrorType>) => Promise<T> | T): Self & Wretch<Self, Chain, Resolver, T>
+  customError<T extends (ErrorType extends undefined ? any : ErrorType)>(this: Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>, transformer: (error: WretchError, response: WretchResponse, request: Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>) => Promise<T> | T): Self & Wretch<Self, Chain, Resolver, T, CatcherResult>
 
   /**
    * Defer one or multiple request chain methods that will get called just before the request is sent.
@@ -364,11 +364,13 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    * @param callback - Exposes the wretch instance, url and options to program deferred methods.
    * @param clear - Replace the existing deferred methods if true instead of pushing to the existing list.
    */
-  defer<Clear extends boolean = false>(
-    this: Self & Wretch<Self, Chain, Resolver, ErrorType>,
-    callback: WretchDeferredCallback<Self, Chain, Resolver, ErrorType>,
+  defer<Deferred extends Wretch<any, any, any, any, any> = Wretch<Self, Chain, any, ErrorType, CatcherResult>, Clear extends boolean = false>(
+    this: Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>,
+    callback: WretchDeferredCallback<Self, Chain, Resolver, ErrorType, CatcherResult, Deferred>,
     clear?: Clear
-  ): this
+    // Deferred callbacks can register new catchers right before the request is
+    // sent, so their CatcherResult must be merged into the request type too.
+  ): Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult | InferWretchCatcherResult<Deferred>>
 
   /**
    * Programs a resolver to perform response chain tasks automatically.
@@ -401,18 +403,21 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    * @param resolver - Resolver callback
    */
   resolve<ResolverReturn, Clear extends boolean = false>(
-    this: Self & Wretch<Self, Chain, Resolver, ErrorType>,
+    this: Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>,
     resolver: (
+      // Resolvers receive a response chain already parameterized with the
+      // accumulated catcher union, so a `.json()` inside `.resolve()` keeps the
+      // same fallback information.
       chain:
         Resolver extends undefined ?
-        Chain & WretchResponseChain<Self, Chain, undefined, ErrorType> :
+        Chain & WretchResponseChain<Self, Chain, undefined, ErrorType, CatcherResult> :
         Clear extends true ?
-        Chain & WretchResponseChain<Self, Chain, undefined, ErrorType> :
+        Chain & WretchResponseChain<Self, Chain, undefined, ErrorType, CatcherResult> :
         Resolver,
-      originalRequest: Self & Wretch<Self, Chain, Clear extends true ? undefined : Resolver, ErrorType>
+      originalRequest: Self & Wretch<Self, Chain, Clear extends true ? undefined : Resolver, ErrorType, CatcherResult>
     ) => ResolverReturn,
     clear?: Clear
-  ): Self & Wretch<Self, Chain, ResolverReturn, ErrorType>
+  ): Self & Wretch<Self, Chain, ResolverReturn, ErrorType, CatcherResult>
 
   /**
    * Add middlewares to intercept a request before being sent.
@@ -431,7 +436,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    *
    * @category Helpers
    */
-  middlewares(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, middlewares: ConfiguredMiddleware[], clear?: boolean): this
+  middlewares(this: Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>, middlewares: ConfiguredMiddleware[], clear?: boolean): this
 
   /**
    * Sets the request body with any content.
@@ -445,7 +450,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    * @category Body Types
    * @param contents - The body contents
    */
-  body(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, contents: any): this
+  body(this: Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>, contents: any): this
 
   /**
    * Sets the "Content-Type" header, stringifies an object and sets the request body.
@@ -461,7 +466,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    * @param jsObject - An object which will be serialized into a JSON
    * @param contentType - A custom content type.
    */
-  json(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, jsObject: object, contentType?: string): this
+  json(this: Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>, jsObject: object, contentType?: string): this
 
 
   /**
@@ -492,9 +497,9 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    * @param url - Some url to append
    * @param body - Set the body. Behaviour varies depending on the argument type, an object is considered as json.
    */
-  fetch(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, method?: string, url?: string, body?: any):
+  fetch(this: Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>, method?: string, url?: string, body?: any):
     Resolver extends undefined ?
-    Chain & WretchResponseChain<Self, Chain, Resolver, ErrorType> :
+    Chain & WretchResponseChain<Self, Chain, Resolver, ErrorType, CatcherResult> :
     Resolver
   /**
    * Performs a [GET](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET) request.
@@ -505,9 +510,9 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    *
    * @category HTTP
    */
-  get(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, url?: string):
+  get(this: Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>, url?: string):
     Resolver extends undefined ?
-    Chain & WretchResponseChain<Self, Chain, Resolver, ErrorType> :
+    Chain & WretchResponseChain<Self, Chain, Resolver, ErrorType, CatcherResult> :
     Resolver
   /**
    * Performs a [DELETE](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE) request.
@@ -518,9 +523,9 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    *
    * @category HTTP
    */
-  delete(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, url?: string):
+  delete(this: Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>, url?: string):
     Resolver extends undefined ?
-    Chain & WretchResponseChain<Self, Chain, Resolver, ErrorType> :
+    Chain & WretchResponseChain<Self, Chain, Resolver, ErrorType, CatcherResult> :
     Resolver
   /**
    * Performs a [PUT](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PUT) request.
@@ -531,9 +536,9 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    *
    * @category HTTP
    */
-  put(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, body?: any, url?: string):
+  put(this: Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>, body?: any, url?: string):
     Resolver extends undefined ?
-    Chain & WretchResponseChain<Self, Chain, Resolver, ErrorType> :
+    Chain & WretchResponseChain<Self, Chain, Resolver, ErrorType, CatcherResult> :
     Resolver
   /**
    * Performs a [POST](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST) request.
@@ -544,9 +549,9 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    *
    * @category HTTP
    */
-  post(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, body?: any, url?: string):
+  post(this: Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>, body?: any, url?: string):
     Resolver extends undefined ?
-    Chain & WretchResponseChain<Self, Chain, Resolver, ErrorType> :
+    Chain & WretchResponseChain<Self, Chain, Resolver, ErrorType, CatcherResult> :
     Resolver
   /**
    * Performs a [PATCH](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PATCH) request.
@@ -557,9 +562,9 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    *
    * @category HTTP
    */
-  patch(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, body?: any, url?: string):
+  patch(this: Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>, body?: any, url?: string):
     Resolver extends undefined ?
-    Chain & WretchResponseChain<Self, Chain, Resolver, ErrorType> :
+    Chain & WretchResponseChain<Self, Chain, Resolver, ErrorType, CatcherResult> :
     Resolver
   /**
    * Performs a [HEAD](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/HEAD) request.
@@ -570,9 +575,9 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    *
    * @category HTTP
    */
-  head(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, url?: string):
+  head(this: Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>, url?: string):
     Resolver extends undefined ?
-    Chain & WretchResponseChain<Self, Chain, Resolver, ErrorType> :
+    Chain & WretchResponseChain<Self, Chain, Resolver, ErrorType, CatcherResult> :
     Resolver
   /**
    * Performs an [OPTIONS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS) request.
@@ -583,9 +588,9 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    *
    * @category HTTP
    */
-  opts(this: Self & Wretch<Self, Chain, Resolver, ErrorType>, url?: string):
+  opts(this: Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>, url?: string):
     Resolver extends undefined ?
-    Chain & WretchResponseChain<Self, Chain, Resolver, ErrorType> :
+    Chain & WretchResponseChain<Self, Chain, Resolver, ErrorType, CatcherResult> :
     Resolver
 
   /**
@@ -607,7 +612,7 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
    *
    * @category Helpers
    */
-  toFetch(this: Self & Wretch<Self, Chain, Resolver, ErrorType>): (url: string, options?: WretchOptions) => Promise<Response>
+  toFetch(this: Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>): (url: string, options?: WretchOptions) => Promise<Response>
 }
 
 /**
@@ -615,11 +620,13 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
  * Ultimately returns a Promise.
  *
  */
-export interface WretchResponseChain<T, Self = unknown, R = undefined, ErrorType = undefined> {
+// CatcherResult is duplicated on the response chain so every `.error()` call
+// can widen it and every body parser can expose it in its Promise result.
+export interface WretchResponseChain<T, Self = unknown, R = undefined, ErrorType = undefined, CatcherResult = never> {
   /**
    * @private @internal
    */
-  _wretchReq: Wretch<T, Self, R, ErrorType>,
+  _wretchReq: Wretch<T, Self, R, ErrorType, CatcherResult>,
   /**
    * @private @internal
    */
@@ -640,7 +647,7 @@ export interface WretchResponseChain<T, Self = unknown, R = undefined, ErrorType
    *
    * @category Response Type
    */
-  res: <Result = WretchResponse>(cb?: (type: WretchResponse) => Promise<Result> | Result) => Promise<Awaited<Result>>,
+  res: <Result = WretchResponse>(cb?: (type: WretchResponse) => Promise<Result> | Result) => Promise<Awaited<Result> | CatcherResult>,
   /**
    * Read the payload and deserialize it as JSON.
    *
@@ -650,7 +657,7 @@ export interface WretchResponseChain<T, Self = unknown, R = undefined, ErrorType
    *
    * @category Response Type
    */
-  json: <Result = unknown>(cb?: (type: any) => Promise<Result> | Result) => Promise<Awaited<Result>>,
+  json: <Result = unknown>(cb?: (type: any) => Promise<Result> | Result) => Promise<Awaited<Result> | CatcherResult>,
   /**
    * Read the payload and deserialize it as a Blob.
    *
@@ -660,7 +667,7 @@ export interface WretchResponseChain<T, Self = unknown, R = undefined, ErrorType
    *
    * @category Response Type
    */
-  blob: <Result = Blob>(cb?: (type: Blob) => Promise<Result> | Result) => Promise<Awaited<Result>>,
+  blob: <Result = Blob>(cb?: (type: Blob) => Promise<Result> | Result) => Promise<Awaited<Result> | CatcherResult>,
   /**
    * Read the payload and deserialize it as a FormData object.
    *
@@ -670,7 +677,7 @@ export interface WretchResponseChain<T, Self = unknown, R = undefined, ErrorType
    *
    * @category Response Type
    */
-  formData: <Result = FormData>(cb?: (type: FormData) => Promise<Result> | Result) => Promise<Awaited<Result>>,
+  formData: <Result = FormData>(cb?: (type: FormData) => Promise<Result> | Result) => Promise<Awaited<Result> | CatcherResult>,
   /**
    * Read the payload and deserialize it as an ArrayBuffer object.
    *
@@ -680,7 +687,7 @@ export interface WretchResponseChain<T, Self = unknown, R = undefined, ErrorType
    *
    * @category Response Type
    */
-  arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Promise<Result> | Result) => Promise<Awaited<Result>>,
+  arrayBuffer: <Result = ArrayBuffer>(cb?: (type: ArrayBuffer) => Promise<Result> | Result) => Promise<Awaited<Result> | CatcherResult>,
   /**
    * Retrieves the payload as a string.
    *
@@ -690,7 +697,7 @@ export interface WretchResponseChain<T, Self = unknown, R = undefined, ErrorType
    *
    * @category Response Type
    */
-  text: <Result = string>(cb?: (type: string) => Promise<Result> | Result) => Promise<Awaited<Result>>,
+  text: <Result = string>(cb?: (type: string) => Promise<Result> | Result) => Promise<Awaited<Result> | CatcherResult>,
 
   /**
    * Catches an http response with a specific error code or name and performs a callback.
@@ -719,7 +726,7 @@ export interface WretchResponseChain<T, Self = unknown, R = undefined, ErrorType
    *
    * @category Catchers
    */
-  error: (this: Self & WretchResponseChain<T, Self, R, ErrorType>, code: (number | string | symbol), cb: WretchErrorCallback<T, Self, R, ErrorType>) => this,
+  error: <Result>(this: Self & WretchResponseChain<T, Self, R, ErrorType, CatcherResult>, code: (number | string | symbol), cb: WretchErrorCallback<T, Self, R, ErrorType, CatcherResult, Result>) => Self & WretchResponseChain<T, Self, R, ErrorType, CatcherResult | WretchCatcherResult<Result>>,
   /**
    * Catches a bad request (http code 400) and performs a callback.
    *
@@ -728,7 +735,7 @@ export interface WretchResponseChain<T, Self = unknown, R = undefined, ErrorType
    * @see {@link WretchResponseChain.error}
    * @category Catchers
    */
-  badRequest: (this: Self & WretchResponseChain<T, Self, R, ErrorType>, cb: WretchErrorCallback<T, Self, R, ErrorType>) => this,
+  badRequest: <Result>(this: Self & WretchResponseChain<T, Self, R, ErrorType, CatcherResult>, cb: WretchErrorCallback<T, Self, R, ErrorType, CatcherResult, Result>) => Self & WretchResponseChain<T, Self, R, ErrorType, CatcherResult | WretchCatcherResult<Result>>,
   /**
    * Catches an unauthorized request (http code 401) and performs a callback.
    *
@@ -737,7 +744,7 @@ export interface WretchResponseChain<T, Self = unknown, R = undefined, ErrorType
    * @see {@link WretchResponseChain.error}
    * @category Catchers
    */
-  unauthorized: (this: Self & WretchResponseChain<T, Self, R, ErrorType>, cb: WretchErrorCallback<T, Self, R, ErrorType>) => this,
+  unauthorized: <Result>(this: Self & WretchResponseChain<T, Self, R, ErrorType, CatcherResult>, cb: WretchErrorCallback<T, Self, R, ErrorType, CatcherResult, Result>) => Self & WretchResponseChain<T, Self, R, ErrorType, CatcherResult | WretchCatcherResult<Result>>,
   /**
    * Catches a forbidden request (http code 403) and performs a callback.
    *
@@ -746,7 +753,7 @@ export interface WretchResponseChain<T, Self = unknown, R = undefined, ErrorType
    * @see {@link WretchResponseChain.error}
    * @category Catchers
    */
-  forbidden: (this: Self & WretchResponseChain<T, Self, R, ErrorType>, cb: WretchErrorCallback<T, Self, R, ErrorType>) => this,
+  forbidden: <Result>(this: Self & WretchResponseChain<T, Self, R, ErrorType, CatcherResult>, cb: WretchErrorCallback<T, Self, R, ErrorType, CatcherResult, Result>) => Self & WretchResponseChain<T, Self, R, ErrorType, CatcherResult | WretchCatcherResult<Result>>,
   /**
    * Catches a "not found" request (http code 404) and performs a callback.
    *
@@ -755,7 +762,7 @@ export interface WretchResponseChain<T, Self = unknown, R = undefined, ErrorType
    * @see {@link WretchResponseChain.error}
    * @category Catchers
    */
-  notFound: (this: Self & WretchResponseChain<T, Self, R, ErrorType>, cb: WretchErrorCallback<T, Self, R, ErrorType>) => this,
+  notFound: <Result>(this: Self & WretchResponseChain<T, Self, R, ErrorType, CatcherResult>, cb: WretchErrorCallback<T, Self, R, ErrorType, CatcherResult, Result>) => Self & WretchResponseChain<T, Self, R, ErrorType, CatcherResult | WretchCatcherResult<Result>>,
   /**
    * Catches a timeout (http code 408) and performs a callback.
    *
@@ -765,7 +772,7 @@ export interface WretchResponseChain<T, Self = unknown, R = undefined, ErrorType
    * @see {@link WretchResponseChain.error}
    * @category Catchers
    */
-  timeout: (this: Self & WretchResponseChain<T, Self, R, ErrorType>, cb: WretchErrorCallback<T, Self, R, ErrorType>) => this,
+  timeout: <Result>(this: Self & WretchResponseChain<T, Self, R, ErrorType, CatcherResult>, cb: WretchErrorCallback<T, Self, R, ErrorType, CatcherResult, Result>) => Self & WretchResponseChain<T, Self, R, ErrorType, CatcherResult | WretchCatcherResult<Result>>,
   /**
    * Catches an internal server error (http code 500) and performs a callback.
    *
@@ -775,14 +782,14 @@ export interface WretchResponseChain<T, Self = unknown, R = undefined, ErrorType
    * @see {@link WretchResponseChain.error}
    * @category Catchers
    */
-  internalError: (this: Self & WretchResponseChain<T, Self, R, ErrorType>, cb: WretchErrorCallback<T, Self, R, ErrorType>) => this,
+  internalError: <Result>(this: Self & WretchResponseChain<T, Self, R, ErrorType, CatcherResult>, cb: WretchErrorCallback<T, Self, R, ErrorType, CatcherResult, Result>) => Self & WretchResponseChain<T, Self, R, ErrorType, CatcherResult | WretchCatcherResult<Result>>,
   /**
    * Catches any error thrown by the fetch function and perform the callback.
    *
    * @see {@link WretchResponseChain.error}
    * @category Catchers
    */
-  fetchError: (this: Self & WretchResponseChain<T, Self, R, ErrorType>, cb: WretchErrorCallback<T, Self, R, ErrorType>) => this,
+  fetchError: <Result>(this: Self & WretchResponseChain<T, Self, R, ErrorType, CatcherResult>, cb: WretchErrorCallback<T, Self, R, ErrorType, CatcherResult, Result>) => Self & WretchResponseChain<T, Self, R, ErrorType, CatcherResult | WretchCatcherResult<Result>>,
 }
 
 
@@ -798,7 +805,9 @@ export type WretchError = Error & { status: number, response: WretchResponse, ur
 /**
  * Callback provided to catchers on error. Contains the original wretch instance used to perform the request.
  */
-export type WretchErrorCallback<T, C, R, E> = (error: E extends undefined ? WretchError : E, originalRequest: T & Wretch<T, C, R, E>) => any
+// `Result` is intentionally explicit so catcher methods can extract and union
+// the callback return type into CatcherResult.
+export type WretchErrorCallback<T, C, R, E, CatcherResult = never, Result = any> = (error: E extends undefined ? WretchError : E, originalRequest: T & Wretch<T, C, R, E, CatcherResult>) => Result
 /**
  * Fetch Response object with additional properties.
  */
@@ -812,7 +821,9 @@ export type FetchLike = (url: string, opts: WretchOptions) => Promise<WretchResp
 /**
  * Callback provided to the defer function allowing to chain deferred actions that will be stored and applied just before the request is sent.
  */
-export type WretchDeferredCallback<T, C, R, E> = (wretch: T & Wretch<T, C, R, E>, url: string, options: WretchOptions) => Wretch<T, C, any, E>
+// Deferred callbacks return another Wretch instance. We inspect that returned
+// instance to recover any catcher union added inside `.defer(...)`.
+export type WretchDeferredCallback<T, C, R, E, CatcherResult = never, Result extends Wretch<any, any, any, any, any> = Wretch<T, C, any, E, CatcherResult>> = (wretch: T & Wretch<T, C, R, E, CatcherResult>, url: string, options: WretchOptions) => Result
 
 /**
  * Shape of a typical middleware.
@@ -830,9 +841,18 @@ export type ConfiguredMiddleware = (next: FetchLike) => FetchLike
  * An addon enhancing either the request or response chain (or both).
  */
 export type WretchAddon<W, R = unknown> = {
-  beforeRequest?<T, C, R, E = unknown>(wretch: T & Wretch<T, C, R, E>, options: WretchOptions, state: Record<any, any>): T & Wretch<T, C, R, E>,
+  beforeRequest?<T, C, R, E = unknown, CatcherResult = never>(wretch: T & Wretch<T, C, R, E, CatcherResult>, options: WretchOptions, state: Record<any, any>): T & Wretch<T, C, R, E, CatcherResult>,
   wretch?: W,
-  resolver?: R | (<T, C, E = unknown>(_: C & WretchResponseChain<T, C, R, E>) => R)
+  resolver?: R | (<T, C, E = unknown, CatcherResult = never>(_: C & WretchResponseChain<T, C, R, E, CatcherResult>) => R)
 }
+
+// A catcher that returns nothing resolves the promise with `undefined` at
+// runtime, so `void` is normalized to `undefined` here. Catchers that only
+// throw infer to `never` / `Promise<never>` and must not widen the resolved
+// type at all.
+export type WretchCatcherResult<T> = T extends unknown ? ([Awaited<T>] extends [never] ? never : [Awaited<T>] extends [void] ? undefined : Awaited<T>) : never
+// Helper used by `.defer(...)` to pull the catcher union back out of the
+// returned Wretch instance.
+export type InferWretchCatcherResult<T> = T extends Wretch<any, any, any, any, infer Result> ? Result : never
 
 export type ErrorId = number | string | symbol
