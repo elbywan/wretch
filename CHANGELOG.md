@@ -1,3 +1,22 @@
+<a name="3.0.8"></a>
+## [3.0.8](https://github.com/elbywan/wretch/compare/3.0.7...3.0.8) (2026-05-23)
+
+
+### :arrow_up: Version update(s)
+
+* Add min-release-age guard ([14185e9](https://github.com/elbywan/wretch/commit/14185e9))
+* Upgrade dependencies ([56165dc](https://github.com/elbywan/wretch/commit/56165dc))
+
+### :bug: Bug fix(es)
+
+* Fix catcher return type inference ([f78f32a](https://github.com/elbywan/wretch/commit/f78f32a)), closes [#313](https://github.com/elbywan/wretch/issues/313)
+
+### :white_check_mark: Test improvement(s)
+
+* Properly typecheck tests ([5af0e78](https://github.com/elbywan/wretch/commit/5af0e78))
+
+
+
 <a name="3.0.7"></a>
 ## [3.0.7](https://github.com/elbywan/wretch/compare/3.0.6...3.0.7) (2026-03-07)
 
