@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "rootDir": "../..",
+    "lib": ["es2020", "dom", "dom.iterable"]
+  },
+  "include": [
+    "../../src/**/*.ts",
+    "../shared/**/*.ts",
+    "./**/*.ts"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./test/types" },
+    { "path": "./test/node" },
+    { "path": "./test/browser" },
+    { "path": "./test/snippets" }
+  ]
+}

@@ -12,7 +12,7 @@ export class WretchError extends Error implements WretchErrorType {
   url: string
 }
 
-export const resolver = <T, Chain, R, E>(wretch: T & Wretch<T, Chain, R, E>) => {
+export const resolver = <T, Chain, R, E, CatcherResult>(wretch: T & Wretch<T, Chain, R, E, CatcherResult>) => {
   const sharedState = Object.create(null)
 
   wretch = wretch._addons.reduce((w, addon) =>
@@ -68,30 +68,31 @@ export const resolver = <T, Chain, R, E>(wretch: T & Wretch<T, Chain, R, E>) => 
       }
       return response
     })
-  // Wraps the Promise in order to dispatch the error to a matching catcher
-  const catchersWrapper = <T>(promise: Promise<T>): Promise<void | T> =>
+  // Wraps the Promise in order to dispatch the error to a matching catcher, if any.
+  // If a catcher returns a value, the promise resolves with that value instead of rejecting.
+  const catchersWrapper = <T>(promise: Promise<T>): Promise<T | CatcherResult> =>
     promise.catch(async error => {
-
       const catcher =
         catchers.get(error?.status) ||
         catchers.get(error?.name) ||
         (!(error instanceof WretchError) && catchers.get(FETCH_ERROR)) ||
         catchers.get(CATCHER_FALLBACK)
 
-      if(error.response && errorTransformer) {
+      if (error.response && errorTransformer) {
         error = await errorTransformer(error, error.response, wretch)
       }
 
       if (catcher)
-        return catcher(error, wretch)
+        return catcher(error, wretch) as CatcherResult
 
       throw error
     })
-  // Enforces the proper promise type when a body parsing method is called.
+  // Each body parser returns the normal parsed value, plus any value that a
+  // registered catcher may have produced instead.
   type BodyParser =
     <Type>(funName: "json" | "blob" | "formData" | "arrayBuffer" | "text" | null)
     => <Result = void>(cb?: (type: Type) => Result)
-    => Promise<Awaited<Result>>
+    => Promise<Awaited<Result> | CatcherResult>
   const bodyParser: BodyParser = funName => cb => {
     const promise = funName ?
     // If a callback is provided, then callback with the body result otherwise return the parsed body itself.
@@ -101,7 +102,9 @@ export const resolver = <T, Chain, R, E>(wretch: T & Wretch<T, Chain, R, E>) => 
     return catchersWrapper(cb ? promise.then(cb) : promise)
   }
 
-  const responseChain: WretchResponseChain<T, Chain, R, E> = {
+  // Registering a response-chain catcher mutates only this local chain state at
+  // runtime, but its interface widens `CatcherResult` at the type level.
+  const responseChain: WretchResponseChain<T, Chain, R, E, CatcherResult> = {
     _wretchReq: wretch,
     _fetchReq,
     _sharedState: sharedState,
@@ -124,9 +127,11 @@ export const resolver = <T, Chain, R, E>(wretch: T & Wretch<T, Chain, R, E>) => 
     fetchError(cb) { return this.error(FETCH_ERROR, cb) },
   }
 
-  const enhancedResponseChain: R extends undefined ? Chain & WretchResponseChain<T, Chain, undefined> : R = addons.reduce((chain, addon) => ({
+  // Addon resolvers and user-defined `.resolve(...)` callbacks both receive the
+  // chain with the same CatcherResult information threaded through it.
+  const enhancedResponseChain: R extends undefined ? Chain & WretchResponseChain<T, Chain, undefined, E, CatcherResult> : R = addons.reduce((chain, addon) => ({
     ...chain,
-    ...(typeof addon.resolver === "function" ? (addon.resolver as (_: WretchResponseChain<T, Chain, R, E>) => any)(chain) : addon.resolver)
+    ...(typeof addon.resolver === "function" ? (addon.resolver as (_: WretchResponseChain<T, Chain, R, E, CatcherResult>) => any)(chain) : addon.resolver)
   }), responseChain)
 
   return resolvers.reduce((chain, r) => r(chain, wretch), enhancedResponseChain)
