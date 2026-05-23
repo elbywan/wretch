@@ -26,6 +26,7 @@ export default defineConfig([
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
       "no-trailing-spaces": "error",
+      "preserve-caught-error": "off"
     },
     languageOptions: {
       globals: {
