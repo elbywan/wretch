@@ -860,6 +860,47 @@ export function createWretchTests(ctx: TestContext): void {
       expect(count).toBe(4)
     })
 
+    it("should abort a request with both user-provided signal and addon controller", async function () {
+      let count = 0
+
+      const handleError = (error: Error) => {
+        expect(error.name).toBe("AbortError")
+        count++
+      }
+
+      const userController = new AbortController()
+      const [, w] = wretch(`${_URL}/longResult`)
+        .addon(AbortAddon())
+        .signal(userController)
+        .get()
+        .controller()
+
+      w.res().catch(handleError)
+      userController.abort()
+
+      const userController2 = new AbortController()
+      const [addonController2, w2] = wretch(`${_URL}/longResult`)
+        .addon(AbortAddon())
+        .signal(userController2)
+        .get()
+        .controller()
+
+      w2.res().catch(handleError)
+      addonController2.abort()
+
+      const userController3 = new AbortController()
+      wretch(`${_URL}/longResult`)
+        .addon(AbortAddon())
+        .options({ signal: userController3.signal })
+        .get()
+        .res()
+        .catch(handleError)
+      userController3.abort()
+
+      await new Promise(resolve => setTimeout(resolve, 500))
+      expect(count).toBe(3)
+    })
+
     it("should program resolvers", async function () {
       if(isSafari || isDeno || isBun)
         return

@@ -119,7 +119,10 @@ const abort: () => WretchAddon<AbortWretch, AbortResolver> = () => {
   return {
     beforeRequest(wretch, options, state) {
       const fetchController = new AbortController()
-      if (!options["signal"]) {
+      const existingSignal = options["signal"]
+      if (existingSignal && typeof AbortSignal !== "undefined" && "any" in AbortSignal) {
+        options["signal"] = AbortSignal.any([fetchController.signal, existingSignal])
+      } else {
         options["signal"] = fetchController.signal
       }
       const timeout = {
