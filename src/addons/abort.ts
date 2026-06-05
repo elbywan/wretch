@@ -79,7 +79,7 @@ export interface AbortResolver {
    * c.abort()
    * ```
    */
-  controller: <T, C extends AbortResolver, R, E>(this: C & WretchResponseChain<T, C, R, E>) => [any, this]
+  controller: <T, C extends AbortResolver, R, E>(this: C & WretchResponseChain<T, C, R, E>) => [AbortController, this]
   /**
    * Catches an AbortError and performs a callback.
    */
