@@ -211,6 +211,10 @@ export function launch(port) {
     return "ok"
   })
 
+  server.get("/network-error", async request => {
+    request.socket.destroy()
+  })
+
   server.get("/*", async (request, reply) => {
     reply.status(404)
 

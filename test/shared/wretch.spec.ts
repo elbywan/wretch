@@ -431,6 +431,22 @@ export function createWretchTests(ctx: TestContext): void {
       expect(serverErrorCount).toBe(1)
     })
 
+    it("should catch fetch errors", async function () {
+      let fetchErrorCount = 0
+
+      // Trigger a fetch error by calling an endpoint destroying the socket
+      await wretch(_URL).url("/network-error").get().fetchError(() => { fetchErrorCount++ }).json()
+      // .fetchError should have caught that
+      expect(fetchErrorCount).toBe(1)
+
+      await wretch(_URL).url("/json").get()
+        .fetchError(() => { fetchErrorCount-- })
+        .json(() => { throw new Error() })
+        .catch(() => { /* ignore */ })
+      // .fetchError should not have been called, since the error was not a fetch error
+      expect(fetchErrorCount).toBe(1)
+    })
+
     it("should support mixing single and array error IDs", async function () {
       let count = 0
 

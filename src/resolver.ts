@@ -24,7 +24,7 @@ export const resolver = <T, Chain, R, E, CatcherResult>(wretch: T & Wretch<T, Ch
   const {
     _url: url,
     _options: opts,
-    _fetch: customFetch,
+    _fetch,
     _errorTransformer: errorTransformer,
     _catchers: _catchers,
     _resolvers: resolvers,
@@ -39,12 +39,17 @@ export const resolver = <T, Chain, R, E, CatcherResult>(wretch: T & Wretch<T, Ch
   let finalUrl = url
   const _fetchReq = middlewareHelper(middlewares)((url, options) => {
     finalUrl = url
-    const fetchImpl = customFetch || fetch
+    const fetchImpl = _fetch || fetch
     return fetchImpl(url, options)
   })(url, finalOptions)
   // Throws on an http error
   const referenceError = new Error()
   const throwingPromise: Promise<void | WretchResponse> = _fetchReq
+    .catch(error => {
+      // Interect fetch errors and mark them with a special symbol so that they can be caught by a matching catcher
+      error[FETCH_ERROR] = true
+      throw error
+    })
     .then(async response => {
       if (!response.ok) {
         const err = new WretchError()
@@ -75,7 +80,7 @@ export const resolver = <T, Chain, R, E, CatcherResult>(wretch: T & Wretch<T, Ch
       const catcher =
         catchers.get(error?.status) ||
         catchers.get(error?.name) ||
-        (!(error instanceof WretchError) && catchers.get(FETCH_ERROR)) ||
+        (error?.[FETCH_ERROR] && catchers.get(FETCH_ERROR)) ||
         catchers.get(CATCHER_FALLBACK)
 
       if (error.response && errorTransformer) {
