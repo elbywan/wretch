@@ -1,3 +1,17 @@
+<a name="3.0.9"></a>
+## [3.0.9](https://github.com/elbywan/wretch/compare/3.0.8...3.0.9) (2026-06-19)
+
+
+### :art: Code improvement(s)
+
+* Narrow AbortAddon controller() return type to AbortController ([6a83061](https://github.com/elbywan/wretch/commit/6a83061))
+
+### :bug: Bug fix(es)
+
+* Fix .fetchError catching user errors ([9a8faad](https://github.com/elbywan/wretch/commit/9a8faad)), closes [#318](https://github.com/elbywan/wretch/issues/318)
+
+
+
 <a name="3.0.8"></a>
 ## [3.0.8](https://github.com/elbywan/wretch/compare/3.0.7...3.0.8) (2026-05-23)
 
