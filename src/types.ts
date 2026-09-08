@@ -567,6 +567,19 @@ export interface Wretch<Self = unknown, Chain = unknown, Resolver = undefined, E
     Chain & WretchResponseChain<Self, Chain, Resolver, ErrorType, CatcherResult> :
     Resolver
   /**
+   * Performs an [QUERY](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/QUERY) request.
+   *
+   * ```js
+   * wretch("...").httpQuery();
+   * ```
+   *
+   * @category HTTP
+   */
+  httpQuery(this: Self & Wretch<Self, Chain, Resolver, ErrorType, CatcherResult>, body?: any, url?: string):
+    Resolver extends undefined ?
+    Chain & WretchResponseChain<Self, Chain, Resolver, ErrorType, CatcherResult> :
+    Resolver
+  /**
    * Performs a [HEAD](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/HEAD) request.
    *
    * ```js

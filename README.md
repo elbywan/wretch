@@ -609,7 +609,7 @@ Sets the HTTP method and sends the request.
 Calling an HTTP method ends the request chain and returns a response chain.
 You can pass optional url and body arguments to these methods.
 
-**Available methods:** [`.get()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#get) · [`.post()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#post) · [`.put()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#put) · [`.patch()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#patch) · [`.delete()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#delete) · [`.head()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#head) · [`.opts()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#opts)
+**Available methods:** [`.get()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#get) · [`.post()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#post) · [`.put()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#put) · [`.patch()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#patch) · [`.httpQuery()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#httpQuery) · [`.delete()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#delete) · [`.head()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#head) · [`.opts()`](https://elbywan.github.io/wretch/api/interfaces/index.Wretch#opts)
 
 <!-- snippet:description HTTP method shortcuts with url and body arguments -->
 ```js

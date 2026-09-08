@@ -33,6 +33,7 @@ const allRoutes = <T>(
     obj.put(body, "")[type](action),
     obj.patch(body, "")[type](action),
     obj.post(body, "")[type](action),
+    obj.httpQuery(body, "")[type](action),
     obj.delete("")[type](action),
   ])
 
