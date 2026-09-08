@@ -34,6 +34,7 @@ const allRoutes = <T>(
     obj.patch(body, "")[type](action),
     obj.post(body, "")[type](action),
     obj.delete("")[type](action),
+    obj.query("")[type](action),
   ])
 
 export type DescribeFn = (name: string, fn: () => void) => void

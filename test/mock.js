@@ -43,10 +43,11 @@ export function launch(port) {
     allowedHeaders: ["Authorization", "X-Custom-Header", "X-Custom-Header-2", "X-Custom-Header-3", "X-Custom-Header-4", "content-type"],
     exposedHeaders: ["Allow", "Timing-Allow-Origin"],
     credentials: true,
-    methods: "GET,POST,PUT,PATCH,DELETE,OPTIONS",
+    methods: "GET,POST,PUT,PATCH,DELETE,OPTIONS,QUERY",
     strictPreflight: false,
     preflightContinue: true
   })
+  server.addHttpMethod("QUERY") // TODO: remove after fastify version update
 
   server.register(setupErrors)
 
@@ -57,7 +58,7 @@ export function launch(port) {
   // Must define HEAD /json before setupReplies. Otherwise fastify will be unhappy
   server.head("/json", async (request, reply) => {
     reply.type("application/json")
-    reply.header("allow", "GET,POST,PUT,PATCH,DELETE")
+    reply.header("allow", "GET,POST,PUT,PATCH,DELETE,QUERY")
     reply.send()
     return reply
   })
@@ -260,6 +261,7 @@ const setupReplies = (server, type, fun) => {
   server.put("/" + type, fun)
   server.patch("/" + type, fun)
   server.delete("/" + type, fun)
+  server.query("/" + type, fun)
 }
 
 /**
