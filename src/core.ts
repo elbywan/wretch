@@ -113,14 +113,14 @@ export const core: Wretch = {
   patch(body, url = "") {
     return this.fetch("PATCH", url, body)
   },
+  httpQuery(body, url = "") {
+    return this.fetch("QUERY", url, body)
+  },
   head(url = "") {
     return this.fetch("HEAD", url)
   },
   opts(url = "") {
     return this.fetch("OPTIONS", url)
-  },
-  query(url = "") {
-    return this.fetch("QUERY", url)
   },
   body(contents) {
     return { ...this, _options: { ...this._options, body: contents } }
