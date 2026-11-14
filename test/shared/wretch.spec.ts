@@ -313,6 +313,45 @@ export function createWretchTests(ctx: TestContext): void {
       expect(req._options.headers).toEqual(headers)
     })
 
+    it("should keep Headers instances and tuple arrays passed as options when merging headers", async function () {
+      let sent: [string, string][] = []
+      const capture = (_: string, opts: WretchOptions) => {
+        sent = [...new Headers(opts.headers)]
+        return Promise.resolve(new Response("{}"))
+      }
+
+      const fromHeaders = wretch("https://api.test", {
+        headers: new Headers({ Authorization: "Bearer secret" })
+      }).fetchPolyfill(capture)
+      await fromHeaders.get("/me").res()
+      expect(sent).toEqual([["authorization", "Bearer secret"]])
+      await fromHeaders.post({ a: 1 }, "/items").res()
+      expect(sent).toEqual([["authorization", "Bearer secret"], ["content-type", "application/json"]])
+
+      await wretch("https://api.test", { headers: [["X-Custom", "1"]] })
+        .fetchPolyfill(capture)
+        .auth("Bearer secret")
+        .get()
+        .res()
+      expect(sent).toEqual([["authorization", "Bearer secret"], ["x-custom", "1"]])
+
+      await wretch("https://api.test")
+        .options({ headers: new Headers({ "X-A": "a" }) })
+        .options({ headers: [["X-B", "b"]] })
+        .fetchPolyfill(capture)
+        .headers({ "X-C": "c" })
+        .get()
+        .res()
+      expect(sent).toEqual([["x-a", "a"], ["x-b", "b"], ["x-c", "c"]])
+
+      await wretch("https://api.test", { headers: { "X-Old": "1" } })
+        .options({ headers: new Headers({ "X-New": "2" }) }, true)
+        .fetchPolyfill(capture)
+        .get()
+        .res()
+      expect(sent).toEqual([["x-new", "2"]])
+    })
+
     it("should catch common error codes", async function () {
       const w = wretch(_URL + "/")
 

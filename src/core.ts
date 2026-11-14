@@ -1,4 +1,4 @@
-import { mix, extractContentType, isLikelyJsonMime } from "./utils.js"
+import { mix, extractContentType, isLikelyJsonMime, normalizeHeaders, normalizeOptions } from "./utils.js"
 import { JSON_MIME, CATCHER_FALLBACK } from "./constants.js"
 import { resolver, WretchError } from "./resolver.js"
 import type { Wretch, WretchOptions } from "./types.js"
@@ -31,14 +31,11 @@ export const core: Wretch = {
     }
   },
   options(options, replace = false) {
-    return { ...this, _options: replace ? options : mix(this._options, options) }
+    const normalized = normalizeOptions(options)
+    return { ...this, _options: replace ? normalized : mix(this._options, normalized) }
   },
   headers(headerValues) {
-    const headers =
-      !headerValues ? {} :
-        Array.isArray(headerValues) ? Object.fromEntries(headerValues) :
-          "entries" in headerValues ? Object.fromEntries((headerValues as Headers).entries()) :
-            headerValues
+    const headers = normalizeHeaders(headerValues)
     return { ...this, _options: mix(this._options, { headers }) }
   },
   accept(headerValue) {
