@@ -1,4 +1,5 @@
 import { core } from "./core.js"
+import { normalizeOptions } from "./utils.js"
 import { WretchError } from "./resolver.js"
 import type { Wretch, WretchOptions } from "./types.js"
 
@@ -32,7 +33,7 @@ export type {
  * @returns A fresh wretch instance
  */
 const factory = (_url = "", _options: WretchOptions = {}): Wretch =>
-  ({ ...core, _url, _options })
+  ({ ...core, _url, _options: normalizeOptions(_options) })
 
 factory["default"] = factory
 factory.WretchError = WretchError

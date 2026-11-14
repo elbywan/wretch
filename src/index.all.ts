@@ -1,9 +1,10 @@
 import { core } from "./core.js"
+import { normalizeOptions } from "./utils.js"
 import * as Addons from "./addons/index.js"
 import { WretchError } from "./resolver.js"
 
 const factory = (_url = "", _options = {}) =>
-  ({ ...core, _url, _options })
+  ({ ...core, _url, _options: normalizeOptions(_options) })
     .addon([
       Addons.abortAddon(),
       Addons.basicAuthAddon,
